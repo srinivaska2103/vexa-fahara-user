@@ -84,6 +84,7 @@ export default function AdvancedCafeDiscoveryPage() {
               {/* Mobile Filter Button */}
               <button
                 onClick={() => setIsMobileFilterOpen(true)}
+                suppressHydrationWarning
                 className="lg:hidden flex items-center gap-1.5 px-3 py-2 bg-[#FFF8F0] border border-[#DDB892]/60 rounded-xl text-[#6F4E37] font-black text-xs hover:bg-[#6F4E37] hover:text-white transition-all shadow-2xs cursor-pointer"
               >
                 <SlidersHorizontal size={14} />
@@ -102,6 +103,7 @@ export default function AdvancedCafeDiscoveryPage() {
                       key={mode}
                       onClick={() => setViewMode(mode)}
                       aria-label={`Switch to ${mode} view`}
+                      suppressHydrationWarning
                       className={`relative px-2.5 py-1.5 rounded-lg flex items-center gap-1 text-xs font-bold transition-all ${isActive ? 'text-[#6F4E37] font-black' : 'text-stone-500 hover:text-stone-800'
                         }`}
                     >
@@ -153,6 +155,7 @@ export default function AdvancedCafeDiscoveryPage() {
                     whileHover={{ y: -3, scale: 1.02 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={() => setCategory(isSelected && item.id !== '' ? '' : item.id)}
+                    suppressHydrationWarning
                     className={`min-w-[125px] sm:min-w-[135px] flex flex-col items-center justify-center p-3.5 rounded-2xl border transition-all cursor-pointer text-center shrink-0 ${isSelected
                         ? 'bg-[#6F4E37] border-[#4A2C11] text-white shadow-lg scale-[1.02]'
                         : 'bg-white hover:bg-[#FFF8F0] border-stone-200/90 text-[#2C1810] shadow-2xs hover:border-[#DDB892]'
