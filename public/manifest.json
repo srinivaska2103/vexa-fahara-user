@@ -1,0 +1,30 @@
+{
+  "short_name": "Fahara",
+  "name": "Fahara • Cafe & Event Booking Platform",
+  "description": "Book top-rated cafes, private venues, packages, and event spaces near you.",
+  "icons": [
+    {
+      "src": "/Fahara Logo.jpeg",
+      "type": "image/jpeg",
+      "sizes": "192x192 512x512"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#FFF8F0",
+  "theme_color": "#6F4E37",
+  "display": "standalone",
+  "orientation": "portrait",
+  "categories": ["lifestyle", "food", "entertainment", "productivity"],
+  "shortcuts": [
+    {
+      "name": "My Bookings",
+      "url": "/customer/bookings",
+      "description": "View active and past cafe bookings"
+    },
+    {
+      "name": "Explore Cafes",
+      "url": "/",
+      "description": "Discover top cafes and event spots"
+    }
+  ]
+}

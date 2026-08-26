@@ -1,0 +1,51 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #6F4E37;
+  --color-secondary: #A67B5B;
+  --color-accent: #DDB892;
+  --color-background: #FFF8F0;
+  --color-surface: #FFFFFF;
+  --color-border: #E8DED5;
+  --color-text-primary: #2C1810;
+  --color-text-secondary: #6B5B4F;
+  --color-success: #16A34A;
+  --color-warning: #F59E0B;
+  --color-danger: #DC2626;
+  --color-info: #2563EB;
+  
+  --font-sans: var(--font-plus-jakarta-sans), ui-sans-serif, system-ui, sans-serif;
+}
+
+:root {
+  --background: #FFF8F0;
+  --foreground: #2C1810;
+}
+
+html {
+  font-size: 15px; /* Proportional site-wide font size reduction for aesthetic cafe legibility */
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  letter-spacing: -0.01em;
+  @apply antialiased;
+}
+
+/* Elegant Aside Scrollbar */
+.custom-aside-scroll::-webkit-scrollbar {
+  width: 5px;
+}
+.custom-aside-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-aside-scroll::-webkit-scrollbar-thumb {
+  background: #DDB892;
+  border-radius: 10px;
+}
+.custom-aside-scroll::-webkit-scrollbar-thumb:hover {
+  background: #6F4E37;
+}
