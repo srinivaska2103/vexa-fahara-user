@@ -51,7 +51,7 @@ export default function Footer() {
             <ul className="space-y-2.5 text-xs font-bold text-stone-400">
               <li>
                 <a 
-                  href={process.env.NEXT_PUBLIC_CAFE_MANAGER_URL || 'http://localhost:3001'} 
+                  href={process.env.NEXT_PUBLIC_CAFE_MANAGER_URL ? `${process.env.NEXT_PUBLIC_CAFE_MANAGER_URL}/owner/login` : '/partner/cafe'} 
                   target="_blank" 
                   rel="noopener noreferrer" 
                   className="hover:text-white transition-colors"
@@ -61,7 +61,7 @@ export default function Footer() {
               </li>
               <li>
                 <a 
-                  href={process.env.NEXT_PUBLIC_EVENT_MANAGER_URL || 'http://localhost:3002'} 
+                  href={process.env.NEXT_PUBLIC_EVENT_MANAGER_URL ? `${process.env.NEXT_PUBLIC_EVENT_MANAGER_URL}/event/login` : '/partner/event'} 
                   target="_blank" 
                   rel="noopener noreferrer" 
                   className="hover:text-white transition-colors"

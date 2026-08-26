@@ -74,7 +74,7 @@ const ecosystemParticipants = [
     subtitle: 'For Venue Hosts',
     desc: 'List your cafe, set hourly slot pricing, monetize off-peak hours, and grow your venue revenue.',
     cta: 'List Your Cafe',
-    href: 'http://localhost:3001',
+    href: process.env.NEXT_PUBLIC_CAFE_MANAGER_URL ? `${process.env.NEXT_PUBLIC_CAFE_MANAGER_URL}/owner/login` : '/partner/cafe',
     external: true,
     icon: Building2,
     color: 'from-[#4A2C11] to-[#2C1810]'
@@ -85,7 +85,7 @@ const ecosystemParticipants = [
     subtitle: 'For Service Professionals',
     desc: 'Offer event services like decor, photography, and catering directly inside cafe checkout flows.',
     cta: 'Become an Event Partner',
-    href: 'http://localhost:3001',
+    href: process.env.NEXT_PUBLIC_EVENT_MANAGER_URL ? `${process.env.NEXT_PUBLIC_EVENT_MANAGER_URL}/event/login` : '/partner/event',
     external: true,
     icon: Sparkles,
     color: 'from-[#A67B5B] to-[#6F4E37]'

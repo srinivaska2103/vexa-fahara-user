@@ -34,7 +34,7 @@ const nextConfig = {
       },
       {
         source: '/partner/event',
-        destination: process.env.NEXT_PUBLIC_EVENT_MANAGER_URL ? `${process.env.NEXT_PUBLIC_EVENT_MANAGER_URL}/login` : 'http://localhost:3002/login',
+        destination: process.env.NEXT_PUBLIC_EVENT_MANAGER_URL ? `${process.env.NEXT_PUBLIC_EVENT_MANAGER_URL}/event/login` : 'http://localhost:3002/event/login',
         permanent: false,
       },
     ];
