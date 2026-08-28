@@ -49,26 +49,27 @@ export default function Footer() {
           <div>
             <h4 className="text-white font-black text-xs uppercase tracking-wider mb-4 text-[#DDB892]">Partnership</h4>
             <ul className="space-y-2.5 text-xs font-bold text-stone-400">
-              <li>
-                <a 
-                  href={process.env.NEXT_PUBLIC_CAFE_MANAGER_URL ? `${process.env.NEXT_PUBLIC_CAFE_MANAGER_URL}/owner/login` : '/partner/cafe'} 
-                  target="_blank" 
-                  rel="noopener noreferrer" 
-                  className="hover:text-white transition-colors"
-                >
-                  List Your Cafe
-                </a>
-              </li>
-              <li>
-                <a 
-                  href={process.env.NEXT_PUBLIC_EVENT_MANAGER_URL ? `${process.env.NEXT_PUBLIC_EVENT_MANAGER_URL}/event/login` : '/partner/event'} 
-                  target="_blank" 
-                  rel="noopener noreferrer" 
-                  className="hover:text-white transition-colors"
-                >
-                  Become an Event Partner
-                </a>
-              </li>
+             <li>
+  <a 
+    href="https://cafe.fahara.in" 
+    target="_blank" 
+    rel="noopener noreferrer" 
+    className="hover:text-white transition-colors"
+  >
+    Cafes Near You
+  </a>
+</li>
+<li>
+  <a 
+    href="https://em.fahara.in" 
+    target="_blank" 
+    rel="noopener noreferrer" 
+    className="hover:text-white transition-colors"
+  >
+    Event Services
+  </a>
+</li>
+
               <li><Link href="/customer/favorites" className="hover:text-white transition-colors">Favorites</Link></li>
               <li><Link href="/contact" className="hover:text-white transition-colors">Contact Support</Link></li>
             </ul>
