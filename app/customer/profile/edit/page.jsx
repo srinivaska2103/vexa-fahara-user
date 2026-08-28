@@ -1,29 +1,79 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { User, Mail, Phone, Calendar, MapPin, Camera, Save } from 'lucide-react';
+import { User, Mail, Phone, Calendar, MapPin, Camera, Save, Loader2 } from 'lucide-react';
 import { useAuthStore } from '@/stores/auth.store';
+import { profileService } from '@/services/profile.service';
 import toast from 'react-hot-toast';
 
 export default function EditProfilePage() {
-  const { user } = useAuthStore();
+  const { user, setUser } = useAuthStore();
+  const fileInputRef = useRef(null);
+  const [isUploading, setIsUploading] = useState(false);
+
   const [formData, setFormData] = useState({
     name: user?.name || 'John Doe',
     email: user?.email || 'john@example.com',
     phone: user?.phone || '+91 98765 43210',
-    dob: '1995-08-15',
-    gender: 'Male',
-    bio: 'Coffee enthusiast and event planner. Love exploring new cafes around the city!',
+    dob: user?.dob || '1995-08-15',
+    gender: user?.gender || 'Male',
+    bio: user?.bio || 'Coffee enthusiast and event planner. Love exploring new cafes around the city!',
   });
+
+  const avatarSrc = user?.avatar || user?.profile_image || `https://ui-avatars.com/api/?name=${encodeURIComponent(formData.name || 'User')}&background=6F4E37&color=fff&size=200`;
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleAvatarUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      toast.error('Please select a valid image file');
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error('Image size must be less than 5MB');
+      return;
+    }
+
+    setIsUploading(true);
+    const toastId = toast.loading('Uploading profile photo...');
+
+    try {
+      const uploadRes = await profileService.uploadAvatar(file);
+      const imageUrl = uploadRes?.data?.url || uploadRes?.url;
+
+      if (!imageUrl) {
+        throw new Error('Failed to get uploaded image URL');
+      }
+
+      await profileService.updateProfile({ profile_image: imageUrl, avatar: imageUrl });
+      setUser({ ...user, avatar: imageUrl, profile_image: imageUrl });
+
+      toast.success('Profile photo updated successfully!', { id: toastId });
+    } catch (err) {
+      console.error('Avatar upload error:', err);
+      toast.error(err.response?.data?.message || err.message || 'Failed to upload photo', { id: toastId });
+    } finally {
+      setIsUploading(false);
+      if (e.target) e.target.value = '';
+    }
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    toast.success('Profile updated successfully!');
+    try {
+      await profileService.updateProfile(formData);
+      setUser({ ...user, ...formData });
+      toast.success('Profile updated successfully!');
+    } catch (err) {
+      toast.error('Failed to update profile');
+    }
   };
 
   return (
@@ -41,17 +91,29 @@ export default function EditProfilePage() {
           className="bg-white rounded-2xl shadow-lg border border-[#E8DED5] p-6 sm:p-8"
         >
           <div className="flex flex-col items-center mb-8 border-b border-[#E8DED5] pb-8">
-            <div className="relative group cursor-pointer">
+            <input 
+              type="file" 
+              ref={fileInputRef} 
+              onChange={handleAvatarUpload} 
+              accept="image/*" 
+              className="hidden" 
+            />
+            <div 
+              onClick={() => fileInputRef.current?.click()}
+              className="relative group cursor-pointer"
+            >
               <img 
-                src="https://i.pravatar.cc/150?u=johndoe" 
+                src={avatarSrc} 
                 alt="Profile Avatar" 
                 className="w-32 h-32 rounded-full border-4 border-[#FFF8F0] shadow-md object-cover transition-opacity group-hover:opacity-75"
               />
-              <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                <Camera size={32} className="text-[#6F4E37]" />
+              <div className="absolute inset-0 flex items-center justify-center bg-black/30 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
+                {isUploading ? <Loader2 size={32} className="text-white animate-spin" /> : <Camera size={32} className="text-white" />}
               </div>
             </div>
-            <p className="text-sm text-[#A67B5B] mt-3 font-medium">Click to change photo</p>
+            <p className="text-sm text-[#A67B5B] mt-3 font-medium cursor-pointer" onClick={() => fileInputRef.current?.click()}>
+              {isUploading ? 'Uploading...' : 'Click to change photo'}
+            </p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">

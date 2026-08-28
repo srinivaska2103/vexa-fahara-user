@@ -1,4 +1,5 @@
 import api from '@/lib/axios';
+import { favoriteService } from '@/services/favorite.service';
 
 export const searchService = {
   searchCafes: async ({ pageParam = 1, filters }) => {
@@ -76,6 +77,6 @@ export const searchService = {
   },
 
   toggleFavorite: async (cafeId) => {
-    return new Promise(resolve => setTimeout(() => resolve({ success: true }), 300));
+    return favoriteService.toggleFavorite(cafeId);
   }
 };

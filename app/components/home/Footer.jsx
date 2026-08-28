@@ -56,7 +56,7 @@ export default function Footer() {
     rel="noopener noreferrer" 
     className="hover:text-white transition-colors"
   >
-    Cafes Near You
+    Became a Cafes Partner  
   </a>
 </li>
 <li>
@@ -66,7 +66,7 @@ export default function Footer() {
     rel="noopener noreferrer" 
     className="hover:text-white transition-colors"
   >
-    Event Services
+    Became a Event Service Partner
   </a>
 </li>
 

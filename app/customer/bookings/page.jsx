@@ -101,7 +101,7 @@ export default function MyBookingsPage() {
       <main className="container mx-auto px-2 sm:px-6 lg:px-8 py-4 sm:py-6 max-w-full overflow-x-hidden flex flex-col lg:flex-row gap-6 sm:gap-8 items-start">
         
         {/* Left Aside Navigation Panel (Desktop 1024px+) */}
-        <aside className="hidden lg:block w-72 xl:w-80 flex-shrink-0 sticky top-[7.5rem]">
+        <aside className="hidden lg:block w-72 xl:w-80 flex-shrink-0 sticky top-20 self-start max-h-[calc(100vh-5.5rem)]">
           <FilterSidebar mode="bookings" bookingStats={bookingStats} />
         </aside>
 

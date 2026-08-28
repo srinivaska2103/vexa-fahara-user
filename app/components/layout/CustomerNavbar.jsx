@@ -239,7 +239,7 @@ export default function CustomerNavbar({
                     {/* User Summary Header */}
                     <div className="p-2.5 rounded-xl bg-gradient-to-br from-[#FFF8F0] to-[#F5EBE0] border border-[#DDB892]/40 mb-1">
                       <p className="font-black text-xs text-[#2C1810] truncate">{userName}</p>
-                      <p className="text-[10px] font-bold text-[#6F4E37] truncate">{user?.email || 'Gold Tier Member'}</p>
+                      <p className="text-[10px] font-bold text-[#6F4E37] truncate">{user?.email || 'Customer Account'}</p>
                     </div>
 
                     {/* Navigation Options */}
