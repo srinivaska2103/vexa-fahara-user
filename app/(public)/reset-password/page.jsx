@@ -6,7 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { resetPasswordSchema } from '@/schemas/auth.schema';
 import { useResetPassword } from '@/hooks/useAuth';
 import AuthLayout from '@/app/components/auth/AuthLayout';
-import { Loader2, Eye, EyeOff } from 'lucide-react';
+import { Loader2, Eye, EyeOff, Lock, KeyRound, Mail } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useSearchParams } from 'next/navigation';
 
@@ -38,78 +38,94 @@ function ResetPasswordForm() {
         <input type="hidden" {...register('email')} />
       ) : (
         <div>
-          <label className="block text-sm font-medium text-[var(--color-text-primary)] mb-1">Email or User ID</label>
-          <input
-            {...register('email')}
-            type="text"
-            className="w-full px-4 py-2 rounded-lg border border-[var(--color-border)] bg-white text-gray-800"
-          />
+          <label className="block text-sm font-semibold text-[#2C1810] mb-1.5">Email or User ID</label>
+          <div className="relative group">
+            <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[#6F4E37] group-focus-within:text-[#4A2614] transition-colors z-10">
+              <Mail size={20} strokeWidth={2.2} />
+            </div>
+            <input
+              {...register('email')}
+              type="text"
+              className="w-full pl-11 pr-4 py-3 rounded-xl border border-gray-200 bg-white/80 text-[#2C1810] font-medium focus:outline-none focus:ring-2 focus:ring-[#DDB892]"
+            />
+          </div>
         </div>
       )}
 
       <div>
-        <label className="block text-sm font-medium text-[var(--color-text-primary)] mb-1">6-Digit OTP</label>
-        <input
-          {...register('otp')}
-          type="text"
-          maxLength={6}
-          placeholder="••••••"
-          className={cn(
-            "w-full px-4 py-2 rounded-lg border bg-white focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] transition-all text-center tracking-widest font-mono text-lg",
-            errors.otp ? "border-[var(--color-danger)]" : "border-[var(--color-border)]"
-          )}
-        />
-        {errors.otp && <p className="text-[var(--color-danger)] text-xs mt-1 text-center">{errors.otp.message}</p>}
+        <label className="block text-sm font-semibold text-[#2C1810] mb-1.5">6-Digit OTP</label>
+        <div className="relative group">
+          <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[#6F4E37] group-focus-within:text-[#4A2614] transition-colors z-10">
+            <KeyRound size={20} strokeWidth={2.2} />
+          </div>
+          <input
+            {...register('otp')}
+            type="text"
+            maxLength={6}
+            placeholder="••••••"
+            className={cn(
+              "w-full pl-11 pr-4 py-3 rounded-xl border bg-white/80 focus:outline-none focus:ring-2 focus:ring-[#DDB892] transition-all text-center tracking-widest font-mono text-lg font-bold text-[#2C1810]",
+              errors.otp ? "border-red-400 ring-red-400" : "border-gray-200 hover:border-gray-300"
+            )}
+          />
+        </div>
+        {errors.otp && <p className="text-red-500 text-xs mt-1.5 text-center font-medium">{errors.otp.message}</p>}
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-[var(--color-text-primary)] mb-1">New Password</label>
-        <div className="relative">
+        <label className="block text-sm font-semibold text-[#2C1810] mb-1.5">New Password</label>
+        <div className="relative group">
+          <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[#6F4E37] group-focus-within:text-[#4A2614] transition-colors z-10">
+            <Lock size={20} strokeWidth={2.2} />
+          </div>
           <input
             {...register('newPassword')}
             type={showNewPassword ? 'text' : 'password'}
             placeholder="Create new password"
             className={cn(
-              "w-full px-4 py-2 pr-10 rounded-lg border bg-white focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] transition-all",
-              errors.newPassword ? "border-[var(--color-danger)]" : "border-[var(--color-border)]"
+              "w-full pl-11 pr-12 py-3 rounded-xl border bg-white/80 focus:outline-none focus:ring-2 focus:ring-[#DDB892] transition-all font-medium text-[#2C1810]",
+              errors.newPassword ? "border-red-400 ring-red-400" : "border-gray-200 hover:border-gray-300"
             )}
           />
           <button
             type="button"
             onClick={() => setShowNewPassword(!showNewPassword)}
-            className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 focus:outline-none"
+            className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-[#6F4E37] hover:text-[#4A2614] transition-colors focus:outline-none z-10"
             tabIndex={-1}
             title={showNewPassword ? "Hide password" : "Show password"}
           >
-            {showNewPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+            {showNewPassword ? <EyeOff size={20} strokeWidth={2.2} /> : <Eye size={20} strokeWidth={2.2} />}
           </button>
         </div>
-        {errors.newPassword && <p className="text-[var(--color-danger)] text-xs mt-1">{errors.newPassword.message}</p>}
+        {errors.newPassword && <p className="text-red-500 text-xs mt-1.5 font-medium">{errors.newPassword.message}</p>}
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-[var(--color-text-primary)] mb-1">Confirm New Password</label>
-        <div className="relative">
+        <label className="block text-sm font-semibold text-[#2C1810] mb-1.5">Confirm New Password</label>
+        <div className="relative group">
+          <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[#6F4E37] group-focus-within:text-[#4A2614] transition-colors z-10">
+            <Lock size={20} strokeWidth={2.2} />
+          </div>
           <input
             {...register('confirmPassword')}
             type={showConfirmPassword ? 'text' : 'password'}
             placeholder="Confirm new password"
             className={cn(
-              "w-full px-4 py-2 pr-10 rounded-lg border bg-white focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] transition-all",
-              errors.confirmPassword ? "border-[var(--color-danger)]" : "border-[var(--color-border)]"
+              "w-full pl-11 pr-12 py-3 rounded-xl border bg-white/80 focus:outline-none focus:ring-2 focus:ring-[#DDB892] transition-all font-medium text-[#2C1810]",
+              errors.confirmPassword ? "border-red-400 ring-red-400" : "border-gray-200 hover:border-gray-300"
             )}
           />
           <button
             type="button"
             onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-            className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 focus:outline-none"
+            className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-[#6F4E37] hover:text-[#4A2614] transition-colors focus:outline-none z-10"
             tabIndex={-1}
             title={showConfirmPassword ? "Hide password" : "Show password"}
           >
-            {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+            {showConfirmPassword ? <EyeOff size={20} strokeWidth={2.2} /> : <Eye size={20} strokeWidth={2.2} />}
           </button>
         </div>
-        {errors.confirmPassword && <p className="text-[var(--color-danger)] text-xs mt-1">{errors.confirmPassword.message}</p>}
+        {errors.confirmPassword && <p className="text-red-500 text-xs mt-1.5 font-medium">{errors.confirmPassword.message}</p>}
       </div>
 
       <button

@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useFavoritesStore } from '@/stores/favorites.store';
 import { cafeDetailsService } from '@/services/cafeDetails.service';
+import { favoriteService } from '@/services/favorite.service';
 import api from '@/lib/axios';
 import CustomerNavbar from '@/app/components/layout/CustomerNavbar';
 import FilterSidebar from '@/app/components/cafes/FilterSidebar';
@@ -23,7 +24,7 @@ function FavoritesContent() {
   const initialTab = searchParams.get('tab') || 'cafes';
 
   const { t } = useLanguage();
-  const { favoriteCafes, favoriteEvents, toggleFavoriteCafe, toggleFavoriteEvent } = useFavoritesStore();
+  const { favoriteCafes, favoriteEvents, toggleFavoriteCafe, toggleFavoriteEvent, setFavorites } = useFavoritesStore();
   
   const [activeTab, setActiveTabState] = useState(initialTab); // 'cafes' | 'events'
   const [cafes, setCafes] = useState([]);
@@ -48,20 +49,17 @@ function FavoritesContent() {
     }
   }, [searchParams]);
 
-  // Fetch real backend cafes and event services from database
+  // Fetch real backend favorites from database
   useEffect(() => {
     const fetchFavorites = async () => {
       setIsLoading(true);
       try {
-        // Query real /cafes endpoint from backend database
-        const cafesRes = await api.get('/cafes').catch(() => null);
-        const realBackendCafes = cafesRes?.data?.data || cafesRes?.data || (Array.isArray(cafesRes) ? cafesRes : []);
+        // Query real user favorites from backend database
+        const favRes = await favoriteService.getFavorites();
+        const userFavoriteCafes = favRes?.data || (Array.isArray(favRes) ? favRes : []);
 
-        const savedCafeIds = favoriteCafes.map(String);
-        const savedEventIds = favoriteEvents.map(String);
-
-        if (Array.isArray(realBackendCafes) && realBackendCafes.length > 0) {
-          const formattedCafes = realBackendCafes.map(c => ({
+        if (Array.isArray(userFavoriteCafes) && userFavoriteCafes.length > 0) {
+          const formattedCafes = userFavoriteCafes.map(c => ({
             id: c.id || c._id,
             _id: c._id || c.id,
             name: c.name || c.title || 'Fahara Cafe',
@@ -73,14 +71,31 @@ function FavoritesContent() {
             cover_image: c.cover_image || c.images?.[0] || c.image || 'https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&w=800&q=80',
           }));
 
-          if (savedCafeIds.length > 0) {
-            const favorited = formattedCafes.filter(c => savedCafeIds.includes(String(c.id)) || savedCafeIds.includes(String(c._id)));
+          setCafes(formattedCafes);
+          setFavorites(formattedCafes.map(c => String(c.id)));
+        } else {
+          // If no backend favorites or offline, fallback to filtering /cafes using local store
+          const cafesRes = await api.get('/cafes').catch(() => null);
+          const realBackendCafes = cafesRes?.data?.data || cafesRes?.data || [];
+          const savedCafeIds = favoriteCafes.map(String);
+
+          if (Array.isArray(realBackendCafes) && realBackendCafes.length > 0 && savedCafeIds.length > 0) {
+            const formattedCafes = realBackendCafes.map(c => ({
+              id: c.id || c._id,
+              _id: c._id || c.id,
+              name: c.name || c.title || 'Fahara Cafe',
+              address: c.address || c.location || c.city || 'Indiranagar, Bengaluru',
+              city: c.city || 'Bengaluru',
+              maximum_persons: c.maximum_persons || c.capacity || 10,
+              google_rating: c.google_rating || c.rating || 4.8,
+              price_per_hour: c.price_per_hour || c.price || 1000,
+              cover_image: c.cover_image || c.images?.[0] || c.image || 'https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&w=800&q=80',
+            }));
+            const favorited = formattedCafes.filter(c => savedCafeIds.includes(String(c.id)));
             setCafes(favorited);
           } else {
             setCafes([]);
           }
-        } else {
-          setCafes([]);
         }
 
         // Query real /event-services endpoint from backend database
@@ -213,7 +228,7 @@ function FavoritesContent() {
       <div className="flex-1 max-w-[1550px] w-full mx-auto px-3 sm:px-4 lg:pl-3 lg:pr-6 xl:px-4 py-4 sm:py-6 flex flex-col lg:flex-row gap-5 lg:gap-6">
         
         {/* Desktop Sidebar (1024px+) */}
-        <aside className="hidden lg:block w-80 xl:w-84 flex-shrink-0 sticky top-24 h-fit">
+        <aside className="hidden lg:block w-80 xl:w-84 flex-shrink-0 sticky top-20 self-start max-h-[calc(100vh-5.5rem)]">
           <FilterSidebar mode="favorites" activeTab={activeTab} onTabChange={handleTabChange} />
         </aside>
 

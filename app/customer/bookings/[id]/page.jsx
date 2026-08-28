@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { ArrowLeft, Download, FileText, Phone, Mail, Compass, UserCircle, Bell, Search, Calendar, Clock, Users, MapPin, Sparkles, RotateCcw } from 'lucide-react';
+import { ArrowLeft, Download, FileText, Phone, Mail, Compass, UserCircle, Bell, Search, Calendar, Clock, Users, MapPin, Sparkles, RotateCcw, AlertTriangle } from 'lucide-react';
 import toast from 'react-hot-toast';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -182,8 +182,14 @@ export default function BookingDetailsPage() {
     );
   }
 
-  const isCancellable = booking.booking_status === 'PENDING' || booking.booking_status === 'CONFIRMED';
-  const cafe = booking.cafes;
+  const now = new Date();
+  const bookingCreatedAt = booking?.created_at ? new Date(booking.created_at) : null;
+  const hoursSinceCreation = bookingCreatedAt ? (now.getTime() - bookingCreatedAt.getTime()) / (1000 * 60 * 60) : 0;
+  const isWithin3Hours = hoursSinceCreation <= 3;
+  const isPendingOrConfirmed = booking?.booking_status === 'PENDING' || booking?.booking_status === 'CONFIRMED';
+
+  const isCancellable = isPendingOrConfirmed && isWithin3Hours;
+  const cafe = booking?.cafes;
 
   return (
     <div className="min-h-screen bg-[#FFF8F0] font-sans antialiased selection:bg-[#6F4E37] selection:text-white pb-24 lg:pb-12">
@@ -202,7 +208,7 @@ export default function BookingDetailsPage() {
       <div className="max-w-[1600px] w-full max-w-full overflow-x-hidden mx-auto px-3 sm:px-4 lg:pl-3 lg:pr-6 xl:px-6 py-4 flex flex-col lg:flex-row gap-6">
         
         {/* Left Aside Navigation Panel (Desktop 1024px+) */}
-        <aside className="hidden lg:block w-72 xl:w-80 flex-shrink-0">
+        <aside className="hidden lg:block w-72 xl:w-80 flex-shrink-0 sticky top-20 self-start max-h-[calc(100vh-5.5rem)]">
           <FilterSidebar mode="bookings" bookingStats={bookingStats} />
         </aside>
 
@@ -296,6 +302,14 @@ export default function BookingDetailsPage() {
               {/* Actions Section */}
               <div className="bg-white rounded-3xl shadow-[0_8px_30px_rgba(0,0,0,0.03)] border border-stone-200/80 p-5 sm:p-6 space-y-4">
                 <h3 className="text-lg font-black text-[#2C1810]">Manage Booking</h3>
+
+                {isPendingOrConfirmed && !isWithin3Hours && (
+                  <div className="bg-amber-50 border border-amber-200/80 rounded-2xl p-4 text-xs font-semibold text-amber-900 flex items-center gap-2.5 shadow-2xs">
+                    <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0" />
+                    <span>Cancellation Window Expired: Bookings can only be cancelled within 3 hours of creation.</span>
+                  </div>
+                )}
+
                 <div className="flex flex-wrap gap-2.5">
                   {isCancellable && (
                     <>

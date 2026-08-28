@@ -9,6 +9,16 @@ export const profileService = {
     const response = await api.put('/users/me', data);
     return response.data;
   },
+  uploadAvatar: async (file) => {
+    const formData = new FormData();
+    formData.append('image', file);
+    const response = await api.post('/uploads', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return response.data;
+  },
   getAddresses: async () => ({ success: true, data: [] }),
   addAddress: async (data) => ({ success: true, data }),
 };

@@ -26,15 +26,15 @@ export default function ForgotPasswordPage() {
         <div>
           <label className="block text-sm font-semibold text-[#2C1810] mb-1.5">Email</label>
           <div className="relative group">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400 group-focus-within:text-[#6F4E37] transition-colors">
-              <Mail size={18} />
+            <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[#6F4E37] group-focus-within:text-[#4A2614] transition-colors z-10">
+              <Mail size={20} strokeWidth={2.2} />
             </div>
             <input
               {...register('email')}
               type="email"
               placeholder="Enter your email"
               className={cn(
-                "w-full pl-10 pr-4 py-3 rounded-xl border bg-white/60 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-[#DDB892] focus:bg-white transition-all shadow-sm",
+                "w-full pl-11 pr-4 py-3 rounded-xl border bg-white/80 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-[#DDB892] focus:bg-white transition-all shadow-sm font-medium text-[#2C1810] placeholder:text-gray-400",
                 errors.email ? "border-red-400 ring-red-400" : "border-gray-200 hover:border-gray-300"
               )}
             />

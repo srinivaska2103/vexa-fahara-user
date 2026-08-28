@@ -7,6 +7,8 @@ export const useFavoritesStore = create(
       favoriteCafes: [],
       favoriteEvents: [],
       
+      setFavorites: (cafeIds) => set({ favoriteCafes: Array.isArray(cafeIds) ? cafeIds : [] }),
+      
       toggleFavoriteCafe: (id) => {
         const { favoriteCafes } = get();
         if (favoriteCafes.includes(id)) {

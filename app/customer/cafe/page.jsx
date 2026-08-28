@@ -54,7 +54,7 @@ export default function AdvancedCafeDiscoveryPage() {
       <div className="flex-1 max-w-[1550px] w-full mx-auto px-3 sm:px-4 lg:pl-3 lg:pr-6 xl:px-4 py-4 sm:py-6 flex flex-col lg:flex-row gap-5 lg:gap-6">
 
         {/* Desktop Sidebar (1024px+) */}
-        <aside className="hidden lg:block w-80 xl:w-84 flex-shrink-0 sticky top-20 h-[calc(100vh-5.5rem)]">
+        <aside className="hidden lg:block w-80 xl:w-84 flex-shrink-0 sticky top-20 self-start max-h-[calc(100vh-5.5rem)]">
           <FilterSidebar />
         </aside>
 

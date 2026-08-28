@@ -1,17 +1,18 @@
 'use client';
 
-import React, { useState, useEffect, Suspense } from 'react';
+import React, { useState, useEffect, useRef, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Mail, Phone, Calendar, User, MapPin, Award, Edit2, Shield, 
   Settings, Bell, FileText, Heart, Camera, Check, Copy, Sparkles, 
   ChevronRight, ArrowUpRight, Star, Lock, CheckCircle2, RefreshCw, X, Save,
-  Plus, Trash2, Eye, EyeOff, Smartphone, Laptop, Moon, Sun, Monitor
+  Plus, Trash2, Eye, EyeOff, Smartphone, Laptop, Moon, Sun, Monitor, Loader2
 } from 'lucide-react';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
 import { profileService } from '@/services/profile.service';
+import { favoriteService } from '@/services/favorite.service';
 import { settingsService } from '@/services/settings.service';
 import { useAuthStore } from '@/stores/auth.store';
 import { useFavoritesStore } from '@/stores/favorites.store';
@@ -40,9 +41,65 @@ function ProfileDashboardContent() {
   const [copiedField, setCopiedField] = useState(null);
   const [isSaving, setIsSaving] = useState(false);
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
+  const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
+  const fileInputRef = useRef(null);
 
   const { user, setUser } = useAuthStore();
-  const { favoriteCafes } = useFavoritesStore();
+  const { favoriteCafes, setFavorites } = useFavoritesStore();
+
+  const handleAvatarUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      toast.error('Please select a valid image file');
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error('Image size must be less than 5MB');
+      return;
+    }
+
+    setIsUploadingAvatar(true);
+    const toastId = toast.loading('Uploading profile photo...');
+
+    try {
+      const uploadRes = await profileService.uploadAvatar(file);
+      const imageUrl = uploadRes?.data?.url || uploadRes?.url;
+
+      if (!imageUrl) {
+        throw new Error('Failed to get uploaded image URL');
+      }
+
+      await profileService.updateProfile({ profile_image: imageUrl, avatar: imageUrl });
+
+      setProfile((prev) => (prev ? { ...prev, avatar: imageUrl } : prev));
+      setUser({ ...user, avatar: imageUrl, profile_image: imageUrl });
+
+      toast.success('Profile photo updated successfully!', { id: toastId });
+    } catch (err) {
+      console.error('Avatar upload error:', err);
+      toast.error(err.response?.data?.message || err.message || 'Failed to upload photo', { id: toastId });
+    } finally {
+      setIsUploadingAvatar(false);
+      if (e.target) e.target.value = '';
+    }
+  };
+
+  useEffect(() => {
+    const syncFavorites = async () => {
+      try {
+        const res = await favoriteService.getFavoriteIds();
+        if (res?.success && Array.isArray(res.data)) {
+          setFavorites(res.data);
+        }
+      } catch (err) {
+        console.warn("Could not sync user favorites from API:", err);
+      }
+    };
+    syncFavorites();
+  }, []);
 
   const handleTabChange = (tabId) => {
     setActiveTabState(tabId);
@@ -395,7 +452,7 @@ function ProfileDashboardContent() {
         <div className="flex-1 max-w-[1550px] w-full mx-auto px-3 sm:px-4 lg:pl-3 lg:pr-6 xl:px-4 py-4 sm:py-6 flex flex-col lg:flex-row gap-5 lg:gap-6">
           
           {/* Left Aside Navigation Skeleton */}
-          <aside className="hidden lg:block w-80 xl:w-84 flex-shrink-0">
+          <aside className="hidden lg:block w-80 xl:w-84 flex-shrink-0 sticky top-20 self-start max-h-[calc(100vh-5.5rem)]">
             <div className="bg-white/95 backdrop-blur-md rounded-3xl p-4 border border-stone-200/80 shadow-xs space-y-4 animate-pulse">
               <div className="flex items-center gap-3 pb-3 border-b border-stone-100">
                 <div className="w-8 h-8 rounded-xl bg-stone-200"></div>
@@ -531,7 +588,7 @@ function ProfileDashboardContent() {
       <div className="max-w-[1600px] w-full mx-auto px-3 sm:px-4 lg:pl-3 lg:pr-6 xl:px-6 py-4 flex flex-col lg:flex-row gap-6">
         
         {/* Left Aside Navigation Panel (Desktop 1024px+) */}
-        <aside className="hidden lg:block w-72 xl:w-80 flex-shrink-0">
+        <aside className="hidden lg:block w-72 xl:w-80 flex-shrink-0 sticky top-20 self-start max-h-[calc(100vh-5.5rem)]">
           <FilterSidebar mode="profile" activeTab={activeTab} onTabChange={handleTabChange} />
         </aside>
 
@@ -571,12 +628,21 @@ function ProfileDashboardContent() {
                         className="w-24 h-24 sm:w-28 sm:h-28 rounded-full border-4 border-white object-cover"
                       />
                     </div>
+                    <input 
+                      type="file" 
+                      ref={fileInputRef} 
+                      onChange={handleAvatarUpload} 
+                      accept="image/*" 
+                      className="hidden" 
+                    />
                     <button 
-                      onClick={() => toast.success('Avatar update dialog simulated')}
-                      className="absolute bottom-1 right-1 bg-gradient-to-r from-[#4A2C11] to-[#6F4E37] text-white p-2 rounded-full hover:scale-110 active:scale-95 shadow-lg border-2 border-white transition-all cursor-pointer"
+                      type="button"
+                      disabled={isUploadingAvatar}
+                      onClick={() => fileInputRef.current?.click()}
+                      className="absolute bottom-1 right-1 bg-gradient-to-r from-[#4A2C11] to-[#6F4E37] text-white p-2 rounded-full hover:scale-110 active:scale-95 shadow-lg border-2 border-white transition-all cursor-pointer disabled:opacity-60"
                       title="Upload profile photo"
                     >
-                      <Camera size={14} />
+                      {isUploadingAvatar ? <Loader2 size={14} className="animate-spin" /> : <Camera size={14} />}
                     </button>
                   </div>
                   
@@ -586,11 +652,6 @@ function ProfileDashboardContent() {
                       <CheckCircle2 size={18} className="text-amber-500 fill-amber-100" />
                     </div>
                     <p className="text-stone-500 font-bold text-xs sm:text-sm mt-0.5">{profile.email}</p>
-                    
-                    <div className="mt-2.5 inline-flex items-center gap-2 bg-[#FFF8F0] border border-[#DDB892]/60 px-3 py-1.5 rounded-xl text-xs font-black text-[#6F4E37] shadow-2xs">
-                      <Award size={16} className="text-amber-500" />
-                      <span>{profile.rewardPoints} {t('loyaltyPoints', 'Loyalty Points')}</span>
-                    </div>
                   </div>
                 </div>
 

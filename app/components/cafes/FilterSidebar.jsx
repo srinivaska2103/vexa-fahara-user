@@ -27,7 +27,7 @@ export default function FilterSidebar({ showNavigation = true, showHeader = true
 
   const user = useAuthStore((state) => state.user);
   const userName = user?.name || user?.full_name || user?.username || (user?.email ? user.email.split('@')[0] : 'Fahara Customer');
-  const userRoleOrEmail = user?.email || 'Gold Tier Member';
+  const userRoleOrEmail = user?.email || 'Customer Account';
   const userInitials = userName ? userName.substring(0, 2).toUpperCase() : 'FC';
 
   const isFavoritesPage = mode === 'favorites' || pathname === '/customer/favorites';
@@ -84,7 +84,7 @@ export default function FilterSidebar({ showNavigation = true, showHeader = true
   const sliderPercentage = ((distance - 1) / 49) * 100;
 
   return (
-    <div className={`bg-white/95 backdrop-blur-xl rounded-3xl p-4 sm:p-5 shadow-[0_8px_30px_rgba(0,0,0,0.04)] border border-stone-200/90 flex flex-col ${showHeader ? 'h-[calc(100vh-6.5rem)] overflow-y-auto sticky top-20' : 'h-full overflow-y-auto'} space-y-4 font-sans selection:bg-[#6F4E37] selection:text-white`}>
+    <div className={`bg-white/95 backdrop-blur-xl rounded-3xl p-4 sm:p-5 shadow-[0_8px_30px_rgba(0,0,0,0.04)] border border-stone-200/90 flex flex-col ${showHeader ? 'max-h-[calc(100vh-6rem)] overflow-y-auto sticky top-20 self-start' : 'h-full overflow-y-auto'} space-y-4 font-sans selection:bg-[#6F4E37] selection:text-white transition-all`}>
       
       {/* 🔹 HEADER TITLE / FILTERS SECTION HEADER */}
       {showHeader && (
@@ -114,7 +114,7 @@ export default function FilterSidebar({ showNavigation = true, showHeader = true
       )}
 
       {/* 🔹 ASIDE CONTEXT SWITCHER (MIDDLE SCROLLABLE CONTENT) */}
-      <div className="flex-1 flex flex-col justify-start overflow-y-auto pb-2 space-y-4 no-scrollbar">
+      <div className="flex-1 flex flex-col justify-start pb-2 space-y-4">
         
         {isBookingsPage || isProfilePage || isFavoritesPage ? (
           /* ==================== MY BOOKINGS, PROFILE & FAVORITES CONTEXTUAL ASIDE CONTENT ==================== */
@@ -132,16 +132,9 @@ export default function FilterSidebar({ showNavigation = true, showHeader = true
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-1">
                     <span className="font-black text-xs text-[#2C1810] truncate">{userName}</span>
-                    <Star size={11} className="text-amber-500 fill-amber-500 flex-shrink-0" />
                   </div>
                   <span className="text-[10px] font-bold text-[#6F4E37] block truncate">{userRoleOrEmail}</span>
                 </div>
-              </div>
-
-              {/* TIER & POINTS MINI CHIP */}
-              <div className="flex items-center justify-between pt-2 border-t border-[#DDB892]/30 text-[10px]">
-                <span className="font-extrabold text-stone-500">Tier: <strong className="text-[#6F4E37]">Gold Member</strong></span>
-                <span className="font-black text-amber-900 bg-amber-200/80 px-2 py-0.5 rounded-md shadow-2xs">120 Pts</span>
               </div>
             </motion.div>
 
