@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Compass, CalendarCheck, Heart, User } from 'lucide-react';
@@ -7,12 +8,42 @@ import { useFavoritesStore } from '@/stores/favorites.store';
 import { useAuthStore } from '@/stores/auth.store';
 import { useLanguage } from '@/context/LanguageContext';
 import { motion } from 'framer-motion';
+import { profileService } from '@/services/profile.service';
 
 export default function MobileBottomNav() {
   const pathname = usePathname();
   const { t } = useLanguage();
   const favoriteCafes = useFavoritesStore((state) => state.favoriteCafes || []);
   const user = useAuthStore((state) => state.user);
+
+  const [profileImage, setProfileImage] = useState(user?.avatar || user?.profile_image || null);
+  const [imageError, setImageError] = useState(false);
+
+  useEffect(() => {
+    if (!user) return;
+    const fetchUserProfile = async () => {
+      try {
+        const profileRes = await profileService.getProfile().catch(() => null);
+        const data = profileRes?.data || profileRes;
+        if (data) {
+          const img = data.avatar || data.profile_image || data.image || data.photo_url;
+          if (img) {
+            setProfileImage(img);
+          }
+        }
+      } catch (err) {
+        console.error('Failed to fetch profile avatar in mobile bottom nav:', err);
+      }
+    };
+
+    fetchUserProfile();
+  }, [user]);
+
+  useEffect(() => {
+    if (user?.avatar || user?.profile_image) {
+      setProfileImage(user.avatar || user.profile_image);
+    }
+  }, [user]);
 
   // Hidden on auth, booking checkout, landing, legal, and support pages
   if (
@@ -41,7 +72,7 @@ export default function MobileBottomNav() {
     ? user.full_name.charAt(0).toUpperCase() 
     : user?.email 
     ? user.email.charAt(0).toUpperCase() 
-    : 'N';
+    : 'U';
 
   const navItems = [
     { 
@@ -110,8 +141,17 @@ export default function MobileBottomNav() {
               aria-label={item.label}
             >
               {item.isAvatar ? (
-                <div className="w-7 h-7 rounded-full bg-[#2C1810] text-white font-black text-xs flex items-center justify-center border-2 border-stone-800 shadow-xs hover:scale-105 transition-transform shrink-0">
-                  {userInitial}
+                <div className="w-7 h-7 rounded-full bg-gradient-to-tr from-[#4A2C11] to-[#6F4E37] text-white font-black text-xs flex items-center justify-center border-2 border-white shadow-xs overflow-hidden hover:scale-105 transition-transform shrink-0">
+                  {profileImage && !imageError ? (
+                    <img 
+                      src={profileImage} 
+                      alt="User Profile" 
+                      className="w-full h-full object-cover" 
+                      onError={() => setImageError(true)}
+                    />
+                  ) : (
+                    <span>{userInitial}</span>
+                  )}
                 </div>
               ) : (
                 <div className="relative flex items-center justify-center shrink-0">

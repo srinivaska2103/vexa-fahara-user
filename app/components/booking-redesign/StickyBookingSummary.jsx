@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { CheckCircle, Info, Loader2 } from 'lucide-react';
+import { CheckCircle, Info, Loader2, AlertCircle } from 'lucide-react';
 import { useBookingStore } from '@/stores/booking.store';
 import { useRouter, useParams } from 'next/navigation';
 import { useCafeDetails } from '@/hooks/useCafeDetails';
-import { checkIfCafeClosedOnDate } from '@/lib/utils';
+import { checkIfCafeClosedOnDate, checkIfTimeWithinBusinessHours } from '@/lib/utils';
 import { bookingService } from '@/services/booking.service';
 import toast from 'react-hot-toast';
 
@@ -25,6 +25,10 @@ export default function StickyBookingSummary({ cafeName }) {
   } = useBookingStore();
 
   const [isProcessing, setIsProcessing] = useState(false);
+
+  const timeCheck = (selectedDate && selectedTimeSlot)
+    ? checkIfTimeWithinBusinessHours(cafe, selectedDate, selectedTimeSlot.start, selectedTimeSlot.end, selectedEventCompany)
+    : { isValid: true };
 
   const handlePayment = async () => {
     // Basic validation
@@ -49,6 +53,18 @@ export default function StickyBookingSummary({ cafeName }) {
       });
       return;
     }
+
+    if (!timeCheck.isValid) {
+      toast.error(timeCheck.message || 'Selected time slot is outside business operating hours.', {
+        style: {
+          borderRadius: '12px',
+          background: '#333',
+          color: '#fff',
+        },
+      });
+      return;
+    }
+
     
     setIsProcessing(true);
     try {
@@ -196,19 +212,36 @@ export default function StickyBookingSummary({ cafeName }) {
         </div>
       </div>
 
+      {/* Business Hours Warning Notice if not available */}
+      {!timeCheck.isValid && (
+        <div className="mb-4 p-3.5 bg-rose-50 border border-rose-200 rounded-2xl flex items-start gap-2.5 text-rose-900 text-xs font-semibold shadow-2xs">
+          <AlertCircle className="w-4 h-4 text-rose-600 shrink-0 mt-0.5" />
+          <div className="space-y-0.5">
+            <p className="font-black uppercase tracking-wider text-[10px] text-rose-800">Not Available at Selected Time</p>
+            <p className="leading-relaxed text-rose-800/90">{timeCheck.message}</p>
+          </div>
+        </div>
+      )}
+
       {/* Submit Button */}
       <motion.button 
-        whileHover={{ scale: 1.02 }}
-        whileTap={{ scale: 0.96 }}
+        whileHover={{ scale: timeCheck.isValid && !isProcessing ? 1.02 : 1 }}
+        whileTap={{ scale: timeCheck.isValid && !isProcessing ? 0.96 : 1 }}
         onClick={handlePayment}
-        disabled={isProcessing}
-        className="w-full bg-gradient-to-r from-[#4A2C11] to-[#6F4E37] text-white py-3.5 sm:py-4 rounded-2xl font-black text-xs sm:text-sm tracking-wide shadow-lg shadow-[#4A2C11]/20 hover:shadow-xl transition-all cursor-pointer flex items-center justify-center gap-2 disabled:opacity-60"
+        disabled={isProcessing || !timeCheck.isValid}
+        className={`w-full py-3.5 sm:py-4 rounded-2xl font-black text-xs sm:text-sm tracking-wide transition-all flex items-center justify-center gap-2 ${
+          !timeCheck.isValid 
+            ? 'bg-stone-200 text-stone-500 border border-stone-300 cursor-not-allowed shadow-none'
+            : 'bg-gradient-to-r from-[#4A2C11] to-[#6F4E37] text-white shadow-lg shadow-[#4A2C11]/20 hover:shadow-xl cursor-pointer disabled:opacity-60'
+        }`}
       >
         {isProcessing ? (
           <>
             <Loader2 size={16} className="animate-spin" />
             <span>Processing...</span>
           </>
+        ) : !timeCheck.isValid ? (
+          <span>Venue / Service Not Available</span>
         ) : (
           <span>Proceed To Payment</span>
         )}

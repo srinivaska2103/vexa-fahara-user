@@ -588,7 +588,7 @@ function ProfileDashboardContent() {
       <div className="max-w-[1600px] w-full mx-auto px-3 sm:px-4 lg:pl-3 lg:pr-6 xl:px-6 py-4 flex flex-col lg:flex-row gap-6">
         
         {/* Left Aside Navigation Panel (Desktop 1024px+) */}
-        <aside className="hidden lg:block w-72 xl:w-80 flex-shrink-0 sticky top-20 self-start max-h-[calc(100vh-5.5rem)]">
+        <aside className="hidden lg:block w-72 xl:w-80 flex-shrink-0 sticky top-24 self-start max-h-[calc(100vh-6.5rem)]">
           <FilterSidebar mode="profile" activeTab={activeTab} onTabChange={handleTabChange} />
         </aside>
 

@@ -300,34 +300,53 @@ export default function BookingDetailsPage() {
               <BookingDetailsCard booking={booking} />
 
               {/* Actions Section */}
-              <div className="bg-white rounded-3xl shadow-[0_8px_30px_rgba(0,0,0,0.03)] border border-stone-200/80 p-5 sm:p-6 space-y-4">
-                <h3 className="text-lg font-black text-[#2C1810]">Manage Booking</h3>
+              <div className="bg-white rounded-3xl shadow-[0_10px_35px_rgba(0,0,0,0.04)] border border-stone-200/80 p-5 sm:p-7 space-y-5">
+                <div className="flex items-center justify-between border-b border-stone-100 pb-3.5">
+                  <div className="flex items-center gap-2.5">
+                    <div className="p-2 bg-[#FFF8F0] border border-[#DDB892]/40 rounded-xl text-[#6F4E37]">
+                      <Sparkles className="w-4 h-4" />
+                    </div>
+                    <h3 className="text-lg font-black text-[#2C1810] tracking-tight">Manage Booking</h3>
+                  </div>
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-stone-400 bg-stone-50 px-3 py-1 rounded-full border border-stone-200/60">
+                    Actions & Details
+                  </span>
+                </div>
 
                 {isPendingOrConfirmed && !isWithin3Hours && (
-                  <div className="bg-amber-50 border border-amber-200/80 rounded-2xl p-4 text-xs font-semibold text-amber-900 flex items-center gap-2.5 shadow-2xs">
-                    <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0" />
-                    <span>Cancellation Window Expired: Bookings can only be cancelled within 3 hours of creation.</span>
+                  <div className="bg-gradient-to-r from-amber-500/10 via-amber-50/80 to-amber-500/5 border border-amber-300/80 rounded-2xl p-4 sm:p-4.5 flex items-start sm:items-center gap-3.5 shadow-2xs">
+                    <div className="p-2 bg-amber-500/15 text-amber-800 rounded-xl shrink-0 mt-0.5 sm:mt-0">
+                      <AlertTriangle className="w-4 h-4 text-amber-700" />
+                    </div>
+                    <div className="space-y-0.5">
+                      <p className="text-xs font-black text-amber-950 uppercase tracking-wider">Cancellation Policy Notice</p>
+                      <p className="text-xs font-semibold text-amber-900/90 leading-relaxed">
+                        Cancellation Window Expired: Bookings can only be cancelled within 3 hours of creation.
+                      </p>
+                    </div>
                   </div>
                 )}
 
-                <div className="flex flex-wrap gap-2.5">
+                <div className="flex flex-wrap gap-3 pt-1">
                   {isCancellable && (
                     <>
                       <motion.button 
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.96 }}
                         onClick={() => setIsRescheduleModalOpen(true)}
-                        className="px-4 py-2.5 bg-amber-50 text-[#6F4E37] border border-amber-200/80 hover:bg-amber-100 rounded-2xl font-black text-xs transition-all cursor-pointer shadow-2xs"
+                        className="px-4.5 py-2.5 bg-amber-50/90 text-[#6F4E37] border border-amber-200 hover:bg-amber-100 rounded-2xl font-bold text-xs transition-all cursor-pointer shadow-2xs flex items-center gap-2"
                       >
-                        Reschedule
+                        <Clock className="w-3.5 h-3.5 text-[#6F4E37]" />
+                        <span>Reschedule</span>
                       </motion.button>
                       <motion.button 
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.96 }}
                         onClick={() => setIsCancelModalOpen(true)}
-                        className="px-4 py-2.5 bg-rose-50 border border-rose-200/80 text-rose-600 hover:bg-rose-100 rounded-2xl font-black text-xs transition-all cursor-pointer shadow-2xs"
+                        className="px-4.5 py-2.5 bg-rose-50/90 border border-rose-200 text-rose-700 hover:bg-rose-100 rounded-2xl font-bold text-xs transition-all cursor-pointer shadow-2xs flex items-center gap-2"
                       >
-                        Cancel Booking
+                        <RotateCcw className="w-3.5 h-3.5 text-rose-600" />
+                        <span>Cancel Booking</span>
                       </motion.button>
                     </>
                   )}
@@ -337,7 +356,7 @@ export default function BookingDetailsPage() {
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.96 }}
                     onClick={() => setReviewModalData({ type: 'Cafe' })}
-                    className="px-4 py-2.5 bg-gradient-to-r from-[#4A2C11] to-[#6F4E37] text-white rounded-2xl font-black text-xs transition-all cursor-pointer shadow-md hover:shadow-lg flex items-center gap-2"
+                    className="px-5 py-2.5 bg-gradient-to-r from-[#4A2C11] via-[#5C3818] to-[#6F4E37] text-white rounded-2xl font-black text-xs transition-all cursor-pointer shadow-md hover:shadow-lg flex items-center gap-2"
                   >
                     <Sparkles className="w-3.5 h-3.5 text-amber-300" />
                     <span>Write a Review</span>
@@ -347,7 +366,7 @@ export default function BookingDetailsPage() {
                     <motion.button 
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.96 }}
-                      className="px-4 py-2.5 bg-white border border-stone-200 text-stone-700 hover:bg-stone-50 rounded-2xl font-black text-xs transition-all flex items-center gap-2 cursor-pointer shadow-2xs"
+                      className="px-4.5 py-2.5 bg-white border border-stone-200/90 text-stone-700 hover:bg-stone-50 hover:border-stone-300 rounded-2xl font-bold text-xs transition-all flex items-center gap-2 cursor-pointer shadow-2xs"
                     >
                       <FileText className="w-3.5 h-3.5 text-[#6F4E37]" />
                       <span>Invoice</span>
@@ -358,7 +377,7 @@ export default function BookingDetailsPage() {
                     <motion.button 
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.96 }}
-                      className="px-4 py-2.5 bg-white border border-stone-200 text-stone-700 hover:bg-stone-50 rounded-2xl font-black text-xs transition-all flex items-center gap-2 cursor-pointer shadow-2xs"
+                      className="px-4.5 py-2.5 bg-white border border-stone-200/90 text-stone-700 hover:bg-stone-50 hover:border-stone-300 rounded-2xl font-bold text-xs transition-all flex items-center gap-2 cursor-pointer shadow-2xs"
                     >
                       <Download className="w-3.5 h-3.5 text-[#6F4E37]" />
                       <span>Receipt</span>
@@ -369,7 +388,7 @@ export default function BookingDetailsPage() {
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.96 }}
                     onClick={handleDelete}
-                    className="px-4 py-2.5 bg-stone-100 border border-stone-200/80 text-stone-600 hover:bg-rose-50 hover:text-rose-600 rounded-2xl font-black text-xs transition-all cursor-pointer shadow-2xs"
+                    className="px-4 py-2.5 bg-stone-100/80 border border-stone-200 text-stone-600 hover:bg-rose-50 hover:text-rose-700 hover:border-rose-200 rounded-2xl font-bold text-xs transition-all cursor-pointer shadow-2xs"
                   >
                     Delete Booking
                   </motion.button>
@@ -377,14 +396,14 @@ export default function BookingDetailsPage() {
               </div>
 
               {/* Contact Info */}
-              <div className="bg-white rounded-3xl border border-stone-200/80 p-5 sm:p-6">
-                <h3 className="text-lg font-black text-[#2C1810] mb-4">Host & Cafe Contact</h3>
+              <div className="bg-white rounded-3xl border border-stone-200/80 p-5 sm:p-6 shadow-[0_8px_30px_rgba(0,0,0,0.03)]">
+                <h3 className="text-lg font-black text-[#2C1810] mb-4 tracking-tight">Host & Cafe Contact</h3>
                 <div className="space-y-4">
                   {cafe && (
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-stone-50/80 rounded-2xl border border-stone-200/60 gap-4">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4.5 bg-stone-50/80 rounded-2xl border border-stone-200/60 gap-4">
                       <div>
-                        <p className="font-extrabold text-sm text-[#2C1810]">{cafe.name}</p>
-                        <p className="text-xs text-stone-500 font-medium mt-0.5">Manager: {cafe.users?.name || 'Owner'}</p>
+                        <p className="font-black text-sm text-[#2C1810]">{cafe.name}</p>
+                        <p className="text-xs text-stone-500 font-semibold mt-0.5">Manager: {cafe.users?.name || 'Owner'}</p>
                         {cafe.users?.phone && (
                           <p className="text-xs font-bold text-stone-700 mt-1">{cafe.users.phone}</p>
                         )}
@@ -392,14 +411,14 @@ export default function BookingDetailsPage() {
                           <p className="text-xs font-bold text-stone-700">{cafe.users.email}</p>
                         )}
                       </div>
-                      <div className="flex gap-2 shrink-0">
+                      <div className="flex gap-2.5 shrink-0">
                         {cafe.users?.phone && (
-                          <a href={`tel:${cafe.users.phone}`} className="p-2.5 bg-white border border-stone-200/80 rounded-xl hover:bg-[#FFF8F0] text-[#6F4E37] shadow-2xs">
+                          <a href={`tel:${cafe.users.phone}`} className="p-2.5 bg-white border border-stone-200/90 rounded-xl hover:bg-[#FFF8F0] text-[#6F4E37] shadow-2xs transition-all">
                             <Phone className="w-4 h-4" />
                           </a>
                         )}
                         {cafe.users?.email && (
-                          <a href={`mailto:${cafe.users.email}`} className="p-2.5 bg-white border border-stone-200/80 rounded-xl hover:bg-[#FFF8F0] text-[#6F4E37] shadow-2xs">
+                          <a href={`mailto:${cafe.users.email}`} className="p-2.5 bg-white border border-stone-200/90 rounded-xl hover:bg-[#FFF8F0] text-[#6F4E37] shadow-2xs transition-all">
                             <Mail className="w-4 h-4" />
                           </a>
                         )}

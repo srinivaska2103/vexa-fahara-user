@@ -40,7 +40,7 @@ export default function PaymentSummary({ bookingData, priceData, onProceed }) {
 
           <span className="hidden sm:inline-flex items-center gap-1.5 text-xs font-black text-emerald-700 bg-emerald-50 border border-emerald-200 px-3.5 py-1.5 rounded-full">
             <Lock size={13} className="text-emerald-600" />
-            <span>256-Bit Encrypted Payment</span>
+            <span>Encrypted Payment</span>
           </span>
         </div>
         

@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Calendar, Clock, Users, MessageSquare, Tag, CheckCircle2, AlertCircle } from 'lucide-react';
+import { Calendar, Clock, Users, MessageSquare, Tag, CheckCircle2, AlertCircle, AlertTriangle } from 'lucide-react';
 import { useBookingStore } from '@/stores/booking.store';
 import { useParams } from 'next/navigation';
 import { useCafeDetails } from '@/hooks/useCafeDetails';
-import { checkIfCafeClosedOnDate } from '@/lib/utils';
+import { checkIfCafeClosedOnDate, checkIfTimeWithinBusinessHours } from '@/lib/utils';
 import toast from 'react-hot-toast';
 
 // Custom Modern Interactive Date Picker Component
@@ -405,6 +405,7 @@ export default function BookingInformationForm() {
     selectedTimeSlot, setTimeSlot, 
     guestCount, setGuestCount,
     specialRequests, setSpecialRequests,
+    selectedEventCompany,
     couponCode, applyCoupon, removeCoupon, discountAmount
   } = useBookingStore();
 
@@ -478,6 +479,7 @@ export default function BookingInformationForm() {
   const cafe = cafeResponse?.data;
 
   const isSelectedDateClosed = selectedDate ? checkIfCafeClosedOnDate(cafe, selectedDate) : false;
+  const timeValidation = selectedDate ? checkIfTimeWithinBusinessHours(cafe, selectedDate, startTime, endTime, selectedEventCompany) : { isValid: true };
 
   return (
     <motion.section 
@@ -535,8 +537,15 @@ export default function BookingInformationForm() {
 
       {/* Custom Modern Time Selection */}
       <div className="mb-6">
-        <label className="block text-xs sm:text-sm font-black text-[#2C1810] mb-2.5 flex items-center">
-          <Clock size={15} className="mr-2 text-[#6F4E37]" /> Select Time
+        <label className="block text-xs sm:text-sm font-black text-[#2C1810] mb-2.5 flex items-center justify-between">
+          <span className="flex items-center">
+            <Clock size={15} className="mr-2 text-[#6F4E37]" /> Select Time
+          </span>
+          {timeValidation.openTimeFormatted && timeValidation.closeTimeFormatted && (
+            <span className="text-[10px] font-black text-[#6F4E37] bg-[#FFF8F0] px-2.5 py-1 rounded-full border border-[#DDB892]/40">
+              Operating Hours: {timeValidation.openTimeFormatted} - {timeValidation.closeTimeFormatted}
+            </span>
+          )}
         </label>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 sm:gap-4">
           <CustomTimePicker 
@@ -559,6 +568,19 @@ export default function BookingInformationForm() {
             End time must be after start time
           </p>
         ) : null}
+
+        {/* Business Hours Validation Alert */}
+        {!timeValidation.isValid && (
+          <div className="mt-3.5 p-4 bg-gradient-to-r from-amber-500/10 via-amber-50/90 to-amber-500/5 border border-amber-300/80 rounded-2xl flex items-start gap-3 text-amber-950 text-xs font-semibold shadow-2xs">
+            <div className="p-1.5 bg-amber-500/15 text-amber-800 rounded-xl shrink-0 mt-0.5">
+              <AlertTriangle className="w-4 h-4 text-amber-700" />
+            </div>
+            <div className="space-y-0.5">
+              <p className="font-black uppercase tracking-wider text-[10px] text-amber-900">Outside Operating Hours</p>
+              <p className="leading-relaxed text-amber-900/90">{timeValidation.message}</p>
+            </div>
+          </div>
+        )}
       </div>
 
       <hr className="border-stone-100 my-5" />

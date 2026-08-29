@@ -24,11 +24,11 @@ export default function CafeCard({ cafe }) {
   
   const rawRating = cafe?.average_rating || cafe?.google_rating || cafe?.rating || cafe?.avg_rating || 4.8;
   const rating = (parseFloat(rawRating) || 4.8).toFixed(1);
-  const reviewsCount = cafe?.total_reviews || cafe?.reviewsCount || cafe?.reviews_count || cafe?.review_count || 42;
+  const reviewsCount = cafe?.total_reviews ?? cafe?.reviewsCount ?? cafe?.reviews_count ?? cafe?.review_count ?? (Array.isArray(cafe?.reviews) ? cafe.reviews.length : 0);
   
   const rawAddress = cafe?.address || cafe?.location || '';
-  const location = cafe?.city || cafe?.area || (rawAddress ? rawAddress.split(',')[0] : 'Downtown');
-  const distance = cafe?.distance ? `${cafe.distance} km` : '1.2 km';
+  const location = cafe?.city || cafe?.area || (rawAddress ? rawAddress.split(',')[0] : 'Venue');
+  const distance = cafe?.distance ? `${cafe.distance} km` : null;
   
   const priceVal = cafe?.price_per_hour || cafe?.pricePerHour || cafe?.hourly_rate || cafe?.price_range || cafe?.base_price_per_hour || cafe?.price;
   const priceFormatted = priceVal ? `₹${priceVal}` : '₹499';
@@ -125,10 +125,12 @@ export default function CafeCard({ cafe }) {
               <MapPin size={14} className="mr-1 flex-shrink-0 text-[#6F4E37]" />
               <span className="truncate font-bold text-stone-600">{location}</span>
             </div>
-            <div className="flex items-center font-extrabold bg-stone-100/80 px-2 py-0.5 rounded-md text-stone-600 text-[10px] border border-stone-200/60 flex-shrink-0">
-              <Navigation size={10} className="mr-1 text-stone-400" />
-              {distance}
-            </div>
+            {distance && (
+              <div className="flex items-center font-extrabold bg-stone-100/80 px-2 py-0.5 rounded-md text-stone-600 text-[10px] border border-stone-200/60 flex-shrink-0">
+                <Navigation size={10} className="mr-1 text-stone-400" />
+                {distance}
+              </div>
+            )}
           </div>
         </div>
 

@@ -152,14 +152,47 @@ function PaymentPageContent() {
     );
   }
 
+  const formatTime = (timeVal) => {
+    if (!timeVal) return '';
+    const dateObj = new Date(timeVal);
+    if (isNaN(dateObj.getTime())) return String(timeVal);
+    return dateObj.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true, timeZone: 'UTC' });
+  };
+
+  const startTimeFormatted = formatTime(booking.start_time);
+  const endTimeFormatted = formatTime(booking.end_time);
+  const timeDisplay = endTimeFormatted ? `${startTimeFormatted} - ${endTimeFormatted}` : startTimeFormatted;
+
+  // Resolve inclusions
+  let inclusions = [];
+  if (booking.packages) {
+    const pkg = booking.packages;
+    if (pkg.food) inclusions.push('Food & Beverages');
+    if (pkg.cake) inclusions.push('Custom Celebration Cake');
+    if (pkg.decoration) inclusions.push('Event Decoration Setup');
+    if (pkg.music) inclusions.push('Background Music');
+    if (Array.isArray(pkg.inclusions)) inclusions.push(...pkg.inclusions);
+    else if (typeof pkg.inclusions === 'string' && pkg.inclusions.trim()) inclusions.push(...pkg.inclusions.split(','));
+  }
+
   const bookingData = {
+    bookingNumber: booking.booking_number,
     cafeName: booking.cafes?.name,
-    cafeImage: booking.cafes?.cover_image || null,
+    cafeImage: booking.cafes?.cover_image || booking.cafes?.images?.[0] || null,
     address: booking.cafes?.address || booking.cafes?.city || '',
-    date: new Date(booking.booking_date).toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' }),
-    time: new Date(booking.start_time).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true, timeZone: 'UTC' }),
-    duration: `${booking.hours} Hours`,
+    date: new Date(booking.booking_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+    time: timeDisplay,
+    duration: `${booking.hours} ${Number(booking.hours) === 1 ? 'Hour' : 'Hours'}`,
     guests: booking.total_persons,
+    eventCompany: booking.event_services?.users?.event_management_profiles?.company_name || booking.event_services?.users?.name || null,
+    eventPackage: booking.packages?.package_name || booking.packages?.name || booking.event_services?.service_name || null,
+    packageInclusions: inclusions.filter(Boolean),
+    specialRequest: booking.special_request || null,
+    customerName: booking.users?.name || null,
+    customerEmail: booking.users?.email || null,
+    customerPhone: booking.users?.phone || null,
+    managerName: booking.cafes?.users?.name || null,
+    managerPhone: booking.cafes?.users?.phone || null,
   };
 
   const priceData = {

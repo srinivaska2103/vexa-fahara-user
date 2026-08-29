@@ -8,6 +8,56 @@ export default function CancelBookingModal({ isOpen, onClose, onConfirm, booking
 
   if (!isOpen) return null;
 
+  const getFormattedSchedule = () => {
+    if (!booking) return 'your scheduled time';
+
+    const rawDate = booking.booking_date || booking.date || booking.start_time || booking.created_at;
+    const rawTime = booking.start_time || booking.booking_time || booking.time_slot || booking.time || '';
+
+    let dateStr = '';
+    if (rawDate) {
+      try {
+        const d = new Date(rawDate);
+        if (!isNaN(d.getTime())) {
+          dateStr = format(d, 'MMM dd, yyyy');
+        }
+      } catch (e) {}
+    }
+
+    let timeStr = '';
+    if (rawTime && typeof rawTime === 'string') {
+      if (rawTime.includes('T')) {
+        try {
+          const d = new Date(rawTime);
+          if (!isNaN(d.getTime())) {
+            timeStr = format(d, 'hh:mm a');
+          }
+        } catch (e) {}
+      } else if (rawTime.includes(':')) {
+        const parts = rawTime.split(':');
+        if (parts.length >= 2) {
+          let hours = parseInt(parts[0], 10);
+          const minutes = parts[1].substring(0, 2);
+          if (!isNaN(hours)) {
+            const ampm = hours >= 12 ? 'PM' : 'AM';
+            hours = hours % 12;
+            hours = hours ? hours : 12;
+            timeStr = `${hours}:${minutes} ${ampm}`;
+          }
+        }
+      } else {
+        timeStr = rawTime;
+      }
+    }
+
+    if (dateStr && timeStr) {
+      return `${dateStr} at ${timeStr}`;
+    }
+    if (dateStr) return dateStr;
+    if (timeStr) return `at ${timeStr}`;
+    return 'your scheduled time';
+  };
+
   return (
     <AnimatePresence>
       <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
@@ -41,7 +91,7 @@ export default function CancelBookingModal({ isOpen, onClose, onConfirm, booking
                 <h4 className="font-semibold text-red-800 text-sm">Cancellation Policy</h4>
                 <p className="text-sm text-red-700 mt-1">
                   Cancellations made less than 24 hours before the booking time may not be fully refunded. 
-                  Your booking is scheduled for {format(new Date(booking.booking_date), 'MMM dd')} at {booking.start_time.slice(0, 5)}.
+                  Your booking is scheduled for <strong className="font-extrabold">{getFormattedSchedule()}</strong>.
                 </p>
               </div>
             </div>

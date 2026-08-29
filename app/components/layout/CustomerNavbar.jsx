@@ -17,6 +17,8 @@ import toast from 'react-hot-toast';
 
 import api from '@/lib/axios';
 
+import { profileService } from '@/services/profile.service';
+
 export default function CustomerNavbar({ 
   showSearch = false, 
   showViewToggles = false, 
@@ -30,6 +32,35 @@ export default function CustomerNavbar({
 
   const user = useAuthStore((state) => state.user);
   const logout = useAuthStore((state) => state.logout);
+
+  const [profileImage, setProfileImage] = useState(user?.avatar || user?.profile_image || null);
+  const [imageError, setImageError] = useState(false);
+
+  useEffect(() => {
+    if (!user) return;
+    const fetchUserProfile = async () => {
+      try {
+        const profileRes = await profileService.getProfile().catch(() => null);
+        const data = profileRes?.data || profileRes;
+        if (data) {
+          const img = data.avatar || data.profile_image || data.image || data.photo_url;
+          if (img) {
+            setProfileImage(img);
+          }
+        }
+      } catch (err) {
+        console.error('Failed to fetch user profile avatar:', err);
+      }
+    };
+
+    fetchUserProfile();
+  }, [user]);
+
+  useEffect(() => {
+    if (user?.avatar || user?.profile_image) {
+      setProfileImage(user.avatar || user.profile_image);
+    }
+  }, [user]);
 
   const handleLogout = async () => {
     setIsProfileMenuOpen(false);
@@ -220,8 +251,17 @@ export default function CustomerNavbar({
                 className="flex items-center gap-1.5 p-1 sm:p-1.5 bg-stone-50 hover:bg-[#FFF8F0] border border-stone-200/80 rounded-xl transition-all cursor-pointer active:scale-95"
                 suppressHydrationWarning
               >
-                <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-tr from-[#4A2C11] to-[#6F4E37] text-white flex items-center justify-center font-black text-xs shadow-2xs border border-white">
-                  {userInitials}
+                <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-tr from-[#4A2C11] to-[#6F4E37] text-white flex items-center justify-center font-black text-xs shadow-2xs border border-white overflow-hidden relative shrink-0">
+                  {profileImage && !imageError ? (
+                    <img 
+                      src={profileImage} 
+                      alt={userName} 
+                      className="w-full h-full object-cover" 
+                      onError={() => setImageError(true)}
+                    />
+                  ) : (
+                    <span>{userInitials}</span>
+                  )}
                 </div>
                 <ChevronDown size={14} className="text-stone-500 hidden sm:block" />
               </button>
@@ -237,9 +277,22 @@ export default function CustomerNavbar({
                     className="absolute right-0 mt-2 w-64 bg-white rounded-2xl border border-stone-200 shadow-xl p-2.5 z-50 space-y-1.5"
                   >
                     {/* User Summary Header */}
-                    <div className="p-2.5 rounded-xl bg-gradient-to-br from-[#FFF8F0] to-[#F5EBE0] border border-[#DDB892]/40 mb-1">
-                      <p className="font-black text-xs text-[#2C1810] truncate">{userName}</p>
-                      <p className="text-[10px] font-bold text-[#6F4E37] truncate">{user?.email || 'Customer Account'}</p>
+                    <div className="p-2.5 rounded-xl bg-gradient-to-br from-[#FFF8F0] to-[#F5EBE0] border border-[#DDB892]/40 mb-1 flex items-center gap-2.5">
+                      <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-[#4A2C11] to-[#6F4E37] text-white flex items-center justify-center font-black text-xs shrink-0 overflow-hidden border border-white shadow-2xs">
+                        {profileImage && !imageError ? (
+                          <img 
+                            src={profileImage} 
+                            alt={userName} 
+                            className="w-full h-full object-cover" 
+                          />
+                        ) : (
+                          <span>{userInitials}</span>
+                        )}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="font-black text-xs text-[#2C1810] truncate">{userName}</p>
+                        <p className="text-[10px] font-bold text-[#6F4E37] truncate">{user?.email || 'Customer Account'}</p>
+                      </div>
                     </div>
 
                     {/* Navigation Options */}

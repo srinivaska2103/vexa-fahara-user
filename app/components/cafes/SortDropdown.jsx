@@ -45,23 +45,28 @@ export default function SortDropdown() {
         <div className="relative">
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="flex items-center justify-between gap-2 bg-white border border-stone-200 text-[#2C1810] py-2 px-3 sm:px-4 rounded-xl shadow-2xs hover:border-[#6F4E37] focus:outline-none focus:ring-4 focus:ring-[#DDB892]/30 transition-all font-bold text-xs sm:text-sm"
+            className={cn(
+              "flex items-center justify-between gap-2 bg-white border text-[#2C1810] py-2 px-3 sm:px-4 rounded-xl shadow-2xs transition-all font-extrabold text-xs sm:text-sm cursor-pointer select-none",
+              isOpen 
+                ? "border-[#6F4E37] ring-2 ring-[#6F4E37]/15 bg-[#FFF8F0]/40" 
+                : "border-stone-200/90 hover:border-[#6F4E37]"
+            )}
           >
-            <ArrowUpDown size={14} className="text-[#6F4E37]" />
+            <ArrowUpDown size={14} className="text-[#6F4E37] shrink-0" />
             <span className="truncate max-w-[110px] sm:max-w-[140px]">{currentLabel}</span>
-            <ChevronDown size={15} className={cn("text-stone-400 transition-transform duration-200", isOpen ? "rotate-180 text-[#6F4E37]" : "")} />
+            <ChevronDown size={15} className={cn("text-stone-400 transition-transform duration-200 shrink-0", isOpen ? "rotate-180 text-[#6F4E37]" : "")} />
           </button>
 
           <AnimatePresence>
             {isOpen && (
               <motion.div
-                initial={{ opacity: 0, y: 8, scale: 0.95 }}
+                initial={{ opacity: 0, y: 6, scale: 0.96 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: 8, scale: 0.95 }}
+                exit={{ opacity: 0, y: 6, scale: 0.96 }}
                 transition={{ duration: 0.15 }}
-                className="absolute left-0 sm:left-auto sm:right-0 z-50 w-48 sm:w-52 max-w-[calc(100vw-32px)] mt-2 bg-white border border-stone-200 rounded-2xl shadow-[0_12px_40px_rgba(0,0,0,0.15)] overflow-hidden"
+                className="absolute right-0 top-full mt-2 z-50 w-52 sm:w-56 bg-white/98 backdrop-blur-xl border border-stone-200/90 rounded-2xl shadow-xl p-1.5 space-y-1 origin-top-right"
               >
-                <ul className="py-1">
+                <ul className="space-y-0.5">
                   {options.map((opt) => (
                     <li key={opt.value}>
                       <button
@@ -70,14 +75,14 @@ export default function SortDropdown() {
                           setIsOpen(false);
                         }}
                         className={cn(
-                          "flex items-center justify-between w-full px-4 py-2.5 text-xs sm:text-sm transition-colors text-left",
+                          "flex items-center justify-between w-full px-3 py-2.5 rounded-xl text-xs sm:text-sm transition-colors text-left cursor-pointer",
                           sortBy === opt.value 
-                            ? "bg-[#FFF8F0] text-[#6F4E37] font-extrabold" 
-                            : "text-stone-700 hover:bg-stone-50 font-medium"
+                            ? "bg-[#FFF8F0] text-[#6F4E37] font-black" 
+                            : "text-stone-700 hover:bg-stone-50 hover:text-[#2C1810] font-semibold"
                         )}
                       >
                         <span className="truncate mr-2">{opt.label}</span>
-                        {sortBy === opt.value && <Check size={15} className="text-[#6F4E37] flex-shrink-0" />}
+                        {sortBy === opt.value && <Check size={14} className="text-[#6F4E37] shrink-0 stroke-[3]" />}
                       </button>
                     </li>
                   ))}

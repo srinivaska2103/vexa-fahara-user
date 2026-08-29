@@ -6,8 +6,33 @@ import ModernDatePicker from '@/app/components/common/ModernDatePicker';
 import ModernTimePicker from '@/app/components/common/ModernTimePicker';
 
 export default function RescheduleBookingModal({ isOpen, onClose, onConfirm, booking, isProcessing }) {
-  const [date, setDate] = useState(booking?.booking_date ? format(new Date(booking.booking_date), 'yyyy-MM-dd') : '');
-  const [time, setTime] = useState(booking?.start_time?.slice(0, 5) || '');
+  const getInitialDate = () => {
+    const d = booking?.booking_date || booking?.date;
+    if (!d) return '';
+    try {
+      const parsed = new Date(d);
+      return !isNaN(parsed.getTime()) ? format(parsed, 'yyyy-MM-dd') : '';
+    } catch (e) {
+      return '';
+    }
+  };
+
+  const getInitialTime = () => {
+    const t = booking?.start_time || booking?.booking_time;
+    if (!t || typeof t !== 'string') return '';
+    if (t.includes('T')) {
+      try {
+        const parsed = new Date(t);
+        return !isNaN(parsed.getTime()) ? format(parsed, 'HH:mm') : '';
+      } catch (e) {
+        return '';
+      }
+    }
+    return t.substring(0, 5);
+  };
+
+  const [date, setDate] = useState(getInitialDate());
+  const [time, setTime] = useState(getInitialTime());
   const [guests, setGuests] = useState(booking?.number_of_guests || 1);
 
   if (!isOpen) return null;

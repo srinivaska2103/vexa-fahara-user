@@ -36,38 +36,6 @@ export const searchService = {
         items = [];
       }
 
-      // If category filter is active, filter cafes by cafe packages / event_type / category
-      if (filters?.category && filters.category !== 'all' && filters.category !== '') {
-        const catSearch = filters.category.toLowerCase().trim();
-        const categoryMatches = items.filter(cafe => {
-          const name = (cafe.name || '').toLowerCase();
-          const desc = (cafe.description || '').toLowerCase();
-          const cat = (cafe.category || cafe.event_type || '').toLowerCase();
-          const city = (cafe.city || cafe.address || '').toLowerCase();
-          
-          // Check package names, event_type, or inclusions for event category match
-          const packages = (cafe.cafe_packages || []).map(p => {
-            const pName = p.package_name || p.name || '';
-            const pEvent = p.event_type || p.event_type_name || '';
-            const pDesc = p.description || '';
-            return `${pName} ${pEvent} ${pDesc}`.toLowerCase();
-          }).join(' ');
-
-          return (
-            cat.includes(catSearch) || 
-            name.includes(catSearch) || 
-            desc.includes(catSearch) || 
-            city.includes(catSearch) ||
-            packages.includes(catSearch)
-          );
-        });
-
-        return { 
-          success: true, 
-          data: categoryMatches 
-        };
-      }
-
       return { success: true, data: items };
     } catch (error) {
       console.warn("Cafe search API warning, falling back to empty list:", error?.message);
