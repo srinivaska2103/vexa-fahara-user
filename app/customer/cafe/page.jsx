@@ -213,6 +213,64 @@ export default function AdvancedCafeDiscoveryPage() {
     return true;
   });
 
+  // Real data extraction helpers for sorting
+  const getCafePrice = (c) => {
+    const val = c?.price_per_hour || c?.pricePerHour || c?.hourly_rate || c?.price_range || c?.base_price_per_hour || c?.price;
+    if (val && !isNaN(Number(val))) return Number(val);
+    if (Array.isArray(c?.cafe_packages) && c.cafe_packages.length > 0) {
+      const pkgPrices = c.cafe_packages.map(p => Number(p.price || p.package_price || p.price_per_person || 0)).filter(p => p > 0);
+      if (pkgPrices.length > 0) return Math.min(...pkgPrices);
+    }
+    return 499;
+  };
+
+  const getCafeRating = (c) => {
+    const val = c?.average_rating || c?.google_rating || c?.rating || c?.avg_rating;
+    return val ? parseFloat(val) : 4.5;
+  };
+
+  const getCafeReviews = (c) => {
+    return c?.total_reviews ?? c?.reviewsCount ?? c?.reviews_count ?? c?.review_count ?? (Array.isArray(c?.reviews) ? c.reviews.length : 0);
+  };
+
+  const getCafePopularity = (c) => {
+    const rating = getCafeRating(c);
+    const reviews = getCafeReviews(c);
+    const bookings = c?.total_bookings || c?.booking_count || 0;
+    return (rating * 20) + (reviews * 5) + (bookings * 10);
+  };
+
+  const getCafeDistance = (c) => {
+    return c?.distance ? parseFloat(c.distance) : 999;
+  };
+
+  const getCafeDate = (c) => {
+    if (c?.created_at) return new Date(c.created_at).getTime();
+    if (c?.createdAt) return new Date(c.createdAt).getTime();
+    return Number(c?.id) || 0;
+  };
+
+  // Real-data sorted cafes array based on selected sortBy option
+  const sortedCafes = [...cafes].sort((a, b) => {
+    if (sortBy === 'highest_rated' || sortBy === 'rating') {
+      return getCafeRating(b) - getCafeRating(a);
+    }
+    if (sortBy === 'lowest_price') {
+      return getCafePrice(a) - getCafePrice(b);
+    }
+    if (sortBy === 'highest_price') {
+      return getCafePrice(b) - getCafePrice(a);
+    }
+    if (sortBy === 'nearest') {
+      return getCafeDistance(a) - getCafeDistance(b);
+    }
+    if (sortBy === 'newest') {
+      return getCafeDate(b) - getCafeDate(a);
+    }
+    // Default: 'popularity'
+    return getCafePopularity(b) - getCafePopularity(a);
+  });
+
   // Helper: Filter cafes by event package
   const getCafesForEventPackage = (evtPkg, cafeList) => {
     if (!cafeList || cafeList.length === 0) return [];
@@ -240,10 +298,10 @@ export default function AdvancedCafeDiscoveryPage() {
 
   // Categorize cafes cleanly
   const getCafesForSection = (section) => {
-    if (!cafes || cafes.length === 0) return [];
+    if (!sortedCafes || sortedCafes.length === 0) return [];
     const secId = section.id.toLowerCase().trim();
     
-    return cafes.filter(cafe => {
+    return sortedCafes.filter(cafe => {
       const cafeCat = (cafe.category || cafe.service_type || cafe.category_name || cafe.type || '').toString().toLowerCase().trim();
       const cafeName = (cafe.name || cafe.title || '').toString().toLowerCase();
 
@@ -291,11 +349,11 @@ export default function AdvancedCafeDiscoveryPage() {
 
         {/* Desktop Sidebar (1024px+) */}
         <aside className="hidden lg:block w-80 xl:w-84 flex-shrink-0 sticky top-24 self-start max-h-[calc(100vh-6.5rem)]">
-          <FilterSidebar />
+          <FilterSidebar cafes={rawCafes} />
         </aside>
 
         {/* Mobile Filter Drawer (360px - 1023px) */}
-        <FilterDrawer isOpen={isMobileFilterOpen} onClose={() => setIsMobileFilterOpen(false)} />
+        <FilterDrawer isOpen={isMobileFilterOpen} onClose={() => setIsMobileFilterOpen(false)} cafes={rawCafes} />
 
         {/* Main Content Body */}
         <main className="flex-1 flex flex-col min-w-0 min-h-[500px]">
@@ -304,7 +362,7 @@ export default function AdvancedCafeDiscoveryPage() {
           <FaharaHeroBannerCarousel />
 
           {/* Top Page Header Banner */}
-          <div className="mb-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white/60 backdrop-blur-md p-4 sm:p-6 rounded-3xl border border-stone-200/80 shadow-2xs">
+          <div className="relative z-30 mb-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white/60 backdrop-blur-md p-4 sm:p-6 rounded-3xl border border-stone-200/80 shadow-2xs">
             <div>
               <h1 className="text-xl sm:text-3xl font-black text-[#2C1810] tracking-tight">
                 Find the perfect venue for your event
@@ -362,7 +420,7 @@ export default function AdvancedCafeDiscoveryPage() {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <div className="w-7 h-7 rounded-lg bg-[#4A2C11] text-amber-300 flex items-center justify-center font-bold shadow-2xs">
-                  <Sparkles size={14} />
+                  <Layers size={14} />
                 </div>
                 <div>
                   <h3 className="text-xs sm:text-sm font-black text-[#2C1810] tracking-wide uppercase">
@@ -389,7 +447,7 @@ export default function AdvancedCafeDiscoveryPage() {
               {EVENT_PACKAGES.map((pkg) => {
                 const Icon = pkg.icon;
                 const isSelected = selectedEventPackage === pkg.id;
-                const pkgCafes = getCafesForEventPackage(pkg, cafes);
+                const pkgCafes = getCafesForEventPackage(pkg, sortedCafes);
 
                 return (
                   <motion.button
@@ -448,11 +506,11 @@ export default function AdvancedCafeDiscoveryPage() {
                 <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 transition-all ${
                   category === '' ? 'bg-white/20 text-amber-300 border border-white/30' : 'bg-gradient-to-tr from-[#4A2C11] to-[#6F4E37] text-amber-300 shadow-xs'
                 }`}>
-                  <Sparkles size={20} />
+                  <Building2 size={20} />
                 </div>
                 <div className="text-left whitespace-nowrap">
                   <p className={`text-xs font-black ${category === '' ? 'text-white' : 'text-[#2C1810]'}`}>All Spaces</p>
-                  <p className={`text-[10px] font-bold ${category === '' ? 'text-amber-200' : 'text-stone-400'}`}>{cafes.length} {cafes.length === 1 ? 'Venue' : 'Venues'}</p>
+                  <p className={`text-[10px] font-bold ${category === '' ? 'text-amber-200' : 'text-stone-400'}`}>{sortedCafes.length} {sortedCafes.length === 1 ? 'Venue' : 'Venues'}</p>
                 </div>
               </motion.button>
 
@@ -494,7 +552,7 @@ export default function AdvancedCafeDiscoveryPage() {
             <FaharaInteractiveLoader message={t('curatingCafes', 'Discovering Top Rated Venues & Cafes...')} fullScreen={false} />
           ) : viewMode === 'map' ? (
             <div className="w-full h-[520px] sm:h-[620px] rounded-3xl overflow-hidden border border-stone-200/80 shadow-md relative z-0 isolate">
-              <MapComponent center={[12.9716, 77.5946]} markers={cafes} />
+              <MapComponent center={[12.9716, 77.5946]} markers={sortedCafes} />
             </div>
           ) : (
             <div className="space-y-10">

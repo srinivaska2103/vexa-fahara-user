@@ -18,7 +18,87 @@ import { useLanguage } from '@/context/LanguageContext';
 
 import { useFavoritesStore } from '@/stores/favorites.store';
 
-export default function FilterSidebar({ showNavigation = true, showHeader = true, mode, bookingStats, activeTab, onTabChange }) {
+const COLORFUL_AMENITY_STYLES = [
+  {
+    id: 'wifi',
+    label: 'Wi-Fi',
+    icon: Wifi,
+    activeBg: 'bg-gradient-to-r from-sky-500 via-blue-600 to-indigo-600 text-white shadow-md shadow-sky-500/30 border-transparent',
+    idleBg: 'bg-sky-50/90 text-sky-950 border-sky-200/80 hover:bg-sky-100 hover:border-sky-300',
+    iconActive: 'text-white',
+    iconIdle: 'text-sky-600',
+    badgeActive: 'bg-white/20 text-white',
+    badgeIdle: 'bg-sky-100/90 text-sky-800 border-sky-200/60',
+  },
+  {
+    id: 'parking',
+    label: 'Parking',
+    icon: Car,
+    activeBg: 'bg-gradient-to-r from-amber-500 via-orange-500 to-red-500 text-white shadow-md shadow-amber-500/30 border-transparent',
+    idleBg: 'bg-amber-50/90 text-amber-950 border-amber-200/80 hover:bg-amber-100 hover:border-amber-300',
+    iconActive: 'text-white',
+    iconIdle: 'text-amber-600',
+    badgeActive: 'bg-white/20 text-white',
+    badgeIdle: 'bg-amber-100/90 text-amber-900 border-amber-200/60',
+  },
+  {
+    id: 'ac',
+    label: 'AC',
+    icon: Wind,
+    activeBg: 'bg-gradient-to-r from-teal-500 via-cyan-600 to-blue-600 text-white shadow-md shadow-teal-500/30 border-transparent',
+    idleBg: 'bg-teal-50/90 text-teal-950 border-teal-200/80 hover:bg-teal-100 hover:border-teal-300',
+    iconActive: 'text-white',
+    iconIdle: 'text-teal-600',
+    badgeActive: 'bg-white/20 text-white',
+    badgeIdle: 'bg-teal-100/90 text-teal-800 border-teal-200/60',
+  },
+  {
+    id: 'wheelchair',
+    label: 'Wheelchair',
+    icon: CheckCircle2,
+    activeBg: 'bg-gradient-to-r from-purple-500 via-violet-600 to-indigo-600 text-white shadow-md shadow-purple-500/30 border-transparent',
+    idleBg: 'bg-purple-50/90 text-purple-950 border-purple-200/80 hover:bg-purple-100 hover:border-purple-300',
+    iconActive: 'text-white',
+    iconIdle: 'text-purple-600',
+    badgeActive: 'bg-white/20 text-white',
+    badgeIdle: 'bg-purple-100/90 text-purple-800 border-purple-200/60',
+  },
+  {
+    id: 'private_room',
+    label: 'Private Room',
+    icon: Users,
+    activeBg: 'bg-gradient-to-r from-rose-500 via-pink-600 to-fuchsia-600 text-white shadow-md shadow-rose-500/30 border-transparent',
+    idleBg: 'bg-rose-50/90 text-rose-950 border-rose-200/80 hover:bg-rose-100 hover:border-rose-300',
+    iconActive: 'text-white',
+    iconIdle: 'text-rose-600',
+    badgeActive: 'bg-white/20 text-white',
+    badgeIdle: 'bg-rose-100/90 text-rose-800 border-rose-200/60',
+  },
+  {
+    id: 'outdoor',
+    label: 'Outdoor',
+    icon: Coffee,
+    activeBg: 'bg-gradient-to-r from-emerald-500 via-green-600 to-teal-600 text-white shadow-md shadow-emerald-500/30 border-transparent',
+    idleBg: 'bg-emerald-50/90 text-emerald-950 border-emerald-200/80 hover:bg-emerald-100 hover:border-emerald-300',
+    iconActive: 'text-white',
+    iconIdle: 'text-emerald-600',
+    badgeActive: 'bg-white/20 text-white',
+    badgeIdle: 'bg-emerald-100/90 text-emerald-800 border-emerald-200/60',
+  },
+  {
+    id: 'live_music',
+    label: 'Live Music',
+    icon: Music,
+    activeBg: 'bg-gradient-to-r from-fuchsia-500 via-purple-600 to-pink-600 text-white shadow-md shadow-fuchsia-500/30 border-transparent',
+    idleBg: 'bg-fuchsia-50/90 text-fuchsia-950 border-fuchsia-200/80 hover:bg-fuchsia-100 hover:border-fuchsia-300',
+    iconActive: 'text-white',
+    iconIdle: 'text-fuchsia-600',
+    badgeActive: 'bg-white/20 text-white',
+    badgeIdle: 'bg-fuchsia-100/90 text-fuchsia-800 border-fuchsia-200/60',
+  },
+];
+
+export default function FilterSidebar({ showNavigation = true, showHeader = true, mode, bookingStats, activeTab, onTabChange, cafes = [] }) {
   const pathname = usePathname();
   const { language, setLanguage, t } = useLanguage();
   const [showSupportModal, setShowSupportModal] = useState(false);
@@ -36,19 +116,17 @@ export default function FilterSidebar({ showNavigation = true, showHeader = true
   
   const { 
     category, setCategory, 
-    distance, setDistance, 
     amenities, toggleAmenity,
     openNow, setOpenNow,
     availableToday, setAvailableToday,
     clearFilters
   } = useSearchStore();
 
-  // Active Filter Count Calculation
+  // Active Filter Count Calculation (Distance slider removed)
   const activeFiltersCount = 
     (category ? 1 : 0) + 
     (openNow ? 1 : 0) + 
     (availableToday ? 1 : 0) + 
-    (distance < 50 ? 1 : 0) + 
     amenities.length;
 
   const eventChips = [
@@ -62,15 +140,33 @@ export default function FilterSidebar({ showNavigation = true, showHeader = true
     { id: 'Date Night', label: 'Date Night' },
   ];
 
-  const amenityOptions = [
-    { id: 'wifi', label: 'Wi-Fi', icon: Wifi },
-    { id: 'parking', label: 'Parking', icon: Car },
-    { id: 'ac', label: 'AC', icon: Wind },
-    { id: 'wheelchair', label: 'Wheelchair', icon: CheckCircle2 },
-    { id: 'private_room', label: 'Private Room', icon: Users },
-    { id: 'outdoor', label: 'Outdoor', icon: Coffee },
-    { id: 'live_music', label: 'Live Music', icon: Music },
-  ];
+  // Extract all unique real amenities available across fetched cafes
+  const dynamicAmenities = (() => {
+    const defaultList = [...COLORFUL_AMENITY_STYLES];
+    if (!cafes || cafes.length === 0) return defaultList;
+
+    const realMap = new Map();
+    defaultList.forEach(item => realMap.set(item.id, { ...item, count: 0 }));
+
+    cafes.forEach(cafe => {
+      const text = (
+        (cafe.amenities || '') + ' ' + 
+        (cafe.features || '') + ' ' + 
+        (cafe.description || '') + ' ' +
+        (Array.isArray(cafe.cafe_packages) ? cafe.cafe_packages.map(p => p.inclusions ? JSON.stringify(p.inclusions) : '').join(' ') : '')
+      ).toLowerCase();
+
+      defaultList.forEach(item => {
+        const searchKey = item.id.replace('_', ' ');
+        if (text.includes(searchKey)) {
+          const found = realMap.get(item.id);
+          if (found) found.count += 1;
+        }
+      });
+    });
+
+    return Array.from(realMap.values());
+  })();
   const isDiscoverActive = pathname === '/customer/cafe' || pathname === '/customer/discover';
   const isBookingsActive = pathname === '/customer/bookings' || (pathname.startsWith('/customer/bookings/') && !isProfilePage);
   const isProfileActive = isProfilePage;
@@ -80,8 +176,6 @@ export default function FilterSidebar({ showNavigation = true, showHeader = true
     { id: 'bookings', label: t('bookings', 'Bookings'), href: '/customer/bookings', icon: CalendarCheck, isActive: isBookingsActive },
     { id: 'profile', label: t('profile', 'Profile'), href: '/customer/profile', icon: UserCircle, isActive: isProfileActive },
   ];
-
-  const sliderPercentage = ((distance - 1) / 49) * 100;
 
   return (
     <div className={`bg-white/95 backdrop-blur-xl rounded-3xl p-4 sm:p-5 shadow-[0_8px_30px_rgba(0,0,0,0.04)] border border-stone-200/90 flex flex-col ${showHeader ? 'max-h-[calc(100vh-7rem)] overflow-y-auto sticky top-24 self-start' : 'h-full overflow-y-auto'} space-y-4 font-sans selection:bg-[#6F4E37] selection:text-white transition-all`}>
@@ -308,37 +402,19 @@ export default function FilterSidebar({ showNavigation = true, showHeader = true
               </div>
             </div>
 
-            {/* DISTANCE SLIDER */}
-            <div className="space-y-2 pt-1">
-              <div className="flex items-center justify-between">
-                <h4 className="font-extrabold text-stone-400 text-[10px] uppercase tracking-widest px-0.5">Distance</h4>
-                <motion.span 
-                  key={distance}
-                  initial={{ scale: 0.9 }}
-                  animate={{ scale: 1 }}
-                  className="text-[10px] font-black text-[#6F4E37] bg-[#FFF8F0] border border-[#DDB892]/60 px-2.5 py-0.5 rounded-md shadow-2xs"
-                >
-                  &le; {distance} km
-                </motion.span>
-              </div>
-              <input 
-                type="range" 
-                min="1" 
-                max="50" 
-                value={distance} 
-                onChange={(e) => setDistance(Number(e.target.value))}
-                style={{
-                  background: `linear-gradient(to right, #6F4E37 0%, #6F4E37 ${sliderPercentage}%, #E7E5E4 ${sliderPercentage}%, #E7E5E4 100%)`
-                }}
-                className="w-full h-2 rounded-lg appearance-none cursor-pointer focus:outline-none transition-all accent-[#4A2C11]"
-              />
-            </div>
-
-            {/* AMENITIES GRID */}
+            {/* COLORFUL AMENITIES GRID WITH REAL CAFE DATA */}
             <div className="space-y-2 pt-1 pb-2">
-              <h4 className="font-extrabold text-stone-400 text-[10px] uppercase tracking-widest px-0.5">Amenities</h4>
+              <div className="flex items-center justify-between px-0.5">
+                <h4 className="font-extrabold text-stone-400 text-[10px] uppercase tracking-widest">Amenities</h4>
+                {amenities.length > 0 && (
+                  <span className="text-[10px] font-black text-[#6F4E37] bg-[#FFF8F0] border border-[#DDB892]/60 px-2 py-0.5 rounded-full">
+                    {amenities.length} Selected
+                  </span>
+                )}
+              </div>
+
               <div className="grid grid-cols-2 gap-2">
-                {amenityOptions.map((opt) => {
+                {dynamicAmenities.map((opt) => {
                   const isSelected = amenities.includes(opt.id);
                   const Icon = opt.icon;
                   return (
@@ -347,15 +423,23 @@ export default function FilterSidebar({ showNavigation = true, showHeader = true
                       whileHover={{ scale: 1.03, y: -1 }}
                       whileTap={{ scale: 0.95 }}
                       onClick={() => toggleAmenity(opt.id)}
-                      className={`flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-bold transition-all shadow-2xs cursor-pointer ${
-                        isSelected 
-                          ? 'bg-[#5C3D28] text-white shadow-md shadow-[#5C3D28]/20' 
-                          : 'bg-stone-50 text-stone-700 hover:bg-white border border-stone-200/80 hover:border-stone-300'
+                      className={`flex items-center justify-between gap-1.5 px-3 py-2.5 rounded-xl text-xs font-black transition-all border cursor-pointer select-none ${
+                        isSelected ? opt.activeBg : opt.idleBg
                       }`}
                     >
-                      <Icon size={14} className={isSelected ? 'text-white' : 'text-[#6F4E37]'} /> 
-                      <span className="truncate flex-1 text-left">{opt.label}</span>
-                      {isSelected && <Check size={12} className="text-white flex-shrink-0" />}
+                      <div className="flex items-center gap-2 min-w-0">
+                        <Icon size={14} className={`shrink-0 ${isSelected ? opt.iconActive : opt.iconIdle}`} /> 
+                        <span className="truncate text-left text-xs font-bold">{opt.label}</span>
+                      </div>
+                      {opt.count > 0 ? (
+                        <span className={`text-[10px] font-black px-1.5 py-0.5 rounded-md shrink-0 border ${
+                          isSelected ? opt.badgeActive : opt.badgeIdle
+                        }`}>
+                          {opt.count}
+                        </span>
+                      ) : isSelected ? (
+                        <Check size={12} className="shrink-0 text-white stroke-[3]" />
+                      ) : null}
                     </motion.button>
                   );
                 })}

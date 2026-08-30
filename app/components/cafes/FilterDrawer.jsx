@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import FilterSidebar from './FilterSidebar';
 import { useLanguage } from '@/context/LanguageContext';
 
-export default function FilterDrawer({ isOpen, onClose, mode, bookingStats, activeTab, onTabChange }) {
+export default function FilterDrawer({ isOpen, onClose, mode, bookingStats, activeTab, onTabChange, cafes = [] }) {
   const { t } = useLanguage();
   const { clearFilters } = useSearchStore();
 
@@ -62,7 +62,7 @@ export default function FilterDrawer({ isOpen, onClose, mode, bookingStats, acti
             
             {/* Scrollable Filter Content */}
             <div className="flex-1 overflow-y-auto p-4">
-              <FilterSidebar showHeader={false} showNavigation={false} mode={mode} bookingStats={bookingStats} activeTab={activeTab} onTabChange={(tabId) => { onTabChange && onTabChange(tabId); onClose(); }} />
+              <FilterSidebar showHeader={false} showNavigation={false} mode={mode} bookingStats={bookingStats} activeTab={activeTab} onTabChange={(tabId) => { onTabChange && onTabChange(tabId); onClose(); }} cafes={cafes} />
             </div>
           </motion.div>
         </div>

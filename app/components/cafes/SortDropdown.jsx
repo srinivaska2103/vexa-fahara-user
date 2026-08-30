@@ -46,14 +46,16 @@ export default function SortDropdown() {
           <button
             onClick={() => setIsOpen(!isOpen)}
             className={cn(
-              "flex items-center justify-between gap-2 bg-white border text-[#2C1810] py-2 px-3 sm:px-4 rounded-xl shadow-2xs transition-all font-extrabold text-xs sm:text-sm cursor-pointer select-none",
+              "flex items-center justify-between gap-2 bg-white border text-[#2C1810] py-2 px-3 sm:px-4 rounded-xl shadow-2xs transition-all font-extrabold text-xs sm:text-sm cursor-pointer select-none w-40 sm:w-48",
               isOpen 
                 ? "border-[#6F4E37] ring-2 ring-[#6F4E37]/15 bg-[#FFF8F0]/40" 
                 : "border-stone-200/90 hover:border-[#6F4E37]"
             )}
           >
-            <ArrowUpDown size={14} className="text-[#6F4E37] shrink-0" />
-            <span className="truncate max-w-[110px] sm:max-w-[140px]">{currentLabel}</span>
+            <div className="flex items-center gap-2 truncate">
+              <ArrowUpDown size={14} className="text-[#6F4E37] shrink-0" />
+              <span className="truncate">{currentLabel}</span>
+            </div>
             <ChevronDown size={15} className={cn("text-stone-400 transition-transform duration-200 shrink-0", isOpen ? "rotate-180 text-[#6F4E37]" : "")} />
           </button>
 
@@ -64,7 +66,7 @@ export default function SortDropdown() {
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: 6, scale: 0.96 }}
                 transition={{ duration: 0.15 }}
-                className="absolute right-0 top-full mt-2 z-50 w-52 sm:w-56 bg-white/98 backdrop-blur-xl border border-stone-200/90 rounded-2xl shadow-xl p-1.5 space-y-1 origin-top-right"
+                className="absolute right-0 top-full mt-2 z-[100] w-full min-w-[170px] bg-white border border-stone-200/90 rounded-2xl shadow-xl p-1.5 space-y-1 origin-top-right overflow-hidden"
               >
                 <ul className="space-y-0.5">
                   {options.map((opt) => (
@@ -75,7 +77,7 @@ export default function SortDropdown() {
                           setIsOpen(false);
                         }}
                         className={cn(
-                          "flex items-center justify-between w-full px-3 py-2.5 rounded-xl text-xs sm:text-sm transition-colors text-left cursor-pointer",
+                          "flex items-center justify-between w-full px-3 py-2 rounded-xl text-xs sm:text-sm transition-colors text-left cursor-pointer",
                           sortBy === opt.value 
                             ? "bg-[#FFF8F0] text-[#6F4E37] font-black" 
                             : "text-stone-700 hover:bg-stone-50 hover:text-[#2C1810] font-semibold"
