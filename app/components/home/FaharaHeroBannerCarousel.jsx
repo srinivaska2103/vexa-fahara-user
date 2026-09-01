@@ -179,6 +179,7 @@ export default function FaharaHeroBannerCarousel() {
           {BANNERS.map((b, idx) => (
             <button
               key={b.id}
+              suppressHydrationWarning
               onClick={() => setCurrentIndex(idx)}
               aria-label={`Go to slide ${idx + 1}`}
               className={`h-2 rounded-full transition-all duration-300 ${

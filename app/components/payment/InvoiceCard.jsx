@@ -9,8 +9,8 @@ export default function InvoiceCard({ invoiceData }) {
   if (!invoiceData) return null;
 
   const subtotalVal = invoiceData.priceData?.subtotal || 0;
-  const platformFeeVal = invoiceData.priceData?.platformFee || (subtotalVal * 0.04);
-  const txnFeeDisplay = invoiceData.priceData?.transactionFee || ((subtotalVal + platformFeeVal) * 0.02);
+  const platformFeeVal = invoiceData.priceData?.platformFee || (subtotalVal * 0.03);
+  const txnFeeDisplay = invoiceData.priceData?.transactionFee || (subtotalVal * 0.03);
   const gstDisplay = invoiceData.priceData?.gst || (txnFeeDisplay * 0.18);
   const grandTotalVal = invoiceData.priceData?.grandTotal || (subtotalVal + platformFeeVal + txnFeeDisplay + gstDisplay);
 
@@ -316,11 +316,11 @@ export default function InvoiceCard({ invoiceData }) {
                 <span className="font-bold text-[#2C1810]">₹{(invoiceData.priceData.subtotal || 0).toFixed(2)}</span>
               </div>
               <div className="flex justify-between text-stone-600">
-                <span>Platform Fee (4%)</span>
+                <span>Platform Fee (3%)</span>
                 <span className="font-bold text-[#2C1810]">₹{platformFeeVal.toFixed(2)}</span>
               </div>
               <div className="flex justify-between text-stone-600">
-                <span>Transaction Fee (2%)</span>
+                <span>Transaction Fee (3%)</span>
                 <span className="font-bold text-[#2C1810]">₹{txnFeeDisplay.toFixed(2)}</span>
               </div>
               <div className="flex justify-between text-stone-600">

@@ -42,10 +42,11 @@ body {
 .custom-aside-scroll::-webkit-scrollbar-track {
   background: transparent;
 }
-.custom-aside-scroll::-webkit-scrollbar-thumb {
-  background: #DDB892;
-  border-radius: 10px;
+@utility container {
+  margin-inline: auto;
+  padding-inline: 2rem;
 }
+
 .custom-aside-scroll::-webkit-scrollbar-thumb:hover {
   background: #6F4E37;
 }

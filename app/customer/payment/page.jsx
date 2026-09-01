@@ -188,6 +188,7 @@ function PaymentPageContent() {
     eventPackage: booking.packages?.package_name || booking.packages?.name || booking.event_services?.service_name || null,
     packageInclusions: inclusions.filter(Boolean),
     specialRequest: booking.special_request || null,
+    eventSpecialRequest: booking.event_special_request || null,
     customerName: booking.users?.name || null,
     customerEmail: booking.users?.email || null,
     customerPhone: booking.users?.phone || null,

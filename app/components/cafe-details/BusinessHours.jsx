@@ -1,7 +1,7 @@
 'use client';
 
 import { Clock, CheckCircle } from 'lucide-react';
-import { checkIfCafeOpen } from '@/lib/utils';
+import { checkIfCafeOpen, parseTimeToMinutes, formatMinutesTo12Hour } from '@/lib/utils';
 
 export default function BusinessHours({ cafe }) {
   const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
@@ -50,19 +50,9 @@ export default function BusinessHours({ cafe }) {
 
             const formatTime = (timeStr) => {
               if (!timeStr) return '';
-              const d = new Date(timeStr);
-              if (!isNaN(d.getTime())) {
-                const localDate = new Date();
-                localDate.setHours(d.getUTCHours(), d.getUTCMinutes(), 0);
-                return localDate.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
-              }
-              if (typeof timeStr === 'string' && timeStr.includes(':')) {
-                 const parts = timeStr.split(':');
-                 const date = new Date();
-                 date.setHours(parseInt(parts[0], 10), parseInt(parts[1], 10), 0);
-                 return date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
-              }
-              return timeStr;
+              const minutes = parseTimeToMinutes(timeStr);
+              if (minutes === null) return String(timeStr);
+              return formatMinutesTo12Hour(minutes);
             };
 
             const isOpen = timeObj ? timeObj.isOpen : true;

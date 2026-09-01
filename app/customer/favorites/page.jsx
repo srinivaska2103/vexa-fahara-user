@@ -228,16 +228,16 @@ function FavoritesContent() {
       {/* Main Container */}
       <div className="flex-1 max-w-[1550px] w-full mx-auto px-3 sm:px-4 lg:pl-3 lg:pr-6 xl:px-4 py-4 sm:py-6 flex flex-col lg:flex-row gap-5 lg:gap-6">
         
-        {/* Desktop Sidebar (1024px+) */}
-        <aside className="hidden lg:block w-80 xl:w-84 flex-shrink-0 sticky top-24 self-start max-h-[calc(100vh-6.5rem)]">
-          <FilterSidebar mode="favorites" activeTab={activeTab} onTabChange={handleTabChange} />
+        {/* Desktop Sidebar (1024px+ Completely Fixed Non-Movable) */}
+        <aside className="hidden lg:block w-80 xl:w-84 flex-shrink-0 fixed top-[5.5rem] z-20">
+          <FilterSidebar mode="favorites" activeTab={activeTab} onTabChange={handleTabChange} isNonScrollable={true} />
         </aside>
 
         {/* Mobile Filter Drawer */}
         <FilterDrawer isOpen={isMobileFilterOpen} onClose={() => setIsMobileFilterOpen(false)} />
 
         {/* Main Content Area */}
-        <main className="flex-1 flex flex-col min-w-0 space-y-5">
+        <main className="flex-1 flex flex-col min-w-0 space-y-5 lg:ml-84 xl:ml-88">
           
           {/* Favorites Header Banner & Search/Sort Bar */}
           <div className="bg-white rounded-3xl p-5 sm:p-6 border border-stone-200/80 shadow-[0_8px_30px_rgba(0,0,0,0.03)] space-y-6">

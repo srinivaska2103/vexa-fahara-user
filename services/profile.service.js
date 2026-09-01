@@ -12,7 +12,11 @@ export const profileService = {
   uploadAvatar: async (file) => {
     const formData = new FormData();
     formData.append('image', file);
-    const response = await api.post('/uploads', formData);
+    const response = await api.post('/uploads', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
     return response.data;
   },
   getAddresses: async () => ({ success: true, data: [] }),

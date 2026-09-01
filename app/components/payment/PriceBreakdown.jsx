@@ -14,8 +14,8 @@ export default function PriceBreakdown({ data }) {
   } = data || {};
 
   const displayCafeCharges = isCafePackage ? cafeCharges + eventCharges : cafeCharges;
-  const computedPlatformFee = platformFee || (subtotal * 0.04);
-  const computedTxnFee = transactionFee || ((subtotal + computedPlatformFee) * 0.02);
+  const computedPlatformFee = platformFee || (subtotal * 0.03);
+  const computedTxnFee = transactionFee || (subtotal * 0.03);
   const computedGst = gst || (computedTxnFee * 0.18);
   const computedGrandTotal = grandTotal || (subtotal + computedPlatformFee + computedTxnFee + computedGst);
 
@@ -53,12 +53,12 @@ export default function PriceBreakdown({ data }) {
         </div>
         
         <div className="flex justify-between text-[#A67B5B]">
-          <span>Fahara Platform Fee (4%)</span>
+          <span>Platform Fee (3%)</span>
           <span>₹{computedPlatformFee.toFixed(2)}</span>
         </div>
 
         <div className="flex justify-between text-[#A67B5B]">
-          <span>Transaction Fee (2%)</span>
+          <span>Transaction Fee (3%)</span>
           <span>₹{computedTxnFee.toFixed(2)}</span>
         </div>
 

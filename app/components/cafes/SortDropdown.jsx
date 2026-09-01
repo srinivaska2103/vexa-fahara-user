@@ -44,6 +44,7 @@ export default function SortDropdown() {
         </span>
         <div className="relative">
           <button
+            suppressHydrationWarning
             onClick={() => setIsOpen(!isOpen)}
             className={cn(
               "flex items-center justify-between gap-2 bg-white border text-[#2C1810] py-2 px-3 sm:px-4 rounded-xl shadow-2xs transition-all font-extrabold text-xs sm:text-sm cursor-pointer select-none w-40 sm:w-48",
@@ -72,6 +73,7 @@ export default function SortDropdown() {
                   {options.map((opt) => (
                     <li key={opt.value}>
                       <button
+                        suppressHydrationWarning
                         onClick={() => {
                           setSortBy(opt.value);
                           setIsOpen(false);

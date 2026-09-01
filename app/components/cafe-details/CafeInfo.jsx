@@ -34,6 +34,12 @@ export default function CafeInfo({ cafe }) {
                 <Building size={15} className="text-stone-500 shrink-0" /> 
                 <span className="truncate">Hosted by {users?.name || 'Fahara Verified Partner'}</span>
               </span>
+              {cafe?.allow_third_party_decoration !== false && (
+                <span className="flex items-center gap-1.5 bg-emerald-50 border border-emerald-200/80 text-emerald-800 px-3 py-1.5 rounded-xl text-xs font-black">
+                  <CheckCircle size={15} className="text-emerald-600 shrink-0" /> 
+                  <span>3rd Party Event Decoration Allowed</span>
+                </span>
+              )}
             </div>
           </div>
         </div>

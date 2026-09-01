@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { ArrowRight, Info, ShieldCheck } from 'lucide-react';
+import { ArrowRight, Info, ShieldCheck, Sparkles } from 'lucide-react';
 import { checkIfCafeOpen } from '@/lib/utils';
 import { motion } from 'framer-motion';
 
@@ -11,6 +11,13 @@ export default function StickyBookingCard({ cafe }) {
   const { id } = cafe || {};
   const isOpen = checkIfCafeOpen(cafe);
 
+  const discountsList = Array.isArray(cafe?.discounts)
+    ? cafe.discounts
+    : (cafe?.discounts && typeof cafe.discounts === 'object')
+      ? Object.values(cafe.discounts).filter(Boolean)
+      : [];
+  const activeDeal = discountsList[0];
+
   const handleStartBooking = () => {
     if (!isOpen) return;
     router.push(`/booking/${id || 1}`);
@@ -19,6 +26,15 @@ export default function StickyBookingCard({ cafe }) {
   return (
     <div className="bg-white/95 backdrop-blur-xl border border-stone-200/90 rounded-3xl shadow-[0_16px_50px_rgba(0,0,0,0.08)] p-5 sm:p-6 sticky top-[11.5rem] z-20 font-sans w-full">
       
+      {activeDeal && (
+        <div className="flex items-center gap-2 text-xs text-amber-900 bg-gradient-to-r from-amber-500/15 via-orange-500/10 to-amber-100/60 p-3 rounded-2xl border border-amber-300/60 mb-4 font-extrabold shadow-2xs">
+          <Sparkles className="w-4 h-4 text-amber-600 shrink-0" />
+          <p className="truncate text-[11px]">
+            <span className="font-black text-[#6F4E37]">{activeDeal.discountType === 'PERCENT' ? `${activeDeal.amount}% OFF` : `₹${activeDeal.amount} OFF`}</span>: {activeDeal.title || 'Special Deal'}
+          </p>
+        </div>
+      )}
+
       {/* Primary CTA Button */}
       <motion.button 
         whileHover={{ scale: 1.02 }}

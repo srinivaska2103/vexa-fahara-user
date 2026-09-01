@@ -50,6 +50,7 @@ export default function ReviewBookingPage() {
         hours: state.selectedTimeSlot.hours,
         total_persons: state.guestCount,
         special_request: state.specialRequests || '',
+        event_special_request: state.eventSpecialRequests || '',
         discount: state.pricing.discountAmount || 0
       };
       

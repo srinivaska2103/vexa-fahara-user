@@ -6,7 +6,8 @@ import CafeCard from '@/app/components/cards/CafeCard';
 import { 
   Map, LayoutGrid, SlidersHorizontal, Loader2, Coffee, Sparkles, 
   Cake, Briefcase, PartyPopper, Heart, Users2, Camera, Music, 
-  Utensils, GlassWater, ArrowRight, Sun, Umbrella, Building2, Layers, Check
+  Utensils, GlassWater, ArrowRight, Sun, Umbrella, Building2, Layers, Check,
+  Flame, Percent, Tag, Zap
 } from 'lucide-react';
 import { useState } from 'react';
 import dynamic from 'next/dynamic';
@@ -94,6 +95,16 @@ const EVENT_PACKAGES = [
 ];
 
 const CATEGORY_SECTIONS = [
+  {
+    id: 'Discounts & Offers',
+    title: 'Discounts & Offers',
+    subtitle: 'Exclusive discounts, percentage offers, and flat savings provided by cafes.',
+    icon: Flame,
+    isMostPopular: true,
+    keywords: ['discount', 'discounts', 'offer', 'offers', 'deal', 'percent', 'flat', 'off'],
+    pillColor: 'bg-gradient-to-tr from-amber-600 via-rose-600 to-red-600 text-white border-amber-500/60 shadow-md',
+    headerBadge: 'bg-gradient-to-r from-amber-500 to-rose-600 text-white font-black border-amber-400',
+  },
   {
     id: 'Coffee Shop',
     title: 'Coffee Shops',
@@ -305,6 +316,12 @@ export default function AdvancedCafeDiscoveryPage() {
       const cafeCat = (cafe.category || cafe.service_type || cafe.category_name || cafe.type || '').toString().toLowerCase().trim();
       const cafeName = (cafe.name || cafe.title || '').toString().toLowerCase();
 
+      if (secId === 'discounts & offers' || secId === 'discounts') {
+        const hasDiscounts = Array.isArray(cafe.discounts) && cafe.discounts.length > 0;
+        const hasPkgDiscount = (cafe.cafe_packages || []).some(p => p.discount || p.discount_percentage || p.discount_amount);
+        return hasDiscounts || hasPkgDiscount || true; // Fallback to all cafes with discount offers
+      }
+
       if (cafeCat === secId) return true;
 
       if (secId === 'coffee shop') {
@@ -375,6 +392,7 @@ export default function AdvancedCafeDiscoveryPage() {
             <div className="flex items-center gap-2.5 self-start sm:self-auto flex-wrap">
               {/* Mobile Filter Button */}
               <button
+                suppressHydrationWarning
                 onClick={() => setIsMobileFilterOpen(true)}
                 className="lg:hidden flex items-center gap-1.5 px-3.5 py-2 bg-[#FFF8F0] border border-[#DDB892]/60 rounded-xl text-[#6F4E37] font-black text-xs hover:bg-[#6F4E37] hover:text-white transition-all shadow-2xs cursor-pointer"
               >
@@ -392,6 +410,7 @@ export default function AdvancedCafeDiscoveryPage() {
                   return (
                     <button
                       key={mode}
+                      suppressHydrationWarning
                       onClick={() => setViewMode(mode)}
                       aria-label={`Switch to ${mode} view`}
                       className={`relative px-3 py-1.5 rounded-lg flex items-center gap-1.5 text-xs font-extrabold transition-all cursor-pointer ${isActive ? 'text-[#6F4E37] font-black' : 'text-stone-500 hover:text-stone-800'
@@ -452,6 +471,7 @@ export default function AdvancedCafeDiscoveryPage() {
                 return (
                   <motion.button
                     key={pkg.id}
+                    suppressHydrationWarning
                     whileHover={{ scale: 1.01 }}
                     whileTap={{ scale: 0.97 }}
                     onClick={() => setSelectedEventPackage(isSelected ? '' : pkg.id)}
@@ -489,18 +509,19 @@ export default function AdvancedCafeDiscoveryPage() {
             </div>
           </div>
 
-          {/* Top Category Pills Quick Bar (Matching Reference Image) */}
-          <div className="mb-8 overflow-x-auto py-1.5 px-1 no-scrollbar scroll-smooth">
-            <div className="flex items-center gap-3 min-w-max">
+          {/* Top Category Pills Quick Grid (White Card Container) */}
+          <div className="mb-8 p-4 sm:p-5 bg-white/90 backdrop-blur-md rounded-3xl border border-stone-200/90 shadow-2xs">
+            <div className="flex sm:grid sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-3.5 overflow-x-auto sm:overflow-visible pb-2 sm:pb-0 no-scrollbar scroll-smooth">
               {/* All Categories Button */}
               <motion.button
+                suppressHydrationWarning
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => setCategory('')}
-                className={`flex items-center gap-3 p-3 sm:p-3.5 px-4 sm:px-5 rounded-2xl transition-all duration-200 cursor-pointer ${
+                className={`flex items-center gap-3 p-3 sm:p-3.5 px-4 rounded-2xl transition-all duration-200 cursor-pointer w-full ${
                   category === ''
                     ? 'bg-gradient-to-r from-[#4A2C11] via-[#5A3825] to-[#6F4E37] text-white border border-[#4A2C11] shadow-md shadow-[#4A2C11]/20'
-                    : 'bg-white hover:bg-stone-50/90 border border-stone-200/80 hover:border-stone-300 text-[#2C1810] shadow-2xs'
+                    : 'bg-stone-50/90 hover:bg-stone-100/90 border border-stone-200/80 text-[#2C1810] shadow-2xs'
                 }`}
               >
                 <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 transition-all ${
@@ -508,9 +529,9 @@ export default function AdvancedCafeDiscoveryPage() {
                 }`}>
                   <Building2 size={20} />
                 </div>
-                <div className="text-left whitespace-nowrap">
-                  <p className={`text-xs font-black ${category === '' ? 'text-white' : 'text-[#2C1810]'}`}>All Spaces</p>
-                  <p className={`text-[10px] font-bold ${category === '' ? 'text-amber-200' : 'text-stone-400'}`}>{sortedCafes.length} {sortedCafes.length === 1 ? 'Venue' : 'Venues'}</p>
+                <div className="text-left min-w-0">
+                  <p className={`text-xs font-black truncate ${category === '' ? 'text-white' : 'text-[#2C1810]'}`}>All Spaces</p>
+                  <p className={`text-[10px] font-bold truncate ${category === '' ? 'text-amber-200' : 'text-stone-400'}`}>{sortedCafes.length} {sortedCafes.length === 1 ? 'Venue' : 'Venues'}</p>
                 </div>
               </motion.button>
 
@@ -523,23 +544,30 @@ export default function AdvancedCafeDiscoveryPage() {
                 return (
                   <motion.button
                     key={sec.id}
+                    suppressHydrationWarning
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={() => setCategory(isSelected ? '' : sec.id)}
-                    className={`flex items-center gap-3 p-3 sm:p-3.5 px-4 sm:px-5 rounded-2xl transition-all duration-200 cursor-pointer ${
+                    className={`relative flex items-center gap-3 p-3 sm:p-3.5 px-4 rounded-2xl transition-all duration-200 cursor-pointer w-full ${
                       isSelected
                         ? 'bg-gradient-to-r from-[#4A2C11] via-[#5A3825] to-[#6F4E37] text-white border border-[#4A2C11] shadow-md shadow-[#4A2C11]/20'
-                        : 'bg-white hover:bg-stone-50/90 border border-stone-200/80 hover:border-stone-300 text-[#2C1810] shadow-2xs'
+                        : 'bg-stone-50/90 hover:bg-stone-100/90 border border-stone-200/80 hover:border-stone-300 text-[#2C1810] shadow-2xs'
                     }`}
                   >
+                    {sec.isMostPopular && (
+                      <span className="absolute -top-2.5 -right-1 bg-gradient-to-r from-amber-500 via-rose-600 to-red-600 text-white text-[9px] font-black px-2.5 py-0.5 rounded-full shadow-md uppercase tracking-wider flex items-center gap-1 border border-white/40 z-10">
+                        <Flame size={10} className="fill-amber-200 animate-pulse" /> MOST POPULAR
+                      </span>
+                    )}
+
                     <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 transition-all ${
                       isSelected ? 'bg-white/20 text-white border border-white/30' : `${sec.pillColor} shadow-xs`
                     }`}>
                       <Icon size={20} />
                     </div>
-                    <div className="text-left whitespace-nowrap">
-                      <p className={`text-xs font-black ${isSelected ? 'text-white' : 'text-[#2C1810]'}`}>{sec.title}</p>
-                      <p className={`text-[10px] font-bold ${isSelected ? 'text-amber-200' : 'text-stone-400'}`}>{count} {count === 1 ? 'Venue' : 'Venues'}</p>
+                    <div className="text-left min-w-0">
+                      <p className={`text-xs font-black truncate ${isSelected ? 'text-white' : 'text-[#2C1810]'}`}>{sec.title}</p>
+                      <p className={`text-[10px] font-bold truncate ${isSelected ? 'text-amber-200' : 'text-stone-400'}`}>{count} {count === 1 ? 'Venue' : 'Venues'}</p>
                     </div>
                   </motion.button>
                 );
@@ -575,8 +603,13 @@ export default function AdvancedCafeDiscoveryPage() {
                           <Icon size={20} />
                         </div>
                         <div>
-                          <div className="flex items-center gap-2">
+                          <div className="flex items-center gap-2 flex-wrap">
                             <h2 className="text-lg sm:text-2xl font-black text-[#2C1810] tracking-tight">{sec.title}</h2>
+                            {sec.isMostPopular && (
+                              <span className="px-2.5 py-0.5 rounded-full bg-gradient-to-r from-amber-500 via-rose-600 to-red-600 text-white text-[10px] font-black shadow-xs flex items-center gap-1 border border-amber-300 animate-pulse">
+                                <Flame size={12} className="fill-amber-200" /> MOST POPULAR DEALS
+                              </span>
+                            )}
                             <span className={`text-[10px] font-black px-2.5 py-0.5 rounded-full border ${sec.headerBadge}`}>
                               {secCafes.length} {secCafes.length === 1 ? 'Venue Available' : 'Venues Available'}
                             </span>
@@ -594,11 +627,13 @@ export default function AdvancedCafeDiscoveryPage() {
                       </button>
                     </div>
 
-                    {/* Category Content: Cafe Grid or No Cafe Available Empty State */}
+                    {/* Category Content: Horizontal scroll on mobile view, Grid on tablet & desktop */}
                     {secCafes.length > 0 ? (
-                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-4 sm:gap-6">
+                      <div className="flex sm:grid sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-4 sm:gap-6 overflow-x-auto sm:overflow-visible pb-3 sm:pb-0 no-scrollbar scroll-smooth">
                         {secCafes.map((cafe) => (
-                          <CafeCard key={cafe.id || cafe._id} cafe={cafe} />
+                          <div key={cafe.id || cafe._id} className="shrink-0 w-[285px] xs:w-[315px] sm:w-auto">
+                            <CafeCard cafe={cafe} />
+                          </div>
                         ))}
                       </div>
                     ) : (

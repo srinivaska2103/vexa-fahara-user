@@ -17,6 +17,7 @@ export default function BookingSummaryCard({ bookingData }) {
     eventPackage,
     packageInclusions = [],
     specialRequest,
+    eventSpecialRequest,
     customerName,
     customerEmail,
     customerPhone,
@@ -148,16 +149,55 @@ export default function BookingSummaryCard({ bookingData }) {
         </div>
       )}
 
-      {/* Special Requests Box */}
-      {specialRequest && (
-        <div className="bg-stone-50/90 border border-stone-200/80 rounded-2xl p-4 space-y-1.5">
-          <div className="flex items-center gap-2 text-[#6F4E37]">
-            <MessageSquare size={16} />
-            <span className="font-black text-xs uppercase tracking-wider text-stone-500">Special Request</span>
-          </div>
-          <p className="text-xs text-stone-700 font-semibold italic leading-relaxed pl-6">
-            &ldquo;{specialRequest}&rdquo;
-          </p>
+      {/* Special Requests Section */}
+      {(specialRequest || eventSpecialRequest) && (
+        <div className="space-y-3">
+          {/* Deduplicate if both requests are identical */}
+          {specialRequest && eventSpecialRequest && specialRequest.trim() === eventSpecialRequest.trim() ? (
+            <div className="bg-[#FFF8F0] border border-[#DDB892]/60 rounded-2xl p-4 space-y-1.5 shadow-2xs">
+              <div className="flex items-center gap-2 text-[#6F4E37]">
+                <Sparkles size={16} />
+                <span className="font-black text-xs uppercase tracking-wider text-[#6F4E37]">
+                  {eventCompany ? `Special Request (${eventCompany})` : 'Special Request'}
+                </span>
+              </div>
+              <p className="text-xs text-[#2C1810] font-bold leading-relaxed pl-6">
+                &ldquo;{eventSpecialRequest}&rdquo;
+              </p>
+            </div>
+          ) : (
+            <>
+              {/* Venue & Cafe Special Request Box */}
+              {specialRequest && (
+                <div className="bg-stone-50/90 border border-stone-200/80 rounded-2xl p-4 space-y-1.5 shadow-2xs">
+                  <div className="flex items-center gap-2 text-[#6F4E37]">
+                    <MessageSquare size={16} />
+                    <span className="font-black text-xs uppercase tracking-wider text-[#2C1810]">
+                      {cafeName ? `Venue & Cafe Special Requests (${cafeName})` : 'Venue & Cafe Special Requests'}
+                    </span>
+                  </div>
+                  <p className="text-xs text-stone-700 font-semibold italic leading-relaxed pl-6">
+                    &ldquo;{specialRequest}&rdquo;
+                  </p>
+                </div>
+              )}
+
+              {/* Event Manager Special Request Box (Only if Event Partner is included) */}
+              {eventSpecialRequest && eventCompany && (
+                <div className="bg-[#FFF8F0] border border-[#DDB892]/60 rounded-2xl p-4 space-y-1.5 shadow-2xs">
+                  <div className="flex items-center gap-2 text-[#6F4E37]">
+                    <Sparkles size={16} />
+                    <span className="font-black text-xs uppercase tracking-wider text-[#6F4E37]">
+                      {eventCompany ? `Special Requests for Event Manager (${eventCompany})` : 'Special Requests for Event Manager'}
+                    </span>
+                  </div>
+                  <p className="text-xs text-[#2C1810] font-bold leading-relaxed pl-6">
+                    &ldquo;{eventSpecialRequest}&rdquo;
+                  </p>
+                </div>
+              )}
+            </>
+          )}
         </div>
       )}
 

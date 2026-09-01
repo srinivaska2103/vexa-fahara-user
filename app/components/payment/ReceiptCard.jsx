@@ -97,13 +97,13 @@ export default function ReceiptCard({ receiptData }) {
         }
 
         // Table
-        const txnFee = receiptData.priceData?.transactionFee || (((receiptData.priceData?.subtotal || 0) + (receiptData.priceData?.platformFee || 0)) * 0.02);
+        const txnFee = receiptData.priceData?.transactionFee || ((receiptData.priceData?.subtotal || 0) * 0.03);
         const gstVal = receiptData.priceData?.gst || (txnFee * 0.18);
 
         const tableData = [];
         tableData.push(['Subtotal', `Rs. ${(receiptData.priceData?.subtotal || 0).toFixed(2)}`]);
-        tableData.push(['Platform Fee (4%)', `Rs. ${(receiptData.priceData?.platformFee || 0).toFixed(2)}`]);
-        tableData.push(['Transaction Fee (2%)', `Rs. ${txnFee.toFixed(2)}`]);
+        tableData.push(['Platform Fee (3%)', `Rs. ${(receiptData.priceData?.platformFee || 0).toFixed(2)}`]);
+        tableData.push(['Transaction Fee (3%)', `Rs. ${txnFee.toFixed(2)}`]);
         tableData.push(['GST (18% on Txn Fee)', `Rs. ${gstVal.toFixed(2)}`]);
         tableData.push(['Total Amount', `Rs. ${(receiptData.priceData?.grandTotal || 0).toFixed(2)}`]);
 

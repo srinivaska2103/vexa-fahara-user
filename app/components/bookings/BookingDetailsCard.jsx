@@ -96,12 +96,12 @@ export default function BookingDetailsCard({ booking }) {
                   <div className="p-2 bg-white rounded-xl text-[#6F4E37] shadow-2xs shrink-0">
                     <Package className="w-4 h-4" />
                   </div>
-                  <div>
+                  <div className="space-y-0.5">
                     <p className="font-black text-xs sm:text-sm text-[#2C1810]">
-                      Event by {eventService.profiles?.name || 'Event Company'}
+                      {eventService.service_name || eventService.category || 'Event Arrangement'}
                     </p>
-                    <p className="text-xs text-stone-500 font-medium mt-0.5">
-                      {eventService.service_type || 'Event Service'}
+                    <p className="text-xs text-stone-500 font-medium">
+                      Provided by: <span className="font-extrabold text-[#6F4E37]">{eventService.users?.event_management_profiles?.company_name || eventService.users?.name || eventService.profiles?.name || 'Event Manager'}</span>
                     </p>
                   </div>
                 </div>

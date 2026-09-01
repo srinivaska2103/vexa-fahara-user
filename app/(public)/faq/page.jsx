@@ -62,7 +62,7 @@ const faqList = [
     id: '7',
     category: 'payments',
     question: 'How are Fahara fees calculated?',
-    answer: 'Fahara charges a 4% Platform Fee on the subtotal, a 2% Transaction Fee on total before gateway charges, and 18% GST strictly on the Transaction Fee.'
+    answer: 'Fahara charges a 3% Platform Fee on the subtotal, a 3% Transaction Fee on subtotal, and 18% GST strictly on the Transaction Fee.'
   },
   {
     id: '8',

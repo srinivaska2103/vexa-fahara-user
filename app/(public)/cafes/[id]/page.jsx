@@ -3,7 +3,10 @@
 import { useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { useCafeDetails, useCafeReviews } from '@/hooks/useCafeDetails';
-import { Loader2, ArrowLeft, ArrowRight, ShieldCheck, ChevronLeft, ChevronRight, Sparkles, Layers } from 'lucide-react';
+import { 
+  Loader2, ArrowLeft, ArrowRight, ShieldCheck, ChevronLeft, ChevronRight, Sparkles, Layers,
+  Camera, Building2, Flame, Clock, PartyPopper, MapPin, Star
+} from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useCafeDetailsStore } from '@/stores/cafeDetails.store';
@@ -16,6 +19,7 @@ import CafeHero from '@/app/components/cafe-details/CafeHero';
 import CafeGallery from '@/app/components/cafe-details/CafeGallery';
 import GalleryLightbox from '@/app/components/cafe-details/GalleryLightbox';
 import CafeInfo from '@/app/components/cafe-details/CafeInfo';
+import DiscountsSection from '@/app/components/cafe-details/DiscountsSection';
 import AmenitiesSection from '@/app/components/cafe-details/AmenitiesSection';
 import BusinessHours from '@/app/components/cafe-details/BusinessHours';
 import AvailableEvents from '@/app/components/cafe-details/AvailableEvents';
@@ -35,7 +39,7 @@ export default function CafeDetailsPage() {
 
   const [activeStepTab, setActiveStepTab] = useState('photos');
 
-  const { data: cafeResponse, isLoading, error } = useCafeDetails(id);
+  const { data: cafeResponse, isLoading, isPending, error } = useCafeDetails(id);
   const { data: reviewsResponse } = useCafeReviews(id);
   
   const cafe = cafeResponse?.data;
@@ -47,7 +51,7 @@ export default function CafeDetailsPage() {
   const coverImg = cafe?.cover_image || cafe?.coverImage || cafe?.image;
   const lightboxImages = [coverImg, ...galleryArray].filter(Boolean);
 
-  if (isLoading) {
+  if (isLoading || isPending) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-[#FFF8F0] p-4">
         <FaharaInteractiveLoader message="Loading Cafe Details & Venue Photos..." />
@@ -71,13 +75,14 @@ export default function CafeDetailsPage() {
   }
 
   const stepsList = [
-    { id: 'photos', step: '01', label: 'Photos & Gallery' },
-    { id: 'info', step: '02', label: 'Space Details' },
-    { id: 'amenities', step: '03', label: 'Amenities' },
-    { id: 'hours', step: '04', label: 'Business Hours' },
-    { id: 'packages', step: '05', label: 'Event Packages' },
-    { id: 'location', step: '06', label: 'Location & Map' },
-    { id: 'reviews', step: '07', label: 'Reviews & Ratings' }
+    { id: 'photos', step: '01', label: 'Photos & Gallery', icon: Camera, activeBg: 'from-amber-600 to-orange-600', badgeBg: 'bg-amber-500 text-white', iconColor: 'text-amber-600' },
+    { id: 'info', step: '02', label: 'Space Details', icon: Building2, activeBg: 'from-blue-600 to-indigo-600', badgeBg: 'bg-blue-600 text-white', iconColor: 'text-blue-600' },
+    { id: 'discounts', step: '03', label: 'Deals & Offers', icon: Flame, activeBg: 'from-amber-500 via-rose-600 to-red-600', badgeBg: 'bg-gradient-to-r from-amber-500 to-rose-600 text-white', iconColor: 'text-rose-500' },
+    { id: 'amenities', step: '04', label: 'Amenities', icon: Sparkles, activeBg: 'from-emerald-600 to-teal-600', badgeBg: 'bg-emerald-600 text-white', iconColor: 'text-emerald-600' },
+    { id: 'hours', step: '05', label: 'Business Hours', icon: Clock, activeBg: 'from-purple-600 to-violet-600', badgeBg: 'bg-purple-600 text-white', iconColor: 'text-purple-600' },
+    { id: 'packages', step: '06', label: 'Event Packages', icon: PartyPopper, activeBg: 'from-pink-600 to-rose-500', badgeBg: 'bg-pink-600 text-white', iconColor: 'text-pink-600' },
+    { id: 'location', step: '07', label: 'Location & Map', icon: MapPin, activeBg: 'from-cyan-600 to-blue-600', badgeBg: 'bg-cyan-600 text-white', iconColor: 'text-cyan-600' },
+    { id: 'reviews', step: '08', label: 'Reviews & Ratings', icon: Star, activeBg: 'from-amber-500 to-yellow-600', badgeBg: 'bg-amber-500 text-white', iconColor: 'text-amber-500' }
   ];
 
   const currentStepIndex = stepsList.findIndex(s => s.id === activeStepTab);
@@ -119,11 +124,13 @@ export default function CafeDetailsPage() {
           </span>
         </div>
 
-        {/* STEP-BY-STEP SECTION NAVIGATION BAR */}
-        <div className="relative md:sticky md:top-[4.5rem] z-30 mb-4 bg-white/95 backdrop-blur-xl border border-stone-200/90 rounded-2xl sm:rounded-full p-1 sm:p-1.5 shadow-[0_8px_25px_rgba(0,0,0,0.06)] overflow-x-auto scrollbar-none w-full">
-          <div className="flex items-center gap-1 sm:gap-1.5 min-w-max px-0.5">
+        {/* STEP-BY-STEP COLORFUL SECTION NAVIGATION BAR WITH BOTTOM PADDING */}
+        <div className="relative md:sticky md:top-[4.5rem] z-30 mb-8 sm:mb-10 bg-white/95 backdrop-blur-xl border border-stone-200/90 rounded-2xl sm:rounded-full p-1.5 sm:p-2 shadow-[0_8px_30px_rgba(0,0,0,0.08)] overflow-x-auto scrollbar-none w-full">
+          <div className="flex items-center gap-1.5 sm:gap-2 min-w-max px-1">
             {stepsList.map((item) => {
               const isActive = activeStepTab === item.id;
+              const Icon = item.icon;
+
               return (
                 <button
                   key={item.id}
@@ -131,17 +138,19 @@ export default function CafeDetailsPage() {
                     setActiveStepTab(item.id);
                     window.scrollTo({ top: 120, behavior: 'smooth' });
                   }}
-                  className={`flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-[11px] sm:text-xs font-black transition-all duration-300 cursor-pointer shrink-0 active:scale-95 ${
+                  className={`flex items-center gap-2 px-3.5 sm:px-4 py-2 rounded-full text-[11px] sm:text-xs font-black transition-all duration-300 cursor-pointer shrink-0 active:scale-95 border ${
                     isActive 
-                      ? 'bg-gradient-to-r from-[#4A2C11] to-[#6F4E37] text-white shadow-md shadow-[#4A2C11]/25' 
-                      : 'bg-stone-50/90 hover:bg-[#FFF8F0] hover:text-[#6F4E37] text-stone-700 border border-stone-200/60 font-bold'
+                      ? `bg-gradient-to-r ${item.activeBg} text-white border-white/30 shadow-md` 
+                      : 'bg-white hover:bg-stone-50 text-stone-700 border-stone-200/80 shadow-2xs'
                   }`}
                 >
-                  <span className={`w-4.5 h-4.5 sm:w-5 sm:h-5 rounded-full flex items-center justify-center font-black text-[9px] sm:text-[10px] transition-colors ${
-                    isActive ? 'bg-white text-[#4A2C11]' : 'bg-[#6F4E37] text-white'
+                  <span className={`w-5 h-5 sm:w-5.5 sm:h-5.5 rounded-full flex items-center justify-center font-black text-[9px] sm:text-[10px] shadow-2xs transition-colors ${
+                    isActive ? 'bg-white text-[#2C1810]' : item.badgeBg
                   }`}>
                     {item.step}
                   </span>
+                  
+                  <Icon size={14} className={isActive ? 'text-white' : item.iconColor} />
                   <span className="tracking-tight">{item.label}</span>
                 </button>
               );
@@ -183,6 +192,19 @@ export default function CafeDetailsPage() {
                   className="space-y-4"
                 >
                   <CafeInfo cafe={cafe} />
+                </motion.div>
+              )}
+
+              {/* STEP 03: DEALS & OFFERS */}
+              {activeStepTab === 'discounts' && (
+                <motion.div
+                  key="step-discounts"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  className="space-y-4"
+                >
+                  <DiscountsSection cafe={cafe} />
                 </motion.div>
               )}
 

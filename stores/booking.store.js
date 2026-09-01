@@ -20,6 +20,7 @@ const initialState = {
   
   // Special Requests
   specialRequests: '',
+  eventSpecialRequests: '',
   foodAmount: 0,
   decorationAmount: 0,
   
@@ -73,6 +74,7 @@ export const useBookingStore = create(
         },
         
         setSpecialRequests: (req) => set({ specialRequests: req }),
+        setEventSpecialRequests: (req) => set({ eventSpecialRequests: req }),
         
         applyCoupon: (code, discount) => {
           set({ couponCode: code, discountAmount: discount });
@@ -98,8 +100,8 @@ export const useBookingStore = create(
             : 0;
           
           const subtotal = cafeCharge + cafePackageCharge + eventCompanyCharge - state.discountAmount;
-          const faharaServiceFee = subtotal * 0.04; // 4% platform fee
-          const transactionFee = (subtotal + faharaServiceFee) * 0.02; // 2% transaction fee
+          const faharaServiceFee = subtotal * 0.03; // 3% platform fee
+          const transactionFee = subtotal * 0.03; // 3% transaction fee
           const gst = transactionFee * 0.18; // 18% GST on transaction fee
           
           const total = subtotal + faharaServiceFee + transactionFee + gst;

@@ -120,22 +120,24 @@ export default function BookingDetailsPage() {
       const payload = {
         rating,
         review: reviewText || 'Great experience!',
+        booking_id: booking.id,
       };
 
       if (reviewModalData?.type === 'Cafe' || reviewModalData?.type === 'Package') {
         payload.cafe_id = booking.cafe_id || booking.cafes?.id;
-      } else if (reviewModalData?.type === 'Event Management') {
-        payload.event_service_id = booking.event_service_id || booking.event_service?.id;
+      } else if (
+        reviewModalData?.type === 'Event Manager' || 
+        reviewModalData?.type === 'Event Management' || 
+        reviewModalData?.type === 'Event Service'
+      ) {
+        payload.event_service_id = booking.event_service_id || booking.event_services?.id || booking.event_service?.id;
       }
 
-      try {
-        await reviewService.addReview(payload);
-      } catch (err) {
-        console.warn('Backend review service notice:', err);
-      }
+      await reviewService.addReview(payload);
 
-      toast.success(`Review for ${reviewModalData?.type || 'Cafe'} submitted successfully!`);
+      toast.success(`Review for ${reviewModalData?.type || 'Service'} submitted successfully!`);
       setReviewModalData(null);
+      fetchBookingDetails();
     } catch (error) {
       toast.error(error.response?.data?.message || error.message || 'Failed to submit review.');
     } finally {
@@ -351,16 +353,43 @@ export default function BookingDetailsPage() {
                     </>
                   )}
 
-                  {/* Write a Review Button */}
-                  <motion.button 
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.96 }}
-                    onClick={() => setReviewModalData({ type: 'Cafe' })}
-                    className="px-5 py-2.5 bg-gradient-to-r from-[#4A2C11] via-[#5C3818] to-[#6F4E37] text-white rounded-2xl font-black text-xs transition-all cursor-pointer shadow-md hover:shadow-lg flex items-center gap-2"
-                  >
-                    <Sparkles className="w-3.5 h-3.5 text-amber-300" />
-                    <span>Write a Review</span>
-                  </motion.button>
+                  {/* Write a Review Options: Individual Reviews for Cafe & 3rd Party Event Manager */}
+                  {booking.event_services ? (
+                    <>
+                      <motion.button 
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.96 }}
+                        onClick={() => setReviewModalData({ type: 'Cafe', targetName: booking.cafes?.name || 'Cafe' })}
+                        className="px-4.5 py-2.5 bg-gradient-to-r from-[#4A2C11] to-[#6F4E37] text-white rounded-2xl font-black text-xs transition-all cursor-pointer shadow-md hover:shadow-lg flex items-center gap-2"
+                      >
+                        <Sparkles className="w-3.5 h-3.5 text-amber-300" />
+                        <span>Review Cafe</span>
+                      </motion.button>
+
+                      <motion.button 
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.96 }}
+                        onClick={() => setReviewModalData({ 
+                          type: 'Event Manager', 
+                          targetName: booking.event_services?.users?.event_management_profiles?.company_name || booking.event_services?.users?.name || 'Event Manager' 
+                        })}
+                        className="px-4.5 py-2.5 bg-gradient-to-r from-amber-800 via-orange-800 to-[#6F4E37] text-white rounded-2xl font-black text-xs transition-all cursor-pointer shadow-md hover:shadow-lg flex items-center gap-2"
+                      >
+                        <Sparkles className="w-3.5 h-3.5 text-amber-300" />
+                        <span>Review Event Manager</span>
+                      </motion.button>
+                    </>
+                  ) : (
+                    <motion.button 
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.96 }}
+                      onClick={() => setReviewModalData({ type: 'Cafe', targetName: booking.cafes?.name || 'Cafe' })}
+                      className="px-5 py-2.5 bg-gradient-to-r from-[#4A2C11] via-[#5C3818] to-[#6F4E37] text-white rounded-2xl font-black text-xs transition-all cursor-pointer shadow-md hover:shadow-lg flex items-center gap-2"
+                    >
+                      <Sparkles className="w-3.5 h-3.5 text-amber-300" />
+                      <span>Write a Review</span>
+                    </motion.button>
+                  )}
                   
                   <Link href={`/customer/invoice/${booking.id}`}>
                     <motion.button 
@@ -396,12 +425,24 @@ export default function BookingDetailsPage() {
               </div>
 
               {/* Contact Info */}
-              <div className="bg-white rounded-3xl border border-stone-200/80 p-5 sm:p-6 shadow-[0_8px_30px_rgba(0,0,0,0.03)]">
-                <h3 className="text-lg font-black text-[#2C1810] mb-4 tracking-tight">Host & Cafe Contact</h3>
-                <div className="space-y-4">
+              <div className="bg-white rounded-3xl border border-stone-200/80 p-5 sm:p-6 shadow-[0_8px_30px_rgba(0,0,0,0.03)] space-y-4">
+                <div className="flex items-center justify-between border-b border-stone-100 pb-3">
+                  <h3 className="text-lg font-black text-[#2C1810] tracking-tight">Host & Service Contacts</h3>
+                  <span className="text-[10px] font-black uppercase tracking-wider text-[#6F4E37] bg-[#FFF8F0] px-3 py-1 rounded-full border border-[#DDB892]/40">
+                    Direct Contact
+                  </span>
+                </div>
+                
+                <div className="space-y-3.5">
+                  {/* Cafe Host Contact */}
                   {cafe && (
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4.5 bg-stone-50/80 rounded-2xl border border-stone-200/60 gap-4">
                       <div>
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className="px-2.5 py-0.5 bg-stone-200/80 text-stone-800 font-extrabold text-[10px] uppercase tracking-wider rounded-md">
+                            Cafe Venue
+                          </span>
+                        </div>
                         <p className="font-black text-sm text-[#2C1810]">{cafe.name}</p>
                         <p className="text-xs text-stone-500 font-semibold mt-0.5">Manager: {cafe.users?.name || 'Owner'}</p>
                         {cafe.users?.phone && (
@@ -413,18 +454,97 @@ export default function BookingDetailsPage() {
                       </div>
                       <div className="flex gap-2.5 shrink-0">
                         {cafe.users?.phone && (
-                          <a href={`tel:${cafe.users.phone}`} className="p-2.5 bg-white border border-stone-200/90 rounded-xl hover:bg-[#FFF8F0] text-[#6F4E37] shadow-2xs transition-all">
+                          <a 
+                            href={`tel:${cafe.users.phone}`} 
+                            className="p-2.5 bg-white border border-stone-200/90 rounded-xl hover:bg-[#FFF8F0] text-[#6F4E37] shadow-2xs transition-all"
+                            title="Call Cafe Manager"
+                          >
                             <Phone className="w-4 h-4" />
                           </a>
                         )}
                         {cafe.users?.email && (
-                          <a href={`mailto:${cafe.users.email}`} className="p-2.5 bg-white border border-stone-200/90 rounded-xl hover:bg-[#FFF8F0] text-[#6F4E37] shadow-2xs transition-all">
+                          <a 
+                            href={`mailto:${cafe.users.email}`} 
+                            className="p-2.5 bg-white border border-stone-200/90 rounded-xl hover:bg-[#FFF8F0] text-[#6F4E37] shadow-2xs transition-all"
+                            title="Email Cafe Manager"
+                          >
                             <Mail className="w-4 h-4" />
                           </a>
                         )}
                       </div>
                     </div>
                   )}
+
+                  {/* 3rd Party Event Manager Contact */}
+                  {booking.event_services && (() => {
+                    const es = booking.event_services;
+                    const esUser = es.users || es.user || es.profiles || {};
+                    const esProfile = esUser.event_management_profiles || es.event_management_profiles || {};
+
+                    const evPhone = 
+                      esProfile.business_phone || 
+                      esProfile.alternate_phone ||
+                      esUser.phone || 
+                      es.phone ||
+                      es.contact_number || null;
+                      
+                    const evEmail = 
+                      esProfile.business_email || 
+                      esUser.email || 
+                      es.email || null;
+
+                    const managerName = 
+                      esUser.name || 
+                      es.manager_name ||
+                      'Event Manager';
+
+                    const companyName = 
+                      esProfile.company_name || 
+                      es.service_name || 
+                      es.category || 
+                      'Event Partner';
+
+                    return (
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4.5 bg-gradient-to-r from-amber-50/90 via-orange-50/50 to-amber-50/80 rounded-2xl border border-amber-200/80 gap-4 shadow-2xs">
+                        <div>
+                          <div className="flex items-center gap-2 mb-1">
+                            <span className="px-2.5 py-0.5 bg-amber-200/80 border border-amber-300 text-amber-900 font-black text-[10px] uppercase tracking-wider rounded-md">
+                              3rd Party Event Manager
+                            </span>
+                          </div>
+                          <p className="font-black text-sm text-[#2C1810]">{companyName}</p>
+                          <p className="text-xs text-amber-900/80 font-bold mt-0.5">
+                            Manager: {managerName}
+                          </p>
+                          {evPhone && <p className="text-xs font-bold text-stone-800 mt-1">{evPhone}</p>}
+                          {evEmail && <p className="text-xs font-bold text-stone-800">{evEmail}</p>}
+                        </div>
+                        
+                        {(evPhone || evEmail) && (
+                          <div className="flex gap-2.5 shrink-0">
+                            {evPhone && (
+                              <a 
+                                href={`tel:${evPhone}`} 
+                                className="p-2.5 bg-white border border-amber-300/80 rounded-xl hover:bg-amber-100/70 text-[#6F4E37] shadow-2xs transition-all flex items-center justify-center cursor-pointer"
+                                title="Call Event Manager"
+                              >
+                                <Phone className="w-4 h-4" />
+                              </a>
+                            )}
+                            {evEmail && (
+                              <a 
+                                href={`mailto:${evEmail}`} 
+                                className="p-2.5 bg-white border border-amber-300/80 rounded-xl hover:bg-amber-100/70 text-[#6F4E37] shadow-2xs transition-all flex items-center justify-center cursor-pointer"
+                                title="Email Event Manager"
+                              >
+                                <Mail className="w-4 h-4" />
+                              </a>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })()}
                 </div>
               </div>
 
@@ -464,7 +584,7 @@ export default function BookingDetailsPage() {
         isOpen={!!reviewModalData}
         onClose={() => setReviewModalData(null)}
         onSubmit={handleReviewSubmit}
-        title={reviewModalData ? `Write Review for ${reviewModalData.type}` : 'Write Review'}
+        title={reviewModalData ? `Write Review for ${reviewModalData.targetName || reviewModalData.type}` : 'Write Review'}
         isProcessing={isProcessing}
       />
 

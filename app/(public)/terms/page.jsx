@@ -129,8 +129,8 @@ export default function TermsOfServicePage() {
             </p>
             <div className="bg-[#FFF8F0] p-4 rounded-2xl border border-[#DDB892]/60 text-xs font-bold text-stone-800 space-y-1.5">
               <p>• <strong>Subtotal:</strong> Combined hourly cafe charge and selected event package costs.</p>
-              <p>• <strong>Fahara Platform Fee:</strong> 4% calculated on the subtotal (`subtotal * 0.04`).</p>
-              <p>• <strong>Transaction Fee:</strong> 2% calculated on total before gateway charges (`(subtotal + platformFee) * 0.02`).</p>
+              <p>• <strong>Platform Fee:</strong> 3% calculated on the subtotal (`subtotal * 0.03`).</p>
+              <p>• <strong>Transaction Fee:</strong> 3% calculated on the subtotal (`subtotal * 0.03`).</p>
               <p>• <strong>GST:</strong> 18% tax calculated strictly on the Transaction Fee (`transactionFee * 0.18`).</p>
             </div>
           </section>

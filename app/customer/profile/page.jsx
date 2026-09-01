@@ -66,7 +66,7 @@ function ProfileDashboardContent() {
 
     try {
       const uploadRes = await profileService.uploadAvatar(file);
-      const imageUrl = uploadRes?.data?.url || uploadRes?.url;
+      const imageUrl = uploadRes?.data?.url || uploadRes?.url || (Array.isArray(uploadRes?.data) ? uploadRes?.data[0]?.url : null);
 
       if (!imageUrl) {
         throw new Error('Failed to get uploaded image URL');
@@ -587,13 +587,13 @@ function ProfileDashboardContent() {
       {/* Main Container Wrapper */}
       <div className="max-w-[1600px] w-full mx-auto px-3 sm:px-4 lg:pl-3 lg:pr-6 xl:px-6 py-4 flex flex-col lg:flex-row gap-6">
         
-        {/* Left Aside Navigation Panel (Desktop 1024px+) */}
-        <aside className="hidden lg:block w-72 xl:w-80 flex-shrink-0 sticky top-24 self-start max-h-[calc(100vh-6.5rem)]">
-          <FilterSidebar mode="profile" activeTab={activeTab} onTabChange={handleTabChange} />
+        {/* Left Aside Navigation Panel (Desktop 1024px+ Completely Fixed Non-Movable) */}
+        <aside className="hidden lg:block w-72 xl:w-80 flex-shrink-0 fixed top-[5.5rem] z-20">
+          <FilterSidebar mode="profile" activeTab={activeTab} onTabChange={handleTabChange} isNonScrollable={true} />
         </aside>
 
         {/* Main Content Body */}
-        <main className="flex-1 min-w-0 space-y-6">
+        <main className="flex-1 min-w-0 space-y-6 lg:ml-80 xl:ml-88">
 
           {/* Profile Header Card */}
           <div className="bg-white/95 backdrop-blur-xl rounded-3xl border border-stone-200/90 shadow-[0_8px_30px_rgba(0,0,0,0.04)] overflow-hidden font-sans">

@@ -98,7 +98,7 @@ const COLORFUL_AMENITY_STYLES = [
   },
 ];
 
-export default function FilterSidebar({ showNavigation = true, showHeader = true, mode, bookingStats, activeTab, onTabChange, cafes = [] }) {
+export default function FilterSidebar({ showNavigation = true, showHeader = true, mode, bookingStats, activeTab, onTabChange, cafes = [], isNonScrollable = false }) {
   const pathname = usePathname();
   const { language, setLanguage, t } = useLanguage();
   const [showSupportModal, setShowSupportModal] = useState(false);
@@ -178,7 +178,7 @@ export default function FilterSidebar({ showNavigation = true, showHeader = true
   ];
 
   return (
-    <div className={`bg-white/95 backdrop-blur-xl rounded-3xl p-4 sm:p-5 shadow-[0_8px_30px_rgba(0,0,0,0.04)] border border-stone-200/90 flex flex-col ${showHeader ? 'max-h-[calc(100vh-7rem)] overflow-y-auto sticky top-24 self-start' : 'h-full overflow-y-auto'} space-y-4 font-sans selection:bg-[#6F4E37] selection:text-white transition-all`}>
+    <div className={`bg-white/95 backdrop-blur-xl rounded-3xl p-4 sm:p-5 shadow-[0_8px_30px_rgba(0,0,0,0.04)] border border-stone-200/90 flex flex-col ${isNonScrollable || isBookingsPage ? 'overflow-hidden sticky top-24 self-start' : showHeader ? 'max-h-[calc(100vh-7rem)] overflow-y-auto sticky top-24 self-start' : 'h-full overflow-y-auto'} space-y-4 font-sans selection:bg-[#6F4E37] selection:text-white transition-all`}>
       
       {/* 🔹 HEADER TITLE / FILTERS SECTION HEADER */}
       {showHeader && (

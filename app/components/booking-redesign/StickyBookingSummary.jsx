@@ -31,7 +31,6 @@ export default function StickyBookingSummary({ cafeName }) {
     : { isValid: true };
 
   const handlePayment = async () => {
-    // Basic validation
     if (!selectedDate || !selectedTimeSlot) {
       toast.error('Please select a date and time slot first.', {
         style: {
@@ -65,7 +64,6 @@ export default function StickyBookingSummary({ cafeName }) {
       return;
     }
 
-    
     setIsProcessing(true);
     try {
       const convertToHHMMSS = (timeStr) => {
@@ -86,7 +84,8 @@ export default function StickyBookingSummary({ cafeName }) {
         hours: selectedTimeSlot.hours,
         total_persons: guestCount,
         discount: discountAmount,
-        special_request: useBookingStore.getState().specialRequests || ''
+        special_request: useBookingStore.getState().specialRequests || '',
+        event_special_request: selectedEventCompany ? (useBookingStore.getState().eventSpecialRequests || '') : null
       };
 
       const response = await bookingService.createBooking(payload);
@@ -175,7 +174,7 @@ export default function StickyBookingSummary({ cafeName }) {
 
         <div className="flex justify-between text-stone-500 text-xs">
           <span className="flex items-center">
-            Fahara Platform Fee (4%) 
+            Platform Fee (3%) 
             <Info size={12} className="ml-1 text-stone-400 cursor-help" title="Helps us maintain the platform" />
           </span>
           <span className="font-black text-[#2C1810]">₹{Number((pricing?.faharaServiceFee || 0).toFixed(2)).toLocaleString()}</span>
@@ -183,7 +182,7 @@ export default function StickyBookingSummary({ cafeName }) {
 
         <div className="flex justify-between text-stone-500 text-xs">
           <span className="flex items-center">
-            Transaction Fee (2%)
+            Transaction Fee (3%)
             <Info size={12} className="ml-1 text-stone-400 cursor-help" title="Payment processing fee" />
           </span>
           <span className="font-black text-[#2C1810]">₹{Number((pricing?.transactionFee || 0).toFixed(2)).toLocaleString()}</span>
@@ -196,7 +195,6 @@ export default function StickyBookingSummary({ cafeName }) {
           </span>
           <span className="font-black text-[#2C1810]">₹{Number((pricing?.gst || 0).toFixed(2)).toLocaleString()}</span>
         </div>
-
       </div>
 
       <hr className="border-stone-100 mb-5" />

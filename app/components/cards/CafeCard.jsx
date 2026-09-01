@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Heart, MapPin, Star, ArrowRight, Navigation } from 'lucide-react';
+import { Heart, MapPin, Star, ArrowRight, Navigation, Sparkles, PartyPopper } from 'lucide-react';
 import Link from 'next/link';
 import { cn, checkIfCafeOpen } from '@/lib/utils';
 import { useFavoritesStore } from '@/stores/favorites.store';
@@ -30,8 +30,9 @@ export default function CafeCard({ cafe }) {
   const location = cafe?.city || cafe?.area || (rawAddress ? rawAddress.split(',')[0] : 'Venue');
   const distance = cafe?.distance ? `${cafe.distance} km` : null;
   
-  const priceVal = cafe?.price_per_hour || cafe?.pricePerHour || cafe?.hourly_rate || cafe?.price_range || cafe?.base_price_per_hour || cafe?.price;
-  const priceFormatted = priceVal ? `₹${priceVal}` : '₹499';
+  const rawPrice = cafe?.price_per_hour ?? cafe?.pricePerHour ?? cafe?.hourly_rate ?? cafe?.price_range ?? cafe?.base_price_per_hour ?? cafe?.price;
+  const numPrice = Number(rawPrice);
+  const hasValidPrice = rawPrice !== undefined && rawPrice !== null && rawPrice !== '' && !isNaN(numPrice) && numPrice > 0;
 
   // Favorites store integration
   const isFavoriteCafe = useFavoritesStore((state) => state.isFavoriteCafe);
@@ -69,6 +70,18 @@ export default function CafeCard({ cafe }) {
         {/* Dark Gradient Overlay */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/15 to-transparent transition-opacity duration-300 group-hover:opacity-90" />
         
+        {/* DISCOUNT BADGE FROM REAL CAFE DATA */}
+        {Array.isArray(cafe?.discounts) && cafe.discounts.length > 0 && (
+          <div className="absolute top-3 left-3 z-20 bg-gradient-to-r from-amber-600 via-rose-600 to-red-600 text-white text-[10px] font-black px-2.5 py-1 rounded-full shadow-md flex items-center gap-1 border border-white/30 backdrop-blur-md">
+            <span className="w-1.5 h-1.5 rounded-full bg-amber-200 animate-ping" />
+            <span>
+              {cafe.discounts[0].discountType === 'PERCENT' 
+                ? `${cafe.discounts[0].amount}% OFF` 
+                : `₹${cafe.discounts[0].amount} OFF`}
+            </span>
+          </div>
+        )}
+
         {/* OPEN NOW / CLOSED Status Badge */}
         <div className="absolute bottom-3 left-3 flex items-center gap-2">
           <span className={cn(
@@ -120,7 +133,7 @@ export default function CafeCard({ cafe }) {
           </div>
           
           {/* Location & Distance */}
-          <div className="flex items-center justify-between text-xs text-stone-500 mb-4">
+          <div className="flex items-center justify-between text-xs text-stone-500 mb-2.5">
             <div className="flex items-center truncate max-w-[65%]">
               <MapPin size={14} className="mr-1 flex-shrink-0 text-[#6F4E37]" />
               <span className="truncate font-bold text-stone-600">{location}</span>
@@ -132,15 +145,27 @@ export default function CafeCard({ cafe }) {
               </div>
             )}
           </div>
+
+          {/* 3rd Party Event Management & Decoration Badge */}
+          {cafe?.allow_third_party_decoration !== false && (
+            <div className="mb-3.5 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-purple-50/90 border border-purple-200/80 text-purple-900 text-[10px] font-black shadow-2xs">
+              <Sparkles size={12} className="text-purple-600 shrink-0 animate-pulse" />
+              <span className="truncate">3rd Party Event Decor Allowed</span>
+            </div>
+          )}
         </div>
 
         {/* Price & Primary CTA Button (Sits cleanly INSIDE card borders) */}
         <div className="pt-3 border-t border-stone-100 flex flex-col gap-2.5">
           <div className="flex items-baseline justify-between">
-            <div>
-              <span className="text-xl sm:text-2xl font-black text-[#2C1810] tracking-tight">{priceFormatted}</span>
-              <span className="text-xs font-bold text-stone-400 uppercase tracking-wider ml-1">/ hr</span>
-            </div>
+            {hasValidPrice ? (
+              <div>
+                <span className="text-xl sm:text-2xl font-black text-[#2C1810] tracking-tight">₹{numPrice}</span>
+                <span className="text-xs font-bold text-stone-400 uppercase tracking-wider ml-1">/ hr</span>
+              </div>
+            ) : (
+              <div />
+            )}
             <span className="text-[10px] font-extrabold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200/60">Instant</span>
           </div>
 

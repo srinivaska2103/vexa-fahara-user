@@ -1,11 +1,12 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { Calendar, Clock, Users, MessageSquare, Tag, CheckCircle2, AlertCircle, AlertTriangle } from 'lucide-react';
+import { Calendar, Clock, Users, MessageSquare, Tag, CheckCircle2, AlertCircle, AlertTriangle, Sparkles } from 'lucide-react';
 import { useBookingStore } from '@/stores/booking.store';
 import { useParams } from 'next/navigation';
 import { useCafeDetails } from '@/hooks/useCafeDetails';
 import { checkIfCafeClosedOnDate, checkIfTimeWithinBusinessHours } from '@/lib/utils';
 import toast from 'react-hot-toast';
+import StartTimePicker from './StartTimePicker';
 
 // Custom Modern Interactive Date Picker Component
 const CustomDatePicker = ({ value, onChange, label, cafe }) => {
@@ -227,7 +228,71 @@ const CustomDatePicker = ({ value, onChange, label, cafe }) => {
   );
 };
 
-// Custom Modern Interactive Time Picker Component
+// Rolling Drum Wheel Column Component for Time Selector
+const RollingColumn = ({ items, selectedValue, onSelect, label, formatDisplay }) => {
+  const containerRef = useRef(null);
+
+  useEffect(() => {
+    if (containerRef.current) {
+      const selectedIndex = items.findIndex(item => item === selectedValue);
+      if (selectedIndex !== -1) {
+        const itemHeight = 44;
+        containerRef.current.scrollTop = selectedIndex * itemHeight;
+      }
+    }
+  }, [selectedValue, items]);
+
+  const handleScroll = (e) => {
+    const itemHeight = 44;
+    const scrollTop = e.target.scrollTop;
+    const index = Math.round(scrollTop / itemHeight);
+    if (items[index] && items[index] !== selectedValue) {
+      onSelect(items[index]);
+    }
+  };
+
+  return (
+    <div className="flex-1 flex flex-col items-center min-w-0">
+      <span className="text-[10px] font-black uppercase text-stone-400 tracking-wider mb-1.5">{label}</span>
+      <div className="relative h-[176px] w-full bg-white/90 rounded-2xl border border-stone-200/90 shadow-2xs overflow-hidden select-none">
+        
+        {/* Top & Bottom Gradient Overlay for 3D Drum Wheel Effect */}
+        <div className="absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-white via-white/80 to-transparent z-10 pointer-events-none" />
+        <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-white via-white/80 to-transparent z-10 pointer-events-none" />
+
+        {/* Center Highlight Selection Bar */}
+        <div className="absolute inset-x-1.5 top-[66px] h-[44px] bg-[#6F4E37]/15 rounded-xl border border-[#6F4E37]/30 pointer-events-none z-0 shadow-2xs" />
+
+        {/* Scrollable Wheel List with Snap Physics */}
+        <div
+          ref={containerRef}
+          onScroll={handleScroll}
+          className="h-full overflow-y-auto snap-y snap-mandatory scrollbar-none py-[66px]"
+          style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+        >
+          {items.map((item) => {
+            const isSelected = item === selectedValue;
+            return (
+              <div
+                key={item}
+                onClick={() => onSelect(item)}
+                className={`h-[44px] snap-center flex items-center justify-center font-black transition-all cursor-pointer ${
+                  isSelected
+                    ? 'text-[#2C1810] text-base sm:text-lg font-black scale-110'
+                    : 'text-stone-400 opacity-40 text-xs sm:text-sm hover:opacity-80 scale-95'
+                }`}
+              >
+                {formatDisplay ? formatDisplay(item) : item}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Custom Modern Interactive Rolling Drum Wheel Time Picker Component
 const CustomTimePicker = ({ value, onChange, label }) => {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -254,6 +319,10 @@ const CustomTimePicker = ({ value, onChange, label }) => {
     const formattedHour = h.toString().padStart(2, '0');
     onChange({ target: { value: `${formattedHour}:${newMin}` } });
   };
+
+  const hoursList = Array.from({ length: 12 }, (_, i) => (i + 1).toString().padStart(2, '0'));
+  const minutesList = ['00', '15', '30', '45'];
+  const ampmList = ['AM', 'PM'];
 
   const quickPresets = [
     { label: '10:00 AM', h: '10', m: '00', mode: 'AM' },
@@ -289,16 +358,17 @@ const CustomTimePicker = ({ value, onChange, label }) => {
         </span>
       </button>
 
-      {/* Modern Glassmorphic Time Picker Panel */}
+      {/* Rolling Drum Wheel Time Picker Panel */}
       {isOpen && (
-        <div className="relative mt-2.5 bg-[#FFF8F0]/90 backdrop-blur-xl rounded-3xl border border-[#DDB892]/60 shadow-[0_8px_30px_rgba(74,44,17,0.08)] p-4 sm:p-5 font-sans w-full z-10 transition-all">
+        <div className="relative mt-2.5 bg-[#FFF8F0]/95 backdrop-blur-xl rounded-3xl border border-[#DDB892]/60 shadow-[0_12px_40px_rgba(74,44,17,0.12)] p-4 sm:p-5 font-sans w-full z-10 transition-all space-y-4">
           
           {/* Header */}
-          <div className="flex items-center justify-between mb-3 pb-2.5 border-b border-[#DDB892]/30">
-            <div className="flex items-center gap-1.5">
-              <Clock size={15} className="text-[#6F4E37]" />
+          <div className="flex items-center justify-between pb-2 border-b border-[#DDB892]/30">
+            <div className="flex items-center gap-2">
+              <Clock size={16} className="text-[#6F4E37]" />
               <span className="text-xs font-black text-[#2C1810]">Select {label}</span>
             </div>
+
             <button 
               type="button"
               onClick={() => setIsOpen(false)}
@@ -308,8 +378,8 @@ const CustomTimePicker = ({ value, onChange, label }) => {
             </button>
           </div>
 
-          {/* Quick Presets Bar */}
-          <div className="mb-3">
+          {/* Quick Slots */}
+          <div>
             <span className="text-[9px] font-black text-stone-400 uppercase tracking-widest block mb-1.5">Quick Slots</span>
             <div className="flex items-center gap-1.5 overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden py-0.5">
               {quickPresets.map((preset) => {
@@ -318,10 +388,8 @@ const CustomTimePicker = ({ value, onChange, label }) => {
                   <button
                     key={preset.label}
                     type="button"
-                    onClick={() => {
-                      updateTime(preset.h, preset.m, preset.mode);
-                    }}
-                    className={`px-2.5 py-1 rounded-xl text-[11px] font-black whitespace-nowrap transition-all cursor-pointer shrink-0 ${
+                    onClick={() => updateTime(preset.h, preset.m, preset.mode)}
+                    className={`px-2.5 py-1.5 rounded-xl text-[11px] font-black whitespace-nowrap transition-all cursor-pointer shrink-0 ${
                       isSelected
                         ? 'bg-[#6F4E37] text-white shadow-2xs'
                         : 'bg-white text-stone-700 hover:bg-[#FFF8F0] hover:text-[#6F4E37] border border-[#DDB892]/40'
@@ -334,64 +402,41 @@ const CustomTimePicker = ({ value, onChange, label }) => {
             </div>
           </div>
 
-          {/* AM / PM Segmented Toggle */}
-          <div className="grid grid-cols-2 rounded-2xl bg-stone-100/90 p-1 mb-3.5 border border-stone-200/60">
-            {['AM', 'PM'].map((mode) => (
-              <button
-                key={mode}
-                type="button"
-                onClick={() => updateTime(hour, min, mode)}
-                className={`py-1.5 text-xs font-black rounded-xl transition-all cursor-pointer ${
-                  ampm === mode 
-                    ? 'bg-gradient-to-r from-[#4A2C11] to-[#6F4E37] text-white shadow-sm' 
-                    : 'text-stone-600 hover:text-stone-900'
-                }`}
-              >
-                {mode}
-              </button>
-            ))}
+          {/* 3-Column Interactive Rolling Drum Wheels */}
+          <div className="flex items-center gap-2 sm:gap-3 bg-stone-100/70 p-3 rounded-2xl border border-stone-200/60">
+            <RollingColumn 
+              items={hoursList} 
+              selectedValue={hour} 
+              onSelect={(newH) => updateTime(newH, min, ampm)} 
+              label="Hours"
+            />
+            
+            <div className="text-xl font-black text-[#6F4E37] self-center pb-2">:</div>
+
+            <RollingColumn 
+              items={minutesList} 
+              selectedValue={min} 
+              onSelect={(newM) => updateTime(hour, newM, ampm)} 
+              label="Minutes"
+              formatDisplay={(m) => `:${m}`}
+            />
+
+            <RollingColumn 
+              items={ampmList} 
+              selectedValue={ampm} 
+              onSelect={(newMode) => updateTime(hour, min, newMode)} 
+              label="Period"
+            />
           </div>
 
-          {/* Hours Grid */}
-          <div className="text-[9px] font-black text-stone-400 uppercase tracking-widest mb-1.5">Hours</div>
-          <div className="grid grid-cols-4 gap-1.5 mb-3.5">
-            {Array.from({length: 12}, (_, i) => (i + 1).toString().padStart(2, '0')).map(h => (
-              <button
-                key={h}
-                type="button"
-                onClick={() => updateTime(h, min, ampm)}
-                className={`py-2 rounded-xl text-xs font-black transition-all cursor-pointer ${
-                  hour === h 
-                    ? 'bg-gradient-to-r from-[#4A2C11] to-[#6F4E37] text-white shadow-md shadow-[#4A2C11]/20 scale-105' 
-                    : 'bg-stone-50 hover:bg-[#FFF8F0] hover:text-[#6F4E37] text-stone-700 border border-stone-200/60'
-                }`}
-              >
-                {h}
-              </button>
-            ))}
-          </div>
-
-          {/* Minutes Grid */}
-          <div className="text-[9px] font-black text-stone-400 uppercase tracking-widest mb-1.5">Minutes</div>
-          <div className="grid grid-cols-4 gap-1.5">
-            {['00', '15', '30', '45'].map(m => (
-              <button
-                key={m}
-                type="button"
-                onClick={() => {
-                  updateTime(hour, m, ampm);
-                  setIsOpen(false);
-                }}
-                className={`py-2 rounded-xl text-xs font-black transition-all cursor-pointer ${
-                  min === m 
-                    ? 'bg-gradient-to-r from-[#4A2C11] to-[#6F4E37] text-white shadow-md shadow-[#4A2C11]/20 scale-105' 
-                    : 'bg-stone-50 hover:bg-[#FFF8F0] hover:text-[#6F4E37] text-stone-700 border border-stone-200/60'
-                }`}
-              >
-                :{m}
-              </button>
-            ))}
-          </div>
+          {/* Footer Action */}
+          <button
+            type="button"
+            onClick={() => setIsOpen(false)}
+            className="w-full py-2.5 bg-gradient-to-r from-[#4A2C11] to-[#6F4E37] hover:from-[#3A220D] hover:to-[#5D3F2B] text-white text-xs font-black rounded-2xl shadow-xs flex items-center justify-center gap-1.5 transition-all cursor-pointer"
+          >
+            <CheckCircle2 size={15} /> Confirm {label} ({hour}:{min} {ampm})
+          </button>
 
         </div>
       )}
@@ -405,6 +450,7 @@ export default function BookingInformationForm() {
     selectedTimeSlot, setTimeSlot, 
     guestCount, setGuestCount,
     specialRequests, setSpecialRequests,
+    eventSpecialRequests, setEventSpecialRequests,
     selectedEventCompany,
     couponCode, applyCoupon, removeCoupon, discountAmount
   } = useBookingStore();
@@ -548,15 +594,19 @@ export default function BookingInformationForm() {
           )}
         </label>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 sm:gap-4">
-          <CustomTimePicker 
+          <StartTimePicker 
             label="Start Time" 
             value={startTime} 
             onChange={handleStartTimeChange} 
+            cafe={cafe}
+            selectedDate={selectedDate}
           />
-          <CustomTimePicker 
+          <StartTimePicker 
             label="End Time" 
             value={endTime} 
             onChange={handleEndTimeChange} 
+            cafe={cafe}
+            selectedDate={selectedDate}
           />
         </div>
         {selectedTimeSlot && selectedTimeSlot.hours > 0 ? (
@@ -585,19 +635,35 @@ export default function BookingInformationForm() {
 
       <hr className="border-stone-100 my-5" />
 
-      {/* Special Requests */}
-      <div className="mb-6">
+      {/* Special Requests for Cafe / Venue */}
+      <div className="mb-5">
         <label className="block text-xs sm:text-sm font-black text-[#2C1810] mb-2 flex items-center">
-          <MessageSquare size={15} className="mr-2 text-[#6F4E37]" /> Special Requests <span className="text-stone-400 font-bold ml-1">(Optional)</span>
+          <MessageSquare size={15} className="mr-2 text-[#6F4E37]" /> Venue & Cafe Special Requests <span className="text-stone-400 font-bold ml-1">(Optional)</span>
         </label>
         <textarea 
           value={specialRequests}
           onChange={(e) => setSpecialRequests(e.target.value)}
-          placeholder="E.g., Any dietary restrictions, specific table location..."
-          rows={3}
+          placeholder="E.g., Any dietary restrictions, specific seating location, table preferences..."
+          rows={2}
           className="w-full p-3 sm:p-3.5 bg-stone-50/90 border border-stone-200/90 rounded-2xl focus:ring-2 focus:ring-[#6F4E37]/40 focus:border-[#6F4E37] outline-none text-[#2C1810] text-xs sm:text-sm font-semibold leading-relaxed resize-none transition-all placeholder:text-stone-400"
         ></textarea>
       </div>
+
+      {/* Special Requests for Event Manager / Setup (Only shown if 3rd party Event Manager is chosen) */}
+      {selectedEventCompany && (
+        <div className="mb-6">
+          <label className="block text-xs sm:text-sm font-black text-[#6F4E37] mb-2 flex items-center">
+            <Sparkles size={15} className="mr-2 text-[#6F4E37]" /> Special Requests for Event Manager <span className="text-stone-400 font-bold ml-1">(Optional)</span>
+          </label>
+          <textarea 
+            value={eventSpecialRequests}
+            onChange={(e) => setEventSpecialRequests(e.target.value)}
+            placeholder="E.g., Cake customization details (e.g. two unique cakes), theme colors, entrance song..."
+            rows={3}
+            className="w-full p-3 sm:p-3.5 bg-[#FFF8F0]/90 border border-[#DDB892]/80 rounded-2xl focus:ring-2 focus:ring-[#6F4E37]/40 focus:border-[#6F4E37] outline-none text-[#2C1810] text-xs sm:text-sm font-semibold leading-relaxed resize-none transition-all placeholder:text-stone-400"
+          ></textarea>
+        </div>
+      )}
 
     </motion.section>
   );
