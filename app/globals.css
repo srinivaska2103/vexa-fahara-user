@@ -1,6 +1,12 @@
 @import "tailwindcss";
 
 @theme {
+  --breakpoint-xs: 360px;
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+
   --color-primary: #6F4E37;
   --color-secondary: #A67B5B;
   --color-accent: #DDB892;
@@ -13,7 +19,7 @@
   --color-warning: #F59E0B;
   --color-danger: #DC2626;
   --color-info: #2563EB;
-  
+
   --font-sans: var(--font-plus-jakarta-sans), ui-sans-serif, system-ui, sans-serif;
 }
 
@@ -22,8 +28,13 @@
   --foreground: #2C1810;
 }
 
+html, body {
+  overflow-x: hidden;
+  max-width: 100vw;
+}
+
 html {
-  font-size: 15px; /* Proportional site-wide font size reduction for aesthetic cafe legibility */
+  font-size: 15px;
   -webkit-text-size-adjust: 100%;
 }
 
@@ -42,11 +53,12 @@ body {
 .custom-aside-scroll::-webkit-scrollbar-track {
   background: transparent;
 }
-@utility container {
-  margin-inline: auto;
-  padding-inline: 2rem;
-}
-
 .custom-aside-scroll::-webkit-scrollbar-thumb:hover {
   background: #6F4E37;
+}
+
+@utility container {
+  margin-inline: auto;
+  padding-inline: 1rem;
+  width: 100%;
 }
