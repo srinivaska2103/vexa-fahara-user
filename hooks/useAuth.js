@@ -9,8 +9,10 @@ export const useRegister = () => {
   return useMutation({
     mutationFn: authService.register,
     onSuccess: (data, variables) => {
-      toast.success('An OTP has been sent to your email address.');
-      router.push(`/verify-email?email=${encodeURIComponent(variables.email)}`);
+      toast.success('An OTP has been sent to your registered email.');
+      const userId = data?.userId || data?.user?.id || data?.id;
+      const param = userId ? `id=${encodeURIComponent(userId)}` : `email=${encodeURIComponent(variables.email)}`;
+      router.push(`/verify-email?${param}`);
     },
     onError: (error) => {
       toast.error(error.response?.data?.message || 'Registration failed');

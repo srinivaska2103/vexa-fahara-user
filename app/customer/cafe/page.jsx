@@ -510,24 +510,24 @@ export default function AdvancedCafeDiscoveryPage() {
           </div>
 
           {/* Top Category Pills Quick Grid (White Card Container) */}
-          <div className="mb-8 p-4 sm:p-5 bg-white/90 backdrop-blur-md rounded-3xl border border-stone-200/90 shadow-2xs">
-            <div className="flex sm:grid sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-3.5 overflow-x-auto sm:overflow-visible pb-2 sm:pb-0 no-scrollbar scroll-smooth">
+          <div className="mb-8 p-3.5 sm:p-5 bg-white/90 backdrop-blur-md rounded-3xl border border-stone-200/90 shadow-2xs">
+            <div className="flex sm:grid sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-3.5 overflow-x-auto sm:overflow-visible pb-1 sm:pb-0 no-scrollbar scroll-smooth">
               {/* All Categories Button */}
               <motion.button
                 suppressHydrationWarning
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => setCategory('')}
-                className={`flex items-center gap-3 p-3 sm:p-3.5 px-4 rounded-2xl transition-all duration-200 cursor-pointer w-full ${
+                className={`flex items-center gap-2.5 sm:gap-3 p-3 sm:p-3.5 px-3.5 sm:px-4 rounded-2xl transition-all duration-200 cursor-pointer shrink-0 w-[170px] xs:w-[190px] sm:w-full ${
                   category === ''
                     ? 'bg-gradient-to-r from-[#4A2C11] via-[#5A3825] to-[#6F4E37] text-white border border-[#4A2C11] shadow-md shadow-[#4A2C11]/20'
                     : 'bg-stone-50/90 hover:bg-stone-100/90 border border-stone-200/80 text-[#2C1810] shadow-2xs'
                 }`}
               >
-                <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 transition-all ${
+                <div className={`w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center shrink-0 transition-all ${
                   category === '' ? 'bg-white/20 text-amber-300 border border-white/30' : 'bg-gradient-to-tr from-[#4A2C11] to-[#6F4E37] text-amber-300 shadow-xs'
                 }`}>
-                  <Building2 size={20} />
+                  <Building2 size={18} className="sm:w-5 sm:h-5" />
                 </div>
                 <div className="text-left min-w-0">
                   <p className={`text-xs font-black truncate ${category === '' ? 'text-white' : 'text-[#2C1810]'}`}>All Spaces</p>
@@ -548,25 +548,27 @@ export default function AdvancedCafeDiscoveryPage() {
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={() => setCategory(isSelected ? '' : sec.id)}
-                    className={`relative flex items-center gap-3 p-3 sm:p-3.5 px-4 rounded-2xl transition-all duration-200 cursor-pointer w-full ${
+                    className={`relative flex items-center gap-2.5 sm:gap-3 p-3 sm:p-3.5 px-3.5 sm:px-4 rounded-2xl transition-all duration-200 cursor-pointer shrink-0 w-[175px] xs:w-[195px] sm:w-full ${
                       isSelected
                         ? 'bg-gradient-to-r from-[#4A2C11] via-[#5A3825] to-[#6F4E37] text-white border border-[#4A2C11] shadow-md shadow-[#4A2C11]/20'
                         : 'bg-stone-50/90 hover:bg-stone-100/90 border border-stone-200/80 hover:border-stone-300 text-[#2C1810] shadow-2xs'
                     }`}
                   >
-                    {sec.isMostPopular && (
-                      <span className="absolute -top-2.5 -right-1 bg-gradient-to-r from-amber-500 via-rose-600 to-red-600 text-white text-[9px] font-black px-2.5 py-0.5 rounded-full shadow-md uppercase tracking-wider flex items-center gap-1 border border-white/40 z-10">
-                        <Flame size={10} className="fill-amber-200 animate-pulse" /> MOST POPULAR
-                      </span>
-                    )}
-
-                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 transition-all ${
+                    <div className={`w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center shrink-0 transition-all ${
                       isSelected ? 'bg-white/20 text-white border border-white/30' : `${sec.pillColor} shadow-xs`
                     }`}>
-                      <Icon size={20} />
+                      <Icon size={18} className="sm:w-5 sm:h-5" />
                     </div>
-                    <div className="text-left min-w-0">
-                      <p className={`text-xs font-black truncate ${isSelected ? 'text-white' : 'text-[#2C1810]'}`}>{sec.title}</p>
+
+                    <div className="text-left min-w-0 flex-1">
+                      <div className="flex items-center gap-1 max-w-full">
+                        <p className={`text-xs font-black truncate ${isSelected ? 'text-white' : 'text-[#2C1810]'}`}>{sec.title}</p>
+                        {sec.isMostPopular && (
+                          <span className="bg-gradient-to-r from-amber-500 to-rose-600 text-white text-[7.5px] font-black px-1.5 py-0.2 rounded-md shrink-0 uppercase tracking-tighter shadow-2xs">
+                            POPULAR
+                          </span>
+                        )}
+                      </div>
                       <p className={`text-[10px] font-bold truncate ${isSelected ? 'text-amber-200' : 'text-stone-400'}`}>{count} {count === 1 ? 'Venue' : 'Venues'}</p>
                     </div>
                   </motion.button>
@@ -596,34 +598,46 @@ export default function AdvancedCafeDiscoveryPage() {
                     transition={{ duration: 0.3 }}
                     className="space-y-4"
                   >
-                    {/* Category Header */}
-                    <div className="flex flex-wrap items-center justify-between gap-3 border-b border-stone-200/60 pb-3.5">
-                      <div className="flex items-center gap-3">
-                        <div className={`w-10 h-10 rounded-2xl border flex items-center justify-center shrink-0 shadow-2xs ${sec.headerBadge}`}>
-                          <Icon size={20} />
+                    {/* Category Header Card */}
+                    <div className="bg-gradient-to-r from-white via-[#FFF8F0]/70 to-[#FAF5EF] p-4 sm:p-6 rounded-3xl border border-[#DDB892]/40 shadow-2xs hover:shadow-xs transition-all duration-300 flex flex-col sm:flex-row sm:items-center justify-between gap-4 relative overflow-hidden group">
+                      {/* Ambient background glow */}
+                      <div className="absolute top-0 right-0 w-48 h-48 bg-gradient-to-bl from-[#6F4E37]/10 via-[#A67B5B]/5 to-transparent rounded-full blur-2xl pointer-events-none group-hover:scale-125 transition-transform duration-500" />
+                      
+                      <div className="flex items-center gap-3.5 relative z-10">
+                        <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-[#4A2C11] via-[#5A3825] to-[#6F4E37] text-amber-300 border border-[#DDB892]/60 flex items-center justify-center shrink-0 shadow-md group-hover:scale-105 transition-transform duration-300">
+                          <Icon size={22} className="stroke-[2.5]" />
                         </div>
-                        <div>
-                          <div className="flex items-center gap-2 flex-wrap">
-                            <h2 className="text-lg sm:text-2xl font-black text-[#2C1810] tracking-tight">{sec.title}</h2>
+
+                        <div className="space-y-1">
+                          <div className="flex items-center gap-2.5 flex-wrap">
+                            <h2 className="text-xl sm:text-2xl font-black text-[#2C1810] tracking-tight group-hover:text-[#6F4E37] transition-colors">
+                              {sec.title}
+                            </h2>
+
                             {sec.isMostPopular && (
-                              <span className="px-2.5 py-0.5 rounded-full bg-gradient-to-r from-amber-500 via-rose-600 to-red-600 text-white text-[10px] font-black shadow-xs flex items-center gap-1 border border-amber-300 animate-pulse">
+                              <span className="px-3 py-1 rounded-full bg-gradient-to-r from-amber-500 via-rose-600 to-red-600 text-white text-[10px] font-black shadow-xs flex items-center gap-1 border border-amber-300/80 animate-pulse">
                                 <Flame size={12} className="fill-amber-200" /> MOST POPULAR DEALS
                               </span>
                             )}
-                            <span className={`text-[10px] font-black px-2.5 py-0.5 rounded-full border ${sec.headerBadge}`}>
-                              {secCafes.length} {secCafes.length === 1 ? 'Venue Available' : 'Venues Available'}
+
+                            <span className="px-3 py-1 rounded-full bg-[#6F4E37]/10 text-[#6F4E37] border border-[#DDB892]/50 text-xs font-extrabold shadow-2xs flex items-center gap-1.5">
+                              <span className="w-1.5 h-1.5 rounded-full bg-[#6F4E37] animate-ping" />
+                              <span>{secCafes.length} {secCafes.length === 1 ? 'Venue Available' : 'Venues Available'}</span>
                             </span>
                           </div>
-                          <p className="text-xs sm:text-sm text-stone-500 font-medium leading-relaxed mt-0.5">{sec.subtitle}</p>
+
+                          <p className="text-xs sm:text-sm text-stone-500 font-medium leading-relaxed max-w-2xl">
+                            {sec.subtitle}
+                          </p>
                         </div>
                       </div>
 
                       <button
                         onClick={() => setCategory(sec.id)}
-                        className="group flex items-center gap-1.5 px-4 py-2 bg-white hover:bg-[#FFF8F0] border border-stone-200 hover:border-[#DDB892] rounded-full text-xs font-black text-[#2C1810] transition-all shrink-0 cursor-pointer shadow-2xs hover:shadow-xs"
+                        className="py-2.5 px-5 rounded-full bg-gradient-to-r from-[#4A2C11] via-[#5A3825] to-[#6F4E37] hover:from-[#361f0a] hover:to-[#573d2a] text-white text-xs font-black shadow-md hover:shadow-lg hover:shadow-[#4A2C11]/25 flex items-center gap-2 transition-all active:scale-95 cursor-pointer shrink-0 self-start sm:self-center z-10 group/btn"
                       >
-                        <span>View All</span>
-                        <ArrowRight size={14} className="text-[#6F4E37] group-hover:translate-x-1 transition-transform" />
+                        <span>View All {sec.title}</span>
+                        <ArrowRight size={14} className="group-hover/btn:translate-x-1 transition-transform" />
                       </button>
                     </div>
 

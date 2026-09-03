@@ -1,16 +1,24 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { Heart, MapPin, Star, ArrowRight, Navigation, Sparkles, PartyPopper } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { 
+  Heart, MapPin, Star, ArrowRight, Navigation, Sparkles, 
+  ChevronLeft, ChevronRight, Eye, Share2, Wifi, Wind, Car, 
+  Trees, Music, Check, ShieldCheck, PartyPopper
+} from 'lucide-react';
 import Link from 'next/link';
 import { cn, checkIfCafeOpen } from '@/lib/utils';
 import { useFavoritesStore } from '@/stores/favorites.store';
 import { useLanguage } from '@/context/LanguageContext';
+import toast from 'react-hot-toast';
 
 export default function CafeCard({ cafe }) {
   const { t } = useLanguage();
   const [isOpen, setIsOpen] = useState(true);
+  const [activeImgIndex, setActiveImgIndex] = useState(0);
+  const [isHovered, setIsHovered] = useState(false);
+  const [heartAnim, setHeartAnim] = useState(false);
 
   useEffect(() => {
     setIsOpen(checkIfCafeOpen(cafe));
@@ -20,8 +28,18 @@ export default function CafeCard({ cafe }) {
   const cafeId = cafe?.id || cafe?._id || cafe?.cafe_id || 1;
   const name = cafe?.name || cafe?.title || cafe?.cafe_name || 'Cafe';
   
-  const imageUrl = cafe?.cover_image || cafe?.coverImage || cafe?.image || (Array.isArray(cafe?.images) ? cafe.images[0] : null) || cafe?.banner_image || 'https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&q=80';
-  
+  // Extract gallery images for interactive hover slideshow
+  const coverImage = cafe?.cover_image || cafe?.coverImage || cafe?.image || cafe?.banner_image || 'https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&q=80';
+  let imageList = [];
+  if (Array.isArray(cafe?.gallery) && cafe.gallery.length > 0) {
+    imageList = cafe.gallery.map(img => typeof img === 'string' ? img : img.url || coverImage);
+  } else if (Array.isArray(cafe?.images) && cafe.images.length > 0) {
+    imageList = cafe.images.map(img => typeof img === 'string' ? img : img.url || coverImage);
+  }
+  if (imageList.length === 0 || !imageList.includes(coverImage)) {
+    imageList.unshift(coverImage);
+  }
+
   const rawRating = cafe?.average_rating || cafe?.google_rating || cafe?.rating || cafe?.avg_rating || 4.8;
   const rating = (parseFloat(rawRating) || 4.8).toFixed(1);
   const reviewsCount = cafe?.total_reviews ?? cafe?.reviewsCount ?? cafe?.reviews_count ?? cafe?.review_count ?? (Array.isArray(cafe?.reviews) ? cafe.reviews.length : 0);
@@ -34,6 +52,12 @@ export default function CafeCard({ cafe }) {
   const numPrice = Number(rawPrice);
   const hasValidPrice = rawPrice !== undefined && rawPrice !== null && rawPrice !== '' && !isNaN(numPrice) && numPrice > 0;
 
+  // Extract amenities for visual chips
+  const rawAmenities = (
+    (cafe?.amenities ? (typeof cafe.amenities === 'string' ? JSON.parse(cafe.amenities) : cafe.amenities) : []) || []
+  );
+  const amenityList = Array.isArray(rawAmenities) ? rawAmenities : Object.keys(rawAmenities).filter(k => rawAmenities[k]);
+
   // Favorites store integration
   const isFavoriteCafe = useFavoritesStore((state) => state.isFavoriteCafe);
   const toggleFavoriteCafe = useFavoritesStore((state) => state.toggleFavoriteCafe);
@@ -44,51 +68,126 @@ export default function CafeCard({ cafe }) {
     e.stopPropagation();
     if (cafeId) {
       toggleFavoriteCafe(cafeId);
+      setHeartAnim(true);
+      setTimeout(() => setHeartAnim(false), 800);
+      toast.success(favorite ? 'Removed from Saved Favorites' : 'Added to Saved Favorites!');
     }
+  };
+
+  const handleShareClick = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const shareUrl = `${window.location.origin}/cafes/${cafeId}`;
+    navigator.clipboard.writeText(shareUrl);
+    toast.success('Venue link copied to clipboard!');
+  };
+
+  const nextImage = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setActiveImgIndex((prev) => (prev + 1) % imageList.length);
+  };
+
+  const prevImage = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setActiveImgIndex((prev) => (prev - 1 + imageList.length) % imageList.length);
   };
 
   return (
     <motion.div 
-      initial={{ opacity: 0, y: 15 }}
+      initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
-      whileHover={{ y: -5 }}
-      transition={{ duration: 0.3, ease: 'easeOut' }}
-      className="bg-white rounded-3xl overflow-hidden border border-stone-200/80 shadow-[0_4px_25px_rgba(0,0,0,0.05)] hover:shadow-[0_12px_35px_rgba(44,24,16,0.12)] transition-all duration-300 flex flex-col h-full group"
+      whileHover={{ y: -5, scale: 1.005 }}
+      onHoverStart={() => setIsHovered(true)}
+      onHoverEnd={() => setIsHovered(false)}
+      transition={{ duration: 0.25, ease: 'easeOut' }}
+      className="bg-white rounded-2xl sm:rounded-3xl overflow-hidden border border-stone-200/90 shadow-[0_4px_20px_rgba(0,0,0,0.04)] hover:shadow-[0_16px_40px_rgba(74,44,17,0.12)] hover:border-[#6F4E37]/40 transition-all duration-300 flex flex-col h-full group relative"
     >
-      {/* 🖼️ Image Container with Aspect Ratio */}
-      <div className="relative aspect-[4/3] w-full overflow-hidden bg-stone-100">
-        <img 
-          src={imageUrl} 
-          alt={name} 
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
-          onError={(e) => {
-            e.target.onerror = null;
-            e.target.src = 'https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&q=80';
-          }}
-        />
+      {/* 🖼️ Interactive Image Container with Slide Carousel & Controls */}
+      <div className="relative aspect-[16/10] w-full overflow-hidden bg-stone-100 select-none">
+        <AnimatePresence mode="wait">
+          <motion.img 
+            key={activeImgIndex}
+            src={imageList[activeImgIndex]} 
+            alt={name} 
+            initial={{ opacity: 0.85, scale: 1.04 }}
+            animate={{ opacity: 1, scale: isHovered ? 1.07 : 1 }}
+            exit={{ opacity: 0.85 }}
+            transition={{ duration: 0.35 }}
+            className="w-full h-full object-cover transition-transform duration-500 ease-out"
+            onError={(e) => {
+              e.target.onerror = null;
+              e.target.src = 'https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&q=80';
+            }}
+          />
+        </AnimatePresence>
         
-        {/* Dark Gradient Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/15 to-transparent transition-opacity duration-300 group-hover:opacity-90" />
+        {/* Dynamic Multi-Layer Gradient Overlays */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/15 to-black/25 opacity-70 group-hover:opacity-85 transition-opacity duration-300" />
         
-        {/* DISCOUNT BADGE FROM REAL CAFE DATA */}
-        {Array.isArray(cafe?.discounts) && cafe.discounts.length > 0 && (
-          <div className="absolute top-3 left-3 z-20 bg-gradient-to-r from-amber-600 via-rose-600 to-red-600 text-white text-[10px] font-black px-2.5 py-1 rounded-full shadow-md flex items-center gap-1 border border-white/30 backdrop-blur-md">
-            <span className="w-1.5 h-1.5 rounded-full bg-amber-200 animate-ping" />
+        {/* Interactive Image Carousel Navigation Buttons */}
+        {imageList.length > 1 && isHovered && (
+          <div className="absolute inset-x-2 top-1/2 -translate-y-1/2 flex items-center justify-between z-20 pointer-events-auto">
+            <button
+              onClick={prevImage}
+              className="w-6 h-6 rounded-full bg-white/85 hover:bg-white text-[#2C1810] backdrop-blur-md flex items-center justify-center shadow-md active:scale-90 transition-all cursor-pointer"
+              title="Previous photo"
+            >
+              <ChevronLeft size={14} />
+            </button>
+            <button
+              onClick={nextImage}
+              className="w-6 h-6 rounded-full bg-white/85 hover:bg-white text-[#2C1810] backdrop-blur-md flex items-center justify-center shadow-md active:scale-90 transition-all cursor-pointer"
+              title="Next photo"
+            >
+              <ChevronRight size={14} />
+            </button>
+          </div>
+        )}
+
+
+        {/* Carousel Pagination Dots */}
+        {imageList.length > 1 && (
+          <div className="absolute bottom-8 inset-x-0 flex items-center justify-center gap-1 z-20 pointer-events-none">
+            {imageList.slice(0, 5).map((_, idx) => (
+              <span
+                key={idx}
+                className={cn(
+                  "h-1 rounded-full transition-all duration-300",
+                  idx === activeImgIndex 
+                    ? "w-3.5 bg-white shadow-xs" 
+                    : "w-1 bg-white/50"
+                )}
+              />
+            ))}
+          </div>
+        )}
+
+        {/* DISCOUNT BADGE */}
+        {Array.isArray(cafe?.discounts) && cafe.discounts.length > 0 ? (
+          <div className="absolute top-2.5 left-2.5 z-20 bg-gradient-to-r from-amber-600 via-rose-600 to-red-600 text-white text-[9px] font-black px-2 py-0.5 rounded-full shadow-md flex items-center gap-1 border border-white/40 backdrop-blur-md">
+            <Sparkles size={10} className="text-amber-200 animate-pulse" />
             <span>
               {cafe.discounts[0].discountType === 'PERCENT' 
                 ? `${cafe.discounts[0].amount}% OFF` 
                 : `₹${cafe.discounts[0].amount} OFF`}
             </span>
           </div>
+        ) : (
+          <div className="absolute top-2.5 left-2.5 z-20 bg-black/40 text-white text-[9px] font-bold px-2 py-0.5 rounded-full border border-white/20 backdrop-blur-md flex items-center gap-1">
+            <ShieldCheck size={10} className="text-emerald-400" />
+            <span>Verified</span>
+          </div>
         )}
 
         {/* OPEN NOW / CLOSED Status Badge */}
-        <div className="absolute bottom-3 left-3 flex items-center gap-2">
+        <div className="absolute bottom-2.5 left-2.5 flex items-center gap-2 z-20">
           <span className={cn(
-            "px-2.5 py-1 rounded-full text-[10px] font-black tracking-wider uppercase flex items-center gap-1.5 backdrop-blur-md shadow-md transition-all",
+            "px-2 py-0.5 rounded-full text-[9px] font-black tracking-wider uppercase flex items-center gap-1 backdrop-blur-md shadow-md transition-all border",
             isOpen 
-              ? "bg-emerald-500/90 text-white ring-2 ring-emerald-400/40 shadow-emerald-900/20" 
-              : "bg-stone-900/85 text-stone-200 ring-1 ring-stone-700/50"
+              ? "bg-emerald-500/90 text-white border-emerald-300/40 shadow-emerald-900/20" 
+              : "bg-stone-900/85 text-stone-200 border-stone-700/50"
           )}>
             <span className={cn(
               "w-1.5 h-1.5 rounded-full",
@@ -98,84 +197,123 @@ export default function CafeCard({ cafe }) {
           </span>
         </div>
 
-        {/* Heart Favorite Button */}
-        <motion.button 
-          whileTap={{ scale: 0.85 }}
-          onClick={handleFavoriteClick}
-          aria-label="Add to Favorites"
-          className="absolute top-3 right-3 p-2.5 rounded-full bg-white/90 backdrop-blur-md text-stone-700 hover:text-rose-500 hover:bg-white transition-all shadow-md active:scale-95 group/fav z-10"
-        >
-          <Heart 
-            size={17} 
-            className={cn(
-              "transition-all duration-300", 
-              favorite 
-                ? "fill-rose-500 text-rose-500 scale-110" 
-                : "group-hover/fav:text-rose-500 text-stone-600"
-            )} 
-          />
-        </motion.button>
+        {/* Quick Action Top Right Icons: Share & Heart */}
+        <div className="absolute top-2.5 right-2.5 flex items-center gap-1 z-20">
+          <motion.button
+            whileTap={{ scale: 0.85 }}
+            onClick={handleShareClick}
+            aria-label="Share Venue"
+            className="p-1.5 rounded-full bg-white/80 hover:bg-white text-stone-700 hover:text-[#6F4E37] backdrop-blur-md transition-all shadow-md active:scale-95 cursor-pointer"
+            title="Share Venue"
+          >
+            <Share2 size={13} />
+          </motion.button>
+
+          <motion.button 
+            whileTap={{ scale: 0.85 }}
+            onClick={handleFavoriteClick}
+            aria-label="Add to Favorites"
+            className="p-1.5 rounded-full bg-white/80 hover:bg-white text-stone-700 hover:text-rose-500 backdrop-blur-md transition-all shadow-md active:scale-95 group/fav cursor-pointer relative"
+          >
+            <Heart 
+              size={13} 
+              className={cn(
+                "transition-all duration-300", 
+                favorite 
+                  ? "fill-rose-500 text-rose-500 scale-110" 
+                  : "group-hover/fav:text-rose-500 text-stone-700"
+              )} 
+            />
+
+            {/* Heart Particle Animation Burst */}
+            <AnimatePresence>
+              {heartAnim && (
+                <motion.span
+                  initial={{ scale: 0, opacity: 1, y: 0 }}
+                  animate={{ scale: 1.8, opacity: 0, y: -15 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.5 }}
+                  className="absolute inset-0 flex items-center justify-center pointer-events-none"
+                >
+                  <Heart size={15} className="fill-rose-500 text-rose-500" />
+                </motion.span>
+              )}
+            </AnimatePresence>
+          </motion.button>
+        </div>
       </div>
 
-      {/* 📄 Content Area */}
-      <div className="p-4 sm:p-5 flex flex-col flex-1 justify-between bg-white">
+      {/* 📄 Compact Interactive Content Area */}
+      <div className="p-3 sm:p-3.5 flex flex-col flex-1 justify-between bg-white relative z-10">
         <div>
-          {/* Title & Rating */}
-          <div className="flex justify-between items-start mb-2 gap-2">
-            <h3 className="text-base sm:text-lg font-black text-[#2C1810] tracking-tight leading-snug line-clamp-2 group-hover:text-[#6F4E37] transition-colors duration-300">
+          {/* Title & Rating Badge */}
+          <div className="flex justify-between items-start mb-1 gap-1.5">
+            <h3 className="text-sm sm:text-base font-extrabold text-[#2C1810] tracking-tight leading-snug line-clamp-1 group-hover:text-[#6F4E37] transition-colors duration-300">
               {name}
             </h3>
-            <div className="flex items-center bg-amber-50 text-amber-900 border border-amber-200/80 px-2 py-0.5 rounded-lg text-xs font-bold flex-shrink-0 shadow-2xs">
-              <Star size={13} className="fill-amber-500 text-amber-500 mr-1" />
+            <div className="flex items-center bg-gradient-to-r from-amber-50 to-orange-50 text-amber-900 border border-amber-200/80 px-2 py-0.5 rounded-lg text-[11px] font-black flex-shrink-0 shadow-2xs">
+              <Star size={11} className="fill-amber-500 text-amber-500 mr-0.5" />
               <span>{rating}</span>
-              <span className="text-amber-700/60 ml-0.5 text-[10px]">({reviewsCount})</span>
+              <span className="text-amber-700/60 ml-0.5 text-[9px]">({reviewsCount})</span>
             </div>
           </div>
           
           {/* Location & Distance */}
-          <div className="flex items-center justify-between text-xs text-stone-500 mb-2.5">
-            <div className="flex items-center truncate max-w-[65%]">
-              <MapPin size={14} className="mr-1 flex-shrink-0 text-[#6F4E37]" />
+          <div className="flex items-center justify-between text-[11px] text-stone-500 mb-2">
+            <div className="flex items-center truncate max-w-[68%]">
+              <MapPin size={12} className="mr-1 flex-shrink-0 text-[#6F4E37]" />
               <span className="truncate font-bold text-stone-600">{location}</span>
             </div>
             {distance && (
-              <div className="flex items-center font-extrabold bg-stone-100/80 px-2 py-0.5 rounded-md text-stone-600 text-[10px] border border-stone-200/60 flex-shrink-0">
-                <Navigation size={10} className="mr-1 text-stone-400" />
+              <div className="flex items-center font-extrabold bg-stone-100/90 px-1.5 py-0.2 rounded text-stone-600 text-[9px] border border-stone-200/60 flex-shrink-0">
+                <Navigation size={9} className="mr-0.5 text-stone-400" />
                 {distance}
               </div>
             )}
           </div>
 
-          {/* 3rd Party Event Management & Decoration Badge */}
-          {cafe?.allow_third_party_decoration !== false && (
-            <div className="mb-3.5 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-purple-50/90 border border-purple-200/80 text-purple-900 text-[10px] font-black shadow-2xs">
-              <Sparkles size={12} className="text-purple-600 shrink-0 animate-pulse" />
-              <span className="truncate">3rd Party Event Decor Allowed</span>
-            </div>
-          )}
+          {/* Interactive Feature Tags Bar */}
+          <div className="flex items-center gap-1 flex-wrap mb-2">
+            {cafe?.allow_third_party_decoration !== false && (
+              <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-purple-50 border border-purple-200/80 text-purple-900 text-[9px] font-black shadow-2xs">
+                <Sparkles size={10} className="text-purple-600 shrink-0" />
+                <span className="truncate">3rd Party Decor</span>
+              </div>
+            )}
+
+            {amenityList.length > 0 && amenityList.slice(0, 2).map((am, i) => (
+              <div key={i} className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-stone-100 border border-stone-200/70 text-stone-600 text-[9px] font-bold capitalize">
+                <Check size={9} className="text-emerald-600" />
+                <span>{String(am).replace('_', ' ')}</span>
+              </div>
+            ))}
+          </div>
         </div>
 
-        {/* Price & Primary CTA Button (Sits cleanly INSIDE card borders) */}
-        <div className="pt-3 border-t border-stone-100 flex flex-col gap-2.5">
-          <div className="flex items-baseline justify-between">
-            {hasValidPrice ? (
-              <div>
-                <span className="text-xl sm:text-2xl font-black text-[#2C1810] tracking-tight">₹{numPrice}</span>
-                <span className="text-xs font-bold text-stone-400 uppercase tracking-wider ml-1">/ hr</span>
+        {/* Compact Price & Inline CTA Button */}
+        <div className="pt-2 border-t border-stone-100 flex items-center justify-between gap-2">
+          {hasValidPrice ? (
+            <div>
+              <div className="flex items-baseline">
+                <span className="text-base sm:text-lg font-black text-[#2C1810] tracking-tight">₹{numPrice}</span>
+                <span className="text-[9px] font-bold text-stone-400 uppercase tracking-wider ml-0.5">/hr</span>
               </div>
-            ) : (
-              <div />
-            )}
-            <span className="text-[10px] font-extrabold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200/60">Instant</span>
-          </div>
+              <span className="text-[8px] font-black text-emerald-700 bg-emerald-50 px-1.5 py-0.2 rounded border border-emerald-200/60 block w-max mt-0.5">Instant Booking</span>
+            </div>
+          ) : (
+            <div>
+              <span className="text-xs font-bold text-[#6F4E37]">Custom Pricing</span>
+            </div>
+          )}
 
+          {/* Compact Primary CTA Button */}
           <Link href={`/cafes/${cafeId}`}>
             <motion.button 
-              whileTap={{ scale: 0.96 }}
-              className="w-full py-2.5 px-4 bg-gradient-to-r from-[#4A2C11] to-[#6F4E37] hover:from-[#361f0a] hover:to-[#573d2a] text-white font-black rounded-xl text-xs sm:text-sm flex items-center justify-center gap-1.5 shadow-md hover:shadow-lg hover:shadow-[#4A2C11]/20 transition-all duration-300 active:scale-95 cursor-pointer group/btn"
+              whileTap={{ scale: 0.95 }}
+              className="py-2 px-3.5 bg-gradient-to-r from-[#4A2C11] via-[#5A3825] to-[#6F4E37] hover:from-[#361f0a] hover:to-[#573d2a] text-white font-black rounded-xl text-xs flex items-center justify-center gap-1.5 shadow-md hover:shadow-lg hover:shadow-[#4A2C11]/25 transition-all duration-300 active:scale-95 cursor-pointer group/btn shrink-0"
             >
-              <span>{t('viewDetails', 'View Details')}</span>
-              <ArrowRight size={15} className="group-hover/btn:translate-x-1 transition-transform" />
+              <span>View Details</span>
+              <ArrowRight size={13} className="group-hover/btn:translate-x-1 transition-transform" />
             </motion.button>
           </Link>
         </div>
@@ -184,3 +322,4 @@ export default function CafeCard({ cafe }) {
     </motion.div>
   );
 }
+
