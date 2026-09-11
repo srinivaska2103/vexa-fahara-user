@@ -52,6 +52,8 @@ export default function InvoicePage() {
   }
 
   const booking = response.data;
+  const categoryStr = `${booking.cafes?.category || ''} ${booking.cafes?.service_type || ''} ${booking.cafes?.name || ''}`.toLowerCase();
+  const isRestaurant = categoryStr.includes('restaur') || categoryStr.includes('restur') || Number(booking.total || 0) === 0;
   
   const invoiceData = {
     invoiceNumber: `INV-${(booking.booking_number || id).substring(0, 8).toUpperCase()}`,
@@ -65,8 +67,9 @@ export default function InvoicePage() {
     bookingDate: new Date(booking.booking_date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
     eventCompany: booking.event_services?.service_name || '',
     eventPackage: booking.packages?.package_name || '',
-    paymentMethod: booking.payment_status === 'PAID' ? 'Online Payment (Instant)' : 'Pending Verification',
+    paymentMethod: (categoryStr.includes('restaur') || categoryStr.includes('restur') || Number(booking.total || 0) === 0) ? 'Direct Table Reservation (Free)' : (booking.payment_status === 'PAID' ? 'Online Payment (Instant)' : 'Pending Verification'),
     paymentStatus: booking.payment_status || 'PAID',
+    isRestaurant: categoryStr.includes('restaur') || categoryStr.includes('restur') || Number(booking.total || 0) === 0,
     paymentDate: new Date(booking.created_at || new Date()).toLocaleString('en-GB', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
     priceData: {
       cafeCharges: parseFloat(booking.cafe_amount || 0),
@@ -108,10 +111,25 @@ export default function InvoicePage() {
           </div>
 
           <div className="flex items-center gap-2 flex-wrap">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-500/10 text-emerald-700 border border-emerald-200 text-xs font-black uppercase tracking-wider">
-              <CheckCircle2 size={14} />
-              <span>PAID & VERIFIED</span>
-            </span>
+            {(() => {
+              const categoryStr = `${booking.cafes?.category || ''} ${booking.cafes?.service_type || ''} ${booking.cafes?.name || ''}`.toLowerCase();
+              const isRestaurant = categoryStr.includes('restaur') || categoryStr.includes('restur') || Number(booking.total || 0) === 0;
+
+              if (isRestaurant) {
+                return (
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-500/10 text-emerald-700 border border-emerald-200 text-xs font-black uppercase tracking-wider">
+                    <CheckCircle2 size={14} />
+                    <span>TABLE RESERVED</span>
+                  </span>
+                );
+              }
+              return (
+                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-500/10 text-emerald-700 border border-emerald-200 text-xs font-black uppercase tracking-wider">
+                  <CheckCircle2 size={14} />
+                  <span>PAID & VERIFIED</span>
+                </span>
+              );
+            })()}
 
             <button 
               onClick={() => window.print()}

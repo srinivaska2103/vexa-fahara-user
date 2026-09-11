@@ -19,6 +19,8 @@ export default function CafeCard({ cafe }) {
   const [activeImgIndex, setActiveImgIndex] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
   const [heartAnim, setHeartAnim] = useState(false);
+  const [touchStart, setTouchStart] = useState(null);
+  const [touchEnd, setTouchEnd] = useState(null);
 
   useEffect(() => {
     setIsOpen(checkIfCafeOpen(cafe));
@@ -48,9 +50,12 @@ export default function CafeCard({ cafe }) {
   const location = cafe?.city || cafe?.area || (rawAddress ? rawAddress.split(',')[0] : 'Venue');
   const distance = cafe?.distance ? `${cafe.distance} km` : null;
   
+  const categoryStr = `${cafe?.category || ''} ${cafe?.service_type || ''} ${cafe?.name || ''}`.toLowerCase();
+  const isRestaurant = categoryStr.includes('restaur') || categoryStr.includes('restur');
+
   const rawPrice = cafe?.price_per_hour ?? cafe?.pricePerHour ?? cafe?.hourly_rate ?? cafe?.price_range ?? cafe?.base_price_per_hour ?? cafe?.price;
   const numPrice = Number(rawPrice);
-  const hasValidPrice = rawPrice !== undefined && rawPrice !== null && rawPrice !== '' && !isNaN(numPrice) && numPrice > 0;
+  const hasValidPrice = !isRestaurant && rawPrice !== undefined && rawPrice !== null && rawPrice !== '' && !isNaN(numPrice) && numPrice > 0;
 
   // Extract amenities for visual chips
   const rawAmenities = (
@@ -104,68 +109,94 @@ export default function CafeCard({ cafe }) {
       transition={{ duration: 0.25, ease: 'easeOut' }}
       className="bg-white rounded-2xl sm:rounded-3xl overflow-hidden border border-stone-200/90 shadow-[0_4px_20px_rgba(0,0,0,0.04)] hover:shadow-[0_16px_40px_rgba(74,44,17,0.12)] hover:border-[#6F4E37]/40 transition-all duration-300 flex flex-col h-full group relative"
     >
-      {/* 🖼️ Interactive Image Container with Slide Carousel & Controls */}
-      <div className="relative aspect-[16/10] w-full overflow-hidden bg-stone-100 select-none">
-        <AnimatePresence mode="wait">
-          <motion.img 
-            key={activeImgIndex}
-            src={imageList[activeImgIndex]} 
-            alt={name} 
-            initial={{ opacity: 0.85, scale: 1.04 }}
-            animate={{ opacity: 1, scale: isHovered ? 1.07 : 1 }}
-            exit={{ opacity: 0.85 }}
-            transition={{ duration: 0.35 }}
-            className="w-full h-full object-cover transition-transform duration-500 ease-out"
-            onError={(e) => {
-              e.target.onerror = null;
-              e.target.src = 'https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&q=80';
-            }}
-          />
-        </AnimatePresence>
-        
-        {/* Dynamic Multi-Layer Gradient Overlays */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/15 to-black/25 opacity-70 group-hover:opacity-85 transition-opacity duration-300" />
-        
-        {/* Interactive Image Carousel Navigation Buttons */}
-        {imageList.length > 1 && isHovered && (
-          <div className="absolute inset-x-2 top-1/2 -translate-y-1/2 flex items-center justify-between z-20 pointer-events-auto">
-            <button
-              onClick={prevImage}
-              className="w-6 h-6 rounded-full bg-white/85 hover:bg-white text-[#2C1810] backdrop-blur-md flex items-center justify-center shadow-md active:scale-90 transition-all cursor-pointer"
-              title="Previous photo"
-            >
-              <ChevronLeft size={14} />
-            </button>
-            <button
-              onClick={nextImage}
-              className="w-6 h-6 rounded-full bg-white/85 hover:bg-white text-[#2C1810] backdrop-blur-md flex items-center justify-center shadow-md active:scale-90 transition-all cursor-pointer"
-              title="Next photo"
-            >
-              <ChevronRight size={14} />
-            </button>
-          </div>
-        )}
+        {/* 🖼️ Interactive Image Container with Slide Carousel & Swipe Support */}
+        <div 
+          className="relative aspect-[16/10] w-full overflow-hidden bg-stone-100 select-none"
+          onTouchStart={(e) => {
+            setTouchEnd(null);
+            setTouchStart(e.targetTouches[0].clientX);
+          }}
+          onTouchMove={(e) => {
+            setTouchEnd(e.targetTouches[0].clientX);
+          }}
+          onTouchEnd={() => {
+            if (!touchStart || !touchEnd) return;
+            const distance = touchStart - touchEnd;
+            if (distance > 30) {
+              setActiveImgIndex((prev) => (prev + 1) % imageList.length);
+            } else if (distance < -30) {
+              setActiveImgIndex((prev) => (prev - 1 + imageList.length) % imageList.length);
+            }
+          }}
+        >
+          <AnimatePresence mode="wait">
+            <motion.img 
+              key={activeImgIndex}
+              src={imageList[activeImgIndex]} 
+              alt={name} 
+              initial={{ opacity: 0.85, scale: 1.04 }}
+              animate={{ opacity: 1, scale: isHovered ? 1.07 : 1 }}
+              exit={{ opacity: 0.85 }}
+              transition={{ duration: 0.35 }}
+              className="w-full h-full object-cover transition-transform duration-500 ease-out"
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = 'https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&q=80';
+              }}
+            />
+          </AnimatePresence>
+          
+          {/* Dynamic Multi-Layer Gradient Overlays */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/15 to-black/25 opacity-70 group-hover:opacity-85 transition-opacity duration-300 pointer-events-none" />
+          
+          {/* Interactive Image Carousel Navigation Buttons (Always visible on multi-image on mobile / on hover on desktop) */}
+          {imageList.length > 1 && (
+            <div className="absolute inset-x-2 top-1/2 -translate-y-1/2 flex items-center justify-between z-20 pointer-events-auto">
+              <button
+                type="button"
+                onClick={prevImage}
+                className="w-7 h-7 rounded-full bg-black/40 hover:bg-black/70 text-white backdrop-blur-md flex items-center justify-center shadow-md active:scale-90 transition-all cursor-pointer border border-white/30"
+                title="Previous photo"
+              >
+                <ChevronLeft size={15} />
+              </button>
+              <button
+                type="button"
+                onClick={nextImage}
+                className="w-7 h-7 rounded-full bg-black/40 hover:bg-black/70 text-white backdrop-blur-md flex items-center justify-center shadow-md active:scale-90 transition-all cursor-pointer border border-white/30"
+                title="Next photo"
+              >
+                <ChevronRight size={15} />
+              </button>
+            </div>
+          )}
 
-
-        {/* Carousel Pagination Dots */}
-        {imageList.length > 1 && (
-          <div className="absolute bottom-8 inset-x-0 flex items-center justify-center gap-1 z-20 pointer-events-none">
-            {imageList.slice(0, 5).map((_, idx) => (
-              <span
-                key={idx}
-                className={cn(
-                  "h-1 rounded-full transition-all duration-300",
-                  idx === activeImgIndex 
-                    ? "w-3.5 bg-white shadow-xs" 
-                    : "w-1 bg-white/50"
-                )}
-              />
-            ))}
-          </div>
-        )}
+          {/* Carousel Pagination Dots */}
+          {imageList.length > 1 && (
+            <div className="absolute bottom-3 inset-x-0 flex items-center justify-center gap-1.5 z-20 pointer-events-auto">
+              {imageList.slice(0, 6).map((_, idx) => (
+                <button
+                  type="button"
+                  key={idx}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setActiveImgIndex(idx);
+                  }}
+                  className={cn(
+                    "h-1.5 rounded-full transition-all duration-300 cursor-pointer",
+                    idx === activeImgIndex 
+                      ? "w-4 bg-white shadow-sm" 
+                      : "w-1.5 bg-white/50 hover:bg-white/80"
+                  )}
+                  aria-label={`View image ${idx + 1}`}
+                />
+              ))}
+            </div>
+          )}
 
         {/* DISCOUNT BADGE */}
-        {Array.isArray(cafe?.discounts) && cafe.discounts.length > 0 ? (
+        {Array.isArray(cafe?.discounts) && cafe.discounts.length > 0 && Number(cafe.discounts[0]?.amount) > 0 ? (
           <div className="absolute top-2.5 left-2.5 z-20 bg-gradient-to-r from-amber-600 via-rose-600 to-red-600 text-white text-[9px] font-black px-2 py-0.5 rounded-full shadow-md flex items-center gap-1 border border-white/40 backdrop-blur-md">
             <Sparkles size={10} className="text-amber-200 animate-pulse" />
             <span>
@@ -251,11 +282,26 @@ export default function CafeCard({ cafe }) {
             <h3 className="text-sm sm:text-base font-extrabold text-[#2C1810] tracking-tight leading-snug line-clamp-1 group-hover:text-[#6F4E37] transition-colors duration-300">
               {name}
             </h3>
-            <div className="flex items-center bg-gradient-to-r from-amber-50 to-orange-50 text-amber-900 border border-amber-200/80 px-2 py-0.5 rounded-lg text-[11px] font-black flex-shrink-0 shadow-2xs">
-              <Star size={11} className="fill-amber-500 text-amber-500 mr-0.5" />
-              <span>{rating}</span>
-              <span className="text-amber-700/60 ml-0.5 text-[9px]">({reviewsCount})</span>
-            </div>
+            {cafe?.google_reviews_link || cafe?.google_rating_link || cafe?.google_review_url ? (
+              <a 
+                href={cafe.google_reviews_link || cafe.google_rating_link || cafe.google_review_url} 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                onClick={(e) => e.stopPropagation()}
+                title="View original Google Reviews"
+                className="flex items-center bg-gradient-to-r from-amber-50 to-orange-50 text-amber-900 border border-amber-200/80 px-2 py-0.5 rounded-lg text-[11px] font-black flex-shrink-0 shadow-2xs hover:border-amber-400 hover:scale-105 transition-all cursor-pointer"
+              >
+                <Star size={11} className="fill-amber-500 text-amber-500 mr-0.5" />
+                <span>{rating}</span>
+                <span className="text-amber-700/60 ml-0.5 text-[9px]">({reviewsCount})</span>
+              </a>
+            ) : (
+              <div className="flex items-center bg-gradient-to-r from-amber-50 to-orange-50 text-amber-900 border border-amber-200/80 px-2 py-0.5 rounded-lg text-[11px] font-black flex-shrink-0 shadow-2xs">
+                <Star size={11} className="fill-amber-500 text-amber-500 mr-0.5" />
+                <span>{rating}</span>
+                <span className="text-amber-700/60 ml-0.5 text-[9px]">({reviewsCount})</span>
+              </div>
+            )}
           </div>
           
           {/* Location & Distance */}
@@ -274,7 +320,7 @@ export default function CafeCard({ cafe }) {
 
           {/* Interactive Feature Tags Bar */}
           <div className="flex items-center gap-1 flex-wrap mb-2">
-            {cafe?.allow_third_party_decoration !== false && (
+            {!isRestaurant && cafe?.allow_third_party_decoration === true && (
               <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-purple-50 border border-purple-200/80 text-purple-900 text-[9px] font-black shadow-2xs">
                 <Sparkles size={10} className="text-purple-600 shrink-0" />
                 <span className="truncate">3rd Party Decor</span>
@@ -302,7 +348,9 @@ export default function CafeCard({ cafe }) {
             </div>
           ) : (
             <div>
-              <span className="text-xs font-bold text-[#6F4E37]">Custom Pricing</span>
+              <span className="text-xs font-extrabold text-[#6F4E37] bg-[#FFF8F0] border border-[#DDB892]/50 px-2.5 py-1 rounded-lg">
+                {isRestaurant ? 'Table Dining' : 'Table Reservation'}
+              </span>
             </div>
           )}
 

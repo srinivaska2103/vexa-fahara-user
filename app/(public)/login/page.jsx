@@ -46,6 +46,7 @@ export default function LoginPage() {
               {...register('email')}
               type="email"
               placeholder="Enter your email"
+              suppressHydrationWarning
               className={cn(
                 "w-full pl-11 pr-4 py-3 rounded-xl border bg-white/80 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-[#DDB892] focus:bg-white transition-all shadow-sm font-medium text-[#2C1810] placeholder:text-gray-400",
                 errors.email ? "border-red-400 ring-red-400" : "border-gray-200 hover:border-gray-300"
@@ -65,6 +66,7 @@ export default function LoginPage() {
               {...register('password')}
               type={showPassword ? 'text' : 'password'}
               placeholder="Enter your password"
+              suppressHydrationWarning
               className={cn(
                 "w-full pl-11 pr-12 py-3 rounded-xl border bg-white/80 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-[#DDB892] focus:bg-white transition-all shadow-sm font-medium text-[#2C1810] placeholder:text-gray-400",
                 errors.password ? "border-red-400 ring-red-400" : "border-gray-200 hover:border-gray-300"

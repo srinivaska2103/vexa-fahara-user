@@ -14,6 +14,7 @@ import toast from 'react-hot-toast';
 import { profileService } from '@/services/profile.service';
 import { favoriteService } from '@/services/favorite.service';
 import { settingsService } from '@/services/settings.service';
+import { loyaltyService } from '@/services/loyalty.service';
 import { useAuthStore } from '@/stores/auth.store';
 import { useFavoritesStore } from '@/stores/favorites.store';
 import { bookingService } from '@/services/booking.service';
@@ -56,8 +57,8 @@ function ProfileDashboardContent() {
       return;
     }
 
-    if (file.size > 5 * 1024 * 1024) {
-      toast.error('Image size must be less than 5MB');
+    if (file.size > 2 * 1024 * 1024) {
+      toast.error('Upload your image within 2MB');
       return;
     }
 
@@ -129,6 +130,66 @@ function ProfileDashboardContent() {
   const [showPassword, setShowPassword] = useState(false);
   const [securityForm, setSecurityForm] = useState({ currentPassword: '', newPassword: '', confirmPassword: '' });
   const [twoFactor, setTwoFactor] = useState(false);
+
+  // Loyalty System State
+  const [loyaltySummary, setLoyaltySummary] = useState({ credit_balance: 0, rupee_value: 0, lifetime_credits_earned: 0, lifetime_credits_redeemed: 0, status: 'ACTIVE' });
+  const [loyaltyTransactions, setLoyaltyTransactions] = useState([]);
+  const [isLoyaltyLoading, setIsLoyaltyLoading] = useState(false);
+  const [showRedeemModal, setShowRedeemModal] = useState(false);
+  const [redeemCreditsInput, setRedeemCreditsInput] = useState(50);
+  const [isRedeeming, setIsRedeeming] = useState(false);
+
+  const fetchLoyaltyData = async () => {
+    setIsLoyaltyLoading(true);
+    try {
+      const [sumRes, txRes] = await Promise.all([
+        loyaltyService.getSummary().catch(() => null),
+        loyaltyService.getTransactions(1, 30).catch(() => null)
+      ]);
+      if (sumRes?.data) setLoyaltySummary(sumRes.data);
+      const list = txRes?.data?.transactions || txRes?.transactions || [];
+      setLoyaltyTransactions(list);
+    } catch (e) {
+      console.error('Failed to load loyalty data:', e);
+    } finally {
+      setIsLoyaltyLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchLoyaltyData();
+  }, [activeTab]);
+
+  const handleRedeemCredits = async (creditsToUse) => {
+    const amount = Number(creditsToUse || redeemCreditsInput);
+    if (!amount || amount < 50 || amount % 50 !== 0) {
+      toast.error('Credits can only be redeemed in multiples of 50.');
+      return;
+    }
+    if (loyaltySummary.credit_balance < amount) {
+      toast.error('Insufficient Fahara Credits.');
+      return;
+    }
+
+    const rupeeVal = amount / 50;
+    if (!confirm(`Redeem ${amount} Fahara Credits for ₹${rupeeVal}?`)) {
+      return;
+    }
+
+    setIsRedeeming(true);
+    const toastId = toast.loading('Processing redemption...');
+    try {
+      const res = await loyaltyService.redeem(amount);
+      toast.success(res?.message || `🎉 Redeemed ${amount} Fahara Credits for ₹${rupeeVal}!`, { id: toastId });
+      setShowRedeemModal(false);
+      await fetchLoyaltyData();
+    } catch (err) {
+      console.error('Redemption error:', err);
+      toast.error(err.response?.data?.message || err.message || 'Failed to redeem credits', { id: toastId });
+    } finally {
+      setIsRedeeming(false);
+    }
+  };
 
   // Notifications Toggle State (persisted in localStorage)
   const [notifications, setNotifications] = useState({
@@ -430,6 +491,7 @@ function ProfileDashboardContent() {
 
   const tabs = [
     { id: 'personal', label: t('personalInfo', 'Personal Info'), icon: User },
+    { id: 'loyalty', label: t('faharabCredits', 'Fahara Credits'), icon: Award },
     { id: 'addresses', label: t('addresses', 'Addresses'), icon: MapPin },
     { id: 'security', label: t('security', 'Security'), icon: Shield },
     { id: 'notifications', label: t('notifications', 'Notifications'), icon: Bell },
@@ -640,7 +702,7 @@ function ProfileDashboardContent() {
                       disabled={isUploadingAvatar}
                       onClick={() => fileInputRef.current?.click()}
                       className="absolute bottom-1 right-1 bg-gradient-to-r from-[#4A2C11] to-[#6F4E37] text-white p-2 rounded-full hover:scale-110 active:scale-95 shadow-lg border-2 border-white transition-all cursor-pointer disabled:opacity-60"
-                      title="Upload profile photo"
+                      title="Upload your image within 2MB"
                     >
                       {isUploadingAvatar ? <Loader2 size={14} className="animate-spin" /> : <Camera size={14} />}
                     </button>
@@ -652,6 +714,9 @@ function ProfileDashboardContent() {
                       <CheckCircle2 size={18} className="text-amber-500 fill-amber-100" />
                     </div>
                     <p className="text-stone-500 font-bold text-xs sm:text-sm mt-0.5">{profile.email}</p>
+                    <span className="inline-block text-[10px] font-bold text-[#6F4E37] bg-[#6F4E37]/10 px-2 py-0.5 rounded-full mt-1">
+                      Upload your image within 2MB
+                    </span>
                   </div>
                 </div>
 
@@ -1148,6 +1213,265 @@ function ProfileDashboardContent() {
                 </motion.div>
               </AnimatePresence>
             )}
+
+            {/* TAB VIEW: FAHARA LOYALTY CREDITS SYSTEM */}
+            {activeTab === 'loyalty' && (
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key="loyalty-tab"
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -15 }}
+                  className="space-y-6"
+                >
+                  {/* Hero Loyalty Card */}
+                  <div className="bg-gradient-to-br from-[#2C1810] via-[#4A2C11] to-[#6F4E37] text-white rounded-3xl p-6 sm:p-8 shadow-xl relative overflow-hidden space-y-6 border border-[#DDB892]/30">
+                    <div className="absolute top-0 right-0 w-64 h-64 bg-amber-500/10 rounded-full blur-3xl -z-0 pointer-events-none" />
+                    
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 relative z-10 border-b border-white/10 pb-5">
+                      <div className="space-y-1">
+                        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-400/20 text-amber-300 text-xs font-black uppercase tracking-widest border border-amber-400/30">
+                          <Award size={14} />
+                          <span>FAHARA LOYALTY REWARDS</span>
+                        </div>
+                        <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-white">FAHARA CREDITS</h2>
+                        <p className="text-xs sm:text-sm text-stone-300 font-medium">
+                          Earn 1 Fahara Credit on every completed booking. Convert 50 credits to ₹1 cash discount!
+                        </p>
+                      </div>
+                      
+                      <button
+                        onClick={() => setShowRedeemModal(true)}
+                        disabled={loyaltySummary.credit_balance < 50}
+                        className="py-3.5 px-6 rounded-2xl bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-600 text-stone-950 font-black text-xs sm:text-sm shadow-lg hover:shadow-xl active:scale-95 transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 shrink-0 flex items-center gap-2"
+                      >
+                        <Sparkles size={16} />
+                        <span>Redeem Credits</span>
+                      </button>
+                    </div>
+
+                    {/* Balance Gauge & Conversion Card */}
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 relative z-10">
+                      {/* Main Available Credits Box */}
+                      <div className="p-5 rounded-2xl bg-white/10 backdrop-blur-md border border-white/15 space-y-2">
+                        <span className="text-[10px] font-extrabold uppercase tracking-widest text-amber-300 block">Available Balance</span>
+                        <div className="flex items-baseline gap-2">
+                          <span className="text-3xl sm:text-4xl font-black tracking-tight text-white">⭐ {loyaltySummary.credit_balance}</span>
+                          <span className="text-xs font-bold text-amber-200">Credits</span>
+                        </div>
+                        <span className="inline-block px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-xs font-bold">
+                          Worth ₹{loyaltySummary.rupee_value}
+                        </span>
+                      </div>
+
+                      {/* Earn Rule & Progress */}
+                      <div className="p-5 rounded-2xl bg-white/10 backdrop-blur-md border border-white/15 space-y-2">
+                        <span className="text-[10px] font-extrabold uppercase tracking-widest text-amber-300 block">Redemption Progress</span>
+                        <p className="text-xs font-extrabold text-white">
+                          Every 50 credits = ₹1
+                        </p>
+                        <div className="w-full bg-white/20 h-2 rounded-full overflow-hidden">
+                          <div 
+                            className="bg-amber-400 h-full rounded-full transition-all duration-500" 
+                            style={{ width: `${Math.min(100, ((loyaltySummary.credit_balance % 50) / 50) * 100)}%` }} 
+                          />
+                        </div>
+                        <p className="text-[11px] text-stone-300 font-medium">
+                          {loyaltySummary.credit_balance >= 50 
+                            ? `🎉 Ready to redeem! (${loyaltySummary.credit_balance} credits available)`
+                            : `${50 - (loyaltySummary.credit_balance % 50)} more credits to earn ₹1`
+                          }
+                        </p>
+                      </div>
+
+                      {/* Lifetime Stats */}
+                      <div className="p-5 rounded-2xl bg-white/10 backdrop-blur-md border border-white/15 space-y-2">
+                        <span className="text-[10px] font-extrabold uppercase tracking-widest text-amber-300 block">Lifetime Activity</span>
+                        <div className="flex justify-between text-xs font-bold text-stone-200 pt-1">
+                          <span>Lifetime Earned:</span>
+                          <span className="text-emerald-400 font-extrabold">+{loyaltySummary.lifetime_credits_earned} pts</span>
+                        </div>
+                        <div className="flex justify-between text-xs font-bold text-stone-200">
+                          <span>Lifetime Redeemed:</span>
+                          <span className="text-amber-300 font-extrabold">-{loyaltySummary.lifetime_credits_redeemed} pts</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Transaction History Section */}
+                  <div className="bg-white rounded-3xl shadow-xl shadow-stone-200/50 border border-stone-200/80 p-6 sm:p-8 space-y-6">
+                    <div className="flex items-center justify-between pb-4 border-b border-stone-100">
+                      <div>
+                        <h3 className="text-xl font-black text-[#2C1810] tracking-tight">Fahara Credits Transaction History</h3>
+                        <p className="text-xs text-stone-500 font-medium mt-0.5">Complete audit ledger of earned, redeemed, and adjusted loyalty credits</p>
+                      </div>
+                      <button 
+                        onClick={fetchLoyaltyData} 
+                        className="p-2 rounded-xl bg-stone-100 hover:bg-[#FFF8F0] text-stone-600 hover:text-[#6F4E37] transition-all cursor-pointer"
+                        title="Refresh transactions"
+                      >
+                        <RefreshCw size={16} className={isLoyaltyLoading ? 'animate-spin' : ''} />
+                      </button>
+                    </div>
+
+                    {isLoyaltyLoading ? (
+                      <div className="py-12 text-center text-stone-400 font-bold text-xs">
+                        Loading loyalty transaction history...
+                      </div>
+                    ) : loyaltyTransactions.length === 0 ? (
+                      <div className="py-12 text-center text-stone-400 space-y-2">
+                        <Award size={36} className="mx-auto text-amber-400/60" />
+                        <p className="font-bold text-sm text-[#2C1810]">No Credit Transactions Yet</p>
+                        <p className="text-xs text-stone-500">Complete your first booking to earn 1 Fahara Credit!</p>
+                      </div>
+                    ) : (
+                      <div className="space-y-3">
+                        {loyaltyTransactions.map((tx) => {
+                          const isEarn = tx.type === 'EARN';
+                          const isRedeem = tx.type === 'REDEEM';
+                          const isReverse = tx.type === 'REVERSE';
+
+                          return (
+                            <div 
+                              key={tx.id} 
+                              className="p-4 rounded-2xl bg-stone-50/80 border border-stone-200/70 hover:border-amber-200 transition-all flex items-center justify-between gap-4"
+                            >
+                              <div className="flex items-center gap-3.5 min-w-0">
+                                <div className={`w-10 h-10 rounded-2xl flex items-center justify-center font-black shrink-0 ${
+                                  isEarn ? 'bg-emerald-500/10 text-emerald-600 border border-emerald-500/20' :
+                                  isRedeem ? 'bg-amber-500/10 text-amber-700 border border-amber-500/20' :
+                                  isReverse ? 'bg-rose-500/10 text-rose-600 border border-rose-500/20' :
+                                  'bg-purple-500/10 text-purple-600 border border-purple-500/20'
+                                }`}>
+                                  {isEarn ? '+1' : isRedeem ? `-${tx.credits}` : isReverse ? `-${tx.credits}` : `±${tx.credits}`}
+                                </div>
+                                <div className="min-w-0">
+                                  <div className="flex items-center gap-2">
+                                    <h4 className="font-bold text-sm text-[#2C1810] truncate">{tx.reason || tx.type}</h4>
+                                    <span className={`px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider ${
+                                      isEarn ? 'bg-emerald-100 text-emerald-800' :
+                                      isRedeem ? 'bg-amber-100 text-amber-900' :
+                                      isReverse ? 'bg-rose-100 text-rose-800' :
+                                      'bg-purple-100 text-purple-800'
+                                    }`}>
+                                      {tx.type}
+                                    </span>
+                                  </div>
+                                  <p className="text-[11px] text-stone-500 font-medium mt-0.5">
+                                    {tx.created_at ? new Date(tx.created_at).toLocaleString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit' }) : 'Recent'}
+                                    {' · '}Balance: {tx.balance_after} credits
+                                  </p>
+                                </div>
+                              </div>
+
+                              <div className="text-right shrink-0">
+                                <span className={`text-base font-black ${
+                                  isEarn ? 'text-emerald-600' : isRedeem ? 'text-amber-600' : isReverse ? 'text-rose-600' : 'text-purple-600'
+                                }`}>
+                                  {isEarn ? `+${tx.credits} Credit` : `-${tx.credits} Credits`}
+                                </span>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                </motion.div>
+              </AnimatePresence>
+            )}
+
+            {/* REDEMPTION MODAL */}
+            <AnimatePresence>
+              {showRedeemModal && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-xs p-4">
+                  <motion.div 
+                    initial={{ scale: 0.9, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    exit={{ scale: 0.9, opacity: 0 }}
+                    className="bg-white rounded-3xl p-6 max-w-md w-full shadow-2xl border border-stone-200 space-y-5 relative"
+                  >
+                    <button 
+                      onClick={() => setShowRedeemModal(false)}
+                      className="absolute top-4 right-4 text-stone-400 hover:text-stone-700 bg-stone-100 p-1.5 rounded-full cursor-pointer transition-colors"
+                    >
+                      <X size={16} />
+                    </button>
+
+                    <div className="flex items-center gap-3">
+                      <div className="w-12 h-12 rounded-2xl bg-amber-500/10 text-amber-600 flex items-center justify-center font-black shadow-inner border border-amber-500/20">
+                        <Sparkles size={24} />
+                      </div>
+                      <div>
+                        <h3 className="text-lg font-black text-[#2C1810]">Redeem Fahara Credits</h3>
+                        <p className="text-xs text-stone-500 font-medium">Available: {loyaltySummary.credit_balance} Credits (Worth ₹{loyaltySummary.rupee_value})</p>
+                      </div>
+                    </div>
+
+                    {/* Quick Selection Pills */}
+                    <div className="space-y-2">
+                      <label className="text-xs font-black text-stone-600 uppercase tracking-wider block">Select Credit Amount</label>
+                      <div className="grid grid-cols-4 gap-2">
+                        {[50, 100, 150, 500].map((amt) => (
+                          <button
+                            key={amt}
+                            type="button"
+                            onClick={() => setRedeemCreditsInput(amt)}
+                            disabled={loyaltySummary.credit_balance < amt}
+                            className={`py-2.5 rounded-xl text-xs font-extrabold border transition-all cursor-pointer ${
+                              redeemCreditsInput === amt 
+                                ? 'bg-[#6F4E37] text-white border-[#6F4E37] shadow-sm' 
+                                : 'bg-stone-50 text-stone-700 border-stone-200 hover:border-amber-400 disabled:opacity-40 disabled:cursor-not-allowed'
+                            }`}
+                          >
+                            {amt} pts
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Custom Input */}
+                    <div className="space-y-1">
+                      <label className="text-xs font-bold text-stone-500 block">Custom Amount (Multiples of 50)</label>
+                      <input 
+                        type="number"
+                        step="50"
+                        min="50"
+                        max={loyaltySummary.credit_balance}
+                        value={redeemCreditsInput}
+                        onChange={(e) => setRedeemCreditsInput(Number(e.target.value))}
+                        className="w-full px-4 py-3 rounded-2xl border border-stone-200 font-black text-sm text-[#2C1810] outline-none focus:border-[#6F4E37]"
+                      />
+                    </div>
+
+                    {/* Conversion Preview Card */}
+                    <div className="p-4 rounded-2xl bg-[#FFF8F0] border border-[#DDB892]/60 flex items-center justify-between text-xs font-extrabold text-[#6F4E37]">
+                      <span>Conversion Preview:</span>
+                      <span className="text-sm font-black">{redeemCreditsInput} Credits = ₹{redeemCreditsInput / 50}</span>
+                    </div>
+
+                    <div className="flex gap-2 pt-2">
+                      <button
+                        type="button"
+                        onClick={() => setShowRedeemModal(false)}
+                        className="flex-1 py-3 rounded-2xl bg-stone-100 hover:bg-stone-200 text-stone-700 font-bold text-xs transition-colors"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        type="button"
+                        disabled={isRedeeming || loyaltySummary.credit_balance < redeemCreditsInput || redeemCreditsInput % 50 !== 0}
+                        onClick={() => handleRedeemCredits()}
+                        className="flex-1 py-3 rounded-2xl bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-600 text-stone-950 font-black text-xs shadow-md transition-all disabled:opacity-50 cursor-pointer"
+                      >
+                        {isRedeeming ? 'Processing...' : 'Confirm Redemption'}
+                      </button>
+                    </div>
+                  </motion.div>
+                </div>
+              )}
+            </AnimatePresence>
 
             {/* TAB VIEW 3: Security & Password */}
             {activeTab === 'security' && (

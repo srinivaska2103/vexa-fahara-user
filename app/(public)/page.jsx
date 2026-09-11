@@ -367,6 +367,7 @@ export default function HomePage() {
 
             {/* Mobile / Tablet Hamburger Toggle Button (< 1024px) */}
             <button 
+              suppressHydrationWarning
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               className="lg:hidden p-2.5 rounded-xl bg-[#FFF8F0] border border-[#DDB892]/60 text-[#6F4E37] hover:bg-amber-100/60 transition-all cursor-pointer"
               aria-label="Toggle Menu"

@@ -115,6 +115,7 @@ export default function NotFound() {
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search cafes, venues, or locations..."
                 className="w-full pl-11 pr-28 py-3.5 bg-white rounded-2xl border border-stone-200/90 shadow-md text-xs sm:text-sm font-bold text-[#2C1810] placeholder-stone-400 focus:outline-none focus:border-[#6F4E37] focus:ring-2 focus:ring-[#6F4E37]/20 transition-all"
+                suppressHydrationWarning
               />
               <button 
                 type="submit"

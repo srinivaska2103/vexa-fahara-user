@@ -18,6 +18,11 @@ function AuthGuard({ children }) {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const isHydrated = useAuthStore((state) => state.isHydrated);
   const [isChecking, setIsChecking] = useState(true);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     // Wait until Zustand finishes rehydrating from localStorage
@@ -48,6 +53,10 @@ function AuthGuard({ children }) {
     pathname.startsWith('/customer/invoice') ||
     pathname.startsWith('/customer/profile') ||
     pathname.startsWith('/customer/favorites');
+
+  if (!mounted) {
+    return children;
+  }
 
   if ((!isHydrated || isChecking) && isProtectedRoute && !isAuthenticated) {
     const loginUrl = `/login?redirect=${encodeURIComponent(pathname)}`;

@@ -40,10 +40,19 @@ export default function ReviewBookingPage() {
       const [startHour] = state.selectedTimeSlot.start_time.split(':');
       const [endHour] = state.selectedTimeSlot.end_time.split(':');
       
+      const isEventServicePkg = state.selectedEventCompany || (state.selectedPackage && String(state.selectedPackage.id || '').startsWith('srv_')) || (state.selectedPackage?.id === state.selectedEventCompany?.id);
+      const targetPkgId = isEventServicePkg ? null : state.selectedPackage?.id;
+      const targetEvtId = state.selectedEventCompany?.id || (isEventServicePkg ? state.selectedPackage?.id : null);
+
+      const targetInclusions = state.selectedEventCompany?.selectedInclusions?.length > 0
+        ? state.selectedEventCompany.selectedInclusions
+        : (state.selectedInclusionsPayload || null);
+
       const payload = {
         cafe_id: cafeId,
-        package_id: state.selectedPackage?.id,
-        event_service_id: state.selectedEventCompany?.id,
+        package_id: targetPkgId,
+        inclusions: targetInclusions,
+        event_service_id: targetEvtId,
         booking_date: state.selectedDate,
         start_time: `${String(startHour).padStart(2, '0')}:00:00`,
         end_time: `${String(endHour).padStart(2, '0')}:00:00`,

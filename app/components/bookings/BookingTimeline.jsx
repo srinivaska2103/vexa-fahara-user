@@ -29,25 +29,28 @@ export default function BookingTimeline({ booking }) {
   const refundAmount = refundRecord?.refund_amount || booking.refund_amount || booking.total_amount || 0;
   const refundRef = refundRecord?.razorpay_refund_id || refundRecord?.cashfree_refund_id || paymentRecord?.gateway_order_id || 'Razorpay Refund';
 
+  const categoryStr = `${booking.cafes?.category || ''} ${booking.cafes?.service_type || ''} ${booking.cafes?.name || ''}`.toLowerCase();
+  const isRestaurant = categoryStr.includes('restaur') || categoryStr.includes('restur') || Number(booking.total || booking.subtotal || 0) === 0;
+
   const isConfirmed = booking.booking_status === 'CONFIRMED' || isCompleted;
   const isPaid = booking.payment_status === 'PAID' || isRefunded || isConfirmed;
 
   const steps = [
     {
-      title: 'Booking Created',
+      title: 'Reservation Created',
       description: format(new Date(booking.created_at || new Date()), 'PPp'),
       status: 'completed',
       icon: Check
     },
-    {
+    ...(!isRestaurant ? [{
       title: 'Payment',
       description: isRefunded ? 'Refunded' : (isPaid ? 'Payment successful' : 'Pending payment'),
       status: isPaid ? 'completed' : (isCancelled ? 'cancelled' : 'current'),
       icon: isPaid ? Check : Clock
-    },
+    }] : []),
     {
       title: 'Confirmation',
-      description: isConfirmed ? 'Confirmed by host' : (isCancelled ? 'Booking cancelled' : 'Pending host confirmation'),
+      description: isConfirmed ? 'Confirmed by host' : (isCancelled ? 'Reservation cancelled' : 'Pending host confirmation'),
       status: isConfirmed ? 'completed' : (isCancelled ? 'cancelled' : (isPaid ? 'current' : 'upcoming')),
       icon: isConfirmed ? Check : (isCancelled ? X : Clock)
     }

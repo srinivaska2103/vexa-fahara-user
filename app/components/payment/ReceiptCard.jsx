@@ -83,6 +83,35 @@ export default function ReceiptCard({ receiptData }) {
 
         currentY = 80;
 
+        if (receiptData.tableDetails || receiptData.guestCount) {
+          doc.setFontSize(10);
+          doc.setTextColor(150, 150, 150);
+          doc.text('Table & Seating Details:', marginX, currentY);
+          
+          doc.setTextColor(0, 0, 0);
+          currentY += 6;
+          doc.setFontSize(10);
+          doc.setFont('helvetica', 'bold');
+          doc.text(`${receiptData.guestCount || 1} Guests  |  ${receiptData.tableDetails || 'Standard Seating'}`, marginX, currentY);
+          currentY += 10;
+        }
+
+        if (receiptData.eventPackage || (receiptData.packageInclusions && receiptData.packageInclusions.length > 0)) {
+          doc.setFontSize(10);
+          doc.setTextColor(150, 150, 150);
+          doc.text('Package & Provided Inclusions:', marginX, currentY);
+          
+          doc.setTextColor(0, 0, 0);
+          currentY += 6;
+          doc.setFontSize(10);
+          doc.setFont('helvetica', 'bold');
+          const incText = receiptData.packageInclusions && receiptData.packageInclusions.length > 0
+            ? receiptData.packageInclusions.map(i => i.name).join(', ')
+            : 'Standard Offering Included';
+          doc.text(`${receiptData.eventPackage || 'Cafe Package'}: ${incText}`, marginX, currentY);
+          currentY += 12;
+        }
+
         if (receiptData.eventCompany) {
           doc.setFontSize(10);
           doc.setTextColor(150, 150, 150);
@@ -162,8 +191,9 @@ export default function ReceiptCard({ receiptData }) {
         </div>
       </div>
 
-      <div className="p-5 sm:p-8">
-        <div className="flex flex-col sm:flex-row justify-between gap-4 mb-6 pb-6 border-b border-stone-100">
+      <div className="p-5 sm:p-8 space-y-6">
+        {/* Info Header Row */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pb-6 border-b border-stone-100">
           <div>
             <p className="text-[10px] font-black uppercase tracking-wider text-stone-400 mb-1">Billed To:</p>
             <p className="font-black text-sm sm:text-base text-[#2C1810]">{receiptData.customerName}</p>
@@ -176,14 +206,52 @@ export default function ReceiptCard({ receiptData }) {
           </div>
         </div>
 
+        {/* Table Seating & Guests Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 p-4 rounded-2xl bg-stone-50/90 border border-stone-200/80">
+          <div>
+            <span className="text-[10px] font-black uppercase tracking-wider text-[#6F4E37] block mb-0.5">Guest Count</span>
+            <p className="font-black text-xs sm:text-sm text-[#2C1810]">{receiptData.guestCount || 1} Guests</p>
+          </div>
+          <div>
+            <span className="text-[10px] font-black uppercase tracking-wider text-[#6F4E37] block mb-0.5">Reserved Table</span>
+            <p className="font-black text-xs sm:text-sm text-[#2C1810]">{receiptData.tableDetails || 'Standard Open Seating'}</p>
+          </div>
+        </div>
+
+        {/* Provided Package Inclusions */}
+        {(receiptData.eventPackage || (receiptData.packageInclusions && receiptData.packageInclusions.length > 0)) && (
+          <div className="p-4 bg-[#FFF8F0] border border-[#DDB892]/50 rounded-2xl space-y-2">
+            <div className="flex items-center justify-between">
+              <span className="text-[10px] font-black uppercase tracking-wider text-[#6F4E37]">
+                Package Inclusions ({receiptData.eventPackage || 'Cafe Package'})
+              </span>
+              <span className="text-[10px] font-black text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+                Provided
+              </span>
+            </div>
+
+            {receiptData.packageInclusions && receiptData.packageInclusions.length > 0 ? (
+              <div className="flex flex-wrap gap-1.5 pt-1">
+                {receiptData.packageInclusions.map((item, idx) => (
+                  <span key={idx} className="text-xs font-black text-[#2C1810] bg-white px-2.5 py-1 rounded-xl border border-stone-200 shadow-2xs">
+                    ✓ {item.name}{item.desc ? ` (${item.desc})` : ''}
+                  </span>
+                ))}
+              </div>
+            ) : (
+              <p className="text-xs font-bold text-stone-600">Standard venue package offering included.</p>
+            )}
+          </div>
+        )}
+
         {receiptData.eventCompany && (
-          <div className="mb-6 p-3.5 bg-[#FFF8F0] border border-[#DDB892]/40 rounded-2xl">
+          <div className="p-3.5 bg-[#FFF8F0] border border-[#DDB892]/40 rounded-2xl">
             <p className="text-[10px] font-black uppercase tracking-wider text-[#6F4E37] mb-1">Event Arrangements:</p>
             <p className="font-black text-xs sm:text-sm text-[#2C1810]">{receiptData.eventCompany} - {receiptData.eventPackage}</p>
           </div>
         )}
 
-        <div className="mb-6">
+        <div>
           <PriceBreakdown data={receiptData.priceData} />
         </div>
         

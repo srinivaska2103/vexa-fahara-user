@@ -34,12 +34,16 @@ export default function CafeInfo({ cafe }) {
                 <Building size={15} className="text-stone-500 shrink-0" /> 
                 <span className="truncate">Hosted by {users?.name || 'Fahara Verified Partner'}</span>
               </span>
-              {cafe?.allow_third_party_decoration !== false && (
-                <span className="flex items-center gap-1.5 bg-emerald-50 border border-emerald-200/80 text-emerald-800 px-3 py-1.5 rounded-xl text-xs font-black">
-                  <CheckCircle size={15} className="text-emerald-600 shrink-0" /> 
-                  <span>3rd Party Event Decoration Allowed</span>
-                </span>
-              )}
+              {(() => {
+                const categoryStr = `${cafe?.category || ''} ${cafe?.service_type || ''} ${cafe?.name || ''}`.toLowerCase();
+                const isRestaurant = categoryStr.includes('restaur') || categoryStr.includes('restur');
+                return !isRestaurant && cafe?.allow_third_party_decoration === true && (
+                  <span className="flex items-center gap-1.5 bg-emerald-50 border border-emerald-200/80 text-emerald-800 px-3 py-1.5 rounded-xl text-xs font-black">
+                    <CheckCircle size={15} className="text-emerald-600 shrink-0" /> 
+                    <span>3rd Party Event Decoration Allowed</span>
+                  </span>
+                );
+              })()}
             </div>
           </div>
         </div>

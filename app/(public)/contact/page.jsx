@@ -40,7 +40,7 @@ const faqPreviewList = [
   { id: '3', question: 'Can I reschedule my booking?', answer: 'Rescheduling depends on venue slot availability. Contact customer support at least 9 hours prior to your scheduled time.' },
   { id: '4', question: 'How do I contact a cafe?', answer: 'Host phone numbers, full address, and directions are provided on your confirmed booking receipt.' },
   { id: '5', question: 'How do I add an event service?', answer: 'Select optional decor, catering, or photography packages during the checkout step of your cafe reservation.' },
-  { id: '6', question: 'How do I report a problem?', answer: 'Submit the support form below with your booking ID or email support directly at support@fahara.com.' },
+  { id: '6', question: 'How do I report a problem?', answer: 'Submit the support form below with your booking ID or email support directly at vexatech.connect@gmail.com.' },
 ];
 
 export default function ContactPage() {

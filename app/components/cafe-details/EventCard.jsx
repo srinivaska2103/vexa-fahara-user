@@ -20,6 +20,55 @@ export default function EventCard({ event, cafeId }) {
   const placeholder = getEventPlaceholder(event.event_type);
   const Icon = placeholder.icon;
 
+  const parsedInclusions = (() => {
+    let inc = event.inclusions;
+    if (typeof inc === 'string') {
+      try { inc = JSON.parse(inc); } catch (e) { inc = {}; }
+    }
+    return inc || {};
+  })();
+
+  const foodItems = parsedInclusions.food_items || event.food_items || [];
+  const cakeItems = parsedInclusions.cake_items || event.cake_items || [];
+  const decorationItems = parsedInclusions.decoration_items || event.decoration_items || [];
+  const musicItems = parsedInclusions.music_items || event.music_items || [];
+  const otherItems = parsedInclusions.other_items || event.other_items || [];
+
+  const isFood = event.food !== undefined ? Boolean(event.food) : Boolean(parsedInclusions.food);
+  const isCake = event.cake !== undefined ? Boolean(event.cake) : Boolean(parsedInclusions.cake);
+  const isDecor = event.decoration !== undefined ? Boolean(event.decoration) : Boolean(parsedInclusions.decoration);
+  const isMusic = event.music !== undefined ? Boolean(event.music) : Boolean(parsedInclusions.music);
+  const isOther = event.other !== undefined ? Boolean(event.other) : Boolean(parsedInclusions.other);
+  const realCalculatedPrice = (() => {
+    let sum = 0;
+    const catKeys = ['food_items', 'cake_items', 'decoration_items', 'music_items', 'other_items'];
+    catKeys.forEach(key => {
+      const items = parsedInclusions[key] || event[key] || [];
+      if (Array.isArray(items)) {
+        items.forEach(i => {
+          if (i && typeof i === 'object') {
+            const p = Number(i.price || i.unitPrice || i.unit_price || i.basic_price || 0);
+            sum += p;
+          }
+        });
+      }
+    });
+    if (sum === 0 && Array.isArray(event.inclusions)) {
+      event.inclusions.forEach(inc => {
+        if (inc && typeof inc === 'object') {
+          const p = Number(inc.basic_price || inc.unit_price || inc.price || 0);
+          sum += p;
+        }
+      });
+    }
+    return sum;
+  })();
+
+  const basePrice = Number(event.price ?? event.base_price ?? 0);
+  // Display maximum of basePrice or sum of inclusions so real package value is shown accurately
+  const displayPrice = realCalculatedPrice > basePrice ? realCalculatedPrice : (basePrice > 0 ? basePrice : realCalculatedPrice);
+
+
   return (
     <div className="bg-white rounded-3xl border border-stone-200/90 overflow-hidden hover:shadow-[0_12px_35px_rgba(0,0,0,0.08)] transition-all duration-300 group flex flex-col h-full font-sans">
       <div className="h-48 relative overflow-hidden bg-stone-100">
@@ -48,10 +97,11 @@ export default function EventCard({ event, cafeId }) {
 
         {/* Inclusions Tags */}
         <div className="flex flex-wrap gap-1.5 text-[10px] font-extrabold uppercase tracking-wider mb-4">
-          {event.food && <span className="bg-emerald-50 text-emerald-700 px-2.5 py-1 rounded-lg border border-emerald-200/60">Food Incl.</span>}
-          {event.cake && <span className="bg-pink-50 text-pink-700 px-2.5 py-1 rounded-lg border border-pink-200/60">Cake</span>}
-          {event.decoration && <span className="bg-amber-50 text-amber-800 px-2.5 py-1 rounded-lg border border-amber-200/60">Decor</span>}
-          {event.music && <span className="bg-purple-50 text-purple-700 px-2.5 py-1 rounded-lg border border-purple-200/60">Music Setup</span>}
+          {isFood && <span className="bg-emerald-50 text-emerald-700 px-2.5 py-1 rounded-lg border border-emerald-200/60">Food Incl.</span>}
+          {isCake && <span className="bg-pink-50 text-pink-700 px-2.5 py-1 rounded-lg border border-pink-200/60">Cake</span>}
+          {isDecor && <span className="bg-amber-50 text-amber-800 px-2.5 py-1 rounded-lg border border-amber-200/60">Decor</span>}
+          {isMusic && <span className="bg-purple-50 text-purple-700 px-2.5 py-1 rounded-lg border border-purple-200/60">Music Setup</span>}
+          {isOther && <span className="bg-blue-50 text-blue-700 px-2.5 py-1 rounded-lg border border-blue-200/60">Other Services</span>}
         </div>
         
         {/* Specs */}
@@ -66,18 +116,13 @@ export default function EventCard({ event, cafeId }) {
           </div>
         </div>
 
-        {/* Price & Action Button */}
-        <div className="flex items-center justify-between pt-2">
-          <div>
-            <span className="text-xl font-black text-[#2C1810]">₹{price || 1999}</span>
-            <span className="text-[10px] text-stone-400 font-bold block">Flat Package</span>
-          </div>
-
+        {/* Action Button */}
+        <div className="flex items-center justify-end pt-2">
           <Link href={`/events/${id}?cafeId=${cafeId}`}>
             <motion.button 
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.95 }}
-              className="px-4.5 py-2.5 bg-gradient-to-r from-[#4A2C11] to-[#6F4E37] text-white font-black text-xs rounded-2xl flex items-center gap-1.5 transition-all shadow-md hover:shadow-lg cursor-pointer"
+              className="px-5 py-2.5 bg-gradient-to-r from-[#4A2C11] to-[#6F4E37] text-white font-black text-xs rounded-2xl flex items-center gap-1.5 transition-all shadow-md hover:shadow-lg cursor-pointer"
             >
               <Eye className="w-3.5 h-3.5" />
               <span>Details</span>

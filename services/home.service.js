@@ -27,6 +27,11 @@ export const homeService = {
     return response.data;
   },
 
+  getEventServiceById: async (id) => {
+    const response = await api.get(`/event-services/${id}`);
+    return response.data;
+  },
+
   getNearbyCafes: async (lat, lng) => {
     const response = await api.get(`/cafes?lat=${lat}&lng=${lng}&radius=10`);
     return response.data;

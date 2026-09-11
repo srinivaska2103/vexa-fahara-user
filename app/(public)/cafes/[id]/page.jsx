@@ -74,16 +74,29 @@ export default function CafeDetailsPage() {
     );
   }
 
-  const stepsList = [
-    { id: 'photos', step: '01', label: 'Photos & Gallery', icon: Camera, activeBg: 'from-amber-600 to-orange-600', badgeBg: 'bg-amber-500 text-white', iconColor: 'text-amber-600' },
-    { id: 'info', step: '02', label: 'Space Details', icon: Building2, activeBg: 'from-blue-600 to-indigo-600', badgeBg: 'bg-blue-600 text-white', iconColor: 'text-blue-600' },
-    { id: 'discounts', step: '03', label: 'Deals & Offers', icon: Flame, activeBg: 'from-amber-500 via-rose-600 to-red-600', badgeBg: 'bg-gradient-to-r from-amber-500 to-rose-600 text-white', iconColor: 'text-rose-500' },
-    { id: 'amenities', step: '04', label: 'Amenities', icon: Sparkles, activeBg: 'from-emerald-600 to-teal-600', badgeBg: 'bg-emerald-600 text-white', iconColor: 'text-emerald-600' },
-    { id: 'hours', step: '05', label: 'Business Hours', icon: Clock, activeBg: 'from-purple-600 to-violet-600', badgeBg: 'bg-purple-600 text-white', iconColor: 'text-purple-600' },
-    { id: 'packages', step: '06', label: 'Event Packages', icon: PartyPopper, activeBg: 'from-pink-600 to-rose-500', badgeBg: 'bg-pink-600 text-white', iconColor: 'text-pink-600' },
-    { id: 'location', step: '07', label: 'Location & Map', icon: MapPin, activeBg: 'from-cyan-600 to-blue-600', badgeBg: 'bg-cyan-600 text-white', iconColor: 'text-cyan-600' },
-    { id: 'reviews', step: '08', label: 'Reviews & Ratings', icon: Star, activeBg: 'from-amber-500 to-yellow-600', badgeBg: 'bg-amber-500 text-white', iconColor: 'text-amber-500' }
+  const categoryStr = `${cafe?.category || ''} ${cafe?.service_type || ''} ${cafe?.name || ''}`.toLowerCase();
+  const isRestaurant = categoryStr.includes('restaur') || categoryStr.includes('restur');
+
+  const hasDiscounts = Array.isArray(cafe?.discounts) && cafe.discounts.some(d => d && (d.title || d.name || Number(d.amount) > 0) && Number(d.amount) > 0);
+  const hasObjDiscounts = cafe?.discounts && typeof cafe.discounts === 'object' && !Array.isArray(cafe.discounts) && (Number(cafe.discounts.discount1_amount) > 0 || Number(cafe.discounts.discount2_amount) > 0);
+  const hasPkgDiscount = Array.isArray(cafe?.cafe_packages) && cafe.cafe_packages.some(p => Number(p.discount || p.discount_percentage || p.discount_amount) > 0);
+  const hasValidDiscounts = hasDiscounts || hasObjDiscounts || hasPkgDiscount;
+
+  const rawSteps = [
+    { id: 'photos', label: 'Photos & Gallery', icon: Camera, activeBg: 'from-amber-600 to-orange-600', badgeBg: 'bg-amber-500 text-white', iconColor: 'text-amber-600' },
+    { id: 'info', label: 'Space Details', icon: Building2, activeBg: 'from-blue-600 to-indigo-600', badgeBg: 'bg-blue-600 text-white', iconColor: 'text-blue-600' },
+    ...(hasValidDiscounts ? [{ id: 'discounts', label: 'Deals & Offers', icon: Flame, activeBg: 'from-amber-500 via-rose-600 to-red-600', badgeBg: 'bg-gradient-to-r from-amber-500 to-rose-600 text-white', iconColor: 'text-rose-500' }] : []),
+    { id: 'amenities', label: 'Amenities', icon: Sparkles, activeBg: 'from-emerald-600 to-teal-600', badgeBg: 'bg-emerald-600 text-white', iconColor: 'text-emerald-600' },
+    { id: 'hours', label: 'Business Hours', icon: Clock, activeBg: 'from-purple-600 to-violet-600', badgeBg: 'bg-purple-600 text-white', iconColor: 'text-purple-600' },
+    ...(!isRestaurant ? [{ id: 'packages', label: 'Event Packages', icon: PartyPopper, activeBg: 'from-pink-600 to-rose-500', badgeBg: 'bg-pink-600 text-white', iconColor: 'text-pink-600' }] : []),
+    { id: 'location', label: 'Location & Map', icon: MapPin, activeBg: 'from-cyan-600 to-blue-600', badgeBg: 'bg-cyan-600 text-white', iconColor: 'text-cyan-600' },
+    { id: 'reviews', label: 'Reviews & Ratings', icon: Star, activeBg: 'from-amber-500 to-yellow-600', badgeBg: 'bg-amber-500 text-white', iconColor: 'text-amber-500' }
   ];
+
+  const stepsList = rawSteps.map((step, idx) => ({
+    ...step,
+    step: (idx + 1).toString().padStart(2, '0')
+  }));
 
   const currentStepIndex = stepsList.findIndex(s => s.id === activeStepTab);
 
@@ -102,7 +115,7 @@ export default function CafeDetailsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#FFF8F0] font-sans antialiased selection:bg-[#6F4E37] selection:text-white pb-36 lg:pb-12">
+    <div suppressHydrationWarning className="min-h-screen bg-[#FFF8F0] font-sans antialiased selection:bg-[#6F4E37] selection:text-white pb-36 lg:pb-12">
       
       {/* Lightbox Modal */}
       <GalleryLightbox images={lightboxImages} />
@@ -328,15 +341,34 @@ export default function CafeDetailsPage() {
       {/* Mobile Fixed Floating Booking Bar (< lg screens) */}
       <div className="lg:hidden fixed bottom-[5.5rem] sm:bottom-[5.8rem] left-3 right-3 z-40 select-none">
         <div className="max-w-md mx-auto bg-white/95 backdrop-blur-xl border border-stone-200/90 rounded-2xl p-3 px-4 shadow-[0_12px_40px_rgba(0,0,0,0.12)] flex items-center justify-between gap-3">
-          <div>
-            <div className="text-lg sm:text-xl font-black text-[#2C1810] leading-none">
-              ₹{cafe?.price_per_hour || 499} <span className="font-bold text-xs text-stone-400">/ hour</span>
-            </div>
-            <span className="text-[9px] font-black text-emerald-700 uppercase tracking-wider flex items-center gap-1 mt-1">
-              <ShieldCheck size={12} className="text-emerald-600 shrink-0" />
-              <span>Instant Confirmation</span>
-            </span>
-          </div>
+          {(() => {
+            const catStr = `${cafe?.category || ''} ${cafe?.service_type || ''} ${cafe?.name || ''}`.toLowerCase();
+            const isRestaurant = catStr.includes('restaur') || catStr.includes('restur');
+            if (isRestaurant) {
+              return (
+                <div>
+                  <div className="text-sm font-black text-[#2C1810] leading-none">
+                    Restaurant Table
+                  </div>
+                  <span className="text-[9px] font-black text-emerald-700 uppercase tracking-wider flex items-center gap-1 mt-1">
+                    <ShieldCheck size={12} className="text-emerald-600 shrink-0" />
+                    <span>Free Table Reservation</span>
+                  </span>
+                </div>
+              );
+            }
+            return (
+              <div>
+                <div className="text-lg sm:text-xl font-black text-[#2C1810] leading-none">
+                  ₹{cafe?.price_per_hour || 499} <span className="font-bold text-xs text-stone-400">/ hour</span>
+                </div>
+                <span className="text-[9px] font-black text-emerald-700 uppercase tracking-wider flex items-center gap-1 mt-1">
+                  <ShieldCheck size={12} className="text-emerald-600 shrink-0" />
+                  <span>Instant Confirmation</span>
+                </span>
+              </div>
+            );
+          })()}
 
           <motion.button 
             whileHover={{ scale: 1.03 }}

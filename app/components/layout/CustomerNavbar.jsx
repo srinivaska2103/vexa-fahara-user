@@ -18,6 +18,7 @@ import toast from 'react-hot-toast';
 import api from '@/lib/axios';
 
 import { profileService } from '@/services/profile.service';
+import { loyaltyService } from '@/services/loyalty.service';
 
 export default function CustomerNavbar({ 
   showSearch = false, 
@@ -35,6 +36,7 @@ export default function CustomerNavbar({
 
   const [profileImage, setProfileImage] = useState(user?.avatar || user?.profile_image || null);
   const [imageError, setImageError] = useState(false);
+  const [loyaltyCredits, setLoyaltyCredits] = useState(0);
 
   useEffect(() => {
     if (!user) return;
@@ -53,7 +55,20 @@ export default function CustomerNavbar({
       }
     };
 
+    const fetchLoyalty = async () => {
+      try {
+        const res = await loyaltyService.getSummary().catch(() => null);
+        const data = res?.data || res;
+        if (data && typeof data.credit_balance !== 'undefined') {
+          setLoyaltyCredits(data.credit_balance);
+        }
+      } catch (err) {
+        // ignore
+      }
+    };
+
     fetchUserProfile();
+    fetchLoyalty();
   }, [user]);
 
   useEffect(() => {
@@ -163,6 +178,17 @@ export default function CustomerNavbar({
           
           {/* Right: Notifications & Profile */}
           <div className="flex items-center gap-1.5 sm:gap-3 flex-shrink-0 ml-auto" suppressHydrationWarning>
+
+            {/* Fahara Loyalty Credit Badge */}
+            {user && (
+              <Link href="/customer/profile?tab=loyalty" title="View Fahara Loyalty Credits">
+                <div className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 bg-gradient-to-r from-amber-50 via-[#FFF8F0] to-orange-50 border border-amber-200/90 rounded-xl text-[#2C1810] font-black text-xs shadow-2xs hover:shadow-md hover:scale-105 active:scale-95 transition-all duration-300 cursor-pointer">
+                  <span className="text-amber-500 text-sm leading-none drop-shadow-2xs">⭐</span>
+                  <span className="font-extrabold text-[#4A2C11]">{loyaltyCredits}</span>
+                  <span className="text-[10px] text-[#6F4E37] font-bold hidden sm:inline uppercase tracking-wider">Credits</span>
+                </div>
+              </Link>
+            )}
 
             {/* Notifications Dropdown Container */}
             <div className="relative" ref={notifRef} suppressHydrationWarning>
@@ -296,6 +322,14 @@ export default function CustomerNavbar({
                     </div>
 
                     {/* Navigation Options */}
+                    <Link 
+                      href="/customer/profile?tab=loyalty" 
+                      onClick={() => setIsProfileMenuOpen(false)}
+                      className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-amber-900 bg-amber-50/70 border border-amber-200/60 hover:bg-amber-100/80 transition-colors"
+                    >
+                      <span className="text-amber-500 text-sm">⭐</span> Fahara Credits ({loyaltyCredits})
+                    </Link>
+
                     <Link 
                       href="/customer/profile" 
                       onClick={() => setIsProfileMenuOpen(false)}

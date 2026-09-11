@@ -6,9 +6,9 @@ import { motion } from 'framer-motion';
 
 export default function DiscountsSection({ cafe }) {
   const discountsList = Array.isArray(cafe?.discounts)
-    ? cafe.discounts
+    ? cafe.discounts.filter(d => d && (d.title || d.name || Number(d.amount) > 0) && Number(d.amount) > 0)
     : (cafe?.discounts && typeof cafe.discounts === 'object')
-      ? Object.values(cafe.discounts).filter(Boolean)
+      ? Object.values(cafe.discounts).filter(d => d && (d.title || d.name || d.discount1_title || d.discount2_title) && (Number(d.amount) > 0 || Number(d.discount1_amount) > 0 || Number(d.discount2_amount) > 0))
       : [];
 
   const CARD_THEMES = [
@@ -52,9 +52,9 @@ export default function DiscountsSection({ cafe }) {
       {discountsList.length === 0 ? (
         <div className="text-center py-10 space-y-3 bg-[#FFF8F0]/60 rounded-2xl border border-dashed border-[#DDB892]/60">
           <Gift className="w-10 h-10 text-stone-300 mx-auto" />
-          <p className="text-xs font-bold text-[#2C1810]">No Active Promotional Offers Right Now</p>
+          <p className="text-xs sm:text-sm font-black text-[#2C1810]">The venue is not providing discounts</p>
           <p className="text-[11px] text-stone-500 max-w-sm mx-auto">
-            Check back soon! Venue management frequently posts early bird and seasonal discounts.
+            This venue currently has no active promotional deals or discount offers.
           </p>
         </div>
       ) : (

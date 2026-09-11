@@ -25,5 +25,10 @@ export const cafeDetailsService = {
   getEventPackageById: async (id) => {
     const response = await api.get(`/cafes/packages/${id}`); 
     return response.data;
+  },
+
+  getCafeTables: async (id) => {
+    const response = await api.get(`/cafes/${id}/tables`);
+    return response.data;
   }
 };

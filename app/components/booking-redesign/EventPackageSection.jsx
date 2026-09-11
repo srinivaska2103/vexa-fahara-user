@@ -11,24 +11,52 @@ export default function EventPackageSection({ cafe }) {
   if (cafe && cafe.cafe_packages && cafe.cafe_packages.length > 0) {
     // Show the cafe's own packages
     sourceName = cafe.name;
-    packages = cafe.cafe_packages.map(pkg => ({
-      ...pkg,
-      id: pkg._id || pkg.id,
-      name: pkg.package_name || pkg.event_type || 'Cafe Package',
-      description: pkg.description || '',
-      price: pkg.price || cafe.price_per_hour || 0,
-      duration_hours: pkg.duration_hours || 2,
-      max_guests: pkg.maximum_persons || pkg.max_guests || 20,
-      rating: cafe.rating || 4.5,
-      image: pkg.cover_image || cafe.images?.[0] || 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=500&q=80',
-      inclusions: [
-        pkg.food && 'Food',
-        pkg.cake && 'Cake',
-        pkg.decoration && 'Decoration',
-        pkg.music && 'Music',
-        ...(Array.isArray(pkg.inclusions) ? pkg.inclusions : (typeof pkg.inclusions === 'string' ? pkg.inclusions.split(',') : []))
-      ].filter(Boolean)
-    }));
+    packages = cafe.cafe_packages.map(pkg => {
+      let inc = pkg.inclusions;
+      if (typeof inc === 'string') {
+        try { inc = JSON.parse(inc); } catch (e) { inc = {}; }
+      }
+      inc = inc || {};
+      const directPkgPrice = Number(pkg.price);
+      let calculatedTierSum = 0;
+      const categories = [
+        inc.food_items || pkg.food_items,
+        inc.cake_items || pkg.cake_items,
+        inc.decoration_items || pkg.decoration_items,
+        inc.music_items || pkg.music_items,
+        inc.other_items || pkg.other_items
+      ];
+      categories.forEach(items => {
+        if (Array.isArray(items) && items.length > 0) {
+          items.forEach(item => {
+            calculatedTierSum += Number(item?.price || item?.unitPrice || item?.unit_price || item?.basic_price || 0);
+          });
+        }
+      });
+
+      const finalPrice = calculatedTierSum > directPkgPrice 
+        ? calculatedTierSum 
+        : (!isNaN(directPkgPrice) && directPkgPrice > 0 ? directPkgPrice : calculatedTierSum);
+
+      return {
+        ...pkg,
+        id: pkg._id || pkg.id,
+        name: pkg.package_name || pkg.event_type || 'Cafe Package',
+        description: pkg.description || '',
+        price: finalPrice,
+        duration_hours: pkg.duration_hours || 2,
+        max_guests: pkg.maximum_persons || pkg.max_guests || 20,
+        rating: cafe.rating || 4.5,
+        image: pkg.cover_image || cafe.images?.[0] || 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=500&q=80',
+        inclusions: [
+          pkg.food && 'Food',
+          pkg.cake && 'Cake',
+          pkg.decoration && 'Decoration',
+          pkg.music && 'Music',
+          ...(Array.isArray(pkg.inclusions) ? pkg.inclusions : (typeof pkg.inclusions === 'string' ? pkg.inclusions.split(',') : []))
+        ].filter(Boolean)
+      };
+    });
   }
 
   // If there are no packages available from either source, don't render the section
@@ -119,11 +147,7 @@ export default function EventPackageSection({ cafe }) {
                   </div>
                 </div>
                 
-                <div className="flex items-center text-[#2C1810] mb-6">
-                  <IndianRupee size={16} className="mr-1 text-gray-400" />
-                  <span className="text-lg font-bold">₹{pkg.price}</span> 
-                  <span className="ml-1 text-gray-600 text-sm font-medium">Base Price</span>
-                </div>
+                {/* Price hidden per user requirement */}
                 
                 <button 
                   onClick={(e) => {

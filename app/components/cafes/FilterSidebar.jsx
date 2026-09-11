@@ -11,7 +11,7 @@ import {
   PlusCircle, ShieldAlert, Headphones, ArrowRight, Star, Clock, Calendar,
   PhoneCall, Mail, X, CheckCircle, User, MapPin, Shield, Bell, Settings, ChevronRight, Heart,
   LayoutGrid, Repeat, RefreshCw, CreditCard, BarChart3, HelpCircle, LogOut,
-  Cake, Briefcase, PartyPopper
+  Cake, Briefcase, PartyPopper, Award
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLanguage } from '@/context/LanguageContext';
@@ -132,6 +132,7 @@ export default function FilterSidebar({ showNavigation = true, showHeader = true
   const eventChips = [
     { id: '', label: 'All' },
     { id: 'Coffee Shop', label: 'Coffee Shop' },
+    { id: 'Restaurant', label: 'Restaurant' },
     { id: 'Party Hall', label: 'Party Hall' },
     { id: 'Bakery & Cafe', label: 'Bakery & Cafe' },
     { id: 'Bistro', label: 'Bistro' },
@@ -238,6 +239,7 @@ export default function FilterSidebar({ showNavigation = true, showHeader = true
                 <h4 className="font-black text-stone-400 text-[9px] uppercase tracking-widest px-1 mb-1">PROFILE NAVIGATION</h4>
                 {[
                   { id: 'personal', label: 'Personal Information', icon: User },
+                  { id: 'loyalty', label: 'Fahara Credits', icon: Award },
                   { id: 'addresses', label: 'Addresses', icon: MapPin },
                   { id: 'security', label: 'Security', icon: Shield },
                   { id: 'notifications', label: 'Notifications', icon: Bell },
@@ -420,6 +422,7 @@ export default function FilterSidebar({ showNavigation = true, showHeader = true
                   return (
                     <motion.button
                       key={opt.id}
+                      suppressHydrationWarning
                       whileHover={{ scale: 1.03, y: -1 }}
                       whileTap={{ scale: 0.95 }}
                       onClick={() => toggleAmenity(opt.id)}

@@ -7,7 +7,7 @@ import {
   Map, LayoutGrid, SlidersHorizontal, Loader2, Coffee, Sparkles, 
   Cake, Briefcase, PartyPopper, Heart, Users2, Camera, Music, 
   Utensils, GlassWater, ArrowRight, Sun, Umbrella, Building2, Layers, Check,
-  Flame, Percent, Tag, Zap
+  Flame, Percent, Tag, Zap, UtensilsCrossed
 } from 'lucide-react';
 import { useState } from 'react';
 import dynamic from 'next/dynamic';
@@ -113,6 +113,15 @@ const CATEGORY_SECTIONS = [
     keywords: ['coffee', 'coffee shop'],
     pillColor: 'bg-gradient-to-tr from-amber-700 to-amber-500 text-white border-amber-600/60',
     headerBadge: 'bg-amber-100/90 text-amber-900 border-amber-300/80',
+  },
+  {
+    id: 'Restaurant',
+    title: 'Restaurants',
+    subtitle: 'Great dining spots for family dinners, fine dining & delicious meals.',
+    icon: UtensilsCrossed,
+    keywords: ['restaurant', 'resturant', 'dining', 'family dining'],
+    pillColor: 'bg-gradient-to-tr from-orange-700 to-amber-600 text-white border-orange-600/60',
+    headerBadge: 'bg-orange-100/90 text-orange-900 border-orange-300/80',
   },
   {
     id: 'Bakery & Cafe',
@@ -317,15 +326,19 @@ export default function AdvancedCafeDiscoveryPage() {
       const cafeName = (cafe.name || cafe.title || '').toString().toLowerCase();
 
       if (secId === 'discounts & offers' || secId === 'discounts') {
-        const hasDiscounts = Array.isArray(cafe.discounts) && cafe.discounts.length > 0;
-        const hasPkgDiscount = (cafe.cafe_packages || []).some(p => p.discount || p.discount_percentage || p.discount_amount);
-        return hasDiscounts || hasPkgDiscount || true; // Fallback to all cafes with discount offers
+        const hasDiscounts = Array.isArray(cafe.discounts) && cafe.discounts.some(d => (d.title || d.name || Number(d.amount) > 0) && Number(d.amount) > 0);
+        const hasObjDiscounts = cafe.discounts && typeof cafe.discounts === 'object' && !Array.isArray(cafe.discounts) && (Number(cafe.discounts.discount1_amount) > 0 || Number(cafe.discounts.discount2_amount) > 0);
+        const hasPkgDiscount = Array.isArray(cafe.cafe_packages) && cafe.cafe_packages.some(p => Number(p.discount || p.discount_percentage || p.discount_amount) > 0);
+        return hasDiscounts || hasObjDiscounts || hasPkgDiscount;
       }
 
       if (cafeCat === secId) return true;
 
       if (secId === 'coffee shop') {
         return cafeCat.includes('coffee') || cafeCat === 'coffee shop' || cafeName.includes('coffee');
+      }
+      if (secId === 'restaurant') {
+        return cafeCat.includes('restaurant') || cafeCat.includes('resturant') || cafeName.includes('restaurant') || cafeName.includes('resturant');
       }
       if (secId === 'bakery & cafe') {
         return cafeCat.includes('bakery') || cafeCat.includes('bakery & cafe');

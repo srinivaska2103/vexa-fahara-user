@@ -9,6 +9,11 @@ export default function AvailableEvents({ cafe }) {
   const router = useRouter();
   const events = cafe?.cafe_packages || [];
 
+  const categoryStr = `${cafe?.category || ''} ${cafe?.service_type || ''} ${cafe?.name || ''}`.toLowerCase();
+  const isRestaurant = categoryStr.includes('restaur') || categoryStr.includes('restur');
+
+  if (isRestaurant) return null;
+
   if (events.length === 0) {
     return (
       <div className="mb-8" id="packages">

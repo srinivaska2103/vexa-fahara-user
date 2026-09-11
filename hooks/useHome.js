@@ -36,6 +36,15 @@ export const usePopularEvents = () => {
   });
 };
 
+export const useEventServiceById = (id) => {
+  return useQuery({
+    queryKey: ['event-service', id],
+    queryFn: () => homeService.getEventServiceById(id),
+    enabled: !!id,
+    staleTime: 1000 * 60 * 5,
+  });
+};
+
 export const useNearbyCafes = (lat, lng) => {
   return useQuery({
     queryKey: ['cafes', 'nearby', lat, lng],

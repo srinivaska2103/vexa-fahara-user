@@ -34,3 +34,12 @@ export const useEventPackage = (id) => {
     staleTime: 5 * 60 * 1000,
   });
 };
+
+export const useCafeTables = (id) => {
+  return useQuery({
+    queryKey: ['cafe-tables', id],
+    queryFn: () => cafeDetailsService.getCafeTables(id),
+    enabled: !!id,
+    staleTime: 5 * 60 * 1000,
+  });
+};

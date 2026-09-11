@@ -5,7 +5,7 @@ import { checkIfCafeOpen, parseTimeToMinutes, formatMinutesTo12Hour } from '@/li
 
 export default function BusinessHours({ cafe }) {
   const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-  const todayDayName = new Date().toLocaleDateString('en-US', { weekday: 'long' });
+  const todayDayName = new Date().toLocaleDateString('en-US', { weekday: 'long', timeZone: 'Asia/Kolkata' });
   const isCurrentlyOpen = checkIfCafeOpen(cafe);
   
   return (
@@ -35,17 +35,42 @@ export default function BusinessHours({ cafe }) {
             const isToday = day.toLowerCase() === todayDayName.toLowerCase();
             
             let timeObj = null;
-            if (cafe?.cafe_business_hours && Array.isArray(cafe.cafe_business_hours)) {
-              const hourRecord = cafe.cafe_business_hours.find(h => (h.day_of_week || '').toLowerCase() === day.toLowerCase());
+            if (cafe?.cafe_business_hours && Array.isArray(cafe.cafe_business_hours) && cafe.cafe_business_hours.length > 0) {
+              const hourRecord = cafe.cafe_business_hours.find(h => 
+                (h.day_of_week || h.dayOfWeek || h.day || '').toString().trim().toLowerCase() === day.toLowerCase()
+              );
               if (hourRecord) {
                 timeObj = {
-                  isOpen: !hourRecord.is_closed,
-                  open: hourRecord.open_time,
-                  close: hourRecord.close_time
+                  is_closed: hourRecord.is_closed ?? hourRecord.isClosed ?? hourRecord.isClosedDay,
+                  open: hourRecord.open_time || hourRecord.openTime || hourRecord.open,
+                  close: hourRecord.close_time || hourRecord.closeTime || hourRecord.close
                 };
               }
-            } else if (cafe?.business_hours) {
-              timeObj = cafe.business_hours[day.toLowerCase()];
+            }
+            
+            if (!timeObj && (cafe?.business_hours || cafe?.operating_hours || cafe?.operatingHours || cafe?.hours)) {
+              const bh = cafe.business_hours || cafe.operating_hours || cafe.operatingHours || cafe.hours;
+              if (Array.isArray(bh)) {
+                const hourRecord = bh.find(h => 
+                  (h.day_of_week || h.dayOfWeek || h.day || '').toString().trim().toLowerCase() === day.toLowerCase()
+                );
+                if (hourRecord) {
+                  timeObj = {
+                    is_closed: hourRecord.is_closed ?? hourRecord.isClosed,
+                    open: hourRecord.open_time || hourRecord.openTime || hourRecord.open,
+                    close: hourRecord.close_time || hourRecord.closeTime || hourRecord.close
+                  };
+                }
+              } else if (bh && typeof bh === 'object') {
+                const rawObj = bh[day.toLowerCase()] || bh[day];
+                if (rawObj) {
+                  timeObj = {
+                    is_closed: rawObj.is_closed ?? rawObj.isClosed,
+                    open: rawObj.open_time || rawObj.openTime || rawObj.open,
+                    close: rawObj.close_time || rawObj.closeTime || rawObj.close
+                  };
+                }
+              }
             }
 
             const formatTime = (timeStr) => {
@@ -55,7 +80,10 @@ export default function BusinessHours({ cafe }) {
               return formatMinutesTo12Hour(minutes);
             };
 
-            const isOpen = timeObj ? timeObj.isOpen : true;
+            const isClosed = timeObj 
+              ? (timeObj.is_closed === true || timeObj.isClosed === true || timeObj.isOpen === false || String(timeObj.is_closed).toLowerCase() === 'true') 
+              : false;
+            const isOpen = !isClosed;
             let timeString = 'Closed';
             if (isOpen) {
                const openStr = formatTime(timeObj?.open) || '10:00 AM';

@@ -12,11 +12,11 @@ export default function StickyBookingCard({ cafe }) {
   const isOpen = checkIfCafeOpen(cafe);
 
   const discountsList = Array.isArray(cafe?.discounts)
-    ? cafe.discounts
+    ? cafe.discounts.filter(d => d && (d.title || d.name || Number(d.amount) > 0) && Number(d.amount) > 0)
     : (cafe?.discounts && typeof cafe.discounts === 'object')
-      ? Object.values(cafe.discounts).filter(Boolean)
+      ? Object.values(cafe.discounts).filter(d => d && (d.title || d.name || d.discount1_title || d.discount2_title) && (Number(d.amount) > 0 || Number(d.discount1_amount) > 0 || Number(d.discount2_amount) > 0))
       : [];
-  const activeDeal = discountsList[0];
+  const activeDeal = discountsList.length > 0 && Number(discountsList[0]?.amount) > 0 ? discountsList[0] : null;
 
   const handleStartBooking = () => {
     if (!isOpen) return;

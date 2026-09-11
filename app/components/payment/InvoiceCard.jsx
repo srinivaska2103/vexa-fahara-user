@@ -97,23 +97,19 @@ export default function InvoiceCard({ invoiceData }) {
         currentY += 5;
 
         const tableData = [];
-        const mainService = (!invoiceData.eventCompany && invoiceData.eventPackage) 
-          ? 'Cafe Booking & Package Charges' 
-          : 'Cafe Booking Charges';
-          
-        let mainAmount = (!invoiceData.eventCompany && invoiceData.eventPackage) 
-          ? ((invoiceData.priceData?.cafeCharges || 0) + (invoiceData.priceData?.eventCharges || 0))
-          : (invoiceData.priceData?.cafeCharges || 0);
-
-        tableData.push([
-          `${mainService}\n${invoiceData.cafeName} (${invoiceData.guests} Guests)`,
-          `Rs. ${mainAmount.toFixed(2)}`
-        ]);
-
-        if (invoiceData.eventCompany) {
+        if (invoiceData.priceData?.cafeCharges > 0 && invoiceData.priceData?.eventCharges > 0) {
           tableData.push([
-            `Event Package: ${invoiceData.eventPackage || 'Custom'}\nProvided by ${invoiceData.eventCompany}`,
-            `Rs. ${(invoiceData.priceData?.eventCharges || 0).toFixed(2)}`
+            `Cafe Charges\n${invoiceData.cafeName || 'Cafe'} (${invoiceData.guests || 1} Guests)`,
+            `Rs. ${(invoiceData.priceData.cafeCharges).toFixed(2)}`
+          ]);
+          tableData.push([
+            `Event Package: ${invoiceData.eventPackage || 'Custom Package'}\nProvided by ${invoiceData.eventCompany || 'Event Manager'}`,
+            `Rs. ${(invoiceData.priceData.eventCharges).toFixed(2)}`
+          ]);
+        } else {
+          tableData.push([
+            `${invoiceData.isRestaurant ? 'Restaurant Table Reservation' : (invoiceData.eventPackage ? `Cafe Package (${invoiceData.eventPackage})` : 'Cafe Booking Charges')}\n${invoiceData.cafeName || 'Cafe'} (${invoiceData.guests || 1} Guests)`,
+            invoiceData.isRestaurant ? 'Free' : `Rs. ${subtotalVal.toFixed(2)}`
           ]);
         }
 
@@ -132,13 +128,13 @@ export default function InvoiceCard({ invoiceData }) {
         // Payment Info
         doc.setFontSize(10);
         doc.setFont('helvetica', 'bold');
-        doc.text('Payment Information', marginX, currentY);
+        doc.text(invoiceData.isRestaurant ? 'Reservation Information' : 'Payment Information', marginX, currentY);
         
         currentY += 6;
         doc.setFont('helvetica', 'normal');
-        doc.text(`Method: ${invoiceData.paymentMethod || 'Online'}`, marginX, currentY);
+        doc.text(`Method: ${invoiceData.paymentMethod || 'Direct Table Reservation'}`, marginX, currentY);
         currentY += 6;
-        doc.text(`Status: ${invoiceData.paymentStatus || 'PAID'}`, marginX, currentY);
+        doc.text(`Status: ${invoiceData.isRestaurant ? 'TABLE RESERVED' : (invoiceData.paymentStatus || 'PAID')}`, marginX, currentY);
         currentY += 6;
         doc.text(`Date: ${invoiceData.paymentDate || ''}`, marginX, currentY);
 
@@ -146,19 +142,43 @@ export default function InvoiceCard({ invoiceData }) {
         currentY = doc.lastAutoTable.finalY + 15;
         const totalsX = 130;
         
-        doc.setFontSize(10);
-        doc.text('Subtotal:', totalsX, currentY);
-        doc.text(`Rs. ${(invoiceData.priceData?.subtotal || 0).toFixed(2)}`, 196, currentY, { align: 'right' });
-        
-        currentY += 6;
-        doc.text('Platform Fee:', totalsX, currentY);
-        doc.text(`Rs. ${(invoiceData.priceData?.platformFee || 0).toFixed(2)}`, 196, currentY, { align: 'right' });
-        
-        currentY += 8;
-        doc.setFont('helvetica', 'bold');
-        doc.setFontSize(12);
-        doc.text('Total Amount:', totalsX, currentY);
-        doc.text(`Rs. ${(invoiceData.priceData?.grandTotal || 0).toFixed(2)}`, 196, currentY, { align: 'right' });
+        if (invoiceData.isRestaurant) {
+          doc.setFontSize(10);
+          doc.text('Table Reservation:', totalsX, currentY);
+          doc.text('FREE', 196, currentY, { align: 'right' });
+          
+          currentY += 6;
+          doc.text('Platform / Convenience Fee:', totalsX, currentY);
+          doc.text('Rs. 0.00', 196, currentY, { align: 'right' });
+
+          currentY += 8;
+          doc.setFont('helvetica', 'bold');
+          doc.setFontSize(12);
+          doc.text('Total Due Online:', totalsX, currentY);
+          doc.text('Rs. 0.00', 196, currentY, { align: 'right' });
+        } else {
+          doc.setFontSize(10);
+          doc.text('Subtotal:', totalsX, currentY);
+          doc.text(`Rs. ${(invoiceData.priceData?.subtotal || 0).toFixed(2)}`, 196, currentY, { align: 'right' });
+          
+          currentY += 6;
+          doc.text('Platform Fee (3%):', totalsX, currentY);
+          doc.text(`Rs. ${platformFeeVal.toFixed(2)}`, 196, currentY, { align: 'right' });
+
+          currentY += 6;
+          doc.text('Transaction Fee (3%):', totalsX, currentY);
+          doc.text(`Rs. ${txnFeeDisplay.toFixed(2)}`, 196, currentY, { align: 'right' });
+
+          currentY += 6;
+          doc.text('GST (18% on Txn Fee):', totalsX, currentY);
+          doc.text(`Rs. ${gstDisplay.toFixed(2)}`, 196, currentY, { align: 'right' });
+          
+          currentY += 8;
+          doc.setFont('helvetica', 'bold');
+          doc.setFontSize(12);
+          doc.text('Grand Total:', totalsX, currentY);
+          doc.text(`Rs. ${grandTotalVal.toFixed(2)}`, 196, currentY, { align: 'right' });
+        }
 
         doc.save(`Invoice_${invoiceData.invoiceNumber || 'Document'}.pdf`);
       });
@@ -194,10 +214,10 @@ export default function InvoiceCard({ invoiceData }) {
       `}</style>
       
       {/* Top Header Section */}
-      <div className="p-4 sm:p-6 print:p-4 border-b border-stone-100 bg-gradient-to-r from-white via-[#FFF8F0]/40 to-white flex flex-row justify-between items-start gap-4">
+      <div className="p-4 sm:p-6 print:p-4 border-b border-stone-100 bg-gradient-to-r from-white via-[#FFF8F0]/40 to-white flex flex-col sm:flex-row justify-between items-start gap-4">
         <div>
           <div className="flex items-center gap-2 mb-1.5">
-            <div className="w-8 h-8 rounded-xl bg-[#6F4E37] text-white flex items-center justify-center font-black text-xs shadow-md border border-amber-200/50 print:w-7 print:h-7">
+            <div className="w-8 h-8 rounded-xl bg-[#6F4E37] text-white flex items-center justify-center font-black text-xs shadow-md border border-amber-200/50 print:w-7 print:h-7 shrink-0">
               F
             </div>
             <div>
@@ -206,17 +226,17 @@ export default function InvoiceCard({ invoiceData }) {
             </div>
           </div>
 
-          <h1 className="text-2xl sm:text-3xl print:text-xl font-black text-[#2C1810] tracking-tight mb-1">INVOICE</h1>
+          <h1 className="text-xl sm:text-3xl print:text-xl font-black text-[#2C1810] tracking-tight mb-1">INVOICE</h1>
           <div className="space-y-0.5 text-[11px] print:text-[10px] text-stone-500 font-medium">
             <p>Invoice No: <span className="font-black text-[#6F4E37]">{invoiceData.invoiceNumber}</span></p>
             <p>Date of Issue: <span className="font-bold text-[#2C1810]">{invoiceData.invoiceDate}</span></p>
           </div>
         </div>
 
-        <div className="text-right bg-stone-50/80 p-3 print:p-2.5 rounded-xl border border-stone-200/60 max-w-[260px]">
-          <div className="flex items-center gap-1.5 justify-end text-[#6F4E37] mb-1">
-            <Building2 size={16} />
-            <h2 className="text-sm print:text-xs font-black text-[#2C1810] truncate">{invoiceData.cafeName || 'Partner Cafe'}</h2>
+        <div className="text-left sm:text-right bg-stone-50/80 p-3 print:p-2.5 rounded-xl border border-stone-200/60 w-full sm:max-w-[260px]">
+          <div className="flex items-center gap-1.5 justify-start sm:justify-end text-[#6F4E37] mb-1">
+            <Building2 size={16} className="shrink-0" />
+            <h2 className="text-xs sm:text-sm print:text-xs font-black text-[#2C1810] truncate">{invoiceData.cafeName || 'Partner Cafe'}</h2>
           </div>
           <p className="text-[10px] print:text-[9px] text-stone-500 font-medium leading-tight">Priyanka Avaneu, C-42, Malligai, 91, APK Main Rd</p>
           <p className="text-[10px] print:text-[9px] text-stone-500 font-medium leading-tight">Vedugal, Avaniyapuram, Madurai, TN 625022</p>
@@ -226,13 +246,13 @@ export default function InvoiceCard({ invoiceData }) {
 
       {/* Customer & Booking Details Section */}
       <div className="p-4 sm:p-6 print:p-4 border-b border-stone-100 bg-white">
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 sm:gap-4">
           <div className="bg-[#FFF8F0]/70 p-3.5 print:p-3 rounded-xl border border-[#DDB892]/40">
             <h3 className="text-[9px] uppercase font-black text-[#6F4E37] tracking-widest mb-1.5 flex items-center gap-1.5">
               <span>INVOICE TO</span>
             </h3>
             <p className="font-black text-xs sm:text-sm print:text-xs text-[#2C1810]">{invoiceData.customerName}</p>
-            <p className="text-[11px] print:text-[10px] text-stone-600 font-medium mt-0.5">{invoiceData.customerEmail}</p>
+            <p className="text-[11px] print:text-[10px] text-stone-600 font-medium mt-0.5 truncate">{invoiceData.customerEmail}</p>
             <p className="text-[11px] print:text-[10px] text-stone-600 font-medium">{invoiceData.customerPhone}</p>
           </div>
 
@@ -263,31 +283,45 @@ export default function InvoiceCard({ invoiceData }) {
               </tr>
             </thead>
             <tbody className="text-xs print:text-[11px] divide-y divide-stone-100">
-              <tr>
-                <td className="py-2.5 pl-1">
-                  <p className="font-black text-[#2C1810]">
-                    {(!invoiceData.eventCompany && invoiceData.eventPackage) ? 'Cafe Booking & Package Charges' : 'Cafe Booking Charges'}
-                  </p>
-                  <p className="text-stone-500 text-[11px] print:text-[10px] font-medium mt-0.5">
-                    {invoiceData.cafeName} ({invoiceData.guests} Guests)
-                    {(!invoiceData.eventCompany && invoiceData.eventPackage) ? ` • Includes ${invoiceData.eventPackage}` : ''}
-                  </p>
-                </td>
-                <td className="py-2.5 text-right pr-1 font-black text-[#2C1810]">
-                  ₹{(!invoiceData.eventCompany && invoiceData.eventPackage) 
-                    ? ((invoiceData.priceData.cafeCharges || 0) + (invoiceData.priceData.eventCharges || 0)).toFixed(2) 
-                    : (invoiceData.priceData.cafeCharges || 0).toFixed(2)}
-                </td>
-              </tr>
-
-              {invoiceData.eventCompany && (
+              {invoiceData.priceData?.cafeCharges > 0 && invoiceData.priceData?.eventCharges > 0 ? (
+                <>
+                  <tr>
+                    <td className="py-2.5 pl-1">
+                      <p className="font-black text-[#2C1810]">Cafe Charges</p>
+                      <p className="text-stone-500 text-[11px] print:text-[10px] font-medium mt-0.5">
+                        {invoiceData.cafeName} ({invoiceData.guests} Guests)
+                      </p>
+                    </td>
+                    <td className="py-2.5 text-right pr-1 font-black text-[#2C1810]">
+                      ₹{(invoiceData.priceData.cafeCharges).toFixed(2)}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="py-2.5 pl-1">
+                      <p className="font-black text-[#2C1810]">
+                        Event Package: {invoiceData.eventPackage || 'Custom Package'}
+                      </p>
+                      {invoiceData.eventCompany && (
+                        <p className="text-stone-500 text-[11px] print:text-[10px] font-medium mt-0.5">Provided by {invoiceData.eventCompany}</p>
+                      )}
+                    </td>
+                    <td className="py-2.5 text-right pr-1 font-black text-[#2C1810]">
+                      ₹{(invoiceData.priceData.eventCharges).toFixed(2)}
+                    </td>
+                  </tr>
+                </>
+              ) : (
                 <tr>
                   <td className="py-2.5 pl-1">
-                    <p className="font-black text-[#2C1810]">Event Package: {invoiceData.eventPackage || 'Custom Package'}</p>
-                    <p className="text-stone-500 text-[11px] print:text-[10px] font-medium mt-0.5">Provided by {invoiceData.eventCompany}</p>
+                    <p className="font-black text-[#2C1810]">
+                      {invoiceData.isRestaurant ? 'Restaurant Table Reservation' : (invoiceData.eventPackage ? `Cafe Package (${invoiceData.eventPackage})` : 'Cafe Booking Charges')}
+                    </p>
+                    <p className="text-stone-500 text-[11px] print:text-[10px] font-medium mt-0.5">
+                      {invoiceData.cafeName} ({invoiceData.guests} Guests)
+                    </p>
                   </td>
                   <td className="py-2.5 text-right pr-1 font-black text-[#2C1810]">
-                    ₹{(invoiceData.priceData.eventCharges || 0).toFixed(2)}
+                    {invoiceData.isRestaurant ? 'Free' : `₹${subtotalVal.toFixed(2)}`}
                   </td>
                 </tr>
               )}
@@ -296,58 +330,75 @@ export default function InvoiceCard({ invoiceData }) {
         </div>
 
         {/* Payment Summary Box */}
-        <div className="grid grid-cols-2 gap-4 pt-2">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
           <div className="p-3.5 print:p-3 bg-emerald-50/60 rounded-xl border border-emerald-200/80">
             <h4 className="text-[9px] font-black text-emerald-800 uppercase tracking-widest mb-1.5 flex items-center gap-1.5">
               <ShieldCheck size={14} className="text-emerald-600" />
-              <span>Payment Information</span>
+              <span>{invoiceData.isRestaurant ? 'Reservation Information' : 'Payment Information'}</span>
             </h4>
             <div className="text-[11px] print:text-[10px] text-stone-600 space-y-1 font-medium">
-              <p>Status: <span className="font-black text-emerald-700">PAID & VERIFIED</span></p>
-              <p>Payment Method: <span className="font-bold text-[#2C1810]">{invoiceData.paymentMethod}</span></p>
+              <p>Status: <span className="font-black text-emerald-700">{invoiceData.isRestaurant ? 'TABLE RESERVED' : 'PAID & VERIFIED'}</span></p>
+              <p>Type: <span className="font-bold text-[#2C1810]">{invoiceData.isRestaurant ? 'Direct Table Reservation (No Online Fee)' : invoiceData.paymentMethod}</span></p>
               <p>Date: <span className="font-bold text-[#2C1810]">{invoiceData.paymentDate}</span></p>
             </div>
           </div>
           
           <div className="bg-gradient-to-br from-[#FFF8F0] to-[#F5EBE0] p-3.5 print:p-3 rounded-xl border border-[#DDB892]/60 shadow-2xs">
-            <div className="space-y-1.5 text-[11px] print:text-[10px] font-medium">
-              <div className="flex justify-between text-stone-600">
-                <span>Subtotal</span>
-                <span className="font-bold text-[#2C1810]">₹{(invoiceData.priceData.subtotal || 0).toFixed(2)}</span>
+            {invoiceData.isRestaurant ? (
+              <div className="space-y-1 text-[11px] print:text-[10px] font-medium">
+                <div className="flex justify-between text-emerald-800 font-extrabold">
+                  <span>Table Reservation Charge</span>
+                  <span>FREE</span>
+                </div>
+                <div className="flex justify-between text-stone-500 text-[10px]">
+                  <span>Platform / Convenience Fee</span>
+                  <span>₹0.00</span>
+                </div>
+                <div className="border-t border-[#DDB892]/60 pt-2 flex justify-between font-black text-sm print:text-xs text-[#6F4E37] mt-1">
+                  <span>Total Due Online</span>
+                  <span className="text-[#4A2C11]">₹0.00</span>
+                </div>
               </div>
-              <div className="flex justify-between text-stone-600">
-                <span>Platform Fee (3%)</span>
-                <span className="font-bold text-[#2C1810]">₹{platformFeeVal.toFixed(2)}</span>
+            ) : (
+              <div className="space-y-1.5 text-[11px] print:text-[10px] font-medium">
+                <div className="flex justify-between text-stone-600">
+                  <span>Subtotal</span>
+                  <span className="font-bold text-[#2C1810]">₹{(invoiceData.priceData.subtotal || 0).toFixed(2)}</span>
+                </div>
+                <div className="flex justify-between text-stone-600">
+                  <span>Platform Fee (3%)</span>
+                  <span className="font-bold text-[#2C1810]">₹{platformFeeVal.toFixed(2)}</span>
+                </div>
+                <div className="flex justify-between text-stone-600">
+                  <span>Transaction Fee (3%)</span>
+                  <span className="font-bold text-[#2C1810]">₹{txnFeeDisplay.toFixed(2)}</span>
+                </div>
+                <div className="flex justify-between text-stone-600">
+                  <span>GST (18% on Txn Fee)</span>
+                  <span className="font-bold text-[#2C1810]">₹{gstDisplay.toFixed(2)}</span>
+                </div>
+                <div className="border-t border-[#DDB892]/60 pt-2 flex justify-between font-black text-sm print:text-xs text-[#6F4E37] mt-1">
+                  <span>Grand Total</span>
+                  <span className="text-[#4A2C11]">₹{grandTotalVal.toFixed(2)}</span>
+                </div>
               </div>
-              <div className="flex justify-between text-stone-600">
-                <span>Transaction Fee (3%)</span>
-                <span className="font-bold text-[#2C1810]">₹{txnFeeDisplay.toFixed(2)}</span>
-              </div>
-              <div className="flex justify-between text-stone-600">
-                <span>GST (18% on Txn Fee)</span>
-                <span className="font-bold text-[#2C1810]">₹{gstDisplay.toFixed(2)}</span>
-              </div>
-              <div className="border-t border-[#DDB892]/60 pt-2 flex justify-between font-black text-sm print:text-xs text-[#6F4E37] mt-1">
-                <span>Grand Total</span>
-                <span className="text-[#4A2C11]">₹{grandTotalVal.toFixed(2)}</span>
-              </div>
-            </div>
+            )}
           </div>
         </div>
 
       </div>
 
       {/* Interactive Footer (Hidden when printing) */}
-      <div className="bg-gradient-to-r from-[#4A2C11] to-[#6F4E37] text-white p-5 flex flex-row justify-between items-center gap-4 print:hidden">
-        <p className="text-xs font-bold opacity-90 text-left">
-          Thank you for booking with Fahara! Need help? Contact info@fahara.com
+      <div className="bg-gradient-to-r from-[#4A2C11] to-[#6F4E37] text-white p-4 sm:p-5 flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3.5 print:hidden">
+        <p className="text-xs font-medium opacity-90 text-left leading-relaxed">
+          Thank you for booking with Fahara! Need help? Contact <span className="font-bold underline">vexatech.connect@gmail.com</span>
         </p>
-        <div className="flex gap-2.5">
+        <div className="flex items-center gap-2.5 shrink-0">
           <motion.button 
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.95 }}
             onClick={handlePrint} 
-            className="flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-white/15 hover:bg-white/25 transition-all text-xs font-black cursor-pointer border border-white/20"
+            className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-white/15 hover:bg-white/25 transition-all text-xs font-black cursor-pointer border border-white/20"
           >
             <Printer size={15} />
             <span>Print</span>
@@ -357,7 +408,7 @@ export default function InvoiceCard({ invoiceData }) {
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.95 }}
             onClick={handleDownloadPDF} 
-            className="flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-white text-[#6F4E37] hover:bg-amber-50 transition-all text-xs font-black cursor-pointer shadow-md"
+            className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-white text-[#6F4E37] hover:bg-amber-50 transition-all text-xs font-black cursor-pointer shadow-md"
           >
             <Download size={15} />
             <span>Download PDF</span>

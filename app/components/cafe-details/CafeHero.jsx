@@ -16,6 +16,7 @@ export default function CafeHero({ cafe }) {
     name, 
     average_rating, 
     google_rating,
+    google_reviews_link,
     total_reviews, 
     status,
     city,
@@ -88,13 +89,32 @@ export default function CafeHero({ cafe }) {
           {/* Sub-header Rating & Location */}
           <div className="flex flex-wrap items-center gap-3 text-xs sm:text-sm font-bold text-stone-600">
             {/* Rating Pill */}
-            <div className="flex items-center bg-[#FFF8F0] text-[#4A2C11] border border-[#DDB892]/60 px-3 py-1.5 rounded-xl shadow-2xs font-extrabold">
-              <Star size={15} className="fill-amber-500 text-amber-500 mr-1.5" />
-              <span>{rating}</span>
-              <span className="text-stone-400 font-semibold ml-1.5">
-                ({reviewsCount} {t('reviews', 'reviews')})
-              </span>
-            </div>
+            {google_reviews_link || cafe?.google_rating_link || cafe?.google_review_url ? (
+              <a 
+                href={google_reviews_link || cafe?.google_rating_link || cafe?.google_review_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                title="Open original Google Reviews page"
+                className="flex items-center bg-[#FFF8F0] hover:bg-[#F5EBE0] text-[#4A2C11] border border-[#DDB892]/60 hover:border-[#6F4E37] px-3 py-1.5 rounded-xl shadow-2xs font-extrabold transition-all cursor-pointer group/glink"
+              >
+                <Star size={15} className="fill-amber-500 text-amber-500 mr-1.5 group-hover/glink:scale-110 transition-transform" />
+                <span>{rating}</span>
+                <span className="text-stone-400 font-semibold ml-1.5">
+                  ({reviewsCount} {t('reviews', 'reviews')})
+                </span>
+                <span className="ml-2 text-[10px] font-black text-[#6F4E37] bg-white/80 px-2 py-0.5 rounded-md border border-[#DDB892]/40 shadow-2xs">
+                  Google Reviews ↗
+                </span>
+              </a>
+            ) : (
+              <div className="flex items-center bg-[#FFF8F0] text-[#4A2C11] border border-[#DDB892]/60 px-3 py-1.5 rounded-xl shadow-2xs font-extrabold">
+                <Star size={15} className="fill-amber-500 text-amber-500 mr-1.5" />
+                <span>{rating}</span>
+                <span className="text-stone-400 font-semibold ml-1.5">
+                  ({reviewsCount} {t('reviews', 'reviews')})
+                </span>
+              </div>
+            )}
             
             <span className="text-stone-300 hidden sm:inline">•</span>
             

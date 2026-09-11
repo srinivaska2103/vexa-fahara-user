@@ -236,7 +236,14 @@ export default function BookingDetailsPage() {
             </div>
             <div className="flex items-center gap-2 flex-wrap">
               <BookingStatusBadge status={booking.booking_status} />
-              {booking.payment_status === 'PAID' && <BookingStatusBadge status="PAID" />}
+              {(() => {
+                const categoryStr = `${booking.cafes?.category || ''} ${booking.cafes?.service_type || ''} ${booking.cafes?.name || ''}`.toLowerCase();
+                const isRestaurant = categoryStr.includes('restaur') || categoryStr.includes('restur') || Number(booking.total || booking.subtotal || 0) === 0;
+                if (!isRestaurant && booking.payment_status === 'PAID') {
+                  return <BookingStatusBadge status="PAID" />;
+                }
+                return null;
+              })()}
             </div>
           </div>
 
@@ -245,6 +252,41 @@ export default function BookingDetailsPage() {
             
             {/* Left Col (2 Columns on Desktop): Booking Details Card & Manage Actions */}
             <div className="xl:col-span-2 space-y-6">
+              
+              {/* FAHARA LOYALTY CREDIT BANNER */}
+              <div className={`p-4 sm:p-5 rounded-3xl border flex items-center justify-between gap-4 shadow-2xs ${
+                booking.booking_status === 'COMPLETED'
+                  ? 'bg-gradient-to-r from-emerald-500/10 via-emerald-50 to-white border-emerald-300 text-emerald-950'
+                  : 'bg-gradient-to-r from-[#FFF8F0] via-amber-50 to-white border-[#DDB892]/60 text-[#2C1810]'
+              }`}>
+                <div className="flex items-center gap-3">
+                  <div className={`w-10 h-10 rounded-2xl flex items-center justify-center font-black shrink-0 ${
+                    booking.booking_status === 'COMPLETED' ? 'bg-emerald-600 text-white' : 'bg-[#6F4E37] text-amber-300'
+                  }`}>
+                    ⭐
+                  </div>
+                  <div>
+                    <h4 className="font-extrabold text-sm sm:text-base">
+                      {booking.booking_status === 'COMPLETED'
+                        ? '🎉 You earned 1 Fahara Credit!'
+                        : 'Earn 1 Fahara Credit after completing this booking.'
+                      }
+                    </h4>
+                    <p className="text-xs text-stone-500 font-medium mt-0.5">
+                      {booking.booking_status === 'COMPLETED'
+                        ? 'Your loyalty balance has been credited with +1 point.'
+                        : 'Completed bookings automatically award 1 loyalty credit (50 credits = ₹1).'
+                      }
+                    </p>
+                  </div>
+                </div>
+
+                <Link href="/customer/profile?tab=loyalty">
+                  <button className="px-3.5 py-2 rounded-2xl bg-white border border-stone-200 hover:border-amber-400 text-stone-800 font-bold text-xs shadow-2xs transition-all cursor-pointer whitespace-nowrap">
+                    View Credits
+                  </button>
+                </Link>
+              </div>
               
               {/* Refund Summary Card (Rendered for Cancelled or Refunded Bookings) */}
               {(booking.booking_status === 'CANCELLED' || booking.booking_status === 'REJECTED' || booking.payment_status === 'REFUNDED' || booking.payment_status === 'PARTIALLY_REFUNDED') && (

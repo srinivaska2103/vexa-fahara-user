@@ -32,22 +32,31 @@ function PaymentPageContent() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
+  const [pricingBreakdown, setPricingBreakdown] = useState(null);
+
   useEffect(() => {
     if (!bookingId) {
       setIsLoading(false);
       return;
     }
-    const fetchBooking = async () => {
+    const fetchBookingData = async () => {
       try {
-        const response = await bookingService.getBookingById(bookingId);
-        setBooking(response.data);
+        const [bookingRes, pricingRes] = await Promise.all([
+          bookingService.getBookingById(bookingId),
+          bookingService.getBookingPricing(bookingId).catch(() => null)
+        ]);
+        const pricingObj = pricingRes?.data?.data || pricingRes?.data || null;
+        setBooking(bookingRes?.data || bookingRes);
+        if (pricingObj) {
+          setPricingBreakdown(pricingObj);
+        }
       } catch (error) {
         toast.error("Failed to load booking details");
       } finally {
         setIsLoading(false);
       }
     };
-    fetchBooking();
+    fetchBookingData();
   }, [bookingId]);
 
   const handleProceedPayment = async (selectedMethod) => {
@@ -165,28 +174,167 @@ function PaymentPageContent() {
 
   // Resolve inclusions
   let inclusions = [];
-  if (booking.packages) {
-    const pkg = booking.packages;
-    if (pkg.food) inclusions.push('Food & Beverages');
-    if (pkg.cake) inclusions.push('Custom Celebration Cake');
-    if (pkg.decoration) inclusions.push('Event Decoration Setup');
-    if (pkg.music) inclusions.push('Background Music');
-    if (Array.isArray(pkg.inclusions)) inclusions.push(...pkg.inclusions);
-    else if (typeof pkg.inclusions === 'string' && pkg.inclusions.trim()) inclusions.push(...pkg.inclusions.split(','));
+  const guestCount = Number(booking?.total_persons || 1);
+  const parseInclusionsObj = (inc, isTemplate = false) => {
+    if (!inc || typeof inc !== 'object') return;
+
+    const catMap = [
+      { key: 'food_items', activeKey: 'food', label: 'Food & Catering' },
+      { key: 'cake_items', activeKey: 'cake', label: 'Celebration Cake' },
+      { key: 'decoration_items', activeKey: 'decoration', label: 'Decoration' },
+      { key: 'music_items', activeKey: 'music', label: 'Music' },
+      { key: 'other_items', activeKey: 'other', label: 'Other Inclusions' }
+    ];
+
+    let processedAnyCategory = false;
+
+    catMap.forEach(({ key, activeKey, label }) => {
+      const isActive = inc[activeKey] !== undefined ? Boolean(inc[activeKey]) : true;
+      if (isActive && Array.isArray(inc[key]) && inc[key].length > 0) {
+        processedAnyCategory = true;
+        let itemsToProcess = [];
+        if (Array.isArray(inc[key])) {
+          if (inc[key].length === 1) {
+            itemsToProcess = [inc[key][0]];
+          } else if (Array.isArray(inc.selectedInclusions) && inc.selectedInclusions.length > 0) {
+            const matched = inc[key].filter(item => {
+              const itemName = typeof item === 'string' ? item : (item.name || item.tierName || item.tier || '');
+              if (!itemName) return false;
+              const target = String(itemName).toLowerCase();
+              return inc.selectedInclusions.some(str => {
+                const s = String(str).toLowerCase();
+                if (!s.includes(label.toLowerCase())) return false;
+                const afterColon = s.includes(':') ? s.split(':')[1].trim() : s;
+                return afterColon.includes(target) || target === afterColon;
+              });
+            });
+            if (matched.length > 0) itemsToProcess = matched;
+          }
+        }
+
+        if (itemsToProcess.length === 0 && inc[key].length === 1) {
+          itemsToProcess = [inc[key][0]];
+        }
+
+        itemsToProcess.forEach(item => {
+          if (typeof item === 'string') {
+            inclusions.push(`${label}: ${item}`);
+          } else if (item && typeof item === 'object') {
+            const rawName = item.name || item.tierName || item.tier || '';
+            const name = rawName ? (rawName.charAt(0).toUpperCase() + rawName.slice(1)) : '';
+            const price = Number(item.price || item.unitPrice || 0);
+            const pType = String(item.pricing_type || item.pricingType || (key === 'food_items' ? 'PER_GUEST' : 'FIXED')).toUpperCase();
+            const itemAmt = pType === 'PER_GUEST' ? price * guestCount : price;
+            const desc = item.description || item.desc || '';
+            const descStr = (desc && desc.toLowerCase() !== name.toLowerCase()) ? ` — ${desc}` : '';
+
+            if (pType === 'PER_GUEST') {
+              inclusions.push(`${label}: ${name}${descStr} (+₹${price}/guest × ${guestCount} guests = ₹${itemAmt})`);
+            } else if (pType === 'PER_UNIT') {
+              const qty = Math.max(1, Number(item.quantity || item.qty || 1));
+              inclusions.push(`${label}: ${name}${descStr} (+₹${price}/unit × ${qty} = ₹${itemAmt})`);
+            } else {
+              inclusions.push(`${label}: ${name}${descStr} (+₹${price})`);
+            }
+          }
+        });
+      }
+    });
+
+    if (!processedAnyCategory && Array.isArray(inc.selectedInclusions) && inc.selectedInclusions.length > 0) {
+      inclusions.push(...inc.selectedInclusions);
+    }
+  };
+
+  if (booking.inclusions) {
+    let inc = booking.inclusions;
+    if (typeof inc === 'string') {
+      try { inc = JSON.parse(inc); } catch (e) { inc = []; }
+    }
+    if (Array.isArray(inc)) {
+      inc.forEach(item => {
+        if (typeof item === 'string') {
+          inclusions.push(item);
+        } else if (item && typeof item === 'object') {
+          const rawName = item.item_name || item.name || 'Item';
+          const rawTier = item.tier_name || item.tierName || '';
+          const formattedTier = rawTier ? (rawTier.charAt(0).toUpperCase() + rawTier.slice(1).toLowerCase()) : '';
+          const desc = item.description || item.desc || '';
+          const price = Number(item.unit_price ?? item.unitPrice ?? item.price ?? 0);
+          const pType = String(item.pricing_type || item.pricingType || 'FIXED').toUpperCase();
+          const qty = Number(item.quantity || 1);
+          const itemAmt = Number(item.amount ?? (pType === 'PER_GUEST' ? price * guestCount : price * qty));
+          const descStr = (desc && desc.toLowerCase() !== formattedTier.toLowerCase()) ? ` (${desc})` : '';
+          const tierStr = formattedTier ? `: ${formattedTier}${descStr}` : (descStr ? `: ${descStr}` : '');
+          const calcStr = pType === 'PER_GUEST' 
+            ? `₹${price.toFixed(2)} × ${guestCount} guests = ₹${itemAmt.toFixed(2)}` 
+            : `₹${price.toFixed(2)} × ${qty} = ₹${itemAmt.toFixed(2)}`;
+          inclusions.push(`${rawName}${tierStr} • ${calcStr}`);
+        }
+      });
+    } else {
+      parseInclusionsObj(inc, false);
+    }
   }
+
+  if (inclusions.length === 0 && booking.packages) {
+    const pkg = booking.packages;
+    let pkgInc = pkg.inclusions;
+    if (typeof pkgInc === 'string') {
+      try { pkgInc = JSON.parse(pkgInc); } catch (e) { pkgInc = null; }
+    }
+    parseInclusionsObj(pkgInc, true);
+
+    if (inclusions.length === 0) {
+      if (pkgInc?.food || pkg.food) inclusions.push('Food & Beverages');
+      if (pkgInc?.cake || pkg.cake) inclusions.push('Custom Celebration Cake');
+      if (pkgInc?.decoration || pkg.decoration) inclusions.push('Event Decoration Setup');
+      if (pkgInc?.music || pkg.music) inclusions.push('Background Music');
+    }
+  }
+
+  const pricingInclusionStrings = (() => {
+    if (!pricingBreakdown) return null;
+    const cafeItems = pricingBreakdown.cafe?.items || pricingBreakdown.cafeInclusions || [];
+    const eventItems = pricingBreakdown.event?.items || pricingBreakdown.eventInclusions || [];
+    // Include ALL items — cafe charge is shown as a top-level item too
+    const allItems = [...cafeItems, ...eventItems];
+    if (allItems.length === 0) return null;
+    return allItems.map(i => {
+      const isCafeCharge = i.itemType === 'CAFE_CHARGE';
+      const name = i.name || i.itemName || 'Item';
+      const selectedTier = i.selectedTier || {};
+      const rawTier = selectedTier.level || selectedTier.name || i.tierLevel || i.tierName || i.level || null;
+      const formattedTier = rawTier ? (rawTier.charAt(0).toUpperCase() + rawTier.slice(1).toLowerCase()) : '';
+      const desc = i.description || '';
+      const descPart = !isCafeCharge && desc ? ` (${desc})` : '';
+      const tierStr = formattedTier ? ` (${formattedTier}${descPart})` : (descPart ? ` (${descPart})` : '');
+      // Use pre-computed calculation string from backend if available
+      const calc = i.calculation || (isCafeCharge ? `₹${(i.unitPrice || 0).toFixed(2)} total` : `₹${(i.unitPrice || 0).toFixed(2)} × ${i.guestCount || i.quantity || 1} = ₹${(i.amount || 0).toFixed(2)}`);
+      return `${name}${tierStr} • ${calc}`;
+    });
+  })();
+
+  const resolvedInclusions = (pricingInclusionStrings && pricingInclusionStrings.length > 0)
+    ? pricingInclusionStrings
+    : inclusions.filter(Boolean);
 
   const bookingData = {
     bookingNumber: booking.booking_number,
     cafeName: booking.cafes?.name,
     cafeImage: booking.cafes?.cover_image || booking.cafes?.images?.[0] || null,
     address: booking.cafes?.address || booking.cafes?.city || '',
-    date: new Date(booking.booking_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+    date: (() => {
+      if (!booking.booking_date) return '';
+      const d = new Date(booking.booking_date);
+      return isNaN(d.getTime()) ? String(booking.booking_date) : d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' });
+    })(),
     time: timeDisplay,
     duration: `${booking.hours} ${Number(booking.hours) === 1 ? 'Hour' : 'Hours'}`,
     guests: booking.total_persons,
     eventCompany: booking.event_services?.users?.event_management_profiles?.company_name || booking.event_services?.users?.name || null,
     eventPackage: booking.packages?.package_name || booking.packages?.name || booking.event_services?.service_name || null,
-    packageInclusions: inclusions.filter(Boolean),
+    packageInclusions: resolvedInclusions,
     specialRequest: booking.special_request || null,
     eventSpecialRequest: booking.event_special_request || null,
     customerName: booking.users?.name || null,
@@ -196,7 +344,14 @@ function PaymentPageContent() {
     managerPhone: booking.cafes?.users?.phone || null,
   };
 
-  const priceData = {
+  const priceData = pricingBreakdown ? {
+    ...pricingBreakdown,
+    platformFee: pricingBreakdown.platformFee,
+    transactionFee: pricingBreakdown.transactionFee,
+    gst: pricingBreakdown.gst,
+    packageInclusions: resolvedInclusions,
+    inclusions: resolvedInclusions
+  } : {
     cafeCharges: parseFloat(booking.cafe_amount) || 0,
     eventCharges: parseFloat(booking.event_service_amount) || 0,
     additionalCharges: (parseFloat(booking.food_amount) || 0) + (parseFloat(booking.decoration_amount) || 0) + (parseFloat(booking.extra_person_amount) || 0),
@@ -206,8 +361,9 @@ function PaymentPageContent() {
     transactionFee: parseFloat(booking.transaction_fee) || 0,
     gst: parseFloat(booking.gst) || 0,
     grandTotal: parseFloat(booking.total) || 0,
-    isCafePackage: !!booking.package_id && !booking.event_services,
-    eventPackageName: booking.packages?.package_name || ''
+    isCafePackage: !!booking.package_id || !booking.event_services,
+    packageInclusions: resolvedInclusions,
+    inclusions: resolvedInclusions
   };
 
   return (

@@ -146,7 +146,13 @@ export default function MyBookingsPage() {
             ) : filteredBookings.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6">
                 {filteredBookings.map((booking) => (
-                  <BookingCard key={booking.id} booking={booking} />
+                  <BookingCard 
+                    key={booking.id} 
+                    booking={booking} 
+                    onDeleteSuccess={(deletedId) => {
+                      setBookings(prev => prev.filter(b => b.id !== deletedId));
+                    }}
+                  />
                 ))}
               </div>
             ) : (

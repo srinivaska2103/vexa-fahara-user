@@ -11,6 +11,11 @@ export const bookingService = {
     return response.data;
   },
 
+  getBookingPricing: async (id) => {
+    const response = await api.get(`/bookings/${id}/pricing`);
+    return response.data;
+  },
+
   getMyBookings: async () => {
     const response = await api.get('/bookings/my-bookings');
     return response.data;

@@ -90,6 +90,7 @@ export default function FaharaInteractiveLoader({
 
         {/* Interactive Logo Container Card */}
         <motion.button
+          suppressHydrationWarning
           whileHover={{ scale: 1.08 }}
           whileTap={{ scale: 0.94 }}
           onClick={() => setInteractiveCount((c) => c + 1)}
