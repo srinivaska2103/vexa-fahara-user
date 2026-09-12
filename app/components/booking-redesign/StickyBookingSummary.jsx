@@ -83,9 +83,14 @@ export default function StickyBookingSummary({ cafeName, selectedInclusionsPaylo
       const targetPackageId = isEventServicePackage ? null : (selectedPackage ? selectedPackage.id : null);
       const targetEventServiceId = selectedEventCompany ? selectedEventCompany.id : (isEventServicePackage ? selectedPackage?.id : null);
 
-      const targetInclusions = selectedEventCompany?.selectedInclusions?.length > 0 
+      const rawTargetInclusions = selectedEventCompany?.selectedInclusions?.length > 0 
         ? selectedEventCompany.selectedInclusions 
         : (selectedInclusionsPayload || useBookingStore.getState().selectedInclusionsPayload || null);
+
+      // Ensure inclusions is an Array or null (for restaurants or standard bookings)
+      const targetInclusions = Array.isArray(rawTargetInclusions) 
+        ? rawTargetInclusions 
+        : (rawTargetInclusions && typeof rawTargetInclusions === 'object' ? Object.values(rawTargetInclusions) : null);
 
       const payload = {
         cafe_id: useBookingStore.getState().cafeId,
