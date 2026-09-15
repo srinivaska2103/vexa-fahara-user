@@ -9,8 +9,14 @@ export default function AvailableEvents({ cafe }) {
   const router = useRouter();
   const events = cafe?.cafe_packages || [];
 
-  const categoryStr = `${cafe?.category || ''} ${cafe?.service_type || ''} ${cafe?.name || ''}`.toLowerCase();
-  const isRestaurant = categoryStr.includes('restaur') || categoryStr.includes('restur');
+  const categoryStr = `${cafe?.category || ''} ${cafe?.service_type || ''} ${cafe?.category_name || ''} ${cafe?.name || ''}`.toLowerCase();
+  const isRestaurant = 
+    categoryStr.includes('restaur') || 
+    categoryStr.includes('restur') ||
+    cafe?.role === 'RESTAURANT_OWNER' ||
+    cafe?.user_type === 'RESTAURANT_OWNER' ||
+    (cafe?.users && (cafe.users.user_type === 'RESTAURANT_OWNER' || cafe.users.role === 'RESTAURANT_OWNER' || cafe.users.roles?.name === 'RESTAURANT_OWNER')) ||
+    (cafe?.owner && (cafe.owner.user_type === 'RESTAURANT_OWNER' || cafe.owner.role === 'RESTAURANT_OWNER' || cafe.owner.roles?.name === 'RESTAURANT_OWNER'));
 
   if (isRestaurant) return null;
 

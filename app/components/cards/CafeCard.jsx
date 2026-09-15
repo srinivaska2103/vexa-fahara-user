@@ -76,6 +76,13 @@ export default function CafeCard({ cafe }) {
       setHeartAnim(true);
       setTimeout(() => setHeartAnim(false), 800);
       toast.success(favorite ? 'Removed from Saved Favorites' : 'Added to Saved Favorites!');
+
+      // Persist to backend and record analytics event
+      try {
+        const api = require('@/lib/axios').default;
+        api.post('/favorites/toggle', { cafeId }).catch(() => {});
+        api.post('/analytics/events', { cafe_id: cafeId, event_type: 'WISHLIST_ADD', source: 'website' }).catch(() => {});
+      } catch (err) {}
     }
   };
 
@@ -336,34 +343,46 @@ export default function CafeCard({ cafe }) {
           </div>
         </div>
 
-        {/* Compact Price & Inline CTA Button */}
-        <div className="pt-2 border-t border-stone-100 flex items-center justify-between gap-2">
-          {hasValidPrice ? (
-            <div>
-              <div className="flex items-baseline">
+        {/* Capability-Driven Responsive Action Footer */}
+        <div className="pt-2.5 border-t border-stone-100 flex flex-wrap items-center justify-between gap-2">
+          {(
+            cafe?.is_walking_cafe === true || 
+            cafe?.is_walking_cafe === 'true' || 
+            (cafe?.users && (cafe.users.user_type === 'WALKING_CAFE_OWNER' || cafe.users.role === 'WALKING_CAFE_OWNER' || cafe.users.roles?.name === 'WALKING_CAFE_OWNER')) ||
+            (cafe?.owner && (cafe.owner.user_type === 'WALKING_CAFE_OWNER' || cafe.owner.role === 'WALKING_CAFE_OWNER' || cafe.owner.roles?.name === 'WALKING_CAFE_OWNER')) ||
+            (cafe?.category || cafe?.service_type || '').toString().toLowerCase().includes('walking cafe')
+          ) ? (
+            <span className="text-[10px] sm:text-[11px] font-extrabold text-emerald-800 bg-emerald-50 border border-emerald-300/60 px-2 sm:px-2.5 py-1.5 rounded-xl shrink-0 truncate flex items-center gap-1">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse" />
+              Walking Cafe
+            </span>
+          ) : hasValidPrice ? (
+            <div className="flex flex-col min-w-0">
+              <div className="flex items-baseline gap-0.5">
                 <span className="text-base sm:text-lg font-black text-[#2C1810] tracking-tight">₹{numPrice}</span>
-                <span className="text-[9px] font-bold text-stone-400 uppercase tracking-wider ml-0.5">/hr</span>
+                <span className="text-[10px] font-bold text-stone-400 uppercase tracking-wider">/hr</span>
               </div>
-              <span className="text-[8px] font-black text-emerald-700 bg-emerald-50 px-1.5 py-0.2 rounded border border-emerald-200/60 block w-max mt-0.5">Instant Booking</span>
+              <span className="text-[8px] font-black text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200/60 block w-max">Instant Booking</span>
             </div>
           ) : (
-            <div>
-              <span className="text-xs font-extrabold text-[#6F4E37] bg-[#FFF8F0] border border-[#DDB892]/50 px-2.5 py-1 rounded-lg">
-                {isRestaurant ? 'Table Dining' : 'Table Reservation'}
-              </span>
-            </div>
+            <span className="text-[10px] sm:text-[11px] font-extrabold text-[#6F4E37] bg-[#FFF8F0] border border-[#DDB892]/60 px-2 sm:px-2.5 py-1.5 rounded-xl shrink-0 truncate">
+              Table Reservation
+            </span>
           )}
 
-          {/* Compact Primary CTA Button */}
-          <Link href={`/cafes/${cafeId}`}>
-            <motion.button 
-              whileTap={{ scale: 0.95 }}
-              className="py-2 px-3.5 bg-gradient-to-r from-[#4A2C11] via-[#5A3825] to-[#6F4E37] hover:from-[#361f0a] hover:to-[#573d2a] text-white font-black rounded-xl text-xs flex items-center justify-center gap-1.5 shadow-md hover:shadow-lg hover:shadow-[#4A2C11]/25 transition-all duration-300 active:scale-95 cursor-pointer group/btn shrink-0"
-            >
-              <span>View Details</span>
-              <ArrowRight size={13} className="group-hover/btn:translate-x-1 transition-transform" />
-            </motion.button>
-          </Link>
+          <div className="flex items-center gap-1.5 ml-auto flex-shrink-0">
+            {/* Primary CTA Button */}
+            <Link href={`/cafes/${cafeId}`}>
+              <motion.button 
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.95 }}
+                className="py-1.5 sm:py-2 px-3 sm:px-3.5 bg-gradient-to-r from-[#4A2C11] via-[#5A3825] to-[#6F4E37] hover:from-[#361f0a] hover:to-[#573d2a] text-white font-black rounded-xl text-xs flex items-center justify-center gap-1.5 shadow-md hover:shadow-lg hover:shadow-[#4A2C11]/25 transition-all duration-300 cursor-pointer group/btn shrink-0"
+              >
+                <span className="whitespace-nowrap">View Details</span>
+                <ArrowRight size={13} className="group-hover/btn:translate-x-1 transition-transform shrink-0" />
+              </motion.button>
+            </Link>
+          </div>
         </div>
 
       </div>

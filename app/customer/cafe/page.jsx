@@ -7,7 +7,7 @@ import {
   Map, LayoutGrid, SlidersHorizontal, Loader2, Coffee, Sparkles, 
   Cake, Briefcase, PartyPopper, Heart, Users2, Camera, Music, 
   Utensils, GlassWater, ArrowRight, Sun, Umbrella, Building2, Layers, Check,
-  Flame, Percent, Tag, Zap, UtensilsCrossed
+  Flame, Percent, Tag, Zap, UtensilsCrossed, Footprints
 } from 'lucide-react';
 import { useState } from 'react';
 import dynamic from 'next/dynamic';
@@ -96,14 +96,32 @@ const EVENT_PACKAGES = [
 
 const CATEGORY_SECTIONS = [
   {
+    id: 'Most Popular',
+    title: 'Most Popular',
+    subtitle: 'Top-rated cafes and venues sorted by real customer review ratings & feedback.',
+    icon: Sparkles,
+    isMostPopular: true,
+    keywords: ['popular', 'top', 'rating', 'reviews'],
+    pillColor: 'bg-gradient-to-tr from-yellow-600 via-amber-600 to-orange-600 text-white border-amber-500/60 shadow-md',
+    headerBadge: 'bg-gradient-to-r from-amber-400 to-yellow-500 text-[#2C1810] font-black border-amber-300',
+  },
+  {
     id: 'Discounts & Offers',
     title: 'Discounts & Offers',
     subtitle: 'Exclusive discounts, percentage offers, and flat savings provided by cafes.',
     icon: Flame,
-    isMostPopular: true,
     keywords: ['discount', 'discounts', 'offer', 'offers', 'deal', 'percent', 'flat', 'off'],
     pillColor: 'bg-gradient-to-tr from-amber-600 via-rose-600 to-red-600 text-white border-amber-500/60 shadow-md',
     headerBadge: 'bg-gradient-to-r from-amber-500 to-rose-600 text-white font-black border-amber-400',
+  },
+  {
+    id: 'Walking Cafe',
+    title: 'Walking Cafes',
+    subtitle: 'Walk-in cafes perfect for quick coffee, snacks, and instant walk-in dining.',
+    icon: Footprints,
+    keywords: ['walking', 'walk-in', 'walking cafe', 'walkin', 'walk in'],
+    pillColor: 'bg-gradient-to-tr from-emerald-700 via-teal-600 to-emerald-600 text-white border-emerald-600/60 shadow-md',
+    headerBadge: 'bg-emerald-100/90 text-emerald-900 border-emerald-300/80',
   },
   {
     id: 'Coffee Shop',
@@ -122,15 +140,6 @@ const CATEGORY_SECTIONS = [
     keywords: ['restaurant', 'resturant', 'dining', 'family dining'],
     pillColor: 'bg-gradient-to-tr from-orange-700 to-amber-600 text-white border-orange-600/60',
     headerBadge: 'bg-orange-100/90 text-orange-900 border-orange-300/80',
-  },
-  {
-    id: 'Bakery & Cafe',
-    title: 'Bakery & Cafe',
-    subtitle: 'Delightful bakeries and cozy cafe spaces for sweet treats and gatherings.',
-    icon: Utensils,
-    keywords: ['bakery', 'bakery & cafe', 'cafe'],
-    pillColor: 'bg-gradient-to-tr from-pink-600 to-rose-500 text-white border-rose-500/60',
-    headerBadge: 'bg-rose-100/90 text-rose-900 border-rose-300/80',
   },
   {
     id: 'Bistro',
@@ -320,19 +329,46 @@ export default function AdvancedCafeDiscoveryPage() {
   const getCafesForSection = (section) => {
     if (!sortedCafes || sortedCafes.length === 0) return [];
     const secId = section.id.toLowerCase().trim();
+
+    if (secId === 'most popular' || section.isMostPopular) {
+      // Fetch all cafes across all categories, sorted by review rating (desc) & total review count (desc)
+      return [...sortedCafes].sort((a, b) => {
+        const ratingA = Number(a.average_rating || a.rating || (a.reviews_analytics && a.reviews_analytics.averageRating) || 0);
+        const ratingB = Number(b.average_rating || b.rating || (b.reviews_analytics && b.reviews_analytics.averageRating) || 0);
+        const reviewsCountA = Number(a.total_reviews || a.reviews_count || (a.reviews_analytics && a.reviews_analytics.totalReviews) || (Array.isArray(a.reviews) ? a.reviews.length : 0));
+        const reviewsCountB = Number(b.total_reviews || b.reviews_count || (b.reviews_analytics && b.reviews_analytics.totalReviews) || (Array.isArray(b.reviews) ? b.reviews.length : 0));
+
+        if (ratingB !== ratingA) {
+          return ratingB - ratingA;
+        }
+        return reviewsCountB - reviewsCountA;
+      });
+    }
     
     return sortedCafes.filter(cafe => {
       const cafeCat = (cafe.category || cafe.service_type || cafe.category_name || cafe.type || '').toString().toLowerCase().trim();
       const cafeName = (cafe.name || cafe.title || '').toString().toLowerCase();
 
-      if (secId === 'discounts & offers' || secId === 'discounts') {
+      if (secId === 'discounts & offers' || secId === 'discounts' || secId === 'offers') {
         const hasDiscounts = Array.isArray(cafe.discounts) && cafe.discounts.some(d => (d.title || d.name || Number(d.amount) > 0) && Number(d.amount) > 0);
         const hasObjDiscounts = cafe.discounts && typeof cafe.discounts === 'object' && !Array.isArray(cafe.discounts) && (Number(cafe.discounts.discount1_amount) > 0 || Number(cafe.discounts.discount2_amount) > 0);
         const hasPkgDiscount = Array.isArray(cafe.cafe_packages) && cafe.cafe_packages.some(p => Number(p.discount || p.discount_percentage || p.discount_amount) > 0);
-        return hasDiscounts || hasObjDiscounts || hasPkgDiscount;
+        const hasOfferProp = Boolean(cafe.offer || cafe.offers || cafe.discount || cafe.has_discount || cafe.has_offer || Number(cafe.discount_percentage) > 0 || Number(cafe.offer_amount) > 0);
+        return hasDiscounts || hasObjDiscounts || hasPkgDiscount || hasOfferProp;
       }
 
       if (cafeCat === secId) return true;
+
+      if (secId === 'walking cafe' || secId === 'walking cafes' || secId === 'walking') {
+        return (
+          cafe.is_walking_cafe === true ||
+          cafe.is_walking_cafe === 'true' ||
+          (cafe.capabilities && cafe.capabilities.is_walking_cafe === true) ||
+          (cafe.users && (cafe.users.user_type === 'WALKING_CAFE_OWNER' || cafe.users.role === 'WALKING_CAFE_OWNER' || cafe.users.roles?.name === 'WALKING_CAFE_OWNER')) ||
+          (cafe.owner && (cafe.owner.user_type === 'WALKING_CAFE_OWNER' || cafe.owner.role === 'WALKING_CAFE_OWNER' || cafe.owner.roles?.name === 'WALKING_CAFE_OWNER')) ||
+          cafeCat.includes('walking')
+        );
+      }
 
       if (secId === 'coffee shop') {
         return cafeCat.includes('coffee') || cafeCat === 'coffee shop' || cafeName.includes('coffee');
@@ -349,8 +385,17 @@ export default function AdvancedCafeDiscoveryPage() {
       if (secId === 'co-working cafe') {
         return cafeCat.includes('co-working') || cafeCat.includes('working') || cafeCat.includes('work');
       }
-      if (secId === 'party hall') {
-        return cafeCat.includes('party') || cafeCat.includes('hall');
+      if (secId === 'party hall' || secId === 'party halls' || secId === 'party') {
+        return (
+          cafeCat.includes('party') ||
+          cafeCat.includes('hall') ||
+          cafeCat.includes('banquet') ||
+          cafeCat.includes('reception') ||
+          cafeName.includes('party') ||
+          cafeName.includes('hall') ||
+          cafeName.includes('banquet') ||
+          (cafe.capabilities && (cafe.capabilities.party_hall || cafe.capabilities.banquet_hall))
+        );
       }
 
       return section.keywords.some(k => cafeCat.includes(k) || cafeName.includes(k));
@@ -361,7 +406,9 @@ export default function AdvancedCafeDiscoveryPage() {
   const activeSections = category 
     ? CATEGORY_SECTIONS.filter(s => 
         s.id.toLowerCase().trim() === category.toLowerCase().trim() || 
-        s.title.toLowerCase().trim() === category.toLowerCase().trim()
+        s.title.toLowerCase().trim() === category.toLowerCase().trim() ||
+        (category.toLowerCase().includes('walk') && s.id.toLowerCase().includes('walk')) ||
+        (category.toLowerCase().includes('party') && s.id.toLowerCase().includes('party'))
       )
     : CATEGORY_SECTIONS;
 
@@ -474,8 +521,8 @@ export default function AdvancedCafeDiscoveryPage() {
               )}
             </div>
 
-            {/* Horizontal Scroll on Mobile View Only, Grid Layout on Tablet & Desktop */}
-            <div className="flex sm:grid sm:grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3 overflow-x-auto sm:overflow-visible pb-2.5 sm:pb-0 no-scrollbar scroll-smooth">
+            {/* Single Row Horizontal Scroll Bar for Event Packages */}
+            <div className="flex gap-2.5 sm:gap-3 overflow-x-auto pb-2.5 no-scrollbar scroll-smooth">
               {EVENT_PACKAGES.map((pkg) => {
                 const Icon = pkg.icon;
                 const isSelected = selectedEventPackage === pkg.id;
@@ -488,7 +535,7 @@ export default function AdvancedCafeDiscoveryPage() {
                     whileHover={{ scale: 1.01 }}
                     whileTap={{ scale: 0.97 }}
                     onClick={() => setSelectedEventPackage(isSelected ? '' : pkg.id)}
-                    className={`relative flex items-center justify-between p-3 sm:p-3.5 rounded-2xl transition-all duration-200 cursor-pointer text-left shrink-0 w-[210px] xs:w-[230px] sm:w-auto ${
+                    className={`relative flex items-center justify-between p-3 sm:p-3.5 rounded-2xl transition-all duration-200 cursor-pointer text-left shrink-0 w-[200px] xs:w-[220px] sm:w-[230px] ${
                       isSelected
                         ? 'bg-gradient-to-r from-[#4A2C11] via-[#5A3825] to-[#6F4E37] text-white border border-[#4A2C11] shadow-md shadow-[#4A2C11]/20'
                         : 'bg-white hover:bg-stone-50/90 border border-stone-200/80 hover:border-stone-300 text-[#2C1810] shadow-2xs'
@@ -510,7 +557,7 @@ export default function AdvancedCafeDiscoveryPage() {
                       </div>
                     </div>
 
-                    {/* Active Checkmark Badge (Matching User Reference Image) */}
+                    {/* Active Checkmark Badge */}
                     {isSelected && (
                       <div className="w-5 h-5 rounded-full bg-white/20 text-white flex items-center justify-center shrink-0 border border-white/20">
                         <Check size={12} strokeWidth={3} />
@@ -522,16 +569,16 @@ export default function AdvancedCafeDiscoveryPage() {
             </div>
           </div>
 
-          {/* Top Category Pills Quick Grid (White Card Container) */}
+          {/* Top Category Pills Quick Single-Row Horizontal Scroll Container */}
           <div className="mb-8 p-3.5 sm:p-5 bg-white/90 backdrop-blur-md rounded-3xl border border-stone-200/90 shadow-2xs">
-            <div className="flex sm:grid sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-3.5 overflow-x-auto sm:overflow-visible pb-1 sm:pb-0 no-scrollbar scroll-smooth">
+            <div className="flex gap-3 sm:gap-3.5 overflow-x-auto pb-1 no-scrollbar scroll-smooth">
               {/* All Categories Button */}
               <motion.button
                 suppressHydrationWarning
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => setCategory('')}
-                className={`flex items-center gap-2.5 sm:gap-3 p-3 sm:p-3.5 px-3.5 sm:px-4 rounded-2xl transition-all duration-200 cursor-pointer shrink-0 w-[170px] xs:w-[190px] sm:w-full ${
+                className={`flex items-center gap-2.5 sm:gap-3 p-3 sm:p-3.5 px-3.5 sm:px-4 rounded-2xl transition-all duration-200 cursor-pointer shrink-0 w-[170px] xs:w-[190px] ${
                   category === ''
                     ? 'bg-gradient-to-r from-[#4A2C11] via-[#5A3825] to-[#6F4E37] text-white border border-[#4A2C11] shadow-md shadow-[#4A2C11]/20'
                     : 'bg-stone-50/90 hover:bg-stone-100/90 border border-stone-200/80 text-[#2C1810] shadow-2xs'
@@ -561,7 +608,7 @@ export default function AdvancedCafeDiscoveryPage() {
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={() => setCategory(isSelected ? '' : sec.id)}
-                    className={`relative flex items-center gap-2.5 sm:gap-3 p-3 sm:p-3.5 px-3.5 sm:px-4 rounded-2xl transition-all duration-200 cursor-pointer shrink-0 w-[175px] xs:w-[195px] sm:w-full ${
+                    className={`relative flex items-center gap-2.5 sm:gap-3 p-3 sm:p-3.5 px-3.5 sm:px-4 rounded-2xl transition-all duration-200 cursor-pointer shrink-0 w-[175px] xs:w-[195px] ${
                       isSelected
                         ? 'bg-gradient-to-r from-[#4A2C11] via-[#5A3825] to-[#6F4E37] text-white border border-[#4A2C11] shadow-md shadow-[#4A2C11]/20'
                         : 'bg-stone-50/90 hover:bg-stone-100/90 border border-stone-200/80 hover:border-stone-300 text-[#2C1810] shadow-2xs'
@@ -599,7 +646,9 @@ export default function AdvancedCafeDiscoveryPage() {
             </div>
           ) : (
             <div className="space-y-10">
-              {activeSections.map((sec) => {
+              {activeSections
+                .filter(sec => category !== '' || getCafesForSection(sec).length > 0)
+                .map((sec) => {
                 const Icon = sec.icon;
                 const secCafes = getCafesForSection(sec);
 

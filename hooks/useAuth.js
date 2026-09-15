@@ -52,7 +52,7 @@ export const useLogin = () => {
     onSuccess: (data) => {
       const userRole = data?.user?.role?.toUpperCase();
       if (userRole && userRole !== 'CUSTOMER') {
-        toast.error('Access denied. This login portal is for customer accounts only.');
+        toast.error("You don't have permission to login in this portal");
         return;
       }
 
@@ -63,7 +63,7 @@ export const useLogin = () => {
       router.push('/customer/cafe');
     },
     onError: (error) => {
-      toast.error(error.response?.data?.message || 'Login failed');
+      toast.error(error.response?.data?.message || "You don't have permission to login in this portal");
     },
   });
 };

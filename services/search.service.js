@@ -13,7 +13,15 @@ export const searchService = {
 
       // Filters
       if (filters?.query) params.append('query', filters.query);
-      if (filters?.category && filters.category !== 'all') params.append('category', filters.category);
+      if (
+        filters?.category && 
+        filters.category !== 'all' && 
+        filters.category !== 'All' &&
+        !filters.category.toLowerCase().includes('discount') &&
+        !filters.category.toLowerCase().includes('offer')
+      ) {
+        params.append('category', filters.category);
+      }
       if (filters?.priceRange) params.append('priceRange', filters.priceRange);
       if (filters?.rating > 0) params.append('minRating', filters.rating);
       if (filters?.openNow) params.append('openNow', 'true');

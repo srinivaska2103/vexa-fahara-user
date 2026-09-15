@@ -1,10 +1,11 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Cake, Briefcase, Heart, PartyPopper, Music, Users2, Camera, Sparkles, Coffee, Utensils, GlassWater, UtensilsCrossed } from 'lucide-react';
+import { Cake, Briefcase, Heart, PartyPopper, Music, Users2, Camera, Sparkles, Coffee, Utensils, GlassWater, UtensilsCrossed, Footprints } from 'lucide-react';
 
 const categories = [
   { id: 'all', name: 'All Spaces', icon: Sparkles, color: 'from-[#6F4E37] to-[#A67B5B] text-white' },
+  { id: 'Walking Cafe', name: 'Walking Cafe', icon: Footprints, color: 'from-emerald-700 to-teal-800 text-white' },
   { id: 'Coffee Shop', name: 'Coffee Shop', icon: Coffee, color: 'from-amber-700 to-amber-900 text-white' },
   { id: 'Restaurant', name: 'Restaurant', icon: UtensilsCrossed, color: 'from-orange-600 to-red-600 text-white' },
   { id: 'Party Hall', name: 'Party Hall', icon: PartyPopper, color: 'from-purple-600 to-indigo-600 text-white' },

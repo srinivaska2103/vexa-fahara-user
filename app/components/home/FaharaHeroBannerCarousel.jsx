@@ -79,10 +79,15 @@ const BANNERS = [
 ];
 
 export default function FaharaHeroBannerCarousel() {
+  const [mounted, setMounted] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const [touchStart, setTouchStart] = useState(null);
   const [touchEnd, setTouchEnd] = useState(null);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Minimum swipe distance threshold (in px)
   const minSwipeDistance = 40;
@@ -129,6 +134,7 @@ export default function FaharaHeroBannerCarousel() {
 
   return (
     <div 
+      suppressHydrationWarning
       className="relative w-full mb-6 overflow-hidden rounded-3xl border border-stone-200/90 shadow-lg bg-[#2C1810] group"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}

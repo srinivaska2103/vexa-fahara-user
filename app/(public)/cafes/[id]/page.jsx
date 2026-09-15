@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { useCafeDetails, useCafeReviews } from '@/hooks/useCafeDetails';
 import { 
@@ -45,6 +45,20 @@ export default function CafeDetailsPage() {
   const cafe = cafeResponse?.data;
   const reviews = reviewsResponse?.data?.reviews || [];
 
+  // Non-blocking analytics view tracking
+  useEffect(() => {
+    if (id) {
+      try {
+        const api = require('@/lib/axios').default;
+        api.post('/analytics/events', {
+          cafe_id: id,
+          event_type: 'CAFE_VIEW',
+          source: 'website'
+        }).catch(() => {});
+      } catch (err) {}
+    }
+  }, [id]);
+
   // Combine images for lightbox modal from real data
   const rawGallery = cafe?.gallery || [];
   const galleryArray = Array.isArray(rawGallery) ? rawGallery : [];
@@ -74,13 +88,28 @@ export default function CafeDetailsPage() {
     );
   }
 
-  const categoryStr = `${cafe?.category || ''} ${cafe?.service_type || ''} ${cafe?.name || ''}`.toLowerCase();
-  const isRestaurant = categoryStr.includes('restaur') || categoryStr.includes('restur');
+  const categoryVal = `${cafe?.category || ''} ${cafe?.service_type || ''} ${cafe?.category_name || ''} ${cafe?.name || ''}`.toString().toLowerCase().trim();
+  const isRestaurant = 
+    categoryVal.includes('restaur') || 
+    categoryVal.includes('restur') ||
+    cafe?.role === 'RESTAURANT_OWNER' ||
+    cafe?.user_type === 'RESTAURANT_OWNER' ||
+    (cafe?.users && (cafe.users.user_type === 'RESTAURANT_OWNER' || cafe.users.role === 'RESTAURANT_OWNER' || cafe.users.roles?.name === 'RESTAURANT_OWNER')) ||
+    (cafe?.owner && (cafe.owner.user_type === 'RESTAURANT_OWNER' || cafe.owner.role === 'RESTAURANT_OWNER' || cafe.owner.roles?.name === 'RESTAURANT_OWNER'));
 
   const hasDiscounts = Array.isArray(cafe?.discounts) && cafe.discounts.some(d => d && (d.title || d.name || Number(d.amount) > 0) && Number(d.amount) > 0);
   const hasObjDiscounts = cafe?.discounts && typeof cafe.discounts === 'object' && !Array.isArray(cafe.discounts) && (Number(cafe.discounts.discount1_amount) > 0 || Number(cafe.discounts.discount2_amount) > 0);
   const hasPkgDiscount = Array.isArray(cafe?.cafe_packages) && cafe.cafe_packages.some(p => Number(p.discount || p.discount_percentage || p.discount_amount) > 0);
   const hasValidDiscounts = hasDiscounts || hasObjDiscounts || hasPkgDiscount;
+
+  const isWalkingCafe = 
+    cafe?.is_walking_cafe === true || 
+    cafe?.is_walking_cafe === 'true' || 
+    (cafe?.users && (cafe.users.user_type === 'WALKING_CAFE_OWNER' || cafe.users.role === 'WALKING_CAFE_OWNER' || cafe.users.roles?.name === 'WALKING_CAFE_OWNER')) ||
+    (cafe?.owner && (cafe.owner.user_type === 'WALKING_CAFE_OWNER' || cafe.owner.role === 'WALKING_CAFE_OWNER' || cafe.owner.roles?.name === 'WALKING_CAFE_OWNER')) ||
+    categoryVal === 'walking cafe' ||
+    categoryVal === 'walking cafes' ||
+    (categoryVal.includes('walking') && categoryVal.includes('cafe'));
 
   const rawSteps = [
     { id: 'photos', label: 'Photos & Gallery', icon: Camera, activeBg: 'from-amber-600 to-orange-600', badgeBg: 'bg-amber-500 text-white', iconColor: 'text-amber-600' },
@@ -88,8 +117,8 @@ export default function CafeDetailsPage() {
     ...(hasValidDiscounts ? [{ id: 'discounts', label: 'Deals & Offers', icon: Flame, activeBg: 'from-amber-500 via-rose-600 to-red-600', badgeBg: 'bg-gradient-to-r from-amber-500 to-rose-600 text-white', iconColor: 'text-rose-500' }] : []),
     { id: 'amenities', label: 'Amenities', icon: Sparkles, activeBg: 'from-emerald-600 to-teal-600', badgeBg: 'bg-emerald-600 text-white', iconColor: 'text-emerald-600' },
     { id: 'hours', label: 'Business Hours', icon: Clock, activeBg: 'from-purple-600 to-violet-600', badgeBg: 'bg-purple-600 text-white', iconColor: 'text-purple-600' },
-    ...(!isRestaurant ? [{ id: 'packages', label: 'Event Packages', icon: PartyPopper, activeBg: 'from-pink-600 to-rose-500', badgeBg: 'bg-pink-600 text-white', iconColor: 'text-pink-600' }] : []),
-    { id: 'location', label: 'Location & Map', icon: MapPin, activeBg: 'from-cyan-600 to-blue-600', badgeBg: 'bg-cyan-600 text-white', iconColor: 'text-cyan-600' },
+    ...(!isWalkingCafe && !isRestaurant && (cafe?.event_booking !== false || (Array.isArray(cafe?.cafe_packages) && cafe.cafe_packages.length > 0)) ? [{ id: 'packages', label: 'Event Packages', icon: PartyPopper, activeBg: 'from-pink-600 to-rose-500', badgeBg: 'bg-pink-600 text-white', iconColor: 'text-pink-600' }] : []),
+    { id: 'location', label: 'Location & Map', icon: MapPin, activeBg: 'from-cyan-600 to-blue-600', badgeBg: 'bg-[#6F4E37] text-white', iconColor: 'text-[#6F4E37]' },
     { id: 'reviews', label: 'Reviews & Ratings', icon: Star, activeBg: 'from-amber-500 to-yellow-600', badgeBg: 'bg-amber-500 text-white', iconColor: 'text-amber-500' }
   ];
 
@@ -338,47 +367,76 @@ export default function CafeDetailsPage() {
 
       </main>
 
-      {/* Mobile Fixed Floating Booking Bar (< lg screens) */}
+      {/* Mobile Fixed Floating Action Bar (< lg screens) */}
       <div className="lg:hidden fixed bottom-[5.5rem] sm:bottom-[5.8rem] left-3 right-3 z-40 select-none">
         <div className="max-w-md mx-auto bg-white/95 backdrop-blur-xl border border-stone-200/90 rounded-2xl p-3 px-4 shadow-[0_12px_40px_rgba(0,0,0,0.12)] flex items-center justify-between gap-3">
-          {(() => {
-            const catStr = `${cafe?.category || ''} ${cafe?.service_type || ''} ${cafe?.name || ''}`.toLowerCase();
-            const isRestaurant = catStr.includes('restaur') || catStr.includes('restur');
-            if (isRestaurant) {
-              return (
-                <div>
-                  <div className="text-sm font-black text-[#2C1810] leading-none">
-                    Restaurant Table
-                  </div>
-                  <span className="text-[9px] font-black text-emerald-700 uppercase tracking-wider flex items-center gap-1 mt-1">
-                    <ShieldCheck size={12} className="text-emerald-600 shrink-0" />
-                    <span>Free Table Reservation</span>
-                  </span>
-                </div>
-              );
-            }
-            return (
+          {isWalkingCafe ? (
+            <>
               <div>
-                <div className="text-lg sm:text-xl font-black text-[#2C1810] leading-none">
-                  ₹{cafe?.price_per_hour || 499} <span className="font-bold text-xs text-stone-400">/ hour</span>
+                <div className="text-sm font-black text-emerald-800 flex items-center gap-1">
+                  <span className="w-2 h-2 rounded-full bg-emerald-600 animate-pulse" />
+                  Walking Cafe
                 </div>
-                <span className="text-[9px] font-black text-emerald-700 uppercase tracking-wider flex items-center gap-1 mt-1">
-                  <ShieldCheck size={12} className="text-emerald-600 shrink-0" />
-                  <span>Instant Confirmation</span>
+                <span className="text-[10px] font-bold text-stone-500 block mt-0.5">
+                  Walk-in Customers Welcome
                 </span>
               </div>
-            );
-          })()}
 
-          <motion.button 
-            whileHover={{ scale: 1.03 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={() => router.push(`/booking/${cafe?.id || 1}`)}
-            className="bg-gradient-to-r from-[#4A2C11] to-[#6F4E37] text-white px-5 py-2.5 rounded-xl font-black text-xs shadow-md hover:shadow-lg flex items-center gap-1.5 cursor-pointer shrink-0"
-          >
-            <span>Book Now</span>
-            <ArrowRight size={15} />
-          </motion.button>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => {
+                    const addressQuery = encodeURIComponent(`${cafe?.name || 'Cafe'} ${cafe?.address || ''} ${cafe?.city || ''}`);
+                    window.open(`https://www.google.com/maps/search/?api=1&query=${addressQuery}`, '_blank');
+                  }}
+                  className="bg-gradient-to-r from-[#4A2C11] to-[#6F4E37] text-white px-4 py-2.5 rounded-xl font-black text-xs shadow-md flex items-center gap-1.5 cursor-pointer shrink-0"
+                >
+                  <MapPin size={14} />
+                  <span>Directions</span>
+                </button>
+              </div>
+            </>
+          ) : (
+            <>
+              {(() => {
+                const catStr = `${cafe?.category || ''} ${cafe?.service_type || ''} ${cafe?.name || ''}`.toLowerCase();
+                const isRestaurant = catStr.includes('restaur') || catStr.includes('restur');
+                if (isRestaurant) {
+                  return (
+                    <div>
+                      <div className="text-sm font-black text-[#2C1810] leading-none">
+                        Restaurant Table
+                      </div>
+                      <span className="text-[9px] font-black text-emerald-700 uppercase tracking-wider flex items-center gap-1 mt-1">
+                        <ShieldCheck size={12} className="text-emerald-600 shrink-0" />
+                        <span>Free Table Reservation</span>
+                      </span>
+                    </div>
+                  );
+                }
+                return (
+                  <div>
+                    <div className="text-lg sm:text-xl font-black text-[#2C1810] leading-none">
+                      ₹{cafe?.price_per_hour || 499} <span className="font-bold text-xs text-stone-400">/ hour</span>
+                    </div>
+                    <span className="text-[9px] font-black text-emerald-700 uppercase tracking-wider flex items-center gap-1 mt-1">
+                      <ShieldCheck size={12} className="text-emerald-600 shrink-0" />
+                      <span>Instant Confirmation</span>
+                    </span>
+                  </div>
+                );
+              })()}
+
+              <motion.button 
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => router.push(`/booking/${cafe?.id || 1}`)}
+                className="bg-gradient-to-r from-[#4A2C11] to-[#6F4E37] text-white px-5 py-2.5 rounded-xl font-black text-xs shadow-md hover:shadow-lg flex items-center gap-1.5 cursor-pointer shrink-0"
+              >
+                <span>Book Now</span>
+                <ArrowRight size={15} />
+              </motion.button>
+            </>
+          )}
         </div>
       </div>
 

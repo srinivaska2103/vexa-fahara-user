@@ -30,5 +30,15 @@ export const cafeDetailsService = {
   getCafeTables: async (id) => {
     const response = await api.get(`/cafes/${id}/tables`);
     return response.data;
+  },
+
+  getTableAvailability: async (id, bookingDate, startTime, endTime) => {
+    const params = new URLSearchParams();
+    if (bookingDate) params.append('booking_date', bookingDate);
+    if (startTime) params.append('start_time', startTime);
+    if (endTime) params.append('end_time', endTime);
+
+    const response = await api.get(`/cafes/${id}/tables/availability?${params.toString()}`);
+    return response.data;
   }
 };

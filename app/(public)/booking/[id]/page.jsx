@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { useBookingStore } from '@/stores/booking.store';
-import { useCafeDetails, useCafeTables } from '@/hooks/useCafeDetails';
+import { useCafeDetails, useCafeTables, useCafeTableAvailability } from '@/hooks/useCafeDetails';
 import { ArrowLeft, ChevronRight, ShieldCheck, Sparkles, Check, ChevronUp, Users, Utensils, Cake as CakeIcon, Music, CheckCircle2, LayoutGrid, MapPin } from 'lucide-react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -32,7 +32,7 @@ function BookingContent() {
   const targetPackageId = searchParams.get('packageId') || searchParams.get('package_id');
 
   const router = useRouter();
-  const { setCafeId, setCafePrice, reset, cafeId: storeCafeId, pricing, setTable, selectedTable, setPackage, selectedPackage, guestCount, setGuestCount, setSelectedInclusionsPayload, setSelectedInclusionItems } = useBookingStore();
+  const { setCafeId, setCafePrice, reset, cafeId: storeCafeId, pricing, setTable, selectedTable, setPackage, selectedPackage, guestCount, setGuestCount, setSelectedInclusionsPayload, setSelectedInclusionItems, selectedDate, selectedTimeSlot } = useBookingStore();
   const [activeStepTab, setActiveStepTab] = useState('packages');
   const [mobileSummaryOpen, setMobileSummaryOpen] = useState(false);
 
@@ -43,6 +43,92 @@ function BookingContent() {
   const { data: tablesResponse, isLoading: isTablesLoading } = useCafeTables(cafeId);
   const tablesData = tablesResponse?.data || {};
   const tablesList = Array.isArray(tablesData.tables) ? tablesData.tables : [];
+
+  // Parse date and time for table availability check
+  const formattedBookingDate = useMemo(() => {
+    if (!selectedDate) return null;
+    if (typeof selectedDate === 'string') return selectedDate;
+    if (selectedDate instanceof Date) {
+      const year = selectedDate.getFullYear();
+      const month = String(selectedDate.getMonth() + 1).padStart(2, '0');
+      const day = String(selectedDate.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    }
+    return null;
+  }, [selectedDate]);
+
+  const formattedStartTime = useMemo(() => {
+    if (!selectedTimeSlot) return null;
+    const val = selectedTimeSlot.start || selectedTimeSlot.start_time;
+    if (!val) return null;
+    if (val.includes(' ')) {
+      const [time, modifier] = val.split(' ');
+      let [hours, minutes] = time.split(':');
+      if (hours === '12') hours = '00';
+      if (modifier === 'PM') hours = String(parseInt(hours, 10) + 12);
+      return `${hours.padStart(2, '0')}:${minutes}:00`;
+    }
+    if (val.includes(':') && val.split(':').length === 2) {
+      return `${val}:00`;
+    }
+    return val;
+  }, [selectedTimeSlot]);
+
+  const formattedEndTime = useMemo(() => {
+    if (!selectedTimeSlot) return null;
+    const val = selectedTimeSlot.end || selectedTimeSlot.end_time;
+    if (!val) return null;
+    if (val.includes(' ')) {
+      const [time, modifier] = val.split(' ');
+      let [hours, minutes] = time.split(':');
+      if (hours === '12') hours = '00';
+      if (modifier === 'PM') hours = String(parseInt(hours, 10) + 12);
+      return `${hours.padStart(2, '0')}:${minutes}:00`;
+    }
+    if (val.includes(':') && val.split(':').length === 2) {
+      return `${val}:00`;
+    }
+    return val;
+  }, [selectedTimeSlot]);
+
+  const { data: availabilityResponse, isLoading: isAvailabilityLoading } = useCafeTableAvailability(
+    cafeId,
+    formattedBookingDate,
+    formattedStartTime,
+    formattedEndTime
+  );
+
+  const displayTablesList = useMemo(() => {
+    if (!tablesList || tablesList.length === 0) return [];
+    if (!formattedBookingDate || !formattedStartTime || !formattedEndTime) {
+      return tablesList;
+    }
+    const availabilityData = availabilityResponse?.data;
+    if (!Array.isArray(availabilityData) || availabilityData.length === 0) {
+      return tablesList;
+    }
+    const reservedIds = new Set(
+      availabilityData
+        .filter(t => t.availability_status === 'RESERVED' || t.is_available === false)
+        .map(t => String(t.id))
+    );
+    return tablesList.filter(tbl => !reservedIds.has(String(tbl.id)));
+  }, [tablesList, availabilityResponse, formattedBookingDate, formattedStartTime, formattedEndTime]);
+
+  // If currently selected table is reserved for the chosen time slot, auto-deselect it
+  useEffect(() => {
+    if (selectedTable && formattedBookingDate && formattedStartTime && formattedEndTime && availabilityResponse?.data) {
+      const availabilityData = availabilityResponse.data;
+      if (Array.isArray(availabilityData)) {
+        const isReserved = availabilityData.some(
+          t => String(t.id) === String(selectedTable.id) && (t.availability_status === 'RESERVED' || t.is_available === false)
+        );
+        if (isReserved) {
+          setTable(null);
+        }
+      }
+    }
+  }, [selectedTable, formattedBookingDate, formattedStartTime, formattedEndTime, availabilityResponse, setTable]);
 
   // Parse REAL cafe packages from the cafe API response
   const cafePackages = cafe?.cafe_packages || [];
@@ -462,8 +548,8 @@ function BookingContent() {
 
   // Auto-select optimal table according to guest count if none is selected or if current table capacity is smaller than guestCount (guarded)
   useEffect(() => {
-    if (tablesList.length > 0) {
-      const activeTables = tablesList.filter(t => t.status === 'ACTIVE');
+    if (displayTablesList.length > 0) {
+      const activeTables = displayTablesList.filter(t => t.status === 'ACTIVE');
       if (activeTables.length > 0) {
         const currentStoreTable = useBookingStore.getState().selectedTable;
         if (!currentStoreTable || currentStoreTable.capacity < guestCount) {
@@ -478,7 +564,7 @@ function BookingContent() {
         }
       }
     }
-  }, [guestCount, tablesList, setTable]);
+  }, [guestCount, displayTablesList, setTable]);
 
   if (isLoading) {
     return (
@@ -600,21 +686,22 @@ function BookingContent() {
                       </div>
 
                       <span className="text-xs font-extrabold px-3 py-1 rounded-full bg-stone-100 text-stone-700 border border-stone-200">
-                        {tablesList.length} Tables
+                        {displayTablesList.length} Available {displayTablesList.length === 1 ? 'Table' : 'Tables'}
                       </span>
                     </div>
                   </div>
 
-                  {isTablesLoading ? (
-                    <div className="py-8 text-center text-xs text-stone-400 font-bold">Loading table arrangement...</div>
-                  ) : tablesList.length === 0 ? (
-                    <div className="p-6 text-center bg-stone-50 rounded-2xl border border-stone-200/80 text-xs text-stone-500 font-medium">
-                      Standard open seating available at venue upon arrival.
+                  {isTablesLoading || (formattedBookingDate && formattedStartTime && formattedEndTime && isAvailabilityLoading) ? (
+                    <div className="py-8 text-center text-xs text-stone-400 font-bold">Checking real-time table availability...</div>
+                  ) : displayTablesList.length === 0 ? (
+                    <div className="p-6 text-center bg-amber-50/80 rounded-2xl border border-amber-200 text-xs text-amber-900 font-medium space-y-1">
+                      <p className="font-bold">No available tables for the selected time slot.</p>
+                      <p className="text-amber-700 text-[11px]">All configured tables are reserved for this period or standard venue open seating will apply.</p>
                     </div>
                   ) : (
                     <>
                       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
-                        {tablesList.map((tbl) => {
+                        {displayTablesList.map((tbl) => {
                           const isSelected = selectedTable?.id === tbl.id;
                           const fitsGuests = tbl.capacity >= guestCount;
                           const isExactCapacity = tbl.capacity === guestCount;

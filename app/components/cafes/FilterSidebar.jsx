@@ -131,6 +131,7 @@ export default function FilterSidebar({ showNavigation = true, showHeader = true
 
   const eventChips = [
     { id: '', label: 'All' },
+    { id: 'Walking Cafe', label: 'Walking Cafe' },
     { id: 'Coffee Shop', label: 'Coffee Shop' },
     { id: 'Restaurant', label: 'Restaurant' },
     { id: 'Party Hall', label: 'Party Hall' },

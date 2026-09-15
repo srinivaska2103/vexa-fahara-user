@@ -43,3 +43,12 @@ export const useCafeTables = (id) => {
     staleTime: 5 * 60 * 1000,
   });
 };
+
+export const useCafeTableAvailability = (id, bookingDate, startTime, endTime) => {
+  return useQuery({
+    queryKey: ['cafe-tables-availability', id, bookingDate, startTime, endTime],
+    queryFn: () => cafeDetailsService.getTableAvailability(id, bookingDate, startTime, endTime),
+    enabled: !!id && !!bookingDate && !!startTime && !!endTime,
+    refetchInterval: 5000,
+  });
+};

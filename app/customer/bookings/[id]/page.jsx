@@ -41,9 +41,14 @@ export default function BookingDetailsPage() {
   const fetchBookingDetails = async () => {
     try {
       setLoading(true);
-      const res = await bookingService.getBookingById(id);
-      if (res.success && res.data) {
-        let b = res.data;
+
+      const [bookingResult, allBookingsResult] = await Promise.allSettled([
+        bookingService.getBookingById(id),
+        bookingService.getMyBookings()
+      ]);
+
+      if (bookingResult.status === 'fulfilled' && bookingResult.value?.success && bookingResult.value?.data) {
+        let b = bookingResult.value.data;
         if (b.booking_status === 'CONFIRMED') {
           try {
             const bDate = new Date(b.booking_date);
@@ -57,12 +62,12 @@ export default function BookingDetailsPage() {
           } catch (e) {}
         }
         setBooking(b);
+      } else if (bookingResult.status === 'rejected' || !bookingResult.value?.data) {
+        toast.error('Could not load booking details.');
       }
 
-      // Also fetch all bookings for metrics calculation in sidebar
-      const allRes = await bookingService.getMyBookings();
-      if (allRes.success && allRes.data) {
-        setAllBookings(allRes.data);
+      if (allBookingsResult.status === 'fulfilled' && allBookingsResult.value?.success && allBookingsResult.value?.data) {
+        setAllBookings(allBookingsResult.value.data);
       }
     } catch (error) {
       console.error('Failed to fetch booking details:', error);

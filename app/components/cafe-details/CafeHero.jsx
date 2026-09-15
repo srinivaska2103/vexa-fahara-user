@@ -32,6 +32,13 @@ export default function CafeHero({ cafe }) {
     e.preventDefault();
     if (cafeId) {
       toggleFavoriteCafe(cafeId);
+
+      // Persist to backend and record analytics event
+      try {
+        const api = require('@/lib/axios').default;
+        api.post('/favorites/toggle', { cafeId }).catch(() => {});
+        api.post('/analytics/events', { cafe_id: cafeId, event_type: 'WISHLIST_ADD', source: 'website' }).catch(() => {});
+      } catch (err) {}
     }
   };
 
