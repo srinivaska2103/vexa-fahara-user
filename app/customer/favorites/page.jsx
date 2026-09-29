@@ -147,7 +147,7 @@ function FavoritesContent() {
     };
 
     fetchFavorites();
-  }, [favoriteCafes, favoriteEvents]); // Run once on initial page mount
+  }, []); // Run once on initial page mount
 
   // Remove handler
   const handleRemoveCafe = (id) => {

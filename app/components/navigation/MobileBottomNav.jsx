@@ -14,6 +14,7 @@ export default function MobileBottomNav() {
   const pathname = usePathname();
   const { t } = useLanguage();
   const favoriteCafes = useFavoritesStore((state) => state.favoriteCafes || []);
+  const favoriteEvents = useFavoritesStore((state) => state.favoriteEvents || []);
   const user = useAuthStore((state) => state.user);
 
   const [profileImage, setProfileImage] = useState(user?.avatar || user?.profile_image || null);
@@ -45,9 +46,8 @@ export default function MobileBottomNav() {
     }
   }, [user]);
 
-  // Hidden on auth, booking checkout, landing, legal, and support pages
+  // Hidden on auth, booking checkout, legal, and support pages
   if (
-    pathname === '/' ||
     pathname.startsWith('/booking') ||
     [
       '/login',
@@ -74,32 +74,34 @@ export default function MobileBottomNav() {
     ? user.email.charAt(0).toUpperCase() 
     : 'U';
 
+  const totalWishlistCount = favoriteCafes.length + favoriteEvents.length;
+
   const navItems = [
     { 
-      id: 'discover',
-      label: t('discover', 'Discover'), 
+      id: 'explore',
+      label: 'Explore', 
       href: '/customer/cafe', 
       icon: Compass,
       isActive: pathname === '/customer/cafe' || pathname.startsWith('/cafes') || pathname === '/' || pathname === '/customer/discover'
     },
     { 
       id: 'bookings',
-      label: t('bookings', 'Bookings'), 
+      label: 'Bookings', 
       href: '/customer/bookings', 
       icon: CalendarCheck,
-      isActive: pathname.startsWith('/customer/bookings') || pathname.startsWith('/booking')
+      isActive: pathname.startsWith('/customer/bookings')
     },
     { 
-      id: 'favorites',
-      label: t('favorites', 'Favorites'), 
+      id: 'wishlist',
+      label: 'Wishlist', 
       href: '/customer/favorites', 
       icon: Heart,
-      badge: favoriteCafes.length > 0 ? favoriteCafes.length : null,
+      badge: totalWishlistCount > 0 ? totalWishlistCount : null,
       isActive: pathname.startsWith('/customer/favorites') || pathname.startsWith('/customer/wishlist')
     },
     { 
       id: 'profile',
-      label: t('profile', 'Profile'), 
+      label: 'Profile', 
       href: '/customer/profile', 
       icon: User,
       isAvatar: true,
@@ -108,8 +110,10 @@ export default function MobileBottomNav() {
   ];
 
   return (
-    <div className="lg:hidden fixed bottom-4 left-3 right-3 z-50 select-none print:hidden">
-      <div className="max-w-md mx-auto bg-white/95 backdrop-blur-2xl border border-stone-200/90 rounded-full p-1.5 shadow-[0_12px_40px_rgba(0,0,0,0.15)] flex items-center justify-between gap-1 overflow-hidden">
+    <div className="lg:hidden fixed bottom-3 left-3 right-3 z-50 select-none print:hidden flex justify-center pointer-events-none">
+      
+      {/* ── MODERN FLOATING PILL CONTAINER (VISIBLE ONLY ON MOBILE < 1024px) ── */}
+      <div className="relative w-full max-w-sm mx-auto bg-white/95 backdrop-blur-2xl border border-stone-200/90 rounded-full p-1.5 shadow-[0_12px_40px_rgba(44,24,16,0.14)] flex items-center justify-between gap-1 overflow-hidden pointer-events-auto">
         {navItems.map((item) => {
           const Icon = item.icon;
           const isActive = item.isActive;
@@ -118,9 +122,9 @@ export default function MobileBottomNav() {
             return (
               <Link key={item.id} href={item.href} className="flex-1 min-w-0">
                 <motion.div
-                  layoutId="activeTabPill"
+                  layoutId="activeTabPillNav"
                   transition={{ type: 'spring', damping: 25, stiffness: 350 }}
-                  className="bg-[#4A2C11] text-white rounded-full py-2.5 px-3 flex items-center justify-center gap-1.5 shadow-md shadow-[#4A2C11]/30"
+                  className="bg-[#4A2C11] text-white rounded-full py-2.5 px-3.5 flex items-center justify-center gap-1.5 shadow-md shadow-[#4A2C11]/30"
                 >
                   <div className="p-1 rounded-full bg-white/15 flex items-center justify-center shrink-0">
                     <Icon size={16} className="text-white" />
@@ -137,7 +141,7 @@ export default function MobileBottomNav() {
             <Link
               key={item.id}
               href={item.href}
-              className="p-2 sm:p-2.5 rounded-full text-stone-700 hover:text-[#4A2C11] hover:bg-stone-100/80 transition-all flex items-center justify-center relative shrink-0"
+              className="p-2.5 rounded-full text-stone-700 hover:text-[#4A2C11] hover:bg-stone-100/80 transition-all flex items-center justify-center relative shrink-0"
               aria-label={item.label}
             >
               {item.isAvatar ? (
@@ -167,6 +171,7 @@ export default function MobileBottomNav() {
           );
         })}
       </div>
+
     </div>
   );
 }

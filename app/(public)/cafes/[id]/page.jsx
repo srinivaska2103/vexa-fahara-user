@@ -156,14 +156,20 @@ export default function CafeDetailsPage() {
       <main className="container mx-auto px-3 sm:px-6 lg:px-8 py-3 sm:py-5 max-w-7xl overflow-x-hidden">
         
         {/* Back Button Navigation Row */}
-        <div className="mb-3 flex items-center justify-between gap-2">
-          <Link href="/customer/cafe" className="inline-flex items-center text-xs font-extrabold bg-white hover:bg-[#FFF8F0] hover:text-[#6F4E37] text-stone-700 px-3.5 py-2 rounded-2xl border border-stone-200/80 transition-all shadow-2xs">
-            <ArrowLeft size={14} className="mr-1.5" /> Back to cafes
+        <div className="mb-4 flex items-center justify-between gap-3">
+          <Link href="/customer/cafe">
+            <button className="inline-flex items-center gap-2 text-xs font-black bg-white hover:bg-[#6F4E37] text-[#2C1810] hover:text-white px-4 py-2.5 rounded-full border border-stone-200/90 transition-all duration-300 shadow-2xs hover:shadow-md active:scale-95 cursor-pointer group">
+              <ArrowLeft size={14} className="group-hover:-translate-x-1 transition-transform" />
+              <span>Back to Cafes</span>
+            </button>
           </Link>
 
-          <span className="text-[10px] sm:text-xs font-black text-[#6F4E37] bg-[#FFF8F0] border border-[#DDB892]/60 px-3 py-1.5 rounded-full shadow-2xs">
-            Step {currentStepIndex + 1} of {stepsList.length}
-          </span>
+          <div className="flex items-center gap-2 bg-gradient-to-r from-stone-50 to-amber-50/50 border border-[#DDB892]/50 px-3.5 py-1.5 rounded-full shadow-2xs">
+            <span className="w-2 h-2 rounded-full bg-[#6F4E37] animate-pulse" />
+            <span className="text-xs font-black text-[#2C1810] tracking-tight">
+              Step {currentStepIndex + 1} <span className="text-stone-400 font-bold">/ {stepsList.length}</span>
+            </span>
+          </div>
         </div>
 
         {/* STEP-BY-STEP COLORFUL SECTION NAVIGATION BAR WITH BOTTOM PADDING */}

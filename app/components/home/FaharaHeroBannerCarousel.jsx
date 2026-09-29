@@ -130,6 +130,12 @@ export default function FaharaHeroBannerCarousel() {
     }
   };
 
+  if (!mounted) {
+    return (
+      <div className="relative w-full mb-6 min-h-[220px] xs:min-h-[240px] sm:min-h-[280px] lg:min-h-[310px] overflow-hidden rounded-3xl border border-stone-200/90 bg-[#2C1810] animate-pulse" />
+    );
+  }
+
   const currentBanner = BANNERS[currentIndex];
 
   return (

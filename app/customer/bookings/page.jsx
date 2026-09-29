@@ -29,8 +29,12 @@ export default function MyBookingsPage() {
     try {
       setLoading(true);
       const res = await bookingService.getMyBookings();
-      if (res.success && res.data) {
+      if (res && res.success && Array.isArray(res.data)) {
         setBookings(res.data);
+      } else if (Array.isArray(res)) {
+        setBookings(res);
+      } else {
+        setBookings([]);
       }
     } catch (error) {
       if (error.response?.status === 403) {

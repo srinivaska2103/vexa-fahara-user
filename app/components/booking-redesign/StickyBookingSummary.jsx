@@ -173,90 +173,65 @@ export default function StickyBookingSummary({ cafeName, selectedInclusionsPaylo
           </div>
 
           {/* ── DATE / TIME / GUESTS PILLS ── */}
-          <div className="flex flex-wrap gap-2 mb-5">
-            {[
-              { label: selectedDate || 'Select Date', bg: '#FFF0DC', border: '#DDB892', color: '#7A4F2A' },
-              { label: selectedTimeSlot ? selectedTimeSlot.start : '—', bg: '#EDF9F0', border: '#6EBD8A', color: '#2D6A4F' },
-              { label: `${guestCount} ${guestCount === 1 ? 'Guest' : 'Guests'}`, bg: '#EEF1FD', border: '#8DA2E0', color: '#3B4DA8' },
-            ].map((pill, i) => (
-              <span
-                key={i}
-                className="text-[11px] font-black px-3 py-1.5 rounded-xl border-2"
-                style={{
-                  background: pill.bg,
-                  borderColor: pill.border,
-                  color: pill.color,
-                  boxShadow: `0 2px 8px ${pill.border}50, inset 0 1px 0 rgba(255,255,255,0.75)`,
-                }}
-              >
-                {pill.label}
+          <div className="grid grid-cols-3 gap-2 mb-5">
+            <div className="flex flex-col items-center justify-center p-2.5 rounded-xl bg-[#FFF8F0] border border-[#DDB892]/60 text-center">
+              <span className="text-[9px] font-bold text-stone-400 uppercase tracking-wider mb-0.5">Date</span>
+              <span className="text-xs font-black text-[#2C1810] truncate max-w-full">
+                {selectedDate || 'Select Date'}
               </span>
-            ))}
+            </div>
+
+            <div className="flex flex-col items-center justify-center p-2.5 rounded-xl bg-emerald-50/70 border border-emerald-200/80 text-center">
+              <span className="text-[9px] font-bold text-emerald-600 uppercase tracking-wider mb-0.5">Time</span>
+              <span className="text-xs font-black text-emerald-900 truncate max-w-full">
+                {selectedTimeSlot ? selectedTimeSlot.start : '—'}
+              </span>
+            </div>
+
+            <div className="flex flex-col items-center justify-center p-2.5 rounded-xl bg-blue-50/70 border border-blue-200/80 text-center">
+              <span className="text-[9px] font-bold text-blue-600 uppercase tracking-wider mb-0.5">Guests</span>
+              <span className="text-xs font-black text-blue-900 truncate max-w-full">
+                {guestCount} {guestCount === 1 ? 'Guest' : 'Guests'}
+              </span>
+            </div>
           </div>
 
           {/* ── SELECTION TAGS ── */}
           {(selectedTable || selectedEventCompany || (selectedPackage && !isRestaurant && !selectedEventCompany && (pricing?.cafePackageCharge || 0) > 0)) && (
-            <div
-              className="mb-5 p-4 rounded-2xl border-2 space-y-2"
-              style={{
-                background: 'linear-gradient(135deg, #FFF7ED 0%, #FFF0DA 100%)',
-                borderColor: '#E8C090',
-                boxShadow: '0 3px 12px rgba(232,192,144,0.3), inset 0 1px 0 rgba(255,255,255,0.8)',
-              }}
-            >
+            <div className="mb-5 p-3.5 rounded-2xl bg-amber-50/50 border border-amber-200/70 space-y-2">
               {selectedTable && (
-                <div className="flex items-center gap-2 text-[11px]">
-                  <span className="font-bold text-[#8A5A35]">🪑 Table:</span>
-                  <span
-                    className="font-black text-emerald-800 px-2.5 py-0.5 rounded-xl border-2"
-                    style={{ background: '#D6F5E3', borderColor: '#6EBD8A', boxShadow: '0 2px 6px rgba(110,189,138,0.25)' }}
-                  >
+                <div className="flex items-center justify-between text-xs">
+                  <span className="font-bold text-stone-500">Selected Table</span>
+                  <span className="font-black text-emerald-800 bg-emerald-100/80 px-2.5 py-0.5 rounded-lg border border-emerald-200 text-xs">
                     #{selectedTable.table_number || selectedTable.name} · {selectedTable.capacity} Seats
                   </span>
                 </div>
               )}
               {/* Event company shown as Package tag */}
               {selectedEventCompany && !isRestaurant && (
-                <div className="flex items-center gap-2 text-[11px]">
-                  <span className="font-bold text-[#8A5A35]">🎁 Package:</span>
-                  <span
-                    className="font-black px-2.5 py-0.5 rounded-xl border-2"
-                    style={{ background: '#F0EBF8', borderColor: '#C084DB', color: '#7B2FA8', boxShadow: '0 2px 6px rgba(192,132,219,0.25)' }}
-                  >
+                <div className="flex items-center justify-between text-xs">
+                  <span className="font-bold text-stone-500">Selected Package</span>
+                  <span className="font-black text-purple-900 bg-purple-100/80 px-2.5 py-0.5 rounded-lg border border-purple-200 text-xs">
                     {selectedEventCompany.name}
-                    {selectedEventCompany.selectedInclusions?.length > 0 && (
-                      <span className="ml-1 text-[9px] font-bold opacity-70">· {selectedEventCompany.selectedInclusions.length} features</span>
-                    )}
                   </span>
                 </div>
               )}
               {/* Only show Package tag when cafe has a genuine package (not event company service) */}
               {selectedPackage && !isRestaurant && !selectedEventCompany && (pricing?.cafePackageCharge || 0) > 0 && (
-                <div className="flex items-center gap-2 text-[11px]">
-                  <span className="font-bold text-[#8A5A35]">🎁 Package:</span>
+                <div className="flex items-center justify-between text-xs">
+                  <span className="font-bold text-stone-500">Package</span>
                   <span className="font-black text-[#2C1810]">{selectedPackage.name || 'Custom Add-Ons'}</span>
                 </div>
               )}
-
             </div>
           )}
 
           {/* ── DIVIDER ── */}
-          <div
-            className="h-px mb-5 rounded-full"
-            style={{ background: 'linear-gradient(90deg, transparent 0%, #DDB892 50%, transparent 100%)' }}
-          />
+          <div className="h-px mb-5 bg-stone-100" />
 
           {/* ── PRICING ── */}
           {isRestaurant ? (
-            <div
-              className="p-4 rounded-2xl border-2 mb-5"
-              style={{
-                background: 'linear-gradient(135deg, #EDFBF0 0%, #D4F5DF 100%)',
-                borderColor: '#6EBD8A',
-                boxShadow: '0 4px 14px rgba(110,189,138,0.22), inset 0 1px 0 rgba(255,255,255,0.7)',
-              }}
-            >
+            <div className="p-4 rounded-2xl border border-emerald-200/90 bg-emerald-50/60 mb-5">
               <div className="flex items-center gap-2 text-emerald-900 font-extrabold text-xs mb-1">
                 <CheckCircle size={15} className="text-emerald-600 shrink-0" />
                 <span>Direct Table Reservation — Free</span>

@@ -39,7 +39,7 @@ export default function Footer() {
             <h4 className="text-white font-black text-xs uppercase tracking-wider mb-4 text-[#DDB892]">Discover</h4>
             <ul className="space-y-2.5 text-xs font-bold text-stone-400">
               <li><Link href="/customer/cafe" className="hover:text-white transition-colors">Cafes Near You</Link></li>
-              <li><Link href="/events" className="hover:text-white transition-colors">Event Services</Link></li>
+              <li><Link href="/customer/cafe?category=Event+Space" className="hover:text-white transition-colors">Event Services</Link></li>
               <li><Link href="/customer/cafe?sort=popular" className="hover:text-white transition-colors">Popular Locations</Link></li>
               <li><Link href="/customer/bookings" className="hover:text-white transition-colors">My Bookings</Link></li>
             </ul>

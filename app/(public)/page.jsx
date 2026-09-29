@@ -7,7 +7,8 @@ import {
   Heart, PartyPopper, Users2, Star, ShieldCheck, 
   Lock, Building2, CheckCircle2, ChevronDown, HelpCircle, 
   LogIn, UserPlus, Zap, Coffee, Clock, Award, ThumbsUp, Bell,
-  X, RotateCcw, ChevronRight, Layers, Tag, Menu, Compass, CalendarCheck, User
+  X, RotateCcw, ChevronRight, Layers, Tag, Menu, Compass, CalendarCheck, User,
+  Receipt, BadgeCheck
 } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -515,7 +516,7 @@ export default function HomePage() {
                         ☕ Cafes
                       </Link>
                       <Link 
-                        href="/events" 
+                        href="/customer/cafe?category=Event+Space" 
                         onClick={() => setMobileMenuOpen(false)}
                         className="px-2 py-0.5 rounded-full bg-white border border-[#DDB892]/40 hover:bg-[#FFF8F0] transition-colors flex items-center gap-1"
                       >
@@ -930,66 +931,84 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ==================== 3. PLATFORM HIGHLIGHTS (STATS BAR WITH FRAMER MOTION) ==================== */}
-      <section className="bg-white border-b border-stone-200/80 py-8 sm:py-12 shadow-2xs">
+      {/* ==================== 3. FAHARA VALUE PROPOSITION CARDS ==================== */}
+      <section id="why-fahara" className="bg-white border-b border-[#E8DED5] py-12 sm:py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div 
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-6 text-center"
-          >
+          
+          {/* Section Heading */}
+          <div className="text-center max-w-2xl mx-auto mb-8 sm:mb-12">
+            <h2 className="text-2xl sm:text-3xl font-bold text-[#2C1810] tracking-tight">
+              Why Choose Fahara?
+            </h2>
+            <p className="text-sm sm:text-base font-normal text-[#A67B5B] mt-2">
+              Everything you need to discover, plan and book your perfect experience.
+            </p>
+          </div>
+
+          {/* 4 Value Proposition Cards Grid (Desktop: 4 equal cards, Tablet: 2x2, Mobile: 1-col horizontal scroll/stack) */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6">
             
-            <motion.div 
-              whileHover={{ y: -6, scale: 1.02 }}
-              transition={{ type: "spring", stiffness: 300 }}
-              className="p-4 sm:p-6 rounded-2xl sm:rounded-3xl bg-gradient-to-b from-[#FFF8F0] to-amber-50/40 border border-[#DDB892]/50 shadow-xs hover:shadow-lg transition-all"
-            >
-              <div className="w-10 sm:w-12 h-10 sm:h-12 rounded-xl sm:rounded-2xl bg-[#6F4E37] text-white flex items-center justify-center mx-auto mb-2.5 sm:mb-3 font-black shadow-md">
-                <MapPin size={20} />
+            {/* CARD 1: Discover Everything */}
+            <div className="bg-white border border-[#E8DED5] rounded-[22px] p-7 flex flex-col justify-between items-start shadow-[0_2px_8px_rgba(44,24,16,0.02)] hover:-translate-y-1 hover:border-[#6F4E37]/40 hover:shadow-[0_8px_24px_rgba(44,24,16,0.06)] transition-all duration-200 group">
+              <div className="w-12 h-12 rounded-2xl bg-[#FFF8F0] border border-[#E8DED5] flex items-center justify-center mb-5 group-hover:bg-[#F5EBE0] transition-colors shrink-0">
+                <Compass size={22} className="text-[#6F4E37]" aria-hidden="true" />
               </div>
-              <span className="text-2xl sm:text-4xl font-black text-[#2C1810] block tracking-tight">50+</span>
-              <p className="text-[10px] sm:text-xs font-black text-[#6F4E37] uppercase tracking-wider mt-1">Top City Neighborhoods</p>
-            </motion.div>
-
-            <motion.div 
-              whileHover={{ y: -6, scale: 1.02 }}
-              transition={{ type: "spring", stiffness: 300 }}
-              className="p-4 sm:p-6 rounded-2xl sm:rounded-3xl bg-gradient-to-b from-[#FFF8F0] to-amber-50/40 border border-[#DDB892]/50 shadow-xs hover:shadow-lg transition-all"
-            >
-              <div className="w-10 sm:w-12 h-10 sm:h-12 rounded-xl sm:rounded-2xl bg-[#6F4E37] text-white flex items-center justify-center mx-auto mb-2.5 sm:mb-3 font-black shadow-md">
-                <PartyPopper size={20} />
+              <div className="space-y-1.5 flex-1">
+                <h3 className="text-lg font-bold text-[#2C1810] tracking-tight">
+                  Discover Everything
+                </h3>
+                <p className="text-sm font-normal text-[#A67B5B] leading-relaxed">
+                  Cafes, venues &amp; events
+                </p>
               </div>
-              <span className="text-2xl sm:text-4xl font-black text-[#2C1810] block tracking-tight">15,000+</span>
-              <p className="text-[10px] sm:text-xs font-black text-[#6F4E37] uppercase tracking-wider mt-1">Celebrations Reserved</p>
-            </motion.div>
+            </div>
 
-            <motion.div 
-              whileHover={{ y: -6, scale: 1.02 }}
-              transition={{ type: "spring", stiffness: 300 }}
-              className="p-4 sm:p-6 rounded-2xl sm:rounded-3xl bg-gradient-to-b from-[#FFF8F0] to-amber-50/40 border border-[#DDB892]/50 shadow-xs hover:shadow-lg transition-all"
-            >
-              <div className="w-10 sm:w-12 h-10 sm:h-12 rounded-xl sm:rounded-2xl bg-[#6F4E37] text-white flex items-center justify-center mx-auto mb-2.5 sm:mb-3 font-black shadow-md">
-                <Star size={20} />
+            {/* CARD 2: Plan Your Occasion */}
+            <div className="bg-white border border-[#E8DED5] rounded-[22px] p-7 flex flex-col justify-between items-start shadow-[0_2px_8px_rgba(44,24,16,0.02)] hover:-translate-y-1 hover:border-[#6F4E37]/40 hover:shadow-[0_8px_24px_rgba(44,24,16,0.06)] transition-all duration-200 group">
+              <div className="w-12 h-12 rounded-2xl bg-[#FFF8F0] border border-[#E8DED5] flex items-center justify-center mb-5 group-hover:bg-[#F5EBE0] transition-colors shrink-0">
+                <Sparkles size={22} className="text-[#6F4E37]" aria-hidden="true" />
               </div>
-              <span className="text-2xl sm:text-4xl font-black text-[#2C1810] block tracking-tight">4.9 ★</span>
-              <p className="text-[10px] sm:text-xs font-black text-[#6F4E37] uppercase tracking-wider mt-1">Average Host Rating</p>
-            </motion.div>
-
-            <motion.div 
-              whileHover={{ y: -6, scale: 1.02 }}
-              transition={{ type: "spring", stiffness: 300 }}
-              className="p-4 sm:p-6 rounded-2xl sm:rounded-3xl bg-gradient-to-b from-[#FFF8F0] to-amber-50/40 border border-[#DDB892]/50 shadow-xs hover:shadow-lg transition-all"
-            >
-              <div className="w-10 sm:w-12 h-10 sm:h-12 rounded-xl sm:rounded-2xl bg-[#6F4E37] text-white flex items-center justify-center mx-auto mb-2.5 sm:mb-3 font-black shadow-md">
-                <ShieldCheck size={20} />
+              <div className="space-y-1.5 flex-1">
+                <h3 className="text-lg font-bold text-[#2C1810] tracking-tight">
+                  Plan Your Occasion
+                </h3>
+                <p className="text-sm font-normal text-[#A67B5B] leading-relaxed">
+                  For every special moment
+                </p>
               </div>
-              <span className="text-2xl sm:text-4xl font-black text-[#2C1810] block tracking-tight">₹0</span>
-              <p className="text-[10px] sm:text-xs font-black text-[#6F4E37] uppercase tracking-wider mt-1">Hidden Service Charges</p>
-            </motion.div>
+            </div>
 
-          </motion.div>
+            {/* CARD 3: Trusted Partners */}
+            <div className="bg-white border border-[#E8DED5] rounded-[22px] p-7 flex flex-col justify-between items-start shadow-[0_2px_8px_rgba(44,24,16,0.02)] hover:-translate-y-1 hover:border-[#6F4E37]/40 hover:shadow-[0_8px_24px_rgba(44,24,16,0.06)] transition-all duration-200 group">
+              <div className="w-12 h-12 rounded-2xl bg-[#FFF8F0] border border-[#E8DED5] flex items-center justify-center mb-5 group-hover:bg-[#F5EBE0] transition-colors shrink-0">
+                <BadgeCheck size={22} className="text-[#6F4E37]" aria-hidden="true" />
+              </div>
+              <div className="space-y-1.5 flex-1">
+                <h3 className="text-lg font-bold text-[#2C1810] tracking-tight">
+                  Trusted Partners
+                </h3>
+                <p className="text-sm font-normal text-[#A67B5B] leading-relaxed">
+                  Discover verified providers
+                </p>
+              </div>
+            </div>
+
+            {/* CARD 4: Transparent Booking */}
+            <div className="bg-white border border-[#E8DED5] rounded-[22px] p-7 flex flex-col justify-between items-start shadow-[0_2px_8px_rgba(44,24,16,0.02)] hover:-translate-y-1 hover:border-[#6F4E37]/40 hover:shadow-[0_8px_24px_rgba(44,24,16,0.06)] transition-all duration-200 group">
+              <div className="w-12 h-12 rounded-2xl bg-[#FFF8F0] border border-[#E8DED5] flex items-center justify-center mb-5 group-hover:bg-[#F5EBE0] transition-colors shrink-0">
+                <Receipt size={22} className="text-[#6F4E37]" aria-hidden="true" />
+              </div>
+              <div className="space-y-1.5 flex-1">
+                <h3 className="text-lg font-bold text-[#2C1810] tracking-tight">
+                  Transparent Booking
+                </h3>
+                <p className="text-sm font-normal text-[#A67B5B] leading-relaxed">
+                  Clear details, no surprises
+                </p>
+              </div>
+            </div>
+
+          </div>
         </div>
       </section>
 
@@ -1140,36 +1159,7 @@ export default function HomePage() {
 
       </section>
 
-      {/* ==================== 7. WHY CHOOSE FAHARA ==================== */}
-      <section id="why-fahara" className="py-12 sm:py-20 bg-[#F5EBE0] border-y border-[#DDB892]/40">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          
-          <div className="text-center max-w-3xl mx-auto mb-10 sm:mb-16">
-            <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black text-[#2C1810]">Why Choose Fahara</h2>
-            <p className="text-stone-600 font-medium text-xs sm:text-base mt-2">
-              Everything you need for a stress-free cafe venue reservation experience.
-            </p>
-          </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-            {whyFaharaFeatures.map((feat) => {
-              const Icon = feat.icon;
-              return (
-                <div key={feat.id} className="bg-white p-5 sm:p-6 rounded-2xl sm:rounded-3xl border border-stone-200/80 shadow-2xs flex items-start gap-3.5 sm:gap-4">
-                  <div className="w-10 sm:w-12 h-10 sm:h-12 rounded-xl sm:rounded-2xl bg-[#FFF8F0] border border-[#DDB892]/50 text-[#6F4E37] flex items-center justify-center shrink-0">
-                    <Icon size={20} />
-                  </div>
-                  <div>
-                    <h3 className="font-black text-sm sm:text-base text-[#2C1810] mb-1">{feat.title}</h3>
-                    <p className="text-xs font-medium text-stone-500 leading-relaxed">{feat.desc}</p>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-
-        </div>
-      </section>
 
       {/* ==================== 8. FAHARA SAFETY & BOOKING GUARANTEE ==================== */}
       <section className="py-12 sm:py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

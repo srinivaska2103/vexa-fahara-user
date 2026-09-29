@@ -52,6 +52,16 @@ export const searchService = {
     }
   },
 
+  getCategories: async () => {
+    try {
+      const response = await api.get('/categories');
+      return response.data;
+    } catch (error) {
+      console.warn("Categories API error:", error?.message);
+      return { success: false, data: [] };
+    }
+  },
+
   toggleFavorite: async (cafeId) => {
     return favoriteService.toggleFavorite(cafeId);
   }

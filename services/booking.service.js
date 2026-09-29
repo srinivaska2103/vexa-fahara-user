@@ -18,15 +18,10 @@ export const bookingService = {
 
   getMyBookings: async () => {
     try {
-      if (typeof window !== 'undefined') {
-        const token = localStorage.getItem('token') || localStorage.getItem('accessToken');
-        if (!token) {
-          return { success: true, data: [] };
-        }
-      }
       const response = await api.get('/bookings/my-bookings');
       return response.data;
     } catch (error) {
+      console.error('Error fetching my bookings:', error);
       return { success: false, data: [] };
     }
   },

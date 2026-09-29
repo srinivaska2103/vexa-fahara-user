@@ -1,15 +1,15 @@
 'use client';
 
-import { useCafeSearch } from '@/hooks/useSearch';
+import { useCafeSearch, useDiscoveryCategories } from '@/hooks/useSearch';
 import { useSearchStore } from '@/stores/search.store';
 import CafeCard from '@/app/components/cards/CafeCard';
 import { 
   Map, LayoutGrid, SlidersHorizontal, Loader2, Coffee, Sparkles, 
   Cake, Briefcase, PartyPopper, Heart, Users2, Camera, Music, 
   Utensils, GlassWater, ArrowRight, Sun, Umbrella, Building2, Layers, Check,
-  Flame, Percent, Tag, Zap, UtensilsCrossed, Footprints
+  Flame, Percent, Tag, Zap, UtensilsCrossed, Footprints, ChevronLeft, ChevronRight, Compass
 } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import dynamic from 'next/dynamic';
 import SortDropdown from '@/app/components/cafes/SortDropdown';
 import FilterSidebar from '@/app/components/cafes/FilterSidebar';
@@ -21,156 +21,49 @@ import { motion } from 'framer-motion';
 import FaharaInteractiveLoader from '@/app/components/common/FaharaInteractiveLoader';
 import ModernEmptyState from '@/app/components/common/ModernEmptyState';
 import FaharaHeroBannerCarousel from '@/app/components/home/FaharaHeroBannerCarousel';
+import DiscoveryCategorySection from '@/app/components/home/DiscoveryCategorySection';
 
 const MapComponent = dynamic(
   () => import('@/app/components/home/MapComponent'),
   { ssr: false, loading: () => <div className="h-full w-full bg-stone-100 flex items-center justify-center rounded-2xl min-h-[400px]"><Loader2 className="animate-spin text-[#6F4E37]" size={28} /></div> }
 );
 
-const EVENT_PACKAGES = [
-  {
-    id: 'Birthday Party',
-    title: 'Birthday Party',
-    icon: Cake,
-    keywords: ['birthday', 'bday', 'party'],
-    badgeColor: 'bg-rose-50 text-rose-700 border-rose-200',
-    iconColor: 'bg-gradient-to-tr from-rose-600 to-pink-500 text-white',
-  },
-  {
-    id: 'Anniversary & Couples',
-    title: 'Anniversary & Couples',
-    icon: Heart,
-    keywords: ['anniversary', 'couple', 'couples', 'date', 'romantic'],
-    badgeColor: 'bg-pink-50 text-pink-700 border-pink-200',
-    iconColor: 'bg-gradient-to-tr from-pink-600 to-rose-400 text-white',
-  },
-  {
-    id: 'Corporate Meeting',
-    title: 'Corporate Meeting',
-    icon: Briefcase,
-    keywords: ['corporate', 'meeting', 'conference', 'work', 'business'],
-    badgeColor: 'bg-blue-50 text-blue-700 border-blue-200',
-    iconColor: 'bg-gradient-to-tr from-blue-700 to-indigo-500 text-white',
-  },
-  {
-    id: 'Wedding Reception',
-    title: 'Wedding Reception',
-    icon: PartyPopper,
-    keywords: ['wedding', 'reception', 'marriage', 'engagement'],
-    badgeColor: 'bg-amber-50 text-amber-800 border-amber-200',
-    iconColor: 'bg-gradient-to-tr from-amber-600 to-yellow-500 text-white',
-  },
-  {
-    id: 'Private Dining Party',
-    title: 'Private Dining Party',
-    icon: Utensils,
-    keywords: ['private dining', 'dining', 'dinner', 'feast', 'food'],
-    badgeColor: 'bg-emerald-50 text-emerald-700 border-emerald-200',
-    iconColor: 'bg-gradient-to-tr from-emerald-600 to-teal-500 text-white',
-  },
-  {
-    id: 'Workshop & Masterclass',
-    title: 'Workshop & Masterclass',
-    icon: Sparkles,
-    keywords: ['workshop', 'masterclass', 'class', 'training', 'seminar'],
-    badgeColor: 'bg-purple-50 text-purple-700 border-purple-200',
-    iconColor: 'bg-gradient-to-tr from-purple-600 to-violet-500 text-white',
-  },
-  {
-    id: 'Live Music & Concert',
-    title: 'Live Music & Concert',
-    icon: Music,
-    keywords: ['music', 'live music', 'concert', 'band', 'dj'],
-    badgeColor: 'bg-violet-50 text-violet-700 border-violet-200',
-    iconColor: 'bg-gradient-to-tr from-indigo-600 to-purple-500 text-white',
-  },
-  {
-    id: 'Other Special Event',
-    title: 'Other Special Event',
-    icon: Building2,
-    keywords: ['other', 'special', 'event', 'custom'],
-    badgeColor: 'bg-stone-100 text-stone-700 border-stone-200',
-    iconColor: 'bg-gradient-to-tr from-stone-700 to-stone-500 text-white',
-  },
+// UNIFIED DISCOVERY CATEGORIES (Merged into ONE "WHAT'S ON YOUR MIND?" section)
+const UNIFIED_MIND_CATEGORIES = [
+  { id: 'Coffee Shop', title: 'Cafes', icon: Coffee, bg: 'from-amber-100/90 to-amber-50 text-[#6F4E37] border-amber-300/70', type: 'category' },
+  { id: 'Restaurant', title: 'Restaurants', icon: UtensilsCrossed, bg: 'from-orange-100/90 to-amber-50 text-orange-800 border-orange-300/70', type: 'category' },
+  { id: 'Party Hall', title: 'Party Halls', icon: PartyPopper, bg: 'from-purple-100/90 to-pink-50 text-purple-800 border-purple-300/70', type: 'category' },
+  { id: 'Event Space', title: 'Event Spaces', icon: Building2, bg: 'from-emerald-100/90 to-teal-50 text-emerald-800 border-emerald-300/70', type: 'category' },
+  { id: 'Rooftop', title: 'Rooftop Cafes', icon: Sun, bg: 'from-sky-100/90 to-blue-50 text-sky-800 border-sky-300/70', type: 'category' },
+  { id: 'Outdoor', title: 'Outdoor Venues', icon: Umbrella, bg: 'from-teal-100/90 to-emerald-50 text-teal-800 border-teal-300/70', type: 'category' },
+  { id: 'Private Dining', title: 'Private Dining', icon: GlassWater, bg: 'from-rose-100/90 to-pink-50 text-rose-800 border-rose-300/70', type: 'category' },
+
+  { id: 'Birthday Party', title: 'Birthday', icon: Cake, bg: 'from-pink-100/90 to-rose-50 text-pink-800 border-pink-300/70', keywords: ['birthday', 'bday', 'party'], type: 'event' },
+  { id: 'Anniversary & Couples', title: 'Anniversary', icon: Heart, bg: 'from-red-100/90 to-rose-50 text-red-800 border-red-300/70', keywords: ['anniversary', 'couple', 'couples', 'date', 'romantic'], type: 'event' },
+  { id: 'Corporate Meeting', title: 'Corporate', icon: Briefcase, bg: 'from-indigo-100/90 to-blue-50 text-indigo-800 border-indigo-300/70', keywords: ['corporate', 'meeting', 'conference', 'work', 'business'], type: 'event' },
+  { id: 'Wedding Reception', title: 'Wedding', icon: Sparkles, bg: 'from-yellow-100/90 to-amber-50 text-amber-900 border-amber-300/70', keywords: ['wedding', 'reception', 'marriage', 'engagement'], type: 'event' },
+  { id: 'Photoshoot', title: 'Photoshoot', icon: Camera, bg: 'from-violet-100/90 to-purple-50 text-violet-800 border-violet-300/70', keywords: ['photoshoot', 'shoot', 'studio', 'camera'], type: 'event' },
+  { id: 'Baby Shower', title: 'Baby Shower', icon: Sparkles, bg: 'from-blue-100/90 to-sky-50 text-blue-800 border-blue-300/70', keywords: ['baby', 'shower', 'maternity'], type: 'event' },
+  { id: 'Engagement', title: 'Engagement', icon: Heart, bg: 'from-orange-100/90 to-amber-50 text-orange-800 border-orange-300/70', keywords: ['engagement', 'ring', 'ceremony'], type: 'event' },
+
+  { id: 'All Spaces', title: 'All Spaces', icon: Building2, bg: 'from-amber-100/90 to-amber-50 text-[#6F4E37] border-amber-300/70', type: 'space' },
+  { id: 'Most Popular', title: 'Most Popular', icon: Sparkles, bg: 'from-amber-100/90 to-yellow-50 text-amber-800 border-amber-300/70', type: 'space', isMostPopular: true },
+  { id: 'Discounts & Offers', title: 'Discounts & Offers', icon: Flame, bg: 'from-rose-100/90 to-red-50 text-rose-800 border-rose-300/70', type: 'space' },
+  { id: 'Walking Cafe', title: 'Walking Cafes', icon: Footprints, bg: 'from-emerald-100/90 to-teal-50 text-emerald-800 border-emerald-300/70', type: 'space' },
+  { id: 'Coffee Shop Space', title: 'Coffee Shops', icon: Coffee, bg: 'from-amber-100/90 to-amber-50 text-amber-900 border-amber-300/70', type: 'space' },
+  { id: 'More', title: 'More', icon: SlidersHorizontal, bg: 'from-stone-100/90 to-stone-50 text-stone-700 border-stone-300/70', type: 'more' },
 ];
 
 const CATEGORY_SECTIONS = [
-  {
-    id: 'Most Popular',
-    title: 'Most Popular',
-    subtitle: 'Top-rated cafes and venues sorted by real customer review ratings & feedback.',
-    icon: Sparkles,
-    isMostPopular: true,
-    keywords: ['popular', 'top', 'rating', 'reviews'],
-    pillColor: 'bg-gradient-to-tr from-yellow-600 via-amber-600 to-orange-600 text-white border-amber-500/60 shadow-md',
-    headerBadge: 'bg-gradient-to-r from-amber-400 to-yellow-500 text-[#2C1810] font-black border-amber-300',
-  },
-  {
-    id: 'Discounts & Offers',
-    title: 'Discounts & Offers',
-    subtitle: 'Exclusive discounts, percentage offers, and flat savings provided by cafes.',
-    icon: Flame,
-    keywords: ['discount', 'discounts', 'offer', 'offers', 'deal', 'percent', 'flat', 'off'],
-    pillColor: 'bg-gradient-to-tr from-amber-600 via-rose-600 to-red-600 text-white border-amber-500/60 shadow-md',
-    headerBadge: 'bg-gradient-to-r from-amber-500 to-rose-600 text-white font-black border-amber-400',
-  },
-  {
-    id: 'Walking Cafe',
-    title: 'Walking Cafes',
-    subtitle: 'Walk-in cafes perfect for quick coffee, snacks, and instant walk-in dining.',
-    icon: Footprints,
-    keywords: ['walking', 'walk-in', 'walking cafe', 'walkin', 'walk in'],
-    pillColor: 'bg-gradient-to-tr from-emerald-700 via-teal-600 to-emerald-600 text-white border-emerald-600/60 shadow-md',
-    headerBadge: 'bg-emerald-100/90 text-emerald-900 border-emerald-300/80',
-  },
-  {
-    id: 'Coffee Shop',
-    title: 'Coffee Shops',
-    subtitle: 'Chill coffee spots ideal for casual meets, study sessions & celebrations.',
-    icon: Coffee,
-    keywords: ['coffee', 'coffee shop'],
-    pillColor: 'bg-gradient-to-tr from-amber-700 to-amber-500 text-white border-amber-600/60',
-    headerBadge: 'bg-amber-100/90 text-amber-900 border-amber-300/80',
-  },
-  {
-    id: 'Restaurant',
-    title: 'Restaurants',
-    subtitle: 'Great dining spots for family dinners, fine dining & delicious meals.',
-    icon: UtensilsCrossed,
-    keywords: ['restaurant', 'resturant', 'dining', 'family dining'],
-    pillColor: 'bg-gradient-to-tr from-orange-700 to-amber-600 text-white border-orange-600/60',
-    headerBadge: 'bg-orange-100/90 text-orange-900 border-orange-300/80',
-  },
-  {
-    id: 'Bistro',
-    title: 'Bistros',
-    subtitle: 'Charming bistros with curated menus and relaxed dining ambiance.',
-    icon: GlassWater,
-    keywords: ['bistro', 'dining'],
-    pillColor: 'bg-gradient-to-tr from-teal-700 to-teal-500 text-white border-teal-600/60',
-    headerBadge: 'bg-teal-100/90 text-teal-900 border-teal-300/80',
-  },
-  {
-    id: 'Co-working Cafe',
-    title: 'Co-working Cafes',
-    subtitle: 'Productive workspace cafes with high-speed Wi-Fi & quiet corners.',
-    icon: Briefcase,
-    keywords: ['co-working', 'working', 'work'],
-    pillColor: 'bg-gradient-to-tr from-blue-700 to-indigo-600 text-white border-blue-600/60',
-    headerBadge: 'bg-blue-100/90 text-blue-900 border-blue-300/80',
-  },
-  {
-    id: 'Party Hall',
-    title: 'Party Halls',
-    subtitle: 'Spacious party venues and halls for birthday bashes, receptions & grand events.',
-    icon: PartyPopper,
-    keywords: ['party', 'party hall', 'hall'],
-    pillColor: 'bg-gradient-to-tr from-purple-700 to-violet-600 text-white border-purple-600/60',
-    headerBadge: 'bg-purple-100/90 text-purple-900 border-purple-300/80',
-  },
-];
+  UNIFIED_MIND_CATEGORIES.find(c => c.id === 'Most Popular'),
+  ...UNIFIED_MIND_CATEGORIES.filter(c => c.id !== 'Most Popular')
+].filter(Boolean);
+const EVENT_PACKAGES = UNIFIED_MIND_CATEGORIES.filter(c => c.type === 'event');
 
 export default function AdvancedCafeDiscoveryPage() {
+  const { data: categoryResponse } = useDiscoveryCategories();
+  const backendCategories = categoryResponse?.data || [];
+
   const { 
     viewMode, setViewMode, clearFilters, query, category, setCategory,
     openNow, availableToday, distance, amenities, sortBy
@@ -178,6 +71,17 @@ export default function AdvancedCafeDiscoveryPage() {
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
   const [selectedEventPackage, setSelectedEventPackage] = useState('');
   const { t } = useLanguage();
+
+  const mindScrollRef = useRef(null);
+  const eventScrollRef = useRef(null);
+  const spacesScrollRef = useRef(null);
+
+  const handleScroll = (ref, direction) => {
+    if (ref.current) {
+      const scrollAmount = direction === 'left' ? -320 : 320;
+      ref.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+    }
+  };
 
   const {
     data,
@@ -328,19 +232,41 @@ export default function AdvancedCafeDiscoveryPage() {
   // Categorize cafes cleanly
   const getCafesForSection = (section) => {
     if (!sortedCafes || sortedCafes.length === 0) return [];
+
+    // If user selected a category pill from "WHAT'S ON YOUR MIND?", sortedCafes is already filtered by backend
+    if (category) {
+      const isCurrentActiveSection = 
+        section.id.toLowerCase().trim() === category.toLowerCase().trim() || 
+        section.title.toLowerCase().trim() === category.toLowerCase().trim();
+      if (isCurrentActiveSection) {
+        return sortedCafes;
+      }
+    }
+
     const secId = section.id.toLowerCase().trim();
 
     if (secId === 'most popular' || section.isMostPopular) {
-      // Fetch all cafes across all categories, sorted by review rating (desc) & total review count (desc)
+      // Helper to check if a cafe has any active deal or discount
+      const hasCafeDiscount = (c) => {
+        const hasDiscounts = Array.isArray(c.discounts) && c.discounts.some(d => (d.title || d.name || Number(d.amount) > 0) && Number(d.amount) > 0);
+        const hasObjDiscounts = c.discounts && typeof c.discounts === 'object' && !Array.isArray(c.discounts) && (Number(c.discounts.discount1_amount) > 0 || Number(c.discounts.discount2_amount) > 0);
+        const hasPkgDiscount = Array.isArray(c.cafe_packages) && c.cafe_packages.some(p => Number(p.discount || p.discount_percentage || p.discount_amount) > 0);
+        const hasOfferProp = Boolean(c.offer || c.offers || c.discount || c.has_discount || c.has_offer || Number(c.discount_percentage) > 0 || Number(c.offer_amount) > 0);
+        return hasDiscounts || hasObjDiscounts || hasPkgDiscount || hasOfferProp;
+      };
+
+      // Fetch all cafes, prioritizing venues with active deals first, then sorted by rating (desc) & review count (desc)
       return [...sortedCafes].sort((a, b) => {
+        const dealA = hasCafeDiscount(a) ? 1 : 0;
+        const dealB = hasCafeDiscount(b) ? 1 : 0;
+        if (dealB !== dealA) return dealB - dealA;
+
         const ratingA = Number(a.average_rating || a.rating || (a.reviews_analytics && a.reviews_analytics.averageRating) || 0);
         const ratingB = Number(b.average_rating || b.rating || (b.reviews_analytics && b.reviews_analytics.averageRating) || 0);
+        if (ratingB !== ratingA) return ratingB - ratingA;
+
         const reviewsCountA = Number(a.total_reviews || a.reviews_count || (a.reviews_analytics && a.reviews_analytics.totalReviews) || (Array.isArray(a.reviews) ? a.reviews.length : 0));
         const reviewsCountB = Number(b.total_reviews || b.reviews_count || (b.reviews_analytics && b.reviews_analytics.totalReviews) || (Array.isArray(b.reviews) ? b.reviews.length : 0));
-
-        if (ratingB !== ratingA) {
-          return ratingB - ratingA;
-        }
         return reviewsCountB - reviewsCountA;
       });
     }
@@ -398,7 +324,10 @@ export default function AdvancedCafeDiscoveryPage() {
         );
       }
 
-      return section.keywords.some(k => cafeCat.includes(k) || cafeName.includes(k));
+      if (Array.isArray(section.keywords)) {
+        return section.keywords.some(k => cafeCat.includes(k) || cafeName.includes(k));
+      }
+      return false;
     });
   };
 
@@ -406,9 +335,7 @@ export default function AdvancedCafeDiscoveryPage() {
   const activeSections = category 
     ? CATEGORY_SECTIONS.filter(s => 
         s.id.toLowerCase().trim() === category.toLowerCase().trim() || 
-        s.title.toLowerCase().trim() === category.toLowerCase().trim() ||
-        (category.toLowerCase().includes('walk') && s.id.toLowerCase().includes('walk')) ||
-        (category.toLowerCase().includes('party') && s.id.toLowerCase().includes('party'))
+        s.title.toLowerCase().trim() === category.toLowerCase().trim()
       )
     : CATEGORY_SECTIONS;
 
@@ -438,7 +365,58 @@ export default function AdvancedCafeDiscoveryPage() {
           {/* Top Rotating Hero Banner Carousel (Upcoming Update & Special Discounts) */}
           <FaharaHeroBannerCarousel />
 
-          {/* Top Page Header Banner */}
+          {/* UNIFIED DISCOVERY SECTION: WHAT'S ON YOUR MIND? */}
+          <DiscoveryCategorySection
+            title="WHAT'S ON YOUR MIND?"
+            subtitle="Explore categories, dining styles & occasion venues"
+            headerIcon={Compass}
+            items={UNIFIED_MIND_CATEGORIES.map(item => {
+              let count = 0;
+              const bCat = backendCategories.find(c => 
+                c.id.toLowerCase().trim() === item.id.toLowerCase().trim() ||
+                c.slug?.toLowerCase().trim() === item.id.toLowerCase().trim() ||
+                c.title?.toLowerCase().trim() === item.title.toLowerCase().trim()
+              );
+
+              if (bCat && (bCat.venueCount !== undefined || bCat.count !== undefined)) {
+                count = bCat.venueCount ?? bCat.count ?? 0;
+              } else if (item.type === 'event') {
+                count = getCafesForEventPackage(item, sortedCafes).length;
+              } else if (item.id === 'All Spaces') {
+                count = sortedCafes.length;
+              } else if (item.type !== 'more') {
+                count = getCafesForSection(item).length;
+              }
+              return { ...item, count };
+            })}
+            selectedId={category || selectedEventPackage}
+            onSelect={(id) => {
+              if (id === 'More') {
+                setIsMobileFilterOpen(true);
+                return;
+              }
+              
+              const targetItem = UNIFIED_MIND_CATEGORIES.find(i => i.id === id);
+              if (targetItem?.type === 'event') {
+                const nextVal = selectedEventPackage === id ? '' : id;
+                setSelectedEventPackage(nextVal);
+                setCategory(nextVal);
+              } else if (id === 'All Spaces') {
+                setCategory('');
+                setSelectedEventPackage('');
+              } else {
+                const nextVal = category === id ? '' : id;
+                setCategory(nextVal);
+                setSelectedEventPackage('');
+              }
+            }}
+            onClear={() => {
+              setCategory('');
+              setSelectedEventPackage('');
+            }}
+          />
+
+          {/* Page Sub-Header Banner with Filters & View Switcher */}
           <div className="relative z-30 mb-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white/60 backdrop-blur-md p-4 sm:p-6 rounded-3xl border border-stone-200/80 shadow-2xs">
             <div>
               <h1 className="text-xl sm:text-3xl font-black text-[#2C1810] tracking-tight">
@@ -491,149 +469,6 @@ export default function AdvancedCafeDiscoveryPage() {
               </div>
 
               <SortDropdown />
-            </div>
-          </div>
-
-          {/* EVENT PACKAGES CARDS QUICK FILTER BAR (Matching Reference UI) */}
-          <div className="mb-6 space-y-3 bg-white/70 backdrop-blur-md p-4 sm:p-5 rounded-3xl border border-stone-200/90 shadow-2xs">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <div className="w-7 h-7 rounded-lg bg-[#4A2C11] text-amber-300 flex items-center justify-center font-bold shadow-2xs">
-                  <Layers size={14} />
-                </div>
-                <div>
-                  <h3 className="text-xs sm:text-sm font-black text-[#2C1810] tracking-wide uppercase">
-                    Event Packages & Occasion Setup
-                  </h3>
-                  <p className="text-[11px] text-stone-500 font-medium hidden sm:block">
-                    Select an occasion to filter venues offering matching event packages & themes
-                  </p>
-                </div>
-              </div>
-
-              {selectedEventPackage && (
-                <button 
-                  onClick={() => setSelectedEventPackage('')}
-                  className="text-xs font-black text-rose-600 hover:text-rose-800 bg-rose-50 hover:bg-rose-100 px-3 py-1.5 rounded-xl border border-rose-200/80 transition-all cursor-pointer"
-                >
-                  Clear Event Filter
-                </button>
-              )}
-            </div>
-
-            {/* Single Row Horizontal Scroll Bar for Event Packages */}
-            <div className="flex gap-2.5 sm:gap-3 overflow-x-auto pb-2.5 no-scrollbar scroll-smooth">
-              {EVENT_PACKAGES.map((pkg) => {
-                const Icon = pkg.icon;
-                const isSelected = selectedEventPackage === pkg.id;
-                const pkgCafes = getCafesForEventPackage(pkg, sortedCafes);
-
-                return (
-                  <motion.button
-                    key={pkg.id}
-                    suppressHydrationWarning
-                    whileHover={{ scale: 1.01 }}
-                    whileTap={{ scale: 0.97 }}
-                    onClick={() => setSelectedEventPackage(isSelected ? '' : pkg.id)}
-                    className={`relative flex items-center justify-between p-3 sm:p-3.5 rounded-2xl transition-all duration-200 cursor-pointer text-left shrink-0 w-[200px] xs:w-[220px] sm:w-[230px] ${
-                      isSelected
-                        ? 'bg-gradient-to-r from-[#4A2C11] via-[#5A3825] to-[#6F4E37] text-white border border-[#4A2C11] shadow-md shadow-[#4A2C11]/20'
-                        : 'bg-white hover:bg-stone-50/90 border border-stone-200/80 hover:border-stone-300 text-[#2C1810] shadow-2xs'
-                    }`}
-                  >
-                    <div className="flex items-center gap-2.5 min-w-0 pr-2">
-                      <div className={`w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center shrink-0 border ${
-                        isSelected ? 'bg-white/20 text-white border-white/30' : `${pkg.iconColor} shadow-2xs`
-                      }`}>
-                        <Icon size={16} />
-                      </div>
-                      <div className="min-w-0">
-                        <p className={`text-xs font-black truncate ${isSelected ? 'text-white' : 'text-[#2C1810]'}`}>
-                          {pkg.title}
-                        </p>
-                        <p className={`text-[10px] font-bold ${isSelected ? 'text-amber-200' : 'text-stone-400'}`}>
-                          {pkgCafes.length} {pkgCafes.length === 1 ? 'Venue' : 'Venues'}
-                        </p>
-                      </div>
-                    </div>
-
-                    {/* Active Checkmark Badge */}
-                    {isSelected && (
-                      <div className="w-5 h-5 rounded-full bg-white/20 text-white flex items-center justify-center shrink-0 border border-white/20">
-                        <Check size={12} strokeWidth={3} />
-                      </div>
-                    )}
-                  </motion.button>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* Top Category Pills Quick Single-Row Horizontal Scroll Container */}
-          <div className="mb-8 p-3.5 sm:p-5 bg-white/90 backdrop-blur-md rounded-3xl border border-stone-200/90 shadow-2xs">
-            <div className="flex gap-3 sm:gap-3.5 overflow-x-auto pb-1 no-scrollbar scroll-smooth">
-              {/* All Categories Button */}
-              <motion.button
-                suppressHydrationWarning
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => setCategory('')}
-                className={`flex items-center gap-2.5 sm:gap-3 p-3 sm:p-3.5 px-3.5 sm:px-4 rounded-2xl transition-all duration-200 cursor-pointer shrink-0 w-[170px] xs:w-[190px] ${
-                  category === ''
-                    ? 'bg-gradient-to-r from-[#4A2C11] via-[#5A3825] to-[#6F4E37] text-white border border-[#4A2C11] shadow-md shadow-[#4A2C11]/20'
-                    : 'bg-stone-50/90 hover:bg-stone-100/90 border border-stone-200/80 text-[#2C1810] shadow-2xs'
-                }`}
-              >
-                <div className={`w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center shrink-0 transition-all ${
-                  category === '' ? 'bg-white/20 text-amber-300 border border-white/30' : 'bg-gradient-to-tr from-[#4A2C11] to-[#6F4E37] text-amber-300 shadow-xs'
-                }`}>
-                  <Building2 size={18} className="sm:w-5 sm:h-5" />
-                </div>
-                <div className="text-left min-w-0">
-                  <p className={`text-xs font-black truncate ${category === '' ? 'text-white' : 'text-[#2C1810]'}`}>All Spaces</p>
-                  <p className={`text-[10px] font-bold truncate ${category === '' ? 'text-amber-200' : 'text-stone-400'}`}>{sortedCafes.length} {sortedCafes.length === 1 ? 'Venue' : 'Venues'}</p>
-                </div>
-              </motion.button>
-
-              {CATEGORY_SECTIONS.map((sec) => {
-                const Icon = sec.icon;
-                const secCafes = getCafesForSection(sec);
-                const count = secCafes.length;
-                const isSelected = category.toLowerCase().trim() === sec.id.toLowerCase().trim() || category.toLowerCase().trim() === sec.title.toLowerCase().trim();
-
-                return (
-                  <motion.button
-                    key={sec.id}
-                    suppressHydrationWarning
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={() => setCategory(isSelected ? '' : sec.id)}
-                    className={`relative flex items-center gap-2.5 sm:gap-3 p-3 sm:p-3.5 px-3.5 sm:px-4 rounded-2xl transition-all duration-200 cursor-pointer shrink-0 w-[175px] xs:w-[195px] ${
-                      isSelected
-                        ? 'bg-gradient-to-r from-[#4A2C11] via-[#5A3825] to-[#6F4E37] text-white border border-[#4A2C11] shadow-md shadow-[#4A2C11]/20'
-                        : 'bg-stone-50/90 hover:bg-stone-100/90 border border-stone-200/80 hover:border-stone-300 text-[#2C1810] shadow-2xs'
-                    }`}
-                  >
-                    <div className={`w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center shrink-0 transition-all ${
-                      isSelected ? 'bg-white/20 text-white border border-white/30' : `${sec.pillColor} shadow-xs`
-                    }`}>
-                      <Icon size={18} className="sm:w-5 sm:h-5" />
-                    </div>
-
-                    <div className="text-left min-w-0 flex-1">
-                      <div className="flex items-center gap-1 max-w-full">
-                        <p className={`text-xs font-black truncate ${isSelected ? 'text-white' : 'text-[#2C1810]'}`}>{sec.title}</p>
-                        {sec.isMostPopular && (
-                          <span className="bg-gradient-to-r from-amber-500 to-rose-600 text-white text-[7.5px] font-black px-1.5 py-0.2 rounded-md shrink-0 uppercase tracking-tighter shadow-2xs">
-                            POPULAR
-                          </span>
-                        )}
-                      </div>
-                      <p className={`text-[10px] font-bold truncate ${isSelected ? 'text-amber-200' : 'text-stone-400'}`}>{count} {count === 1 ? 'Venue' : 'Venues'}</p>
-                    </div>
-                  </motion.button>
-                );
-              })}
             </div>
           </div>
 
