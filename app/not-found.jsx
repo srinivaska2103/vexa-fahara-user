@@ -120,6 +120,7 @@ export default function NotFound() {
               <button 
                 type="submit"
                 className="absolute right-1.5 top-1/2 -translate-y-1/2 px-4 py-2 bg-[#6F4E37] hover:bg-[#4A2C11] text-white font-black text-xs rounded-xl shadow-sm transition-colors cursor-pointer"
+                suppressHydrationWarning
               >
                 Search
               </button>
@@ -136,6 +137,7 @@ export default function NotFound() {
             <button 
               onClick={() => router.back()}
               className="w-full sm:w-auto px-6 py-3.5 bg-white hover:bg-stone-50 border border-stone-200 text-stone-700 font-bold rounded-2xl shadow-xs transition-all flex items-center justify-center gap-2 active:scale-95 text-xs sm:text-sm cursor-pointer"
+              suppressHydrationWarning
             >
               <ArrowLeft size={16} />
               <span>Go Back</span>

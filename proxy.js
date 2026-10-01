@@ -4,8 +4,16 @@ export function proxy(request) {
   const token = request.cookies.get('accessToken')?.value;
   const { pathname } = request.nextUrl;
 
+  // Public customer routes that guests can browse without login
+  const isPublicCustomerRoute = 
+    pathname === '/customer/cafe' || 
+    pathname.startsWith('/customer/cafe/') || 
+    pathname === '/customer/cafes' || 
+    pathname === '/customer/discover' || 
+    pathname === '/customer/compare';
+
   // Protected customer sub-routes requiring mandatory authentication
-  const isProtectedCustomerRoute = pathname.startsWith('/customer');
+  const isProtectedCustomerRoute = pathname.startsWith('/customer') && !isPublicCustomerRoute;
 
   // If attempting to access protected customer sub-routes without an auth cookie
   if (isProtectedCustomerRoute && !token) {

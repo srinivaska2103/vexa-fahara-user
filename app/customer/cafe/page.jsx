@@ -5,11 +5,12 @@ import { useSearchStore } from '@/stores/search.store';
 import CafeCard from '@/app/components/cards/CafeCard';
 import { 
   Map, LayoutGrid, SlidersHorizontal, Loader2, Coffee, Sparkles, 
-  Cake, Briefcase, PartyPopper, Heart, Users2, Camera, Music, 
+  Cake, CakeSlice, Briefcase, PartyPopper, Heart, Users2, Camera, Music, 
   Utensils, GlassWater, ArrowRight, Sun, Umbrella, Building2, Layers, Check,
   Flame, Percent, Tag, Zap, UtensilsCrossed, Footprints, ChevronLeft, ChevronRight, Compass
 } from 'lucide-react';
-import { useState, useRef } from 'react';
+import React, { useState, useRef, useMemo } from 'react';
+import toast from 'react-hot-toast';
 import dynamic from 'next/dynamic';
 import SortDropdown from '@/app/components/cafes/SortDropdown';
 import FilterSidebar from '@/app/components/cafes/FilterSidebar';
@@ -21,7 +22,10 @@ import { motion } from 'framer-motion';
 import FaharaInteractiveLoader from '@/app/components/common/FaharaInteractiveLoader';
 import ModernEmptyState from '@/app/components/common/ModernEmptyState';
 import FaharaHeroBannerCarousel from '@/app/components/home/FaharaHeroBannerCarousel';
+import DealsAndOffersSection from '@/app/components/home/DealsAndOffersSection';
 import DiscoveryCategorySection from '@/app/components/home/DiscoveryCategorySection';
+import CategorySectionHeader from '@/app/components/home/CategorySectionHeader';
+import CategoryVenueSection from '@/app/components/home/CategoryVenueSection';
 
 const MapComponent = dynamic(
   () => import('@/app/components/home/MapComponent'),
@@ -30,35 +34,103 @@ const MapComponent = dynamic(
 
 // UNIFIED DISCOVERY CATEGORIES (Merged into ONE "WHAT'S ON YOUR MIND?" section)
 const UNIFIED_MIND_CATEGORIES = [
-  { id: 'Coffee Shop', title: 'Cafes', icon: Coffee, bg: 'from-amber-100/90 to-amber-50 text-[#6F4E37] border-amber-300/70', type: 'category' },
-  { id: 'Restaurant', title: 'Restaurants', icon: UtensilsCrossed, bg: 'from-orange-100/90 to-amber-50 text-orange-800 border-orange-300/70', type: 'category' },
-  { id: 'Party Hall', title: 'Party Halls', icon: PartyPopper, bg: 'from-purple-100/90 to-pink-50 text-purple-800 border-purple-300/70', type: 'category' },
-  { id: 'Event Space', title: 'Event Spaces', icon: Building2, bg: 'from-emerald-100/90 to-teal-50 text-emerald-800 border-emerald-300/70', type: 'category' },
-  { id: 'Rooftop', title: 'Rooftop Cafes', icon: Sun, bg: 'from-sky-100/90 to-blue-50 text-sky-800 border-sky-300/70', type: 'category' },
-  { id: 'Outdoor', title: 'Outdoor Venues', icon: Umbrella, bg: 'from-teal-100/90 to-emerald-50 text-teal-800 border-teal-300/70', type: 'category' },
-  { id: 'Private Dining', title: 'Private Dining', icon: GlassWater, bg: 'from-rose-100/90 to-pink-50 text-rose-800 border-rose-300/70', type: 'category' },
+  { 
+    id: 'Coffee Shop', 
+    title: 'Cafes', 
+    icon: Coffee, 
+    bg: 'from-amber-100/90 to-amber-50 text-[#6F4E37] border-amber-300/70', 
+    type: 'category',
+    badgeText: 'POPULAR CAFES',
+    countLabel: 'Cafes Available'
+  },
+  { 
+    id: 'Bistro', 
+    title: 'Bistros', 
+    icon: UtensilsCrossed, 
+    bg: 'from-orange-100/90 to-amber-50 text-orange-800 border-orange-300/70', 
+    type: 'category',
+    badgeText: 'POPULAR BISTROS',
+    countLabel: 'Bistros Available'
+  },
+  { 
+    id: 'Party Hall', 
+    title: 'Party Halls', 
+    icon: PartyPopper, 
+    bg: 'from-purple-100/90 to-pink-50 text-purple-800 border-purple-300/70', 
+    type: 'category',
+    badgeText: 'POPULAR PARTY HALLS',
+    countLabel: 'Venues Available'
+  },
+  { 
+    id: 'Most Popular', 
+    title: 'Most Popular', 
+    icon: Sparkles, 
+    bg: 'from-amber-100/90 to-yellow-50 text-amber-800 border-amber-300/70', 
+    type: 'space', 
+    isMostPopular: true,
+    badgeText: 'MOST POPULAR DEALS',
+    countLabel: 'Venues Available'
+  },
+  { 
+    id: 'Restaurant', 
+    title: 'Restaurants', 
+    icon: UtensilsCrossed, 
+    bg: 'from-orange-100/90 to-amber-50 text-orange-800 border-orange-300/70', 
+    type: 'category',
+    badgeText: 'POPULAR RESTAURANTS',
+    countLabel: 'Restaurants Available'
+  },
+  { 
+    id: 'Event Space', 
+    title: 'Event Spaces', 
+    icon: Building2, 
+    bg: 'from-emerald-100/90 to-teal-50 text-emerald-800 border-emerald-300/70', 
+    type: 'category',
+    badgeText: 'POPULAR EVENT SPACES',
+    countLabel: 'Venues Available'
+  },
+  { 
+    id: 'Rooftop', 
+    title: 'Rooftop Cafes', 
+    icon: Sun, 
+    bg: 'from-sky-100/90 to-blue-50 text-sky-800 border-sky-300/70', 
+    type: 'category',
+    badgeText: 'POPULAR ROOFTOPS',
+    countLabel: 'Cafes Available'
+  },
+  { 
+    id: 'Outdoor', 
+    title: 'Outdoor Venues', 
+    icon: Umbrella, 
+    bg: 'from-teal-100/90 to-emerald-50 text-teal-800 border-teal-300/70', 
+    type: 'category',
+    badgeText: 'POPULAR OUTDOOR SPACES',
+    countLabel: 'Venues Available'
+  },
+  { 
+    id: 'Private Dining', 
+    title: 'Private Dining', 
+    icon: GlassWater, 
+    bg: 'from-rose-100/90 to-pink-50 text-rose-800 border-rose-300/70', 
+    type: 'category',
+    badgeText: 'POPULAR PRIVATE DINING',
+    countLabel: 'Spaces Available'
+  },
 
-  { id: 'Birthday Party', title: 'Birthday', icon: Cake, bg: 'from-pink-100/90 to-rose-50 text-pink-800 border-pink-300/70', keywords: ['birthday', 'bday', 'party'], type: 'event' },
-  { id: 'Anniversary & Couples', title: 'Anniversary', icon: Heart, bg: 'from-red-100/90 to-rose-50 text-red-800 border-red-300/70', keywords: ['anniversary', 'couple', 'couples', 'date', 'romantic'], type: 'event' },
-  { id: 'Corporate Meeting', title: 'Corporate', icon: Briefcase, bg: 'from-indigo-100/90 to-blue-50 text-indigo-800 border-indigo-300/70', keywords: ['corporate', 'meeting', 'conference', 'work', 'business'], type: 'event' },
-  { id: 'Wedding Reception', title: 'Wedding', icon: Sparkles, bg: 'from-yellow-100/90 to-amber-50 text-amber-900 border-amber-300/70', keywords: ['wedding', 'reception', 'marriage', 'engagement'], type: 'event' },
-  { id: 'Photoshoot', title: 'Photoshoot', icon: Camera, bg: 'from-violet-100/90 to-purple-50 text-violet-800 border-violet-300/70', keywords: ['photoshoot', 'shoot', 'studio', 'camera'], type: 'event' },
-  { id: 'Baby Shower', title: 'Baby Shower', icon: Sparkles, bg: 'from-blue-100/90 to-sky-50 text-blue-800 border-blue-300/70', keywords: ['baby', 'shower', 'maternity'], type: 'event' },
-  { id: 'Engagement', title: 'Engagement', icon: Heart, bg: 'from-orange-100/90 to-amber-50 text-orange-800 border-orange-300/70', keywords: ['engagement', 'ring', 'ceremony'], type: 'event' },
+  { id: 'Birthday Party', title: 'Birthday', icon: Cake, bg: 'from-pink-100/90 to-rose-50 text-pink-800 border-pink-300/70', keywords: ['birthday', 'bday', 'party'], type: 'event', badgeText: 'POPULAR BIRTHDAY VENUES', countLabel: 'Venues Available' },
+  { id: 'Anniversary & Couples', title: 'Anniversary', icon: Heart, bg: 'from-red-100/90 to-rose-50 text-red-800 border-red-300/70', keywords: ['anniversary', 'couple', 'couples', 'date', 'romantic'], type: 'event', badgeText: 'POPULAR DATE SPACES', countLabel: 'Venues Available' },
+  { id: 'Corporate Meeting', title: 'Corporate', icon: Briefcase, bg: 'from-indigo-100/90 to-blue-50 text-indigo-800 border-indigo-300/70', keywords: ['corporate', 'meeting', 'conference', 'work', 'business'], type: 'event', badgeText: 'POPULAR MEETING VENUES', countLabel: 'Venues Available' },
+  { id: 'Wedding Reception', title: 'Wedding', icon: Sparkles, bg: 'from-yellow-100/90 to-amber-50 text-amber-900 border-amber-300/70', keywords: ['wedding', 'reception', 'marriage', 'engagement'], type: 'event', badgeText: 'POPULAR WEDDING VENUES', countLabel: 'Venues Available' },
+  { id: 'Photoshoot', title: 'Photoshoot', icon: Camera, bg: 'from-violet-100/90 to-purple-50 text-violet-800 border-violet-300/70', keywords: ['photoshoot', 'shoot', 'studio', 'camera'], type: 'event', badgeText: 'POPULAR SHOOT LOCATIONS', countLabel: 'Venues Available' },
+  { id: 'Baby Shower', title: 'Baby Shower', icon: Sparkles, bg: 'from-blue-100/90 to-sky-50 text-blue-800 border-blue-300/70', keywords: ['baby', 'shower', 'maternity'], type: 'event', badgeText: 'POPULAR BABY SHOWER SPACES', countLabel: 'Venues Available' },
+  { id: 'Engagement', title: 'Engagement', icon: Heart, bg: 'from-orange-100/90 to-amber-50 text-orange-800 border-orange-300/70', keywords: ['engagement', 'ring', 'ceremony'], type: 'event', badgeText: 'POPULAR ENGAGEMENT VENUES', countLabel: 'Venues Available' },
 
-  { id: 'All Spaces', title: 'All Spaces', icon: Building2, bg: 'from-amber-100/90 to-amber-50 text-[#6F4E37] border-amber-300/70', type: 'space' },
-  { id: 'Most Popular', title: 'Most Popular', icon: Sparkles, bg: 'from-amber-100/90 to-yellow-50 text-amber-800 border-amber-300/70', type: 'space', isMostPopular: true },
-  { id: 'Discounts & Offers', title: 'Discounts & Offers', icon: Flame, bg: 'from-rose-100/90 to-red-50 text-rose-800 border-rose-300/70', type: 'space' },
-  { id: 'Walking Cafe', title: 'Walking Cafes', icon: Footprints, bg: 'from-emerald-100/90 to-teal-50 text-emerald-800 border-emerald-300/70', type: 'space' },
-  { id: 'Coffee Shop Space', title: 'Coffee Shops', icon: Coffee, bg: 'from-amber-100/90 to-amber-50 text-amber-900 border-amber-300/70', type: 'space' },
-  { id: 'More', title: 'More', icon: SlidersHorizontal, bg: 'from-stone-100/90 to-stone-50 text-stone-700 border-stone-300/70', type: 'more' },
+  { id: 'All Spaces', title: 'All Spaces', icon: Building2, bg: 'from-amber-100/90 to-amber-50 text-[#6F4E37] border-amber-300/70', type: 'space', badgeText: 'ALL VERIFIED SPACES', countLabel: 'Venues Available' },
+  { id: 'Discounts & Offers', title: 'Discounts & Offers', icon: Flame, bg: 'from-rose-100/90 to-red-50 text-rose-800 border-rose-300/70', type: 'space', badgeText: 'HOT OFFERS & DEALS', countLabel: 'Venues Available' },
+  { id: 'Walking Cafe', title: 'Walking Cafes', icon: Footprints, bg: 'from-emerald-100/90 to-teal-50 text-emerald-800 border-emerald-300/70', type: 'space', badgeText: 'POPULAR WALKING CAFES', countLabel: 'Cafes Available' },
+  { id: 'Coffee Shop Space', title: 'Coffee Shops', icon: Coffee, bg: 'from-amber-100/90 to-amber-50 text-amber-900 border-amber-300/70', type: 'space', badgeText: 'POPULAR COFFEE SHOPS', countLabel: 'Cafes Available' },
+  { id: 'More', title: 'More', icon: SlidersHorizontal, bg: 'from-stone-100/90 to-stone-50 text-stone-700 border-stone-300/70', type: 'more', badgeText: 'MORE CATEGORIES', countLabel: 'Categories' },
 ];
-
-const CATEGORY_SECTIONS = [
-  UNIFIED_MIND_CATEGORIES.find(c => c.id === 'Most Popular'),
-  ...UNIFIED_MIND_CATEGORIES.filter(c => c.id !== 'Most Popular')
-].filter(Boolean);
-const EVENT_PACKAGES = UNIFIED_MIND_CATEGORIES.filter(c => c.type === 'event');
 
 export default function AdvancedCafeDiscoveryPage() {
   const { data: categoryResponse } = useDiscoveryCategories();
@@ -204,6 +276,106 @@ export default function AdvancedCafeDiscoveryPage() {
     return getCafePopularity(b) - getCafePopularity(a);
   });
 
+  // Canonical filter generator for "WHAT'S ON YOUR MIND?" items
+  const dynamicMindCategories = useMemo(() => {
+    // Configured Fahara categories matching backend category discovery endpoint
+    const canonicalItems = [
+      { id: 'Coffee Shop', title: 'Cafes', slug: 'coffee-shop', type: 'category', icon: Coffee, defaultImage: '/cat_cafes.jpg' },
+      { id: 'Restaurant', title: 'Restaurants', slug: 'restaurant', type: 'category', icon: UtensilsCrossed, defaultImage: '/cat_restaurants.jpg' },
+      { id: 'Bakery & Cafe', title: 'Bakery & Cafe', slug: 'bakery-cafe', type: 'category', icon: CakeSlice, defaultImage: '/cat_bakery.jpg' },
+      { id: 'Bistro', title: 'Bistro', slug: 'bistro', type: 'category', icon: Utensils, defaultImage: '/cat_restaurants_1790863823701.jpg' },
+      { id: 'Party Hall', title: 'Party Halls', slug: 'party-hall', type: 'category', icon: PartyPopper, defaultImage: '/cat_events.jpg' },
+      { id: 'Event Space', title: 'Event Spaces', slug: 'event-space', type: 'capability', icon: Building2, defaultImage: '/cat_events_1790863856506.jpg' },
+      { id: 'Rooftop', title: 'Rooftop Cafes', slug: 'rooftop', type: 'category', icon: Sun, defaultImage: '/cat_cafes_1790863810787.jpg' },
+      { id: 'Outdoor', title: 'Outdoor Venues', slug: 'outdoor', type: 'category', icon: Umbrella, defaultImage: '/cat_all_spaces.jpg' },
+      { id: 'Private Dining', title: 'Private Dining', slug: 'private-dining', type: 'capability', icon: GlassWater, defaultImage: '/cat_restaurants.jpg' },
+      { id: 'Birthday Party', title: 'Birthday', slug: 'birthday-party', type: 'event', icon: Cake, keywords: ['birthday', 'bday', 'party'], defaultImage: '/cat_birthday.jpg' },
+      { id: 'Anniversary & Couples', title: 'Anniversary', slug: 'anniversary', type: 'event', icon: Heart, keywords: ['anniversary', 'couple', 'couples', 'date', 'romantic'], defaultImage: '/cat_birthday_1790863870479.jpg' },
+      { id: 'Corporate Meeting', title: 'Corporate', slug: 'corporate', type: 'event', icon: Briefcase, keywords: ['corporate', 'meeting', 'conference', 'work', 'business'], defaultImage: '/cat_events.jpg' },
+      { id: 'Wedding Reception', title: 'Wedding', slug: 'wedding', type: 'event', icon: Sparkles, keywords: ['wedding', 'reception', 'marriage', 'engagement'], defaultImage: '/cat_events_1790863856506.jpg' },
+      { id: 'Photoshoot', title: 'Photoshoot', slug: 'photoshoot', type: 'event', icon: Camera, keywords: ['photoshoot', 'shoot', 'studio', 'camera'], defaultImage: '/cat_events.jpg' },
+      { id: 'Baby Shower', title: 'Baby Shower', slug: 'baby-shower', type: 'event', icon: Sparkles, keywords: ['baby', 'shower', 'maternity'], defaultImage: '/cat_birthday.jpg' },
+      { id: 'Engagement', title: 'Engagement', slug: 'engagement', type: 'event', icon: Heart, keywords: ['engagement', 'ring', 'ceremony'], defaultImage: '/cat_events_1790863856506.jpg' },
+      { id: 'Walking Cafe', title: 'Walking Cafes', slug: 'walking-cafe', type: 'capability', icon: Footprints, defaultImage: '/cat_cafes.jpg' },
+      { id: 'All Spaces', title: 'All Spaces', slug: 'all-spaces', type: 'space', icon: Compass, defaultImage: '/cat_all_spaces_1790863886207.jpg' }
+    ];
+
+    return canonicalItems.map(item => {
+      // Match with backend category record if available from backendCategories response
+      const bCat = (backendCategories || []).find(c => 
+        (c.id && c.id.toLowerCase().trim() === item.id.toLowerCase().trim()) ||
+        (c.slug && c.slug.toLowerCase().trim() === item.slug.toLowerCase().trim()) ||
+        (c.title && c.title.toLowerCase().trim() === item.title.toLowerCase().trim())
+      );
+
+      // Filter matching cafes for this category/occasion/capability from sortedCafes
+      const matchingCafes = sortedCafes.filter(cafe => {
+        const cCat = (cafe.category || '').toLowerCase().trim();
+        const cName = (cafe.name || '').toLowerCase().trim();
+        const cDesc = (cafe.description || '').toLowerCase().trim();
+        const targetId = item.id.toLowerCase().trim();
+        const targetSlug = item.slug.toLowerCase().trim();
+        const targetTitle = item.title.toLowerCase().trim();
+
+        // 1. ALL SPACES
+        if (targetSlug === 'all-spaces' || targetTitle === 'all spaces') {
+          return true;
+        }
+
+        // 2. OCCASIONS (Birthday, Engagement, etc.)
+        if (item.type === 'event' && item.keywords) {
+          const packagesStr = (cafe.cafe_packages || []).map(p => `${p.package_name || ''} ${p.event_type || ''} ${p.description || ''} ${p.name || ''}`).join(' ').toLowerCase();
+          const textToSearch = `${cCat} ${cName} ${cDesc} ${cafe.amenities || ''} ${cafe.features || ''} ${packagesStr}`.toLowerCase();
+          return item.keywords.some(k => textToSearch.includes(k));
+        }
+
+        // 3. CAPABILITIES / SPACES (Event Spaces, Private Dining, Walking Cafe)
+        if (item.type === 'capability') {
+          if (targetSlug === 'event-space') {
+            return cafe.event_booking === true || cafe.event_packages === true || cCat.includes('event') || (cafe.cafe_packages || []).length > 0 || cDesc.includes('event') || cDesc.includes('party');
+          }
+          if (targetSlug === 'private-dining') {
+            return (cafe.capabilities && cafe.capabilities.private_dining === true) || cCat.includes('private dining') || cDesc.includes('private dining') || cDesc.includes('private room');
+          }
+          if (targetSlug === 'walking-cafe') {
+            return cafe.is_walking_cafe || cCat.includes('walk');
+          }
+        }
+
+        // 4. VENUE CATEGORIES (Cafes, Restaurants, Bakery & Cafe, Party Halls, Bistro, Rooftop, Outdoor)
+        if (cCat === targetId || cCat === targetSlug || cCat === targetTitle) return true;
+        if (targetSlug === 'coffee-shop') return cCat.includes('coffee') || cCat.includes('cafe');
+        if (targetSlug === 'restaurant') return cCat.includes('restaurant') || cCat.includes('resturant') || cCat.includes('dining');
+        if (targetSlug === 'bakery-cafe') return cCat.includes('bakery') || cCat.includes('pastry');
+        if (targetSlug === 'party-hall') return cCat.includes('party hall') || cCat.includes('banquet') || cCat.includes('hall');
+        if (targetSlug === 'bistro') return cCat.includes('bistro');
+        if (targetSlug === 'rooftop') return cCat.includes('rooftop') || cName.includes('rooftop') || cDesc.includes('rooftop');
+        if (targetSlug === 'outdoor') return cCat.includes('outdoor') || cName.includes('outdoor') || cDesc.includes('outdoor');
+
+        return false;
+      });
+
+      // Use dedicated category image for each category bubble
+      const categoryImage = item.defaultImage || bCat?.image || null;
+
+      // Use backend venue count if present, otherwise use real calculated matching cafes count
+      const finalCount = bCat?.venueCount !== undefined ? bCat.venueCount : matchingCafes.length;
+
+      return {
+        id: item.id,
+        slug: item.slug,
+        title: item.title,
+        type: item.type,
+        icon: item.icon,
+        image: categoryImage,
+        count: finalCount,
+        venues: matchingCafes,
+        badgeText: `POPULAR ${item.title.toUpperCase()}`,
+        countLabel: `${item.title} Available`
+      };
+    });
+  }, [backendCategories, sortedCafes, category]);
+
   // Helper: Filter cafes by event package
   const getCafesForEventPackage = (evtPkg, cafeList) => {
     if (!cafeList || cafeList.length === 0) return [];
@@ -333,11 +505,12 @@ export default function AdvancedCafeDiscoveryPage() {
 
   // Active section filtering if user picked a category pill
   const activeSections = category 
-    ? CATEGORY_SECTIONS.filter(s => 
+    ? dynamicMindCategories.filter(s => 
         s.id.toLowerCase().trim() === category.toLowerCase().trim() || 
-        s.title.toLowerCase().trim() === category.toLowerCase().trim()
+        (s.title && s.title.toLowerCase().trim() === category.toLowerCase().trim()) ||
+        (s.slug && s.slug.toLowerCase().trim() === category.toLowerCase().trim())
       )
-    : CATEGORY_SECTIONS;
+    : dynamicMindCategories;
 
   return (
     <div className="min-h-screen bg-[#FFF8F0] flex flex-col font-sans antialiased selection:bg-[#6F4E37] selection:text-white pb-20 lg:pb-8">
@@ -365,49 +538,59 @@ export default function AdvancedCafeDiscoveryPage() {
           {/* Top Rotating Hero Banner Carousel (Upcoming Update & Special Discounts) */}
           <FaharaHeroBannerCarousel />
 
+          {/* DEALS & OFFERS SECTION (Directly Below Hero Banner) */}
+          <DealsAndOffersSection
+            cafes={rawCafes}
+            isLoading={isLoading}
+            onViewAll={(catId) => setCategory(catId)}
+          />
+
           {/* UNIFIED DISCOVERY SECTION: WHAT'S ON YOUR MIND? */}
           <DiscoveryCategorySection
-            title="WHAT'S ON YOUR MIND?"
-            subtitle="Explore categories, dining styles & occasion venues"
+            title="EXPLORE FAHARA"
+            subtitle="Find cafes, spaces & occasions"
             headerIcon={Compass}
-            items={UNIFIED_MIND_CATEGORIES.map(item => {
-              let count = 0;
-              const bCat = backendCategories.find(c => 
-                c.id.toLowerCase().trim() === item.id.toLowerCase().trim() ||
-                c.slug?.toLowerCase().trim() === item.id.toLowerCase().trim() ||
-                c.title?.toLowerCase().trim() === item.title.toLowerCase().trim()
-              );
-
-              if (bCat && (bCat.venueCount !== undefined || bCat.count !== undefined)) {
-                count = bCat.venueCount ?? bCat.count ?? 0;
-              } else if (item.type === 'event') {
-                count = getCafesForEventPackage(item, sortedCafes).length;
-              } else if (item.id === 'All Spaces') {
-                count = sortedCafes.length;
-              } else if (item.type !== 'more') {
-                count = getCafesForSection(item).length;
-              }
-              return { ...item, count };
-            })}
+            items={dynamicMindCategories}
             selectedId={category || selectedEventPackage}
+            isLoading={isLoading && dynamicMindCategories.length === 0}
+            isError={Boolean(error)}
+            onRetry={() => window.location.reload()}
             onSelect={(id) => {
               if (id === 'More') {
                 setIsMobileFilterOpen(true);
                 return;
               }
               
-              const targetItem = UNIFIED_MIND_CATEGORIES.find(i => i.id === id);
-              if (targetItem?.type === 'event') {
-                const nextVal = selectedEventPackage === id ? '' : id;
-                setSelectedEventPackage(nextVal);
-                setCategory(nextVal);
-              } else if (id === 'All Spaces') {
+              const targetItem = dynamicMindCategories.find(i => 
+                i.id.toLowerCase() === id.toLowerCase() || 
+                (i.slug && i.slug.toLowerCase() === id.toLowerCase()) ||
+                (i.title && i.title.toLowerCase() === id.toLowerCase())
+              );
+
+              if (targetItem && targetItem.count === 0) {
+                toast(`${targetItem.title} venues are coming soon to Fahara!`, {
+                  icon: '✨',
+                  style: {
+                    borderRadius: '16px',
+                    background: '#2C1810',
+                    color: '#FFF',
+                    fontSize: '13px',
+                    fontWeight: '800'
+                  }
+                });
+                return;
+              }
+
+              const filterVal = targetItem?.id || targetItem?.slug || id;
+
+              if (filterVal === 'All Spaces' || filterVal === 'all-spaces') {
                 setCategory('');
                 setSelectedEventPackage('');
               } else {
-                const nextVal = category === id ? '' : id;
+                const isAlreadySelected = category.toLowerCase() === filterVal.toLowerCase() || category.toLowerCase() === (targetItem?.slug || '').toLowerCase();
+                const nextVal = isAlreadySelected ? '' : filterVal;
                 setCategory(nextVal);
-                setSelectedEventPackage('');
+                setSelectedEventPackage(targetItem?.type === 'OCCASION' ? nextVal : '');
               }
             }}
             onClear={() => {
@@ -480,119 +663,39 @@ export default function AdvancedCafeDiscoveryPage() {
               <MapComponent center={[12.9716, 77.5946]} markers={sortedCafes} />
             </div>
           ) : (
-            <div className="space-y-10">
-              {activeSections
-                .filter(sec => category !== '' || getCafesForSection(sec).length > 0)
+            <div className="space-y-6 sm:space-y-8">
+              {dynamicMindCategories
+                .filter(sec => sec.type === 'category' && (sec.count > 0 || category !== ''))
                 .map((sec) => {
-                const Icon = sec.icon;
-                const secCafes = getCafesForSection(sec);
-
-                return (
-                  <motion.section 
-                    key={sec.id} 
-                    initial={{ opacity: 0, y: 15 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.3 }}
-                    className="space-y-4"
-                  >
-                    {/* Category Header Card */}
-                    <div className="bg-gradient-to-r from-white via-[#FFF8F0]/70 to-[#FAF5EF] p-4 sm:p-6 rounded-3xl border border-[#DDB892]/40 shadow-2xs hover:shadow-xs transition-all duration-300 flex flex-col sm:flex-row sm:items-center justify-between gap-4 relative overflow-hidden group">
-                      {/* Ambient background glow */}
-                      <div className="absolute top-0 right-0 w-48 h-48 bg-gradient-to-bl from-[#6F4E37]/10 via-[#A67B5B]/5 to-transparent rounded-full blur-2xl pointer-events-none group-hover:scale-125 transition-transform duration-500" />
-                      
-                      <div className="flex items-center gap-3.5 relative z-10">
-                        <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-[#4A2C11] via-[#5A3825] to-[#6F4E37] text-amber-300 border border-[#DDB892]/60 flex items-center justify-center shrink-0 shadow-md group-hover:scale-105 transition-transform duration-300">
-                          <Icon size={22} className="stroke-[2.5]" />
-                        </div>
-
-                        <div className="space-y-1">
-                          <div className="flex items-center gap-2.5 flex-wrap">
-                            <h2 className="text-xl sm:text-2xl font-black text-[#2C1810] tracking-tight group-hover:text-[#6F4E37] transition-colors">
-                              {sec.title}
-                            </h2>
-
-                            {sec.isMostPopular && (
-                              <span className="px-3 py-1 rounded-full bg-gradient-to-r from-amber-500 via-rose-600 to-red-600 text-white text-[10px] font-black shadow-xs flex items-center gap-1 border border-amber-300/80 animate-pulse">
-                                <Flame size={12} className="fill-amber-200" /> MOST POPULAR DEALS
-                              </span>
-                            )}
-
-                            <span className="px-3 py-1 rounded-full bg-[#6F4E37]/10 text-[#6F4E37] border border-[#DDB892]/50 text-xs font-extrabold shadow-2xs flex items-center gap-1.5">
-                              <span className="w-1.5 h-1.5 rounded-full bg-[#6F4E37] animate-ping" />
-                              <span>{secCafes.length} {secCafes.length === 1 ? 'Venue Available' : 'Venues Available'}</span>
-                            </span>
-                          </div>
-
-                          <p className="text-xs sm:text-sm text-stone-500 font-medium leading-relaxed max-w-2xl">
-                            {sec.subtitle}
-                          </p>
-                        </div>
-                      </div>
-
-                      <button
-                        onClick={() => setCategory(sec.id)}
-                        className="py-2.5 px-5 rounded-full bg-gradient-to-r from-[#4A2C11] via-[#5A3825] to-[#6F4E37] hover:from-[#361f0a] hover:to-[#573d2a] text-white text-xs font-black shadow-md hover:shadow-lg hover:shadow-[#4A2C11]/25 flex items-center gap-2 transition-all active:scale-95 cursor-pointer shrink-0 self-start sm:self-center z-10 group/btn"
-                      >
-                        <span>View All {sec.title}</span>
-                        <ArrowRight size={14} className="group-hover/btn:translate-x-1 transition-transform" />
-                      </button>
-                    </div>
-
-                    {/* Category Content: Horizontal scroll on mobile view, Grid on tablet & desktop */}
-                    {secCafes.length > 0 ? (
-                      <div className="flex sm:grid sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-4 sm:gap-6 overflow-x-auto sm:overflow-visible pb-3 sm:pb-0 no-scrollbar scroll-smooth">
-                        {secCafes.map((cafe) => (
-                          <div key={cafe.id || cafe._id} className="shrink-0 w-[285px] xs:w-[315px] sm:w-auto">
-                            <CafeCard cafe={cafe} />
-                          </div>
-                        ))}
-                      </div>
-                    ) : (
-                      /* NO CAFE AVAILABLE PER CATEGORY EMPTY STATE CARD */
-                      <motion.div 
-                        initial={{ opacity: 0, scale: 0.98 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        className="bg-white/90 backdrop-blur-xl rounded-3xl p-8 sm:p-12 border border-stone-200/90 text-center flex flex-col items-center justify-center shadow-[0_8px_30px_rgba(0,0,0,0.03)]"
-                      >
-                        <div className={`w-16 h-16 rounded-2xl border flex items-center justify-center mb-3.5 shadow-2xs ${sec.headerBadge}`}>
-                          <Icon size={32} />
-                        </div>
-                        <h3 className="text-base sm:text-lg font-black text-[#2C1810]">No cafe available in {sec.title}</h3>
-                        <p className="text-xs sm:text-sm text-stone-500 font-medium mt-1 max-w-md leading-relaxed">
-                          There are currently no active venues listed under {sec.title}. Check back soon or explore our other available categories.
-                        </p>
-                        <div className="mt-5 flex items-center gap-3 flex-wrap justify-center">
-                          <button
-                            onClick={() => setCategory('')}
-                            className="px-5 py-2.5 bg-gradient-to-r from-[#4A2C11] to-[#6F4E37] text-white rounded-xl text-xs font-black hover:shadow-md transition-all cursor-pointer shadow-2xs active:scale-95"
-                          >
-                            Explore All Categories
-                          </button>
-                          <button
-                            onClick={() => clearFilters()}
-                            className="px-5 py-2.5 bg-white border border-stone-200 text-[#2C1810] hover:bg-stone-50 rounded-xl text-xs font-black transition-all cursor-pointer shadow-2xs active:scale-95"
-                          >
-                            Reset Filters
-                          </button>
-                        </div>
-                      </motion.div>
-                    )}
-                  </motion.section>
-                );
-              })}
+                  return (
+                    <CategoryVenueSection
+                      key={sec.id}
+                      category={sec.id}
+                      categoryName={sec.title}
+                      categorySlug={sec.slug}
+                      icon={sec.icon}
+                      image={sec.image || sec.fallbackImage}
+                      venues={sec.venues || getCafesForSection(sec)}
+                      count={sec.count}
+                      isLoading={isLoading}
+                      badgeText={sec.badgeText}
+                      viewAllUrl={`/customer/cafe?category=${encodeURIComponent(sec.slug || sec.id)}`}
+                      onViewAll={(catId) => setCategory(catId)}
+                    />
+                  );
+                })}
 
               {/* General Empty State if total cafes across all categories is 0 */}
               {cafes.length === 0 && (
                 <ModernEmptyState
-                  category={category}
-                  query={query}
+                  title="No cafes found"
+                  message="Try changing your filters or search."
                   onReset={clearFilters}
-                  onSelectCategory={(catId) => setCategory(catId)}
                 />
               )}
 
-              {/* INFINITE SCROLL TRIGGER */}
-              {viewMode !== 'map' && (
+              {/* INFINITE SCROLL TRIGGER (Only show end cartoon if cafes exist and reach end) */}
+              {viewMode !== 'map' && cafes.length > 0 && (
                 <InfiniteScroll
                   hasNextPage={hasNextPage}
                   isFetchingNextPage={isFetchingNextPage}

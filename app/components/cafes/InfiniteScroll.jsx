@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
-import { Loader2, Sparkles, CheckCircle2, Heart } from 'lucide-react';
+import { Loader2, Sparkles, CheckCircle2, Heart, ArrowRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import Link from 'next/link';
 
 function ILoveFaharaBadge() {
   const [likes, setLikes] = useState(1284);
@@ -88,7 +89,7 @@ export default function InfiniteScroll({ hasNextPage, fetchNextPage, isFetchingN
   }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   return (
-    <div ref={ref} className="w-full flex justify-center py-8 px-4 mt-6">
+    <div ref={ref} className="w-full flex justify-center py-4 sm:py-6 px-2 sm:px-4 overflow-hidden">
       {isFetchingNextPage ? (
         <motion.div 
           initial={{ opacity: 0, y: 10 }}
@@ -104,20 +105,37 @@ export default function InfiniteScroll({ hasNextPage, fetchNextPage, isFetchingN
           <span>Scroll down to explore more</span>
         </div>
       ) : (
-        <div className="flex flex-col items-center gap-3 text-center">
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="flex items-center gap-2.5 px-4 py-2 rounded-full bg-gradient-to-r from-[#FFF8F0] via-white to-[#FFF8F0] border border-[#DDB892]/60 shadow-xs text-[#4A2C11] text-xs font-black tracking-wide"
-          >
-            <CheckCircle2 size={15} className="text-[#6F4E37]" />
-            <span>You&apos;ve explored all available cafes</span>
-          </motion.div>
+        <motion.div 
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, ease: 'easeOut' }}
+          className="w-full max-w-2xl mx-auto flex flex-col items-center text-center py-4 sm:py-6 px-2 sm:px-4 my-2 sm:my-4 bg-transparent relative"
+        >
+          {/* BOY FINDING CAFES BANNER ILLUSTRATION - BORDERLESS & MOBILE RESPONSIVE */}
+          <div className="w-full shrink-0 max-w-[92vw] xs:max-w-[440px] sm:max-w-[550px]">
+            <img 
+              src="/coming_soon_banner.png" 
+              alt="More Cafes Coming Soon to Fahara" 
+              className="w-full h-auto object-contain pointer-events-none drop-shadow-sm"
+            />
+          </div>
 
-          {/* Interactive "I Love Fahara" Button Component */}
-          <ILoveFaharaBadge />
-        </div>
+          {/* OPTIONAL CTA BUTTON */}
+          <div className="-mt-1 sm:-mt-4 relative z-10">
+            <Link href="/customer/events">
+              <motion.button 
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.96 }}
+                className="group inline-flex items-center gap-2 h-9 sm:h-11 px-5 sm:px-7 rounded-full bg-[#6F4E37] hover:bg-[#5A3215] text-white text-xs sm:text-sm font-bold shadow-md transition-all cursor-pointer"
+              >
+                <span>Explore Events</span>
+                <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform stroke-[2.5]" />
+              </motion.button>
+            </Link>
+          </div>
+        </motion.div>
       )}
     </div>
   );
 }
+

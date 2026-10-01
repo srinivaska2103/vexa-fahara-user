@@ -34,9 +34,21 @@ export default function FavoriteButton({
     e.preventDefault();
     e.stopPropagation();
     
-    if (type === 'cafe') toggleFavoriteCafe(id);
-    else if (type === 'wishlist') toggleWishlist(id);
-    else toggleFavoriteEvent(id);
+    if (type === 'cafe' || type === 'favorite') {
+      toggleFavoriteCafe(id);
+      try {
+        const api = require('@/lib/axios').default;
+        api.post('/favorites/toggle', { cafeId: id }).catch(() => {});
+      } catch (err) {}
+    } else if (type === 'wishlist') {
+      toggleWishlist(id);
+    } else {
+      toggleFavoriteEvent(id);
+      try {
+        const api = require('@/lib/axios').default;
+        api.post('/favorites/toggle', { cafeId: id }).catch(() => {});
+      } catch (err) {}
+    }
   };
 
   const sizeClasses = {

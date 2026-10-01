@@ -10,12 +10,18 @@ const MapPreview = dynamic(
 );
 
 export default function LocationSection({ cafe }) {
-  const { city, address, latitude, longitude, name } = cafe || {};
-  const lat = latitude ? parseFloat(latitude) : 51.505;
-  const lng = longitude ? parseFloat(longitude) : -0.09;
+  const { city, address, state, country, pincode, latitude, longitude, lat: rawLat, lng: rawLng, name } = cafe || {};
 
-  const fullAddress = city ? `${address ? address + ', ' : ''}${city}` : 'Downtown Core';
-  const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(name || fullAddress)}`;
+  const parsedLat = parseFloat(latitude ?? rawLat);
+  const parsedLng = parseFloat(longitude ?? rawLng);
+  const hasValidCoords = Number.isFinite(parsedLat) && Number.isFinite(parsedLng) && parsedLat >= -90 && parsedLat <= 90 && parsedLng >= -180 && parsedLng <= 180;
+
+  const fullAddress = [address, city, state, pincode].filter(Boolean).join(', ') || 'Madurai, Tamil Nadu, India';
+
+  // Prefer exact saved coordinates for navigation/directions
+  const googleMapsUrl = hasValidCoords
+    ? `https://www.google.com/maps/dir/?api=1&destination=${parsedLat},${parsedLng}`
+    : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(name ? `${name}, ${fullAddress}` : fullAddress)}`;
 
   return (
     <div className="mb-8">
@@ -48,12 +54,20 @@ export default function LocationSection({ cafe }) {
         </div>
         
         <div className="rounded-3xl overflow-hidden border border-stone-200/90 shadow-lg relative">
-          <MapPreview lat={lat} lng={lng} />
+          {hasValidCoords ? (
+            <MapPreview lat={parsedLat} lng={parsedLng} cafeName={name} />
+          ) : (
+            <div className="h-[250px] sm:h-[300px] w-full bg-amber-50/50 flex flex-col items-center justify-center p-6 text-center border border-amber-200/60 rounded-3xl">
+              <MapPin size={32} className="text-[#6F4E37] mb-2 opacity-60 animate-bounce" />
+              <p className="text-sm font-bold text-[#2C1810]">Location coordinates are unavailable</p>
+              <p className="text-xs text-stone-500 mt-1 max-w-sm">Address: {fullAddress}</p>
+            </div>
+          )}
         </div>
         
         <div className="mt-4 flex items-center gap-2 text-xs text-stone-500 font-medium bg-[#FFF8F0]/70 p-3 rounded-2xl border border-[#DDB892]/40">
           <Compass size={16} className="text-[#6F4E37] shrink-0" />
-          <span>Exact venue coordinates and entrance access instructions will be sent with your booking confirmation.</span>
+          <span>Exact venue coordinates ({hasValidCoords ? `${parsedLat.toFixed(4)}, ${parsedLng.toFixed(4)}` : 'saved'}) and entrance access instructions will be sent with your booking confirmation.</span>
         </div>
       </div>
     </div>

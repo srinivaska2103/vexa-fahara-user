@@ -56,9 +56,9 @@ function FavoritesContent() {
       try {
         // Query real user favorites from backend database
         const favRes = await favoriteService.getFavorites();
-        const userFavoriteCafes = favRes?.data || (Array.isArray(favRes) ? favRes : []);
-
-        if (Array.isArray(userFavoriteCafes) && userFavoriteCafes.length > 0) {
+        
+        if (favRes && favRes.success !== false) {
+          const userFavoriteCafes = favRes.data || (Array.isArray(favRes) ? favRes : []);
           const formattedCafes = userFavoriteCafes.map(c => ({
             id: c.id || c._id,
             _id: c._id || c.id,
@@ -74,28 +74,9 @@ function FavoritesContent() {
           setCafes(formattedCafes);
           setFavorites(formattedCafes.map(c => String(c.id)));
         } else {
-          // If no backend favorites or offline, fallback to filtering /cafes using local store
-          const cafesRes = await api.get('/cafes').catch(() => null);
-          const realBackendCafes = cafesRes?.data?.data || cafesRes?.data || [];
-          const savedCafeIds = favoriteCafes.map(String);
-
-          if (Array.isArray(realBackendCafes) && realBackendCafes.length > 0 && savedCafeIds.length > 0) {
-            const formattedCafes = realBackendCafes.map(c => ({
-              id: c.id || c._id,
-              _id: c._id || c.id,
-              name: c.name || c.title || 'Fahara Cafe',
-              address: c.address || c.location || c.city || 'Indiranagar, Bengaluru',
-              city: c.city || 'Bengaluru',
-              maximum_persons: c.maximum_persons || c.capacity || 10,
-              google_rating: c.google_rating || c.rating || 4.8,
-              price_per_hour: c.price_per_hour || c.price || 1000,
-              cover_image: c.cover_image || c.images?.[0] || c.image || 'https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&w=800&q=80',
-            }));
-            const favorited = formattedCafes.filter(c => savedCafeIds.includes(String(c.id)));
-            setCafes(favorited);
-          } else {
-            setCafes([]);
-          }
+          // Fallback only on network error
+          setCafes([]);
+          setFavorites([]);
         }
 
         // Query real /event-services endpoint from backend database
@@ -154,12 +135,22 @@ function FavoritesContent() {
     const targetId = String(id);
     setCafes(prev => prev.filter(c => String(c.id) !== targetId && String(c._id) !== targetId));
     toggleFavoriteCafe(id);
+
+    // Persist removal to backend database
+    api.post('/favorites/toggle', { cafeId: id }).catch((err) => {
+      console.error('Failed to sync favorite removal to backend:', err);
+    });
   };
 
   const handleRemoveEvent = (id) => {
     const targetId = String(id);
     setEvents(prev => prev.filter(e => String(e.id) !== targetId && String(e._id) !== targetId));
     toggleFavoriteEvent(id);
+
+    // Persist removal to backend database
+    api.post('/favorites/toggle', { cafeId: id }).catch((err) => {
+      console.error('Failed to sync event favorite removal to backend:', err);
+    });
   };
 
   // Filter and Sort logic

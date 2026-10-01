@@ -14,7 +14,7 @@ const customIcon = new L.Icon({
   shadowSize: [41, 41]
 });
 
-export default function MapPreview({ lat, lng }) {
+export default function MapPreview({ lat, lng, cafeName }) {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -31,7 +31,7 @@ export default function MapPreview({ lat, lng }) {
       <MapContainer 
         key={`${lat}-${lng}`}
         center={[lat, lng]} 
-        zoom={15} 
+        zoom={16} 
         scrollWheelZoom={false}
         className="h-full w-full z-0"
       >
@@ -41,7 +41,7 @@ export default function MapPreview({ lat, lng }) {
         />
         <Marker position={[lat, lng]} icon={customIcon}>
           <Popup>
-            Cafe Location
+            <div className="font-bold text-xs">{cafeName || 'Cafe Location'}</div>
           </Popup>
         </Marker>
       </MapContainer>
