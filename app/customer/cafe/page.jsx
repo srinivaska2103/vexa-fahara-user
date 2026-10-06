@@ -138,7 +138,7 @@ export default function AdvancedCafeDiscoveryPage() {
 
   const { 
     viewMode, setViewMode, clearFilters, query, category, setCategory,
-    openNow, availableToday, distance, amenities, sortBy
+    openNow, availableToday, distance, amenities, sortBy, userLocation
   } = useSearchStore();
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
   const [selectedEventPackage, setSelectedEventPackage] = useState('');
@@ -220,18 +220,19 @@ export default function AdvancedCafeDiscoveryPage() {
 
   // Real data extraction helpers for sorting
   const getCafePrice = (c) => {
-    const val = c?.price_per_hour || c?.pricePerHour || c?.hourly_rate || c?.price_range || c?.base_price_per_hour || c?.price;
-    if (val && !isNaN(Number(val))) return Number(val);
+    const val = c?.price_per_hour ?? c?.pricePerHour ?? c?.hourly_rate ?? c?.price_range ?? c?.base_price_per_hour ?? c?.price;
+    if (val !== undefined && val !== null && val !== '' && !isNaN(Number(val))) return Number(val);
     if (Array.isArray(c?.cafe_packages) && c.cafe_packages.length > 0) {
       const pkgPrices = c.cafe_packages.map(p => Number(p.price || p.package_price || p.price_per_person || 0)).filter(p => p > 0);
       if (pkgPrices.length > 0) return Math.min(...pkgPrices);
     }
-    return 499;
+    return 0;
   };
 
   const getCafeRating = (c) => {
-    const val = c?.average_rating || c?.google_rating || c?.rating || c?.avg_rating;
-    return val ? parseFloat(val) : 4.5;
+    const val = c?.average_rating ?? c?.google_rating ?? c?.rating ?? c?.avg_rating;
+    if (val !== undefined && val !== null && val !== '' && !isNaN(Number(val))) return parseFloat(val);
+    return 0;
   };
 
   const getCafeReviews = (c) => {
@@ -245,13 +246,70 @@ export default function AdvancedCafeDiscoveryPage() {
     return (rating * 20) + (reviews * 5) + (bookings * 10);
   };
 
+  const calculateDistanceInKm = (lat1, lon1, lat2, lon2) => {
+    if (lat1 === undefined || lat1 === null || lon1 === undefined || lon1 === null ||
+        lat2 === undefined || lat2 === null || lon2 === undefined || lon2 === null) {
+      return null;
+    }
+    const nLat1 = Number(lat1);
+    const nLon1 = Number(lon1);
+    const nLat2 = Number(lat2);
+    const nLon2 = Number(lon2);
+    if (isNaN(nLat1) || isNaN(nLon1) || isNaN(nLat2) || isNaN(nLon2)) return null;
+
+    const R = 6371; // Earth radius in km
+    const dLat = (nLat2 - nLat1) * Math.PI / 180;
+    const dLon = (nLon2 - nLon1) * Math.PI / 180;
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(nLat1 * Math.PI / 180) * Math.cos(nLat2 * Math.PI / 180) *
+      Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    const dist = R * c;
+    return Math.round(dist * 10) / 10;
+  };
+
+  const CITY_COORDINATES = {
+    'madurai': { lat: 9.9252, lng: 78.1198 },
+    'bengaluru': { lat: 12.9716, lng: 77.5946 },
+    'bangalore': { lat: 12.9716, lng: 77.5946 },
+    'chennai': { lat: 13.0827, lng: 80.2707 },
+    'coimbatore': { lat: 11.0168, lng: 76.9558 },
+    'mumbai': { lat: 19.0760, lng: 72.8777 },
+    'delhi': { lat: 28.6139, lng: 77.2090 },
+    'hyderabad': { lat: 17.3850, lng: 78.4867 },
+    'kochi': { lat: 9.9312, lng: 76.2673 }
+  };
+
   const getCafeDistance = (c) => {
-    return c?.distance ? parseFloat(c.distance) : 999;
+    if (c?.distance !== undefined && c?.distance !== null && !isNaN(Number(c.distance))) {
+      return parseFloat(c.distance);
+    }
+    if (userLocation && userLocation.lat && userLocation.lng) {
+      let cLat = c?.latitude || c?.lat || c?.location?.coordinates?.[1];
+      let cLng = c?.longitude || c?.lng || c?.location?.coordinates?.[0];
+
+      if (!cLat || !cLng) {
+        const cityKey = String(c?.city || c?.address || '').toLowerCase().trim();
+        const foundCity = Object.keys(CITY_COORDINATES).find(k => cityKey.includes(k));
+        if (foundCity) {
+          cLat = CITY_COORDINATES[foundCity].lat;
+          cLng = CITY_COORDINATES[foundCity].lng;
+        }
+      }
+
+      const calcDist = calculateDistanceInKm(userLocation.lat, userLocation.lng, cLat, cLng);
+      if (calcDist !== null) {
+        c.distance = calcDist;
+        return calcDist;
+      }
+    }
+    return 999;
   };
 
   const getCafeDate = (c) => {
-    if (c?.created_at) return new Date(c.created_at).getTime();
-    if (c?.createdAt) return new Date(c.createdAt).getTime();
+    const d = c?.created_at || c?.createdAt || c?.created_date || c?.date;
+    if (d) return new Date(d).getTime();
     return Number(c?.id) || 0;
   };
 

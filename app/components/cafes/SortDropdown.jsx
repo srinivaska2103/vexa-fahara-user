@@ -1,27 +1,52 @@
 'use client';
 
 import { useSearchStore } from '@/stores/search.store';
-import { ChevronDown, Check, ArrowUpDown } from 'lucide-react';
+import { ChevronDown, Check, ArrowUpDown, Navigation, Loader2 } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { useLanguage } from '@/context/LanguageContext';
+import toast from 'react-hot-toast';
 
 export default function SortDropdown() {
   const { t } = useLanguage();
   const sortBy = useSearchStore((state) => state.sortBy);
   const setSortBy = useSearchStore((state) => state.setSortBy);
+  const userLocation = useSearchStore((state) => state.userLocation);
+  const requestUserLocation = useSearchStore((state) => state.requestUserLocation);
+  const isRequestingLocation = useSearchStore((state) => state.isRequestingLocation);
+
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
 
   const options = [
     { value: 'popularity', label: t('popularity', 'Popularity') },
-    { value: 'highest_rated', label: t('ratingHighToLow', 'Highest Rated') },
+    { value: 'highest_rated', label: t('ratingHighToLow', 'Rating: High to Low') },
     { value: 'lowest_price', label: t('priceLowToHigh', 'Price: Low to High') },
     { value: 'highest_price', label: t('priceHighToLow', 'Price: High to Low') },
     { value: 'nearest', label: 'Nearest' },
     { value: 'newest', label: 'Newest' },
   ];
+
+  const handleSelectOption = async (optValue) => {
+    setSortBy(optValue);
+    setIsOpen(false);
+
+    if (optValue === 'nearest') {
+      if (!userLocation) {
+        const loadingToast = toast.loading('Requesting location permission...');
+        const loc = await requestUserLocation();
+        toast.dismiss(loadingToast);
+        if (loc) {
+          toast.success('Location acquired! Sorting nearest cafes.');
+        } else {
+          toast.error('Location permission denied or unavailable.');
+        }
+      } else {
+        toast.success('Sorted by nearest location.');
+      }
+    }
+  };
 
   const currentOption = options.find((o) => o.value === sortBy);
   const currentLabel = currentOption ? currentOption.label : t('popularity', 'Popularity');
@@ -54,7 +79,13 @@ export default function SortDropdown() {
             )}
           >
             <div className="flex items-center gap-2 truncate">
-              <ArrowUpDown size={14} className="text-[#6F4E37] shrink-0" />
+              {isRequestingLocation ? (
+                <Loader2 size={14} className="text-[#6F4E37] animate-spin shrink-0" />
+              ) : sortBy === 'nearest' ? (
+                <Navigation size={14} className="text-[#6F4E37] shrink-0 fill-[#6F4E37]/20" />
+              ) : (
+                <ArrowUpDown size={14} className="text-[#6F4E37] shrink-0" />
+              )}
               <span className="truncate">{currentLabel}</span>
             </div>
             <ChevronDown size={15} className={cn("text-stone-400 transition-transform duration-200 shrink-0", isOpen ? "rotate-180 text-[#6F4E37]" : "")} />
@@ -74,10 +105,7 @@ export default function SortDropdown() {
                     <li key={opt.value}>
                       <button
                         suppressHydrationWarning
-                        onClick={() => {
-                          setSortBy(opt.value);
-                          setIsOpen(false);
-                        }}
+                        onClick={() => handleSelectOption(opt.value)}
                         className={cn(
                           "flex items-center justify-between w-full px-3 py-2 rounded-xl text-xs sm:text-sm transition-colors text-left cursor-pointer",
                           sortBy === opt.value 

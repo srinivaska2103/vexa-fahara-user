@@ -46,8 +46,9 @@ export default function MobileBottomNav() {
     }
   }, [user]);
 
-  // Hidden on auth, booking checkout, legal, and support pages
+  // Hidden on landing page, auth, booking checkout, legal, and support pages
   if (
+    pathname === '/' ||
     pathname.startsWith('/booking') ||
     [
       '/login',

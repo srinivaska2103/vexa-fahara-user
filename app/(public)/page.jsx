@@ -8,7 +8,7 @@ import {
   Lock, Building2, CheckCircle2, ChevronDown, HelpCircle, 
   LogIn, UserPlus, Zap, Coffee, Clock, Award, ThumbsUp, Bell,
   X, RotateCcw, ChevronRight, Layers, Tag, Menu, Compass, CalendarCheck, User,
-  Receipt, BadgeCheck
+  Receipt, BadgeCheck, Store, TrendingUp, BadgePercent
 } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -222,6 +222,68 @@ const faharaSafetyCommitments = [
     icon: Bell,
     badge: 'Concierge Help'
   }
+];
+
+// Partner Onboarding Steps
+const partnerOnboardingSteps = [
+  {
+    step: '01',
+    title: 'Create Your Partner Account',
+    desc: 'Sign up your cafe or restaurant and provide your basic business details.',
+    icon: UserPlus,
+  },
+  {
+    step: '02',
+    title: 'Add Your Venue',
+    desc: 'Add your venue information, photos, location, amenities, capacity, pricing and available facilities.',
+    icon: Store,
+  },
+  {
+    step: '03',
+    title: 'Set Up Your Offerings',
+    desc: 'Add your cafe categories, event capabilities, packages, services, offers and booking availability.',
+    icon: Layers,
+  },
+  {
+    step: '04',
+    title: 'Go Live & Get Bookings',
+    desc: 'Once your venue is approved and published, customers can discover your venue and start making bookings through Fahara.',
+    icon: Zap,
+  },
+];
+
+// Partner Benefits
+const partnerBenefits = [
+  {
+    title: 'Reach More Customers',
+    desc: 'Get discovered by customers actively searching for cafes, restaurants, venues and event spaces.',
+    icon: Users,
+  },
+  {
+    title: 'More Event Bookings',
+    desc: 'Showcase your venue for birthdays, private parties, meetings, celebrations and other occasions.',
+    icon: PartyPopper,
+  },
+  {
+    title: 'Showcase Your Venue',
+    desc: 'Display your photos, amenities, location, pricing, capacity, event capabilities and important venue information.',
+    icon: Store,
+  },
+  {
+    title: 'Promote Deals & Offers',
+    desc: 'Create and showcase your active offers so customers can discover special deals from your venue.',
+    icon: BadgePercent,
+  },
+  {
+    title: 'Manage Your Bookings',
+    desc: 'Manage incoming bookings, availability and customer requests through your Fahara partner dashboard.',
+    icon: CalendarCheck,
+  },
+  {
+    title: 'Grow Your Business',
+    desc: 'Understand customer interest and venue performance and use Fahara to attract more customers and event opportunities.',
+    icon: TrendingUp,
+  },
 ];
 
 // FAQ Data
@@ -993,17 +1055,17 @@ export default function HomePage() {
               </div>
             </div>
 
-            {/* CARD 4: Transparent Booking */}
+            {/* CARD 4: 3+ Cafes */}
             <div className="bg-white border border-[#E8DED5] rounded-[22px] p-7 flex flex-col justify-between items-start shadow-[0_2px_8px_rgba(44,24,16,0.02)] hover:-translate-y-1 hover:border-[#6F4E37]/40 hover:shadow-[0_8px_24px_rgba(44,24,16,0.06)] transition-all duration-200 group">
               <div className="w-12 h-12 rounded-2xl bg-[#FFF8F0] border border-[#E8DED5] flex items-center justify-center mb-5 group-hover:bg-[#F5EBE0] transition-colors shrink-0">
-                <Receipt size={22} className="text-[#6F4E37]" aria-hidden="true" />
+                <Coffee size={22} className="text-[#6F4E37]" aria-hidden="true" />
               </div>
               <div className="space-y-1.5 flex-1">
                 <h3 className="text-lg font-bold text-[#2C1810] tracking-tight">
-                  Transparent Booking
+                  3+ Cafes
                 </h3>
                 <p className="text-sm font-normal text-[#A67B5B] leading-relaxed">
-                  Clear details, no surprises
+                  Verified partner venues
                 </p>
               </div>
             </div>
@@ -1119,39 +1181,48 @@ export default function HomePage() {
       <section id="occasions" className="py-12 sm:py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         <div className="text-center max-w-3xl mx-auto mb-10 sm:mb-16">
-          <span className="text-xs font-black uppercase tracking-widest text-[#6F4E37] bg-[#DDB892]/25 px-3.5 py-1.5 rounded-full border border-[#DDB892]/40 inline-block mb-3">
-            Tailored Venue Spaces
+          <span className="text-[11px] font-black uppercase tracking-widest text-[#6F4E37] bg-[#DDB892]/20 px-4 py-1.5 rounded-full border border-[#DDB892]/40 inline-flex items-center gap-1.5 mb-3 shadow-2xs">
+            <Sparkles className="w-3.5 h-3.5 text-amber-600 animate-pulse" />
+            <span>Tailored Venue Spaces</span>
           </span>
-          <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black text-[#2C1810]">Occasions You Can Host</h2>
-          <p className="text-stone-600 font-medium text-xs sm:text-base mt-2">
-            Explore curated cafe setups designed specifically for your event type.
+          <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black text-[#2C1810] tracking-tight">Occasions You Can Host</h2>
+          <p className="text-stone-600 font-medium text-xs sm:text-sm md:text-base mt-2.5 max-w-xl mx-auto leading-relaxed">
+            Explore curated cafe setups designed specifically for your event type with instant table & hall reservations.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6 lg:gap-8">
           {occasionCategories.map((cat) => {
             const Icon = cat.icon;
             return (
               <motion.div
                 key={cat.id}
-                whileHover={{ y: -6 }}
-                className="bg-white p-5 sm:p-7 rounded-2xl sm:rounded-3xl border border-stone-200/80 shadow-xs hover:shadow-lg transition-all flex flex-col justify-between group"
+                whileHover={{ y: -8 }}
+                transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                className="bg-white/90 backdrop-blur-md p-6 sm:p-7 rounded-3xl border border-[#E8DED5]/80 shadow-xs hover:shadow-xl hover:shadow-[#6F4E37]/10 hover:border-[#6F4E37]/40 transition-all flex flex-col justify-between group relative overflow-hidden"
               >
+                {/* Subtle Card Background Accent Glow */}
+                <div className="absolute -top-12 -right-12 w-28 h-28 bg-[#DDB892]/10 rounded-full blur-2xl group-hover:bg-[#6F4E37]/15 transition-all pointer-events-none" />
+
                 <div>
-                  <div className={`w-12 sm:w-14 h-12 sm:h-14 rounded-xl sm:rounded-2xl bg-gradient-to-br ${cat.bg} border ${cat.border} text-[#6F4E37] flex items-center justify-center mb-4 sm:mb-5 group-hover:scale-110 transition-transform`}>
-                    <Icon size={24} />
+                  <div className={`w-12 sm:w-14 h-12 sm:h-14 rounded-2xl bg-gradient-to-br ${cat.bg} border ${cat.border} text-[#6F4E37] flex items-center justify-center mb-5 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-2xs`}>
+                    <Icon size={24} className="text-[#6F4E37]" />
                   </div>
-                  <h3 className="font-black text-lg sm:text-xl text-[#2C1810] mb-1.5 sm:mb-2 group-hover:text-[#6F4E37] transition-colors">{cat.label}</h3>
-                  <p className="text-xs font-medium text-stone-500 leading-relaxed mb-4 sm:mb-6">{cat.desc}</p>
+                  <h3 className="font-extrabold text-lg sm:text-xl text-[#2C1810] mb-2 group-hover:text-[#6F4E37] transition-colors flex items-center justify-between">
+                    <span>{cat.label}</span>
+                  </h3>
+                  <p className="text-xs sm:text-sm font-medium text-stone-500 leading-relaxed mb-6">{cat.desc}</p>
                 </div>
 
-                <Link
-                  href={`/customer/cafe?category=${cat.id}`}
-                  className="inline-flex items-center gap-2 text-xs font-black text-[#6F4E37] group-hover:translate-x-1 transition-transform"
-                >
-                  <span>Explore {cat.label}</span>
-                  <ArrowRight size={14} />
-                </Link>
+                <div className="pt-2">
+                  <Link
+                    href={`/customer/cafe?category=${cat.id}`}
+                    className="inline-flex items-center justify-between w-full text-xs font-extrabold text-[#6F4E37] bg-[#FAF0E6]/70 group-hover:bg-[#6F4E37] group-hover:text-white px-4 py-2.5 rounded-2xl transition-all duration-300 shadow-2xs"
+                  >
+                    <span>Explore {cat.label}</span>
+                    <ArrowRight size={15} className="group-hover:translate-x-1 transition-transform" />
+                  </Link>
+                </div>
               </motion.div>
             );
           })}
@@ -1201,6 +1272,155 @@ export default function HomePage() {
           })}
         </div>
 
+      </section>
+
+      {/* ==================== PARTNER ONBOARDING & BENEFITS SECTIONS ==================== */}
+      
+      {/* SECTION 1 — HOW CAFES & RESTAURANTS JOIN FAHARA */}
+      <section id="partner-onboarding" className="py-12 sm:py-20 bg-[#FFF8F0] border-t border-[#E8DED5]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          
+          <div className="text-center max-w-3xl mx-auto mb-12 sm:mb-16">
+            <span className="text-[11px] font-black uppercase tracking-widest text-[#6F4E37] bg-white px-4 py-1.5 rounded-full border border-[#DDB892]/50 inline-block mb-3 shadow-2xs">
+              PARTNER ONBOARDING
+            </span>
+            <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black text-[#2C1810] tracking-tight">
+              How Cafes & Restaurants Join Fahara
+            </h2>
+            <p className="text-stone-600 font-medium text-xs sm:text-sm md:text-base mt-2.5 max-w-2xl mx-auto leading-relaxed">
+              Get your venue listed, showcase your space and start reaching customers looking for cafes, dining and event venues.
+            </p>
+          </div>
+
+          {/* 4-Step Process Layout */}
+          <div className="relative">
+            {/* Horizontal Connecting Line (Desktop) */}
+            <div className="hidden lg:block absolute top-1/2 left-[10%] right-[10%] h-0.5 bg-[#DDB892]/40 -translate-y-6 z-0" />
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 relative z-10">
+              {partnerOnboardingSteps.map((stepItem, idx) => {
+                const Icon = stepItem.icon;
+                return (
+                  <motion.div
+                    key={stepItem.step}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.4, delay: idx * 0.1 }}
+                    whileHover={{ y: -6 }}
+                    className="bg-white p-6 sm:p-7 rounded-3xl border border-[#E8DED5] shadow-xs hover:shadow-lg hover:border-[#6F4E37]/40 transition-all flex flex-col justify-between group"
+                  >
+                    <div>
+                      {/* Step Header: Step Number & Icon */}
+                      <div className="flex items-center justify-between mb-5">
+                        <div className="w-10 h-10 rounded-2xl bg-[#6F4E37] text-white flex items-center justify-center font-black text-sm shadow-2xs shrink-0">
+                          {stepItem.step}
+                        </div>
+                        <div className="w-11 h-11 rounded-2xl bg-[#FFF8F0] border border-[#E8DED5] text-[#6F4E37] flex items-center justify-center group-hover:bg-[#6F4E37] group-hover:text-white transition-colors shrink-0">
+                          <Icon size={20} />
+                        </div>
+                      </div>
+
+                      <h3 className="font-extrabold text-base sm:text-lg text-[#2C1810] mb-2 group-hover:text-[#6F4E37] transition-colors">
+                        {stepItem.title}
+                      </h3>
+                      <p className="text-xs sm:text-sm font-medium text-stone-500 leading-relaxed">
+                        {stepItem.desc}
+                      </p>
+                    </div>
+                  </motion.div>
+                );
+              })}
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      {/* SECTION 2 — WHY PARTNER WITH FAHARA & PARTNER CTA */}
+      <section id="why-partner" className="py-12 sm:py-20 bg-white border-t border-[#E8DED5]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          
+          <div className="text-center max-w-3xl mx-auto mb-12 sm:mb-16">
+            <span className="text-[11px] font-black uppercase tracking-widest text-[#6F4E37] bg-[#FFF8F0] px-4 py-1.5 rounded-full border border-[#DDB892]/50 inline-block mb-3 shadow-2xs">
+              PARTNER BENEFITS
+            </span>
+            <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black text-[#2C1810] tracking-tight">
+              Why Partner With Fahara?
+            </h2>
+            <p className="text-stone-600 font-medium text-xs sm:text-sm md:text-base mt-2.5 max-w-2xl mx-auto leading-relaxed">
+              Turn your cafe or restaurant into a discoverable destination for everyday dining, celebrations and special events.
+            </p>
+          </div>
+
+          {/* 6 Benefit Cards Grid (3x2 Desktop, Single Column Mobile) */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 mb-16">
+            {partnerBenefits.map((benefit, idx) => {
+              const Icon = benefit.icon;
+              return (
+                <motion.div
+                  key={benefit.title}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.4, delay: idx * 0.08 }}
+                  whileHover={{ y: -6 }}
+                  className="bg-[#FFF8F0]/60 p-6 sm:p-7 rounded-3xl border border-[#E8DED5] shadow-2xs hover:shadow-md hover:border-[#6F4E37]/40 hover:bg-white transition-all flex flex-col justify-between group"
+                >
+                  <div>
+                    <div className="w-12 h-12 rounded-2xl bg-white border border-[#E8DED5] text-[#6F4E37] flex items-center justify-center mb-5 group-hover:bg-[#6F4E37] group-hover:text-white transition-colors shadow-2xs">
+                      <Icon size={22} />
+                    </div>
+
+                    <h3 className="font-extrabold text-base sm:text-lg text-[#2C1810] mb-2 group-hover:text-[#6F4E37] transition-colors">
+                      {benefit.title}
+                    </h3>
+                    <p className="text-xs sm:text-sm font-medium text-stone-500 leading-relaxed">
+                      {benefit.desc}
+                    </p>
+                  </div>
+                </motion.div>
+              );
+            })}
+          </div>
+
+          {/* PARTNER CTA */}
+          <div className="bg-gradient-to-r from-[#2C1810] via-[#3D251E] to-[#6F4E37] rounded-3xl p-8 sm:p-12 text-white shadow-xl relative overflow-hidden text-center max-w-4xl mx-auto">
+            {/* Decorative Background Elements */}
+            <div className="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
+            <div className="absolute bottom-0 left-0 -ml-16 -mb-16 w-64 h-64 bg-[#DDB892]/20 rounded-full blur-3xl pointer-events-none" />
+
+            <div className="relative z-10 max-w-2xl mx-auto space-y-4">
+              <span className="text-[10px] font-black uppercase tracking-widest text-amber-200 bg-white/10 px-3.5 py-1.5 rounded-full border border-white/15 inline-block">
+                VENUE PARTNERSHIP
+              </span>
+              <h3 className="text-2xl sm:text-3xl lg:text-4xl font-black text-white tracking-tight">
+                Ready to Grow With Fahara?
+              </h3>
+              <p className="text-xs sm:text-sm font-medium text-amber-100/80 leading-relaxed">
+                List your cafe or restaurant and start reaching customers looking for their next place to dine, celebrate and connect.
+              </p>
+
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-3.5 pt-4">
+                <Link
+                  href="/owner/signup"
+                  className="w-full sm:w-auto px-7 py-3.5 rounded-2xl bg-[#6F4E37] hover:bg-[#5a3e2b] text-white font-extrabold text-xs sm:text-sm shadow-md transition-all flex items-center justify-center gap-2 border border-amber-400/30"
+                >
+                  <span>Partner With Fahara</span>
+                  <ArrowRight size={16} />
+                </Link>
+
+                <Link
+                  href="/owner/login"
+                  className="w-full sm:w-auto px-7 py-3.5 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-extrabold text-xs sm:text-sm backdrop-blur-md border border-white/20 transition-all flex items-center justify-center gap-2"
+                >
+                  <span>Learn How It Works</span>
+                </Link>
+              </div>
+            </div>
+          </div>
+
+        </div>
       </section>
 
       {/* ==================== 9. FREQUENTLY ASKED QUESTIONS (FAQ) ==================== */}

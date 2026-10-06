@@ -86,11 +86,15 @@ export default function CafeCard({ cafe, activeCategory = '' }) {
     // 3. 3rd Party Events check
     const allows3rdParty = Boolean(
       cafeObj.allow_third_party_decoration === true ||
+      cafeObj.allow_third_party_decoration === 'true' ||
       cafeObj.allowThirdPartyEventManagement === true ||
-      cafeObj.capabilities?.allow_third_party_decoration === true
+      cafeObj.capabilities?.allow_third_party_decoration === true ||
+      cafeObj.allow_third_party_events === true ||
+      cafeObj.allow_third_party === true ||
+      cafeObj.third_party_events === true
     );
-    if (allows3rdParty) {
-      caps.push({ id: '3rd_party', label: '3rd Party Events', type: 'third_party' });
+    if (allows3rdParty && !caps.some(c => c.id === '3rd_party')) {
+      caps.unshift({ id: '3rd_party', label: '3rd Party Events', type: 'third_party' });
     }
 
     // 4. Decoration check
@@ -300,11 +304,11 @@ export default function CafeCard({ cafe, activeCategory = '' }) {
       onHoverStart={() => setIsHovered(true)}
       onHoverEnd={() => setIsHovered(false)}
       transition={{ type: 'spring', stiffness: 350, damping: 22 }}
-      className="bg-white rounded-[22px] overflow-hidden border border-[#E5D7CA]/80 shadow-[0_4px_20px_rgba(44,24,16,0.04)] hover:shadow-[0_18px_42px_rgba(111,78,55,0.15)] hover:border-[#6F4E37]/50 transition-all duration-300 flex flex-col h-full w-full group relative cursor-pointer"
+      className="bg-white rounded-[22px] border border-[#E5D7CA]/80 shadow-[0_4px_20px_rgba(44,24,16,0.04)] hover:shadow-[0_18px_42px_rgba(111,78,55,0.15)] hover:border-[#6F4E37]/50 transition-all duration-300 flex flex-col h-full w-full group relative cursor-pointer"
     >
         {/* 🖼️ Image Section */}
         <div 
-          className="relative aspect-[16/10] w-full overflow-hidden bg-stone-100 select-none"
+          className="relative aspect-[16/10] w-full overflow-hidden rounded-t-[22px] bg-stone-100 select-none"
           onTouchStart={(e) => {
             setTouchEnd(null);
             setTouchStart(e.targetTouches[0].clientX);
@@ -474,7 +478,7 @@ export default function CafeCard({ cafe, activeCategory = '' }) {
       </div>
 
       {/* CONTENT SECTION */}
-      <div className="p-3.5 sm:p-4.5 flex flex-col flex-1 justify-between bg-white relative z-10 gap-2.5 sm:gap-3">
+      <div className="p-3.5 sm:p-4.5 flex flex-col flex-1 justify-between bg-white relative z-30 gap-2.5 sm:gap-3">
         <div>
           {/* Title & Real Rating Pill */}
           <div className="flex justify-between items-start mb-1 gap-1.5 sm:gap-2">
@@ -530,58 +534,56 @@ export default function CafeCard({ cafe, activeCategory = '' }) {
                 ))}
 
                 {amenityList.length > 2 && (
-                  <div className="relative inline-block">
-                    <motion.button
-                      type="button"
-                      whileHover={{ scale: 1.06 }}
-                      whileTap={{ scale: 0.94 }}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        setShowAmenityPopover(!showAmenityPopover);
-                        setShowCapabilityPopover(false);
-                      }}
-                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#F5EDE4] hover:bg-[#6F4E37] text-[#6F4E37] hover:text-white border border-[#E8DED5] text-[11px] font-black shadow-2xs transition-all duration-200 cursor-pointer"
-                    >
-                      <span>+{amenityList.length - 2} more</span>
-                      <ChevronDown size={11} className={cn("transition-transform duration-200", showAmenityPopover && "rotate-180")} />
-                    </motion.button>
-
-                    <AnimatePresence>
-                      {showAmenityPopover && (
-                        <motion.div
-                          initial={{ opacity: 0, y: 6, scale: 0.95 }}
-                          animate={{ opacity: 1, y: 0, scale: 1 }}
-                          exit={{ opacity: 0, y: 4, scale: 0.95 }}
-                          transition={{ duration: 0.15 }}
-                          onClick={(e) => e.stopPropagation()}
-                          className="absolute bottom-full left-0 mb-2 w-48 bg-white/95 backdrop-blur-xl border border-[#DDB892]/60 rounded-2xl shadow-xl p-3 z-50 text-left space-y-1.5"
-                        >
-                          <div className="flex items-center justify-between border-b border-stone-100 pb-1.5 mb-1.5">
-                            <span className="text-[10px] font-black text-[#6F4E37] uppercase tracking-wider">All Amenities ({amenityList.length})</span>
-                            <button 
-                              type="button" 
-                              onClick={() => setShowAmenityPopover(false)}
-                              className="text-stone-400 hover:text-stone-700 text-xs font-bold"
-                            >
-                              ✕
-                            </button>
-                          </div>
-                          <div className="max-h-36 overflow-y-auto space-y-1.5 pr-1 no-scrollbar">
-                            {amenityList.map((am, idx) => (
-                              <div key={idx} className="flex items-center gap-2 text-xs font-bold text-[#2C1810]">
-                                <span className="w-3.5 h-3.5 rounded-full bg-emerald-500/15 text-emerald-600 flex items-center justify-center shrink-0">
-                                  <Check size={9} className="stroke-[3]" />
-                                </span>
-                                <span className="capitalize">{String(am).replace('_', ' ')}</span>
-                              </div>
-                            ))}
-                          </div>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  </div>
+                  <motion.button
+                    type="button"
+                    whileHover={{ scale: 1.06 }}
+                    whileTap={{ scale: 0.94 }}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      setShowAmenityPopover(!showAmenityPopover);
+                      setShowCapabilityPopover(false);
+                    }}
+                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#F5EDE4] hover:bg-[#6F4E37] text-[#6F4E37] hover:text-white border border-[#E8DED5] text-[11px] font-black shadow-2xs transition-all duration-200 cursor-pointer"
+                  >
+                    <span>+{amenityList.length - 2} more</span>
+                    <ChevronDown size={11} className={cn("transition-transform duration-200", showAmenityPopover && "rotate-180")} />
+                  </motion.button>
                 )}
+
+                <AnimatePresence>
+                  {showAmenityPopover && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 6, scale: 0.95 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: 4, scale: 0.95 }}
+                      transition={{ duration: 0.15 }}
+                      onClick={(e) => e.stopPropagation()}
+                      className="absolute bottom-full right-0 mb-2 w-56 sm:w-60 max-w-full bg-white backdrop-blur-xl border border-[#DDB892]/80 rounded-2xl shadow-2xl p-3.5 z-50 text-left space-y-2"
+                    >
+                      <div className="flex items-center justify-between border-b border-stone-100 pb-2 gap-2">
+                        <span className="text-[11px] font-black text-[#6F4E37] uppercase tracking-wider truncate">All Amenities ({amenityList.length})</span>
+                        <button 
+                          type="button" 
+                          onClick={() => setShowAmenityPopover(false)}
+                          className="w-5 h-5 rounded-full bg-stone-100 hover:bg-stone-200 text-stone-500 hover:text-stone-800 flex items-center justify-center text-xs font-bold transition-colors shrink-0 cursor-pointer"
+                        >
+                          ✕
+                        </button>
+                      </div>
+                      <div className="max-h-44 overflow-y-auto space-y-2 pr-1 no-scrollbar">
+                        {amenityList.map((am, idx) => (
+                          <div key={idx} className="flex items-center gap-2 text-xs font-extrabold text-[#2C1810]">
+                            <span className="w-4 h-4 rounded-full bg-emerald-500/15 text-emerald-600 flex items-center justify-center shrink-0">
+                              <Check size={10} className="stroke-[3]" />
+                            </span>
+                            <span className="capitalize leading-snug">{String(am).replace('_', ' ')}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </>
             ) : (
               <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-stone-100 border border-stone-200 text-stone-600 text-[11px] font-extrabold capitalize">
@@ -611,60 +613,58 @@ export default function CafeCard({ cafe, activeCategory = '' }) {
               ))}
 
               {remainingCapCount > 0 && (
-                <div className="relative inline-block">
-                  <motion.button
-                    type="button"
-                    whileHover={{ scale: 1.06 }}
-                    whileTap={{ scale: 0.94 }}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      setShowCapabilityPopover(!showCapabilityPopover);
-                      setShowAmenityPopover(false);
-                    }}
-                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#FFF8F0] hover:bg-[#6F4E37] text-[#6F4E37] hover:text-white border border-[#DDB892]/60 text-[11px] font-black shadow-2xs transition-all duration-200 cursor-pointer"
-                  >
-                    <span>+{remainingCapCount} more</span>
-                    <ChevronDown size={11} className={cn("transition-transform duration-200", showCapabilityPopover && "rotate-180")} />
-                  </motion.button>
-
-                  <AnimatePresence>
-                    {showCapabilityPopover && (
-                      <motion.div
-                        initial={{ opacity: 0, y: 6, scale: 0.95 }}
-                        animate={{ opacity: 1, y: 0, scale: 1 }}
-                        exit={{ opacity: 0, y: 4, scale: 0.95 }}
-                        transition={{ duration: 0.15 }}
-                        onClick={(e) => e.stopPropagation()}
-                        className="absolute bottom-full left-0 mb-2 w-52 bg-white/95 backdrop-blur-xl border border-[#DDB892]/60 rounded-2xl shadow-xl p-3 z-50 text-left space-y-1.5"
-                      >
-                        <div className="flex items-center justify-between border-b border-stone-100 pb-1.5 mb-1.5">
-                          <span className="text-[10px] font-black text-[#6F4E37] uppercase tracking-wider">Event Services ({eventCapabilities.length})</span>
-                          <button 
-                            type="button" 
-                            onClick={() => setShowCapabilityPopover(false)}
-                            className="text-stone-400 hover:text-stone-700 text-xs font-bold"
-                          >
-                            ✕
-                          </button>
-                        </div>
-                        <div className="max-h-40 overflow-y-auto space-y-1.5 pr-1 no-scrollbar">
-                          {eventCapabilities.map((cap) => (
-                            <Link
-                              key={cap.id}
-                              href={`/cafes/${cafeId}`}
-                              className="flex items-center gap-2 text-xs font-extrabold text-[#2C1810] hover:text-[#6F4E37] transition-colors"
-                            >
-                              <Sparkles size={11} className="text-amber-600 shrink-0" />
-                              <span>{cap.label}</span>
-                            </Link>
-                          ))}
-                        </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
+                <motion.button
+                  type="button"
+                  whileHover={{ scale: 1.06 }}
+                  whileTap={{ scale: 0.94 }}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setShowCapabilityPopover(!showCapabilityPopover);
+                    setShowAmenityPopover(false);
+                  }}
+                  className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#FFF8F0] hover:bg-[#6F4E37] text-[#6F4E37] hover:text-white border border-[#DDB892]/60 text-[11px] font-black shadow-2xs transition-all duration-200 cursor-pointer"
+                >
+                  <span>+{remainingCapCount} more</span>
+                  <ChevronDown size={11} className={cn("transition-transform duration-200", showCapabilityPopover && "rotate-180")} />
+                </motion.button>
               )}
+
+              <AnimatePresence>
+                {showCapabilityPopover && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 6, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: 4, scale: 0.95 }}
+                    transition={{ duration: 0.15 }}
+                    onClick={(e) => e.stopPropagation()}
+                    className="absolute bottom-full right-0 mb-2 w-56 sm:w-60 max-w-full bg-white backdrop-blur-xl border border-[#DDB892]/80 rounded-2xl shadow-2xl p-3.5 z-50 text-left space-y-2"
+                  >
+                    <div className="flex items-center justify-between border-b border-stone-100 pb-2 gap-2">
+                      <span className="text-[11px] font-black text-[#6F4E37] uppercase tracking-wider truncate">Event Services ({eventCapabilities.length})</span>
+                      <button 
+                        type="button" 
+                        onClick={() => setShowCapabilityPopover(false)}
+                        className="w-5 h-5 rounded-full bg-stone-100 hover:bg-stone-200 text-stone-500 hover:text-stone-800 flex items-center justify-center text-xs font-bold transition-colors shrink-0 cursor-pointer"
+                      >
+                        ✕
+                      </button>
+                    </div>
+                    <div className="max-h-40 overflow-y-auto space-y-1.5 pr-1 no-scrollbar">
+                      {eventCapabilities.map((cap) => (
+                        <Link
+                          key={cap.id}
+                          href={`/cafes/${cafeId}`}
+                          className="flex items-center gap-2 text-xs font-extrabold text-[#2C1810] hover:text-[#6F4E37] transition-colors"
+                        >
+                          <Sparkles size={11} className="text-amber-600 shrink-0" />
+                          <span>{cap.label}</span>
+                        </Link>
+                      ))}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
           )}
         </div>
