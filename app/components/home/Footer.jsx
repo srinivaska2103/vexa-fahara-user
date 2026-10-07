@@ -2,7 +2,6 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { Mail, Phone, MapPin, Sparkles, Building2, UserPlus } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
 
 export default function Footer() {
@@ -91,11 +90,6 @@ export default function Footer() {
         {/* Bottom Bar */}
         <div className="pt-8 border-t border-stone-800/80 flex flex-col md:flex-row justify-between items-center text-xs text-stone-500 font-medium gap-4">
           <p>&copy; {new Date().getFullYear()} Fahara – Cafe & Event Booking Platform. All rights reserved.</p>
-          
-          <div className="flex flex-wrap items-center gap-5 text-stone-400 font-bold">
-            <span className="flex items-center gap-1.5"><Phone size={13} className="text-[#6F4E37]" /> +91 89460-29205</span>
-            <span className="flex items-center gap-1.5"><Mail size={13} className="text-[#6F4E37]" /> vexatech.connect@gmail.com</span>
-          </div>
         </div>
 
       </div>
