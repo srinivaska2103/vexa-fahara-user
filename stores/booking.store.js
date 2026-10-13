@@ -127,46 +127,20 @@ export const useBookingStore = create(
           // Cafe base charge: pricePerHour × hours
           const cafeCharge = (state.cafePrice || 0) * hours;
 
-          // Inclusion charge: sum of all selected inclusion items
-          // PER_GUEST items are price × guestCount, others are price × quantity
-          let inclusionCharge = 0;
-          const inclusionItems = state.selectedInclusionItems || [];
-          if (inclusionItems.length > 0) {
-            inclusionItems.forEach(item => {
-              const pricingType = String(item.pricingType || item.pricing_type || 'FIXED').toUpperCase();
-              const unitPrice = Number(item.unitPrice || item.unit_price || 0);
-              if (pricingType === 'PER_GUEST') {
-                inclusionCharge += unitPrice * guestCount;
-              } else {
-                const qty = Math.max(1, Number(item.quantity || 1));
-                inclusionCharge += unitPrice * qty;
-              }
-            });
-          }
+          // Inclusion charge set to 0 as package price is inclusive
+          const inclusionCharge = 0;
 
-          // Cafe package base price (only applied if no inclusion items are itemized)
-          const cafePackageCharge = (state.selectedPackage && inclusionItems.length === 0) 
-            ? Number(state.selectedPackage.price || state.selectedPackage.base_price || 0) 
-            : 0;
+          // Cafe package base price (applied when a cafe package is selected)
+          const packageDirectPrice = state.selectedPackage ? Number(state.selectedPackage.price || state.selectedPackage.base_price || 0) : 0;
+          const cafePackageCharge = packageDirectPrice;
 
           const eventCompanyCharge = (() => {
             if (!state.selectedEventCompany) return 0;
-            const selInc = state.selectedEventCompany.selectedInclusions;
-            if (Array.isArray(selInc) && selInc.length > 0) {
-              let sum = 0;
-              selInc.forEach(item => {
-                const pType = String(item.pricing_type || item.pricingType || 'FIXED').toUpperCase();
-                const price = Number(item.unitPrice || item.unit_price || item.price || 0);
-                if (pType === 'PER_GUEST') sum += price * guestCount;
-                else sum += price;
-              });
-              return sum;
-            }
             return Number(state.selectedEventCompany.resolvedPrice || state.selectedEventCompany.starting_price || 0);
           })();
           
-          // subtotal = cafe charge + standalone package base + inclusion charge + event company charge - discount
-          const rawSubtotal = cafeCharge + cafePackageCharge + inclusionCharge + eventCompanyCharge - state.discountAmount;
+          // subtotal = cafe charge + package price + event company charge - discount
+          const rawSubtotal = cafeCharge + cafePackageCharge + eventCompanyCharge - state.discountAmount;
           const subtotal = Math.max(0, Math.round(rawSubtotal * 100) / 100);
 
           // 3% platform fee on subtotal

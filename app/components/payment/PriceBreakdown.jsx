@@ -20,8 +20,12 @@ export default function PriceBreakdown({ data }) {
   const tFeeAmount = typeof transactionFee === 'object' && transactionFee !== null ? (transactionFee.amount || 0) : Number(transactionFee || 0);
   const gstAmount = typeof gst === 'object' && gst !== null ? (gst.amount || 0) : Number(gst || 0);
 
-  // Extract cafe charge item (CAFE_CHARGE) from cafeInclusions
+  // Extract cafe charge item (CAFE_CHARGE) from cafeInclusions or direct cafeCharges property
   const cafeChargeItem = cafeInclusions.find(i => i.itemType === 'CAFE_CHARGE');
+  const cafeChargeAmount = cafeChargeItem 
+    ? (cafeChargeItem.amount || cafeChargeItem.unitPrice || 0)
+    : Number(data.cafeCharges || data.cafe_amount || 0);
+
   const cafeInclusionItems = cafeInclusions.filter(i => i.itemType !== 'CAFE_CHARGE');
 
   const formatCurrency = (num) => {
@@ -66,54 +70,40 @@ export default function PriceBreakdown({ data }) {
 
       <div className="space-y-3.5 text-sm">
 
-        {/* Cafe Charges (hours-based) — always first */}
-        {cafeChargeItem && (
+        {/* Cafe Charges (hours-based) — always first if > 0 */}
+        {cafeChargeAmount > 0 && (
           <div className="space-y-0.5">
             <div className="flex justify-between font-bold text-[#2C1810]">
               <span>Cafe Charges</span>
-              <span className="font-black">{formatCurrency(cafeChargeItem.amount || cafeChargeItem.unitPrice)}</span>
+              <span className="font-black">{formatCurrency(cafeChargeAmount)}</span>
             </div>
-            {cafeChargeItem.calculation && (
+            {cafeChargeItem?.calculation && (
               <div className="text-[10px] text-stone-400 font-medium pl-1">{cafeChargeItem.calculation}</div>
             )}
           </div>
         )}
 
-        {/* Cafe Package & Cafe Inclusions */}
-        {(cafePackage || cafeInclusionItems.length > 0) && (
+        {/* Cafe Package */}
+        {cafePackage && (
           <div className="space-y-2 pt-1 pb-1">
-            {cafePackage && (
-              <div className="flex justify-between font-bold text-[#2C1810]">
-                <span className="truncate mr-2">{cafePackage.name || 'Cafe Package'}</span>
-                {cafePackage.baseAmount > 0 && (
-                  <span className="font-black text-[#2C1810] shrink-0">{formatCurrency(cafePackage.baseAmount)}</span>
-                )}
-              </div>
-            )}
-
-            {cafeInclusionItems.length > 0 && (
-              <div className="pl-3 space-y-2 border-l-2 border-[#DDB892]/80 ml-1.5 my-1.5 text-xs">
-                {cafeInclusionItems.map((inc, i) => renderInclusionItem(inc, i))}
-              </div>
-            )}
+            <div className="flex justify-between font-bold text-[#2C1810]">
+              <span className="truncate mr-2">🎁 {cafePackage.name || 'Cafe Package'}</span>
+              <span className="font-black text-[#2C1810] shrink-0">{formatCurrency(cafePackage.baseAmount || cafePackage.amount || cafePackage.price || 0)}</span>
+            </div>
           </div>
         )}
 
-        {/* Event Package & Event Inclusions */}
-        {(eventPackage || eventInclusions.length > 0) && (
+        {/* Event Package */}
+        {(eventPackage || (data.event?.package) || Number(data.eventCharges || data.event_service_amount || 0) > 0) && (
           <div className="space-y-2 pt-1 pb-1 border-t border-[#E8DED5]/60">
-            {eventPackage && (
-              <div className="flex justify-between font-bold text-[#2C1810]">
-                <span className="truncate mr-2">Event Arrangement ({eventPackage.name})</span>
-                <span className="font-bold text-[#2C1810] shrink-0">{formatCurrency(eventPackage.baseAmount)}</span>
-              </div>
-            )}
-
-            {eventInclusions.length > 0 && (
-              <div className="pl-3 space-y-2 border-l-2 border-[#DDB892]/80 ml-1.5 my-1.5 text-xs">
-                {eventInclusions.map((inc, i) => renderInclusionItem(inc, `event-${i}`))}
-              </div>
-            )}
+            <div className="flex justify-between font-bold text-[#2C1810]">
+              <span className="truncate mr-2">
+                🎉 Event Arrangement ({eventPackage?.name || data.event?.package?.name || data.eventPackageName || 'Event Package'})
+              </span>
+              <span className="font-bold text-[#2C1810] shrink-0">
+                {formatCurrency(eventPackage?.baseAmount || data.event?.package?.baseAmount || data.eventCharges || data.event_service_amount || 0)}
+              </span>
+            </div>
           </div>
         )}
 

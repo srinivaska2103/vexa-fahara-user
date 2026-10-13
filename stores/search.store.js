@@ -14,7 +14,9 @@ export const useSearchStore = create((set) => ({
   viewMode: 'grid', // grid, list, map
   userLocation: null, // { lat, lng }
   isRequestingLocation: false,
+  isMobileFilterOpen: false,
 
+  setIsMobileFilterOpen: (isMobileFilterOpen) => set({ isMobileFilterOpen }),
   setQuery: (query) => set({ query }),
   setCategory: (category) => set({ category }),
   setPriceRange: (priceRange) => set({ priceRange }),

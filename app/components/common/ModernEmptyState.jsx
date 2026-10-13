@@ -32,6 +32,7 @@ export default function ModernEmptyState({
           whileHover={{ scale: 1.03 }}
           whileTap={{ scale: 0.96 }}
           onClick={onReset}
+          suppressHydrationWarning
           className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-[#6F4E37] hover:bg-[#5A3215] text-white text-xs font-extrabold shadow-sm transition-all cursor-pointer"
         >
           <RotateCcw size={13} className="stroke-[2.5]" />

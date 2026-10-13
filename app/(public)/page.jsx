@@ -1,1421 +1,571 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  Search, Calendar, Users, MapPin, Sparkles, ArrowRight, Cake, Briefcase, 
-  Heart, PartyPopper, Users2, Star, ShieldCheck, 
-  Lock, Building2, CheckCircle2, ChevronDown, HelpCircle, 
-  LogIn, UserPlus, Zap, Coffee, Clock, Award, ThumbsUp, Bell,
-  X, RotateCcw, ChevronRight, Layers, Tag, Menu, Compass, CalendarCheck, User,
-  Receipt, BadgeCheck, Store, TrendingUp, BadgePercent
-} from 'lucide-react';
-import Link from 'next/link';
-import Image from 'next/image';
-import { useRouter } from 'next/navigation';
-import { useAuthStore } from '@/stores/auth.store';
+import HomeNavbar from '@/app/components/home/HomeNavbar';
+import HomeHero from '@/app/components/home/HomeHero';
+import HomeWhatIsFahara from '@/app/components/home/HomeWhatIsFahara';
+import HomeHowItWorks from '@/app/components/home/HomeHowItWorks';
+import HomeWhatCanYouFind from '@/app/components/home/HomeWhatCanYouFind';
+import HomeSearchPanel from '@/app/components/home/HomeSearchPanel';
+import HomeCategorySection from '@/app/components/home/HomeCategorySection';
+import HomePopularPlaces from '@/app/components/home/HomePopularPlaces';
+import HomeDealsSection from '@/app/components/home/HomeDealsSection';
+import HomeEventDiscovery from '@/app/components/home/HomeEventDiscovery';
+import HomeWhyFahara from '@/app/components/home/HomeWhyFahara';
+import HomeTrustSection from '@/app/components/home/HomeTrustSection';
+import HomeFaqSection from '@/app/components/home/HomeFaqSection';
+import HomeBecomePartnerForm from '@/app/components/home/HomeBecomePartnerForm';
+import HomeFinalCTA from '@/app/components/home/HomeFinalCTA';
 import Footer from '@/app/components/home/Footer';
-import ModernDatePicker from '@/app/components/common/ModernDatePicker';
-import ModernDropdown from '@/app/components/common/ModernDropdown';
-
-// Hero Showcase Carousel Cafes
-const heroShowcaseCafes = [
-  {
-    id: 1,
-    name: 'Bandra Garden Cafe',
-    rating: '4.9',
-    reviews: '128',
-    location: 'Mumbai • Private Birthday Setup',
-    cityArea: 'Bandra West, Mumbai',
-    price: '499',
-    eventType: 'Birthday Setup',
-    isOpenNow: true,
-    isTopRated: true,
-    image: 'cafe1.jpg',
-  },
-  {
-    id: 2,
-    name: 'Indiranagar Rooftop Lounge',
-    rating: '4.95',
-    reviews: '94',
-    location: 'Bengaluru • Corporate Meeting & Drinks',
-    cityArea: 'Indiranagar, Bengaluru',
-    price: '799',
-    eventType: 'Corporate Meeting',
-    isOpenNow: true,
-    isTopRated: true,
-    image: 'cafe2.jpg',
-  },
-  {
-    id: 3,
-    name: 'Hauz Khas Glasshouse Nook',
-    rating: '4.88',
-    reviews: '210',
-    location: 'Delhi • Romantic Candlelight Date',
-    cityArea: 'Hauz Khas, Delhi',
-    price: '599',
-    eventType: 'Date Night',
-    isOpenNow: true,
-    isTopRated: false,
-    image: 'cafe3.jpg',
-  },
-  {
-    id: 4,
-    name: 'Jubilee Hills Backyard Studio',
-    rating: '4.92',
-    reviews: '150',
-    location: 'Hyderabad • Private Gathering & Party',
-    cityArea: 'Jubilee Hills, Hyderabad',
-    price: '899',
-    eventType: 'Private Party',
-    isOpenNow: true,
-    isTopRated: true,
-    image: 'cafe4.jpg',
-  }
-];
-
-const popularLocations = [
-  'Bandra West, Mumbai',
-  'Indiranagar, Bengaluru',
-  'Hauz Khas, Delhi',
-  'Jubilee Hills, Hyderabad',
-  'Connaught Place, Delhi',
-  'Koramangala, Bengaluru'
-];
-
-const popularEventChips = [
-  { id: 'birthday', label: 'Birthday' },
-  { id: 'corporate', label: 'Corporate' },
-  { id: 'date-night', label: 'Date Night' },
-  { id: 'party', label: 'Party' },
-  { id: 'meeting', label: 'Meeting' },
-  { id: 'family', label: 'Family Gathering' }
-];
-
-// Occasion categories definitions
-const occasionCategories = [
-  { 
-    id: 'birthday', 
-    label: 'Birthday Parties', 
-    desc: 'Celebrate birthdays with reserved cafe zones, cakes, and custom ambience.',
-    icon: Cake,
-    bg: 'from-amber-500/10 to-orange-500/10',
-    border: 'border-amber-200'
-  },
-  { 
-    id: 'corporate', 
-    label: 'Corporate & Meetings', 
-    desc: 'Quiet cafe spots equipped with Wi-Fi, power outlets, and coffee for team meets.',
-    icon: Briefcase,
-    bg: 'from-blue-500/10 to-cyan-500/10',
-    border: 'border-blue-200'
-  },
-  { 
-    id: 'date-night', 
-    label: 'Romantic Date Nights', 
-    desc: 'Cozy, candlelight cafe tables reserved for memorable evenings with your special one.',
-    icon: Heart,
-    bg: 'from-rose-500/10 to-pink-500/10',
-    border: 'border-rose-200'
-  },
-  { 
-    id: 'party', 
-    label: 'Private Celebrations', 
-    desc: 'Full cafe backyards or rooftop sections reserved exclusively for your party.',
-    icon: PartyPopper,
-    bg: 'from-purple-500/10 to-indigo-500/10',
-    border: 'border-purple-200'
-  },
-  { 
-    id: 'workshop', 
-    label: 'Workshops & Meetups', 
-    desc: 'Spacious layouts perfect for book clubs, art workshops, and community events.',
-    icon: Users,
-    bg: 'from-emerald-500/10 to-teal-500/10',
-    border: 'border-emerald-200'
-  },
-  { 
-    id: 'photoshoot', 
-    label: 'Photoshoots & Shoots', 
-    desc: 'Aesthetic cafe interiors with natural lighting ideal for creators and brand shoots.',
-    icon: Sparkles,
-    bg: 'from-amber-500/10 to-yellow-500/10',
-    border: 'border-amber-200'
-  },
-];
-
-// Why Fahara features
-const whyFaharaFeatures = [
-  { 
-    id: 'verified', 
-    title: '100% Verified Cafes', 
-    desc: 'Every listed cafe is manually inspected for hygiene, seating capacity, and safety standards.', 
-    icon: ShieldCheck 
-  },
-  { 
-    id: 'pricing', 
-    title: 'Transparent Hourly Rates', 
-    desc: 'Clear upfront pricing with no hidden service charges. Pay strictly for the hours you reserve.', 
-    icon: Lock 
-  },
-  { 
-    id: 'instant', 
-    title: 'Instant Confirmation', 
-    desc: 'Get immediate booking confirmations without waiting for endless back-and-forth phone calls.', 
-    icon: Zap 
-  },
-  { 
-    id: 'capacity', 
-    title: 'Flexible Guest Capacity', 
-    desc: 'Book intimate tables for 2 or reserve full cafe halls for gatherings up to 100+ guests.', 
-    icon: Users2 
-  },
-  { 
-    id: 'reviews', 
-    title: 'Verified Guest Reviews', 
-    desc: 'Make confident decisions backed by genuine ratings and reviews from past event hosts.', 
-    icon: Star 
-  },
-  { 
-    id: 'support', 
-    title: '24/7 Concierge Support', 
-    desc: 'Our dedicated support team is available round-the-clock to assist with your venue bookings.', 
-    icon: Bell 
-  },
-];
-
-// How It Works Steps
-const howItWorksSteps = [
-  { step: '01', title: 'Discover & Search', desc: 'Browse curated cafes by location, event type, guest count, and hourly budget.' },
-  { step: '02', title: 'Select Date & Slots', desc: 'Pick your preferred date, check real-time slot availability, and select duration.' },
-  { step: '03', title: 'Instant Booking', desc: 'Reserve your space securely online with transparent pricing and direct confirmation.' },
-  { step: '04', title: 'Host & Enjoy', desc: 'Arrive at your reserved cafe venue and enjoy a seamless celebration experience.' },
-];
-
-// Fahara Safety & Guarantee Commitments
-const faharaSafetyCommitments = [
-  {
-    id: 'verified',
-    title: '100% Verified Venues',
-    desc: 'Every cafe is manually inspected for hygiene, guest safety standards, and seating capacities before listing.',
-    icon: ShieldCheck,
-    badge: 'Hygiene & Safety'
-  },
-  {
-    id: 'reserved',
-    title: 'Guaranteed Slot Lock',
-    desc: 'Your reserved cafe section is locked exclusively for your group. Zero double bookings or walk-in overlaps.',
-    icon: CheckCircle2,
-    badge: 'Exclusive Access'
-  },
-  {
-    id: 'refund',
-    title: '100% Refund Safeguard',
-    desc: 'Cancel up to 24 hours before your slot time for a full, hassle-free refund processed directly to your account.',
-    icon: Lock,
-    badge: 'Zero Risk'
-  },
-  {
-    id: 'support',
-    title: '24/7 Event Assistance',
-    desc: 'Our dedicated support team coordinates directly with cafe hosts to ensure seating, food, and setups run smoothly.',
-    icon: Bell,
-    badge: 'Concierge Help'
-  }
-];
-
-// Partner Onboarding Steps
-const partnerOnboardingSteps = [
-  {
-    step: '01',
-    title: 'Create Your Partner Account',
-    desc: 'Sign up your cafe or restaurant and provide your basic business details.',
-    icon: UserPlus,
-  },
-  {
-    step: '02',
-    title: 'Add Your Venue',
-    desc: 'Add your venue information, photos, location, amenities, capacity, pricing and available facilities.',
-    icon: Store,
-  },
-  {
-    step: '03',
-    title: 'Set Up Your Offerings',
-    desc: 'Add your cafe categories, event capabilities, packages, services, offers and booking availability.',
-    icon: Layers,
-  },
-  {
-    step: '04',
-    title: 'Go Live & Get Bookings',
-    desc: 'Once your venue is approved and published, customers can discover your venue and start making bookings through Fahara.',
-    icon: Zap,
-  },
-];
-
-// Partner Benefits
-const partnerBenefits = [
-  {
-    title: 'Reach More Customers',
-    desc: 'Get discovered by customers actively searching for cafes, restaurants, venues and event spaces.',
-    icon: Users,
-  },
-  {
-    title: 'More Event Bookings',
-    desc: 'Showcase your venue for birthdays, private parties, meetings, celebrations and other occasions.',
-    icon: PartyPopper,
-  },
-  {
-    title: 'Showcase Your Venue',
-    desc: 'Display your photos, amenities, location, pricing, capacity, event capabilities and important venue information.',
-    icon: Store,
-  },
-  {
-    title: 'Promote Deals & Offers',
-    desc: 'Create and showcase your active offers so customers can discover special deals from your venue.',
-    icon: BadgePercent,
-  },
-  {
-    title: 'Manage Your Bookings',
-    desc: 'Manage incoming bookings, availability and customer requests through your Fahara partner dashboard.',
-    icon: CalendarCheck,
-  },
-  {
-    title: 'Grow Your Business',
-    desc: 'Understand customer interest and venue performance and use Fahara to attract more customers and event opportunities.',
-    icon: TrendingUp,
-  },
-];
-
-// FAQ Data
-const faqs = [
-  {
-    question: 'How do I book a cafe on Fahara?',
-    answer: 'Simply enter your location, preferred date, and guest count in the search bar. Browse available cafes, choose your time slot, and click "Book Cafe" to complete your secure payment.'
-  },
-  {
-    question: 'What is included in the hourly cafe booking fee?',
-    answer: 'The hourly rate reserves your dedicated seating area or venue section for the chosen duration. Specific menu offerings or food & beverage packages are specified on each cafe detail page.'
-  },
-  {
-    question: 'Can I visit the cafe before making a booking?',
-    answer: 'Yes! You can view detailed photos, 360-degree venue tours, and address details on Fahara. If you wish to visit in person beforehand, you can coordinate via our concierge support.'
-  },
-  {
-    question: 'What is the cancellation policy for cafe bookings?',
-    answer: 'Cancellations made 24 hours prior to your scheduled booking time receive a full refund. Check our detailed cancellation policy page for specific terms.'
-  },
-  {
-    question: 'How do I list my cafe on Fahara?',
-    answer: 'If you are a cafe owner looking to monetize off-peak hours and private event bookings, click "Log In" or contact our partner onboarding team to get started.'
-  }
-];
+import { useState } from 'react';
+import Link from 'next/link';
+import { motion } from 'framer-motion';
+import { 
+  Store, Coffee, Utensils, PartyPopper, CheckCircle2, ArrowRight, ArrowDown, Eye, LayoutDashboard,
+  Zap, TrendingUp, UserPlus, ShieldCheck, RotateCcw, ChevronDown, User, Search, Compass, CalendarCheck,
+  Sparkles, Camera, Tag, BarChart3
+} from 'lucide-react';
+import { FAHARA_LINKS, getPartnerSignupUrl } from '@/app/constants/faharaLinks';
 
 export default function HomePage() {
-  const router = useRouter();
-  const { isAuthenticated, user, logout } = useAuthStore();
-
-  // Search State
-  const [searchLocation, setSearchLocation] = useState('');
-  const [searchDate, setSearchDate] = useState('');
-  const [searchGuests, setSearchGuests] = useState(2);
-  const [searchEventType, setSearchEventType] = useState('all');
-  const [selectedChip, setSelectedChip] = useState('');
-  const [showLocationDropdown, setShowLocationDropdown] = useState(false);
-
-  // Mobile Menu State
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
-  // Showcase Card Carousel State
-  const [activeSlideIndex, setActiveSlideIndex] = useState(0);
-  const [isFavorite, setIsFavorite] = useState(false);
-  const [openFaq, setOpenFaq] = useState(null);
-
-  // Auto carousel slide timer
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setActiveSlideIndex((prev) => (prev + 1) % heroShowcaseCafes.length);
-    }, 5000);
-    return () => clearInterval(timer);
-  }, []);
-
-  const activeShowcaseCafe = heroShowcaseCafes[activeSlideIndex];
-
-  const handleSearchSubmit = (e) => {
-    e?.preventDefault();
-    const params = new URLSearchParams();
-    if (searchLocation) params.set('search', searchLocation);
-    if (searchGuests) params.set('guests', searchGuests);
-    if (searchEventType && searchEventType !== 'all') params.set('event', searchEventType);
-    router.push(`/customer/cafe?${params.toString()}`);
-  };
-
-  const handleChipSelect = (chipId, label) => {
-    if (selectedChip === chipId) {
-      setSelectedChip('');
-      setSearchEventType('all');
-    } else {
-      setSelectedChip(chipId);
-      setSearchEventType(chipId);
-      setSearchLocation(label);
-    }
-  };
-
-  const handleResetSearch = () => {
-    setSearchLocation('');
-    setSearchDate('');
-    setSearchGuests(2);
-    setSearchEventType('all');
-    setSelectedChip('');
-  };
+  const [selectedPartnerType, setSelectedPartnerType] = useState('CAFE');
+  const [openPartnerFaq, setOpenPartnerFaq] = useState(null);
 
   return (
     <div className="min-h-screen bg-[#FFF8F0] font-sans antialiased text-[#2C1810] selection:bg-[#6F4E37] selection:text-white">
-
-      {/* ==================== 1. TOP STICKY NAVBAR WITH HAMBURGER ==================== */}
-      <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-stone-200/80 shadow-2xs">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between gap-4">
-          
-          {/* Logo & Brand */}
-          <Link href="/" className="flex items-center gap-2.5 sm:gap-3 group shrink-0">
-            <Image 
-              src="/Fahara%20Logo.jpeg" 
-              alt="Fahara Logo" 
-              width={36} 
-              height={36} 
-              className="object-contain rounded-xl sm:rounded-2xl shadow-md border border-[#DDB892]/40 group-hover:scale-105 transition-transform" 
-              priority 
-            />
-            <div>
-              <span className="text-lg sm:text-xl font-black tracking-tight text-[#2C1810] block leading-none">FAHARA</span>
-              <span className="text-[8px] sm:text-[9px] font-extrabold uppercase tracking-widest text-[#6F4E37]">CAFE & EVENT BOOKING</span>
-            </div>
-          </Link>
-
-          {/* Desktop Quick Nav Links (Visible >= 1024px) */}
-          <nav className="hidden lg:flex items-center gap-6 text-xs font-black text-stone-700">
-            <Link href="/customer/cafe" className="hover:text-[#6F4E37] transition-colors">
-              Discover Cafes
-            </Link>
-            <a href="#how-it-works" className="hover:text-[#6F4E37] transition-colors">
-              How It Works
-            </a>
-            <a href="#why-fahara" className="hover:text-[#6F4E37] transition-colors">
-              Why Fahara
-            </a>
-            <a href="#occasions" className="hover:text-[#6F4E37] transition-colors">
-              Occasions
-            </a>
-            <a href="#faq" className="hover:text-[#6F4E37] transition-colors">
-              FAQ
-            </a>
-          </nav>
-
-          {/* Header Action Buttons & Mobile Hamburger Button */}
-          <div className="flex items-center gap-2 sm:gap-3">
-            <Link 
-              href="/login" 
-              className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-black text-[#6F4E37] bg-[#FFF8F0] hover:bg-[#F5EBE0] border border-[#DDB892]/60 rounded-xl transition-all"
-            >
-              <LogIn size={14} />
-              <span>Log In</span>
-            </Link>
-            
-            <Link 
-              href="/register" 
-              className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-2 bg-gradient-to-r from-[#4A2C11] to-[#6F4E37] text-white rounded-xl text-xs font-black shadow-md hover:shadow-lg active:scale-95 transition-all"
-            >
-              <UserPlus size={14} />
-              <span>Sign Up</span>
-            </Link>
-
-            {/* Mobile / Tablet Hamburger Toggle Button (< 1024px) */}
-            <button 
-              suppressHydrationWarning
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="lg:hidden p-2.5 rounded-xl bg-[#FFF8F0] border border-[#DDB892]/60 text-[#6F4E37] hover:bg-amber-100/60 transition-all cursor-pointer"
-              aria-label="Toggle Menu"
-            >
-              {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
-            </button>
-          </div>
-        </div>
-
-        {/* Mobile Slide-down Overlay Drawer (Floating over page content) */}
-        <AnimatePresence>
-          {mobileMenuOpen && (
-            <>
-              {/* Darkened Blur Backdrop */}
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                onClick={() => setMobileMenuOpen(false)}
-                className="fixed inset-0 bg-stone-950/70 backdrop-blur-md z-40 lg:hidden"
-              />
-
-              {/* Modern Interactive Floating Menu Drawer */}
-              <motion.div 
-                initial={{ opacity: 0, y: -12, scale: 0.98 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: -12, scale: 0.98 }}
-                transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-                className="absolute top-full left-0 right-0 z-50 lg:hidden bg-[#FFF8F0] border-b-2 border-[#DDB892]/40 shadow-2xl overflow-y-auto max-h-[calc(100vh-65px)] rounded-b-3xl text-[#2C1810] pb-6"
-              >
-                {/* Header Sub-bar */}
-                <div className="px-4 py-2.5 bg-[#F5EBE0]/80 border-b border-[#DDB892]/30 flex items-center justify-between sticky top-0 z-10 backdrop-blur-md">
-                  <div className="flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-[#6F4E37] animate-ping" />
-                    <span className="text-[10px] font-black uppercase tracking-widest text-[#6F4E37]">Fahara Navigation</span>
-                  </div>
-                  <button
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="text-stone-400 hover:text-stone-700 p-1 rounded-full hover:bg-stone-200/50 transition-colors"
-                  >
-                    <X size={16} />
-                  </button>
-                </div>
-
-                <div className="p-3.5 space-y-3 max-w-7xl mx-auto">
-                  {/* Interactive Nav Cards Grid */}
-                  <div className="grid grid-cols-1 gap-1.5">
-                    
-                    <Link 
-                      href="/customer/cafe" 
-                      onClick={() => setMobileMenuOpen(false)}
-                      className="group p-2.5 rounded-2xl bg-white border border-[#DDB892]/40 shadow-2xs hover:shadow-md hover:border-[#6F4E37]/50 transition-all flex items-center justify-between active:scale-[0.99]"
-                    >
-                      <div className="flex items-center gap-2.5">
-                        <div className="p-2 rounded-xl bg-gradient-to-br from-[#4A2C11] to-[#6F4E37] text-white shadow-xs group-hover:scale-105 transition-transform">
-                          <Compass size={16} />
-                        </div>
-                        <div>
-                          <div className="text-xs font-black text-[#2C1810] group-hover:text-[#6F4E37] transition-colors">Discover Cafes</div>
-                          <div className="text-[10px] font-medium text-stone-500">Explore top rated coffee shops & spaces</div>
-                        </div>
-                      </div>
-                      <ChevronRight size={15} className="text-stone-400 group-hover:text-[#6F4E37] group-hover:translate-x-1 transition-all" />
-                    </Link>
-
-                    <a 
-                      href="#how-it-works" 
-                      onClick={() => setMobileMenuOpen(false)}
-                      className="group p-2.5 rounded-2xl bg-white border border-[#DDB892]/40 shadow-2xs hover:shadow-md hover:border-[#6F4E37]/50 transition-all flex items-center justify-between active:scale-[0.99]"
-                    >
-                      <div className="flex items-center gap-2.5">
-                        <div className="p-2 rounded-xl bg-amber-500/10 text-[#6F4E37] border border-amber-500/20 group-hover:scale-105 transition-transform">
-                          <Sparkles size={16} />
-                        </div>
-                        <div>
-                          <div className="text-xs font-black text-[#2C1810] group-hover:text-[#6F4E37] transition-colors">How It Works</div>
-                          <div className="text-[10px] font-medium text-stone-500">4 simple steps to reserve & customize</div>
-                        </div>
-                      </div>
-                      <ChevronRight size={15} className="text-stone-400 group-hover:text-[#6F4E37] group-hover:translate-x-1 transition-all" />
-                    </a>
-
-                    <a 
-                      href="#why-fahara" 
-                      onClick={() => setMobileMenuOpen(false)}
-                      className="group p-2.5 rounded-2xl bg-white border border-[#DDB892]/40 shadow-2xs hover:shadow-md hover:border-[#6F4E37]/50 transition-all flex items-center justify-between active:scale-[0.99]"
-                    >
-                      <div className="flex items-center gap-2.5">
-                        <div className="p-2 rounded-xl bg-emerald-500/10 text-emerald-800 border border-emerald-500/20 group-hover:scale-105 transition-transform">
-                          <ShieldCheck size={16} />
-                        </div>
-                        <div>
-                          <div className="text-xs font-black text-[#2C1810] group-hover:text-[#6F4E37] transition-colors">Why Fahara</div>
-                          <div className="text-[10px] font-medium text-stone-500">Verified venues & transparent pricing</div>
-                        </div>
-                      </div>
-                      <ChevronRight size={15} className="text-stone-400 group-hover:text-[#6F4E37] group-hover:translate-x-1 transition-all" />
-                    </a>
-
-                    <a 
-                      href="#occasions" 
-                      onClick={() => setMobileMenuOpen(false)}
-                      className="group p-2.5 rounded-2xl bg-white border border-[#DDB892]/40 shadow-2xs hover:shadow-md hover:border-[#6F4E37]/50 transition-all flex items-center justify-between active:scale-[0.99]"
-                    >
-                      <div className="flex items-center gap-2.5">
-                        <div className="p-2 rounded-xl bg-purple-500/10 text-purple-800 border border-purple-500/20 group-hover:scale-105 transition-transform">
-                          <PartyPopper size={16} />
-                        </div>
-                        <div>
-                          <div className="text-xs font-black text-[#2C1810] group-hover:text-[#6F4E37] transition-colors">Occasions</div>
-                          <div className="text-[10px] font-medium text-stone-500">Birthdays, meetings & private events</div>
-                        </div>
-                      </div>
-                      <ChevronRight size={15} className="text-stone-400 group-hover:text-[#6F4E37] group-hover:translate-x-1 transition-all" />
-                    </a>
-
-                    <a 
-                      href="#faq" 
-                      onClick={() => setMobileMenuOpen(false)}
-                      className="group p-2.5 rounded-2xl bg-white border border-[#DDB892]/40 shadow-2xs hover:shadow-md hover:border-[#6F4E37]/50 transition-all flex items-center justify-between active:scale-[0.99]"
-                    >
-                      <div className="flex items-center gap-2.5">
-                        <div className="p-2 rounded-xl bg-blue-500/10 text-blue-800 border border-blue-500/20 group-hover:scale-105 transition-transform">
-                          <HelpCircle size={16} />
-                        </div>
-                        <div>
-                          <div className="text-xs font-black text-[#2C1810] group-hover:text-[#6F4E37] transition-colors">Help & FAQ</div>
-                          <div className="text-[10px] font-medium text-stone-500">Cancellation, refunds & booking support</div>
-                        </div>
-                      </div>
-                      <ChevronRight size={15} className="text-stone-400 group-hover:text-[#6F4E37] group-hover:translate-x-1 transition-all" />
-                    </a>
-
-                  </div>
-
-                  {/* Quick Category Badges Row */}
-                  <div className="pt-1">
-                    <div className="text-[9px] font-extrabold uppercase tracking-widest text-[#6F4E37] mb-1.5 px-1">Quick Shortcuts</div>
-                    <div className="flex flex-wrap items-center gap-1.5 text-[10px] font-bold text-stone-700">
-                      <Link 
-                        href="/customer/cafe" 
-                        onClick={() => setMobileMenuOpen(false)}
-                        className="px-2 py-0.5 rounded-full bg-white border border-[#DDB892]/40 hover:bg-[#FFF8F0] transition-colors flex items-center gap-1"
-                      >
-                        ☕ Cafes
-                      </Link>
-                      <Link 
-                        href="/customer/cafe?category=Event+Space" 
-                        onClick={() => setMobileMenuOpen(false)}
-                        className="px-2 py-0.5 rounded-full bg-white border border-[#DDB892]/40 hover:bg-[#FFF8F0] transition-colors flex items-center gap-1"
-                      >
-                        🎉 Events
-                      </Link>
-                      <Link 
-                        href="/cancellation" 
-                        onClick={() => setMobileMenuOpen(false)}
-                        className="px-2 py-0.5 rounded-full bg-white border border-[#DDB892]/40 hover:bg-[#FFF8F0] transition-colors flex items-center gap-1"
-                      >
-                        🛡️ 9-Hr Policy
-                      </Link>
-                    </div>
-                  </div>
-
-                  {/* Auth / Action Buttons */}
-                  <div className="pt-2.5 border-t border-[#DDB892]/40 flex flex-col gap-2">
-                    <Link 
-                      href="/login" 
-                      onClick={() => setMobileMenuOpen(false)}
-                      className="w-full flex items-center justify-center gap-2 px-3.5 py-2.5 text-xs font-black text-[#6F4E37] bg-white hover:bg-[#F5EBE0] border-2 border-[#DDB892]/60 rounded-xl shadow-2xs active:scale-95 transition-all"
-                    >
-                      <LogIn size={14} />
-                      <span>Log In</span>
-                    </Link>
-                    
-                    <Link 
-                      href="/register" 
-                      onClick={() => setMobileMenuOpen(false)}
-                      className="w-full flex items-center justify-center gap-2 px-3.5 py-2.5 bg-gradient-to-r from-[#2C1810] via-[#4A2C11] to-[#6F4E37] text-white rounded-xl text-xs font-black shadow-md hover:shadow-lg active:scale-95 transition-all"
-                    >
-                      <UserPlus size={14} />
-                      <span>Sign Up</span>
-                    </Link>
-                  </div>
-                </div>
-              </motion.div>
-            </>
-          )}
-        </AnimatePresence>
-      </header>
-
-      {/* ==================== 2. PREMIUM INTERACTIVE SPLIT HERO ==================== */}
-      <section className="relative bg-gradient-to-br from-[#2C1810] via-[#4A2C11] to-[#6F4E37] text-white py-10 sm:py-16 lg:py-24 overflow-hidden">
-        {/* Ambient background glows */}
-        <div className="absolute top-0 right-0 w-72 sm:w-96 h-72 sm:h-96 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute bottom-0 left-0 w-72 sm:w-96 h-72 sm:h-96 bg-[#6F4E37]/25 rounded-full blur-3xl pointer-events-none" />
-
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
-            
-            {/* LEFT SIDE (col-span-12 lg:col-span-7) */}
-            <div className="lg:col-span-7 flex flex-col items-start text-left">
-              
-              {/* Badge */}
-              <motion.div 
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
-                className="inline-flex items-center gap-2 px-3.5 sm:px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-[#DDB892] text-[10px] sm:text-xs font-black uppercase tracking-wider mb-4 sm:mb-5"
-              >
-                <Sparkles size={14} className="text-amber-400 shrink-0" />
-                <span className="truncate">FAHARA • CAFE VENUE BOOKING PLATFORM</span>
-              </motion.div>
-
-              {/* Large Headline (Responsive across 360px to 4K) */}
-              <motion.h1 
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.1 }}
-                className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black tracking-tight text-white mb-4 sm:mb-5 leading-tight"
-              >
-                Find the Perfect Cafe for <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-[#DDB892] to-amber-400">Your Moment</span>
-              </motion.h1>
-
-              {/* Supporting Subtitle */}
-              <motion.p 
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.2 }}
-                className="text-xs sm:text-base lg:text-lg text-[#FFF8F0]/90 font-medium mb-6 sm:mb-8 leading-relaxed max-w-2xl"
-              >
-                Discover and reserve cafes for birthdays, meetings, date nights, celebrations, and private events with transparent pricing.
-              </motion.p>
-
-              {/* FLOATING ADVANCED SEARCH WIDGET (Fully Responsive 360px+) */}
-              <motion.form 
-                onSubmit={handleSearchSubmit}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.3 }}
-                className="w-full bg-white/95 backdrop-blur-xl p-3 sm:p-4 rounded-2xl sm:rounded-3xl shadow-2xl border border-white/60 text-[#2C1810] relative z-30 mb-6"
-              >
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3 mb-3">
-                  
-                  {/* Location Field with Dropdown */}
-                  <div className="flex flex-col text-left w-full min-w-0 relative">
-                    <label className="text-[9px] font-black uppercase text-stone-400 block tracking-wider mb-1">Location / Cafe</label>
-                    <div className="relative w-full flex items-center px-3.5 py-2.5 sm:py-3 rounded-2xl border border-stone-200 bg-white hover:border-[#6F4E37]/60 focus-within:border-[#6F4E37] focus-within:ring-2 focus-within:ring-[#6F4E37]/20 transition-all shadow-2xs min-h-[44px] group">
-                      <MapPin size={16} className="text-[#6F4E37] mr-2.5 shrink-0 group-hover:scale-110 transition-transform" />
-                      <input 
-                        type="text"
-                        value={searchLocation}
-                        onFocus={() => setShowLocationDropdown(true)}
-                        onChange={(e) => setSearchLocation(e.target.value)}
-                        placeholder="e.g. Bandra, Indiranagar"
-                        className="w-full text-xs font-extrabold text-stone-900 outline-none bg-transparent placeholder:text-stone-400 truncate"
-                        suppressHydrationWarning
-                      />
-                      {searchLocation && (
-                        <button 
-                          type="button" 
-                          onClick={() => setSearchLocation('')} 
-                          className="p-1 hover:text-stone-700 text-stone-400 ml-1 shrink-0"
-                          suppressHydrationWarning
-                        >
-                          <X size={14} />
-                        </button>
-                      )}
-                    </div>
-
-                    {/* Interactive Location Dropdown */}
-                    <AnimatePresence>
-                      {showLocationDropdown && (
-                        <>
-                          <div className="fixed inset-0 z-40" onClick={() => setShowLocationDropdown(false)} />
-                          <motion.div 
-                            initial={{ opacity: 0, y: 8 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: 8 }}
-                            className="absolute left-0 right-0 top-full mt-2 bg-white rounded-2xl shadow-xl border border-stone-200 p-3 z-50 text-left"
-                          >
-                            <span className="text-[10px] font-black uppercase text-stone-400 tracking-wider block mb-2 px-1">Popular Locations</span>
-                            <div className="space-y-1">
-                              {popularLocations.map((loc) => (
-                                <button
-                                  key={loc}
-                                  type="button"
-                                  onClick={() => {
-                                    setSearchLocation(loc);
-                                    setShowLocationDropdown(false);
-                                  }}
-                                  className="w-full text-left px-3 py-2 rounded-xl text-xs font-bold text-stone-700 hover:bg-[#FFF8F0] hover:text-[#6F4E37] flex items-center justify-between transition-colors"
-                                >
-                                  <span>{loc}</span>
-                                  <ChevronRight size={14} className="text-stone-400" />
-                                </button>
-                              ))}
-                            </div>
-                          </motion.div>
-                        </>
-                      )}
-                    </AnimatePresence>
-                  </div>
-
-                  {/* Date Selector */}
-                  <div className="flex flex-col text-left w-full min-w-0">
-                    <label className="text-[9px] font-black uppercase text-stone-400 block tracking-wider mb-1">Date</label>
-                    <ModernDatePicker
-                      value={searchDate}
-                      onChange={(d) => setSearchDate(d)}
-                      placeholder="Select Date"
-                      minYear={new Date().getFullYear()}
-                      maxYear={new Date().getFullYear() + 2}
-                    />
-                  </div>
-
-                  {/* Guests Selector */}
-                  <div className="flex flex-col text-left w-full min-w-0">
-                    <label className="text-[9px] font-black uppercase text-stone-400 block tracking-wider mb-1">Guests</label>
-                    <ModernDropdown 
-                      value={searchGuests}
-                      onChange={(val) => setSearchGuests(Number(val))}
-                      icon={Users}
-                      options={[
-                        { value: 1, label: '1 Guest' },
-                        { value: 2, label: '2 Guests' },
-                        { value: 4, label: '4 Guests' },
-                        { value: 8, label: '8+ Guests' },
-                        { value: 20, label: '20+ Group' },
-                      ]}
-                    />
-                  </div>
-
-                  {/* Event Type Selector */}
-                  <div className="flex flex-col text-left w-full min-w-0">
-                    <label className="text-[9px] font-black uppercase text-stone-400 block tracking-wider mb-1">Event Type</label>
-                    <ModernDropdown 
-                      value={searchEventType}
-                      onChange={(val) => setSearchEventType(val)}
-                      icon={Tag}
-                      options={[
-                        { value: 'all', label: 'All Events' },
-                        { value: 'birthday', label: 'Birthday Party' },
-                        { value: 'corporate', label: 'Corporate Meeting' },
-                        { value: 'date-night', label: 'Date Night' },
-                        { value: 'party', label: 'Private Party' },
-                        { value: 'workshop', label: 'Workshop' },
-                        { value: 'photoshoot', label: 'Photoshoot' },
-                      ]}
-                    />
-                  </div>
-
-                </div>
-
-                {/* Search Action Row (CTA + Reset) */}
-                <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-1 border-t border-stone-100">
-                  <div className="flex items-center gap-2 w-full sm:w-auto justify-between sm:justify-start">
-                    <button 
-                      type="button" 
-                      suppressHydrationWarning
-                      onClick={handleResetSearch}
-                      className="text-[11px] font-black text-stone-400 hover:text-[#6F4E37] flex items-center gap-1 transition-colors px-2 py-1"
-                    >
-                      <RotateCcw size={12} />
-                      <span>Reset Filters</span>
-                    </button>
-                  </div>
-
-                  <div className="flex items-center gap-2 w-full sm:w-auto">
-                    <a 
-                      href="#occasions"
-                      className="hidden sm:inline-flex px-5 py-3 text-xs font-black text-[#6F4E37] hover:bg-[#FFF8F0] rounded-2xl transition-all"
-                    >
-                      Explore Events
-                    </a>
-
-                    <button 
-                      type="submit"
-                      suppressHydrationWarning
-                      className="w-full sm:w-auto px-8 py-3.5 bg-gradient-to-r from-[#4A2C11] to-[#6F4E37] text-white font-black text-xs sm:text-sm rounded-xl sm:rounded-2xl flex items-center justify-center gap-2 shadow-lg hover:shadow-xl active:scale-95 transition-all cursor-pointer shrink-0"
-                    >
-                      <span>Search Cafes</span>
-                      <ArrowRight size={16} />
-                    </button>
-                  </div>
-                </div>
-              </motion.form>
-
-              {/* POPULAR EVENT CHIPS (HORIZONTALLY SCROLLABLE ON MOBILE) */}
-              <motion.div 
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.6, delay: 0.4 }}
-                className="w-full"
-              >
-                <div className="flex items-center gap-2 overflow-x-auto scrollbar-none pb-2 pt-1 -mx-4 px-4 sm:mx-0 sm:px-0">
-                  <span className="text-xs font-black uppercase tracking-wider text-[#DDB892] shrink-0 mr-1">Popular Events:</span>
-                  {popularEventChips.map((chip) => {
-                    const isSelected = selectedChip === chip.id;
-                    return (
-                      <motion.button
-                        key={chip.id}
-                        type="button"
-                        suppressHydrationWarning
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        onClick={() => handleChipSelect(chip.id, chip.label)}
-                        className={`px-3.5 sm:px-4 py-1.5 rounded-full text-xs font-bold shrink-0 transition-all cursor-pointer ${
-                          isSelected 
-                            ? 'bg-amber-300 text-[#2C1810] font-black shadow-md scale-105' 
-                            : 'bg-white/10 hover:bg-white/20 text-white border border-white/15'
-                        }`}
-                      >
-                        {chip.label}
-                      </motion.button>
-                    );
-                  })}
-                </div>
-              </motion.div>
-
-            </div>
-
-            {/* RIGHT SIDE: PREMIUM INTERACTIVE CAFE SHOWCASE CARD (col-span-12 lg:col-span-5) */}
-            <motion.div 
-              initial={{ opacity: 0, x: 40 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-              className="lg:col-span-5 relative mt-6 lg:mt-0"
-            >
-              <motion.div 
-                animate={{ y: [0, -8, 0] }}
-                transition={{ repeat: Infinity, duration: 4.5, ease: "easeInOut" }}
-                className="relative rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl border-2 sm:border-4 border-white/20 bg-white text-[#2C1810] group"
-              >
-                {/* Main Showcase Image Carousel */}
-                <div className="relative aspect-[4/3] w-full overflow-hidden bg-stone-900">
-                  <AnimatePresence mode="wait">
-                    <motion.img 
-                      key={activeShowcaseCafe.id}
-                      src={activeShowcaseCafe.image} 
-                      alt={activeShowcaseCafe.name}
-                      initial={{ opacity: 0, scale: 1.05 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      exit={{ opacity: 0 }}
-                      transition={{ duration: 0.5 }}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                    />
-                  </AnimatePresence>
-
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
-
-                  {/* Top Floating Badges */}
-                  <div className="absolute top-3 sm:top-4 left-3 sm:left-4 right-3 sm:right-4 flex items-center justify-between z-10">
-                    <div className="flex items-center gap-1.5 sm:gap-2">
-                      {activeShowcaseCafe.isOpenNow && (
-                        <span className="px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full text-[9px] sm:text-[10px] font-black uppercase tracking-wider bg-emerald-500 text-white shadow-md">
-                          OPEN NOW
-                        </span>
-                      )}
-                      {activeShowcaseCafe.isTopRated && (
-                        <span className="px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full text-[9px] sm:text-[10px] font-black uppercase tracking-wider bg-amber-500 text-white shadow-md">
-                          TOP RATED
-                        </span>
-                      )}
-                    </div>
-
-                    {/* Animated Heart Button */}
-                    <motion.button 
-                      whileTap={{ scale: 0.8 }}
-                      animate={{ scale: isFavorite ? [1, 1.3, 1] : 1 }}
-                      onClick={() => setIsFavorite(!isFavorite)}
-                      suppressHydrationWarning
-                      className="p-2 sm:p-2.5 rounded-full bg-white/90 backdrop-blur-md text-stone-700 hover:text-rose-500 shadow-md transition-all cursor-pointer"
-                    >
-                      <Heart size={16} className={isFavorite ? 'fill-rose-500 text-rose-500' : ''} />
-                    </motion.button>
-                  </div>
-
-                  {/* Rating Pill Badge */}
-                  <motion.div 
-                    animate={{ y: [0, -6, 0] }}
-                    transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }}
-                    className="absolute bottom-3 sm:bottom-4 left-3 sm:left-4 bg-white/95 backdrop-blur-md px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-xl shadow-lg border border-stone-200 text-[#2C1810] flex items-center gap-1.5"
-                  >
-                    <Star size={13} className="fill-amber-500 text-amber-500" />
-                    <span className="text-[11px] sm:text-xs font-black">{activeShowcaseCafe.rating} Superhost</span>
-                    <span className="text-[9px] sm:text-[10px] font-bold text-stone-400">({activeShowcaseCafe.reviews})</span>
-                  </motion.div>
-                </div>
-
-                {/* Cafe Showcase Info Card Content */}
-                <div className="p-4 sm:p-5 flex flex-col justify-between space-y-3 sm:space-y-4 bg-white">
-                  <div>
-                    <div className="flex items-start justify-between gap-2 mb-1">
-                      <h3 className="font-black text-base sm:text-lg text-[#2C1810] leading-snug line-clamp-1">{activeShowcaseCafe.name}</h3>
-                      <span className="px-2 sm:px-2.5 py-0.5 sm:py-1 bg-[#FFF8F0] border border-[#DDB892]/60 rounded-xl text-xs font-black text-[#6F4E37] shrink-0">
-                        ₹{activeShowcaseCafe.price}/hr
-                      </span>
-                    </div>
-
-                    <p className="text-xs font-bold text-stone-500 flex items-center gap-1 line-clamp-1">
-                      <MapPin size={13} className="text-[#6F4E37] shrink-0" />
-                      <span className="truncate">{activeShowcaseCafe.location}</span>
-                    </p>
-                  </div>
-
-                  {/* Carousel Thumbnail Navigation Dots */}
-                  <div className="flex items-center justify-between pt-2.5 sm:pt-3 border-t border-stone-100">
-                    <div className="flex items-center gap-1.5">
-                      {heroShowcaseCafes.map((_, idx) => (
-                        <button
-                          key={idx}
-                          suppressHydrationWarning
-                          onClick={() => setActiveSlideIndex(idx)}
-                          className={`h-2 rounded-full transition-all cursor-pointer ${
-                            activeSlideIndex === idx ? 'w-5 sm:w-6 bg-[#6F4E37]' : 'w-2 bg-stone-200'
-                          }`}
-                          aria-label={`Slide ${idx + 1}`}
-                        />
-                      ))}
-                    </div>
-
-                    <Link
-                      href="/customer/cafe"
-                      className="px-3.5 sm:px-4 py-1.5 sm:py-2 bg-[#6F4E37] hover:bg-[#4A2C11] text-white rounded-xl text-xs font-black transition-all flex items-center gap-1 shadow-sm"
-                    >
-                      <span>Book Cafe</span>
-                      <ArrowRight size={13} />
-                    </Link>
-                  </div>
-                </div>
-
-              </motion.div>
-            </motion.div>
-
-          </div>
-        </div>
-      </section>
-
-      {/* ==================== 2B. TRUST STRIP ==================== */}
-      <section className="bg-white border-b border-stone-200/80 py-3.5 sm:py-4 shadow-2xs">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 sm:flex sm:flex-wrap items-center justify-around gap-3 sm:gap-4 text-[11px] sm:text-xs font-black text-[#2C1810]">
-            <div className="flex items-center justify-center sm:justify-start gap-1.5 sm:gap-2">
-              <CheckCircle2 size={15} className="text-emerald-600 shrink-0" />
-              <span>Verified Cafes</span>
-            </div>
-            <div className="flex items-center justify-center sm:justify-start gap-1.5 sm:gap-2">
-              <CheckCircle2 size={15} className="text-emerald-600 shrink-0" />
-              <span>Transparent Pricing</span>
-            </div>
-            <div className="flex items-center justify-center sm:justify-start gap-1.5 sm:gap-2">
-              <CheckCircle2 size={15} className="text-emerald-600 shrink-0" />
-              <span>Real Customer Reviews</span>
-            </div>
-            <div className="flex items-center justify-center sm:justify-start gap-1.5 sm:gap-2">
-              <CheckCircle2 size={15} className="text-emerald-600 shrink-0" />
-              <span>Secure Booking</span>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ==================== 3. FAHARA VALUE PROPOSITION CARDS ==================== */}
-      <section id="why-fahara" className="bg-white border-b border-[#E8DED5] py-12 sm:py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          
-          {/* Section Heading */}
-          <div className="text-center max-w-2xl mx-auto mb-8 sm:mb-12">
-            <h2 className="text-2xl sm:text-3xl font-bold text-[#2C1810] tracking-tight">
-              Why Choose Fahara?
-            </h2>
-            <p className="text-sm sm:text-base font-normal text-[#A67B5B] mt-2">
-              Everything you need to discover, plan and book your perfect experience.
-            </p>
-          </div>
-
-          {/* 4 Value Proposition Cards Grid (Desktop: 4 equal cards, Tablet: 2x2, Mobile: 1-col horizontal scroll/stack) */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6">
-            
-            {/* CARD 1: Discover Everything */}
-            <div className="bg-white border border-[#E8DED5] rounded-[22px] p-7 flex flex-col justify-between items-start shadow-[0_2px_8px_rgba(44,24,16,0.02)] hover:-translate-y-1 hover:border-[#6F4E37]/40 hover:shadow-[0_8px_24px_rgba(44,24,16,0.06)] transition-all duration-200 group">
-              <div className="w-12 h-12 rounded-2xl bg-[#FFF8F0] border border-[#E8DED5] flex items-center justify-center mb-5 group-hover:bg-[#F5EBE0] transition-colors shrink-0">
-                <Compass size={22} className="text-[#6F4E37]" aria-hidden="true" />
-              </div>
-              <div className="space-y-1.5 flex-1">
-                <h3 className="text-lg font-bold text-[#2C1810] tracking-tight">
-                  Discover Everything
-                </h3>
-                <p className="text-sm font-normal text-[#A67B5B] leading-relaxed">
-                  Cafes, venues &amp; events
-                </p>
-              </div>
-            </div>
-
-            {/* CARD 2: Plan Your Occasion */}
-            <div className="bg-white border border-[#E8DED5] rounded-[22px] p-7 flex flex-col justify-between items-start shadow-[0_2px_8px_rgba(44,24,16,0.02)] hover:-translate-y-1 hover:border-[#6F4E37]/40 hover:shadow-[0_8px_24px_rgba(44,24,16,0.06)] transition-all duration-200 group">
-              <div className="w-12 h-12 rounded-2xl bg-[#FFF8F0] border border-[#E8DED5] flex items-center justify-center mb-5 group-hover:bg-[#F5EBE0] transition-colors shrink-0">
-                <Sparkles size={22} className="text-[#6F4E37]" aria-hidden="true" />
-              </div>
-              <div className="space-y-1.5 flex-1">
-                <h3 className="text-lg font-bold text-[#2C1810] tracking-tight">
-                  Plan Your Occasion
-                </h3>
-                <p className="text-sm font-normal text-[#A67B5B] leading-relaxed">
-                  For every special moment
-                </p>
-              </div>
-            </div>
-
-            {/* CARD 3: Trusted Partners */}
-            <div className="bg-white border border-[#E8DED5] rounded-[22px] p-7 flex flex-col justify-between items-start shadow-[0_2px_8px_rgba(44,24,16,0.02)] hover:-translate-y-1 hover:border-[#6F4E37]/40 hover:shadow-[0_8px_24px_rgba(44,24,16,0.06)] transition-all duration-200 group">
-              <div className="w-12 h-12 rounded-2xl bg-[#FFF8F0] border border-[#E8DED5] flex items-center justify-center mb-5 group-hover:bg-[#F5EBE0] transition-colors shrink-0">
-                <BadgeCheck size={22} className="text-[#6F4E37]" aria-hidden="true" />
-              </div>
-              <div className="space-y-1.5 flex-1">
-                <h3 className="text-lg font-bold text-[#2C1810] tracking-tight">
-                  Trusted Partners
-                </h3>
-                <p className="text-sm font-normal text-[#A67B5B] leading-relaxed">
-                  Discover verified providers
-                </p>
-              </div>
-            </div>
-
-            {/* CARD 4: 3+ Cafes */}
-            <div className="bg-white border border-[#E8DED5] rounded-[22px] p-7 flex flex-col justify-between items-start shadow-[0_2px_8px_rgba(44,24,16,0.02)] hover:-translate-y-1 hover:border-[#6F4E37]/40 hover:shadow-[0_8px_24px_rgba(44,24,16,0.06)] transition-all duration-200 group">
-              <div className="w-12 h-12 rounded-2xl bg-[#FFF8F0] border border-[#E8DED5] flex items-center justify-center mb-5 group-hover:bg-[#F5EBE0] transition-colors shrink-0">
-                <Coffee size={22} className="text-[#6F4E37]" aria-hidden="true" />
-              </div>
-              <div className="space-y-1.5 flex-1">
-                <h3 className="text-lg font-bold text-[#2C1810] tracking-tight">
-                  3+ Cafes
-                </h3>
-                <p className="text-sm font-normal text-[#A67B5B] leading-relaxed">
-                  Verified partner venues
-                </p>
-              </div>
-            </div>
-
-          </div>
-        </div>
-      </section>
-
-      {/* ==================== 4. ABOUT FAHARA PLATFORM ==================== */}
-      <section className="py-12 sm:py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
-          
-          <div className="space-y-4 sm:space-y-6">
-            <span className="text-xs font-black uppercase tracking-widest text-[#6F4E37] bg-[#DDB892]/25 px-3.5 sm:px-4 py-1.5 rounded-full border border-[#DDB892]/40 inline-block">
-              About Fahara Platform
-            </span>
-            <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black text-[#2C1810] leading-tight">
-              India's Premier Cafe Venue Booking Marketplace
-            </h2>
-            <p className="text-stone-600 font-medium text-xs sm:text-base leading-relaxed">
-              Fahara transforms how people discover and book cafe spaces. Whether you're planning an intimate birthday celebration, a quiet team meeting, a romantic anniversary date, or a community workshop, Fahara connects you directly with top verified cafe venues.
-            </p>
-
-            <div className="space-y-3 sm:space-y-4 pt-2">
-              <div className="flex items-start gap-3 bg-white p-3.5 sm:p-4 rounded-2xl border border-stone-200/80 shadow-2xs">
-                <div className="p-2 sm:p-2.5 rounded-xl bg-[#FFF8F0] text-[#6F4E37] shrink-0 font-black">
-                  <CheckCircle2 size={18} />
-                </div>
-                <div>
-                  <h4 className="font-black text-xs sm:text-sm text-[#2C1810]">Curated & Manually Verified Venues</h4>
-                  <p className="text-[11px] sm:text-xs text-stone-500 font-medium mt-0.5">Every cafe listed on Fahara undergoes strict quality checks for seating, ambience, and hospitality.</p>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-3 bg-white p-3.5 sm:p-4 rounded-2xl border border-stone-200/80 shadow-2xs">
-                <div className="p-2 sm:p-2.5 rounded-xl bg-[#FFF8F0] text-[#6F4E37] shrink-0 font-black">
-                  <Clock size={18} />
-                </div>
-                <div>
-                  <h4 className="font-black text-xs sm:text-sm text-[#2C1810]">Transparent Hourly Pricing</h4>
-                  <p className="text-[11px] sm:text-xs text-stone-500 font-medium mt-0.5">Pay only for the hours you need. No bloated venue minimums or hidden mandatory charges.</p>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-3 bg-white p-3.5 sm:p-4 rounded-2xl border border-stone-200/80 shadow-2xs">
-                <div className="p-2 sm:p-2.5 rounded-xl bg-[#FFF8F0] text-[#6F4E37] shrink-0 font-black">
-                  <Zap size={18} />
-                </div>
-                <div>
-                  <h4 className="font-black text-xs sm:text-sm text-[#2C1810]">Instant Online Booking Confirmation</h4>
-                  <p className="text-[11px] sm:text-xs text-stone-500 font-medium mt-0.5">Select your preferred date, time slot, and guest count, and receive instant digital confirmation.</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="relative mt-4 lg:mt-0">
-            <div className="relative rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl border-2 sm:border-4 border-white aspect-[4/3]">
-              <img 
-                src="caf5.jpg" 
-                alt="Cafe Interior" 
-                className="w-full h-full object-cover"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#2C1810]/70 via-transparent to-transparent" />
-            
-            </div>
-          </div>
-
-        </div>
-      </section>
-
-      {/* ==================== 5. HOW IT WORKS ==================== */}
-      <section id="how-it-works" className="py-12 sm:py-20 bg-[#F5EBE0] border-y border-[#DDB892]/40">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          
-          <div className="text-center max-w-3xl mx-auto mb-10 sm:mb-16">
-            <span className="text-xs font-black uppercase tracking-widest text-[#6F4E37] bg-white px-3.5 py-1.5 rounded-full border border-[#DDB892]/50 inline-block mb-3">
-              Simple 4-Step Process
-            </span>
-            <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black text-[#2C1810]">How Fahara Works</h2>
-            <p className="text-stone-600 font-medium text-xs sm:text-base mt-2">
-              Booking your dream cafe venue takes less than two minutes.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-            {howItWorksSteps.map((item, idx) => (
-              <motion.div 
-                key={item.step}
-                whileHover={{ y: -6 }}
-                className="bg-white p-5 sm:p-6 rounded-2xl sm:rounded-3xl border border-stone-200/80 shadow-xs relative flex flex-col justify-between"
-              >
-                <div>
-                  <div className="w-10 sm:w-12 h-10 sm:h-12 rounded-xl sm:rounded-2xl bg-[#FFF8F0] border border-[#DDB892]/50 text-[#6F4E37] flex items-center justify-center font-black text-base sm:text-lg mb-3 sm:mb-4 shadow-2xs">
-                    {item.step}
-                  </div>
-                  <h3 className="font-black text-base sm:text-lg text-[#2C1810] mb-1.5 sm:mb-2">{item.title}</h3>
-                  <p className="text-xs font-medium text-stone-500 leading-relaxed">{item.desc}</p>
-                </div>
-                {idx < 3 && (
-                  <div className="hidden lg:block absolute -right-3 top-1/2 -translate-y-1/2 z-10 text-[#DDB892]">
-                    <ArrowRight size={20} />
-                  </div>
-                )}
-              </motion.div>
-            ))}
-          </div>
-
-        </div>
-      </section>
-
-      {/* ==================== 6. OCCASIONS YOU CAN HOST ==================== */}
-      <section id="occasions" className="py-12 sm:py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
-        <div className="text-center max-w-3xl mx-auto mb-10 sm:mb-16">
-          <span className="text-[11px] font-black uppercase tracking-widest text-[#6F4E37] bg-[#DDB892]/20 px-4 py-1.5 rounded-full border border-[#DDB892]/40 inline-flex items-center gap-1.5 mb-3 shadow-2xs">
-            <Sparkles className="w-3.5 h-3.5 text-amber-600 animate-pulse" />
-            <span>Tailored Venue Spaces</span>
-          </span>
-          <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black text-[#2C1810] tracking-tight">Occasions You Can Host</h2>
-          <p className="text-stone-600 font-medium text-xs sm:text-sm md:text-base mt-2.5 max-w-xl mx-auto leading-relaxed">
-            Explore curated cafe setups designed specifically for your event type with instant table & hall reservations.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6 lg:gap-8">
-          {occasionCategories.map((cat) => {
-            const Icon = cat.icon;
-            return (
-              <motion.div
-                key={cat.id}
-                whileHover={{ y: -8 }}
-                transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                className="bg-white/90 backdrop-blur-md p-6 sm:p-7 rounded-3xl border border-[#E8DED5]/80 shadow-xs hover:shadow-xl hover:shadow-[#6F4E37]/10 hover:border-[#6F4E37]/40 transition-all flex flex-col justify-between group relative overflow-hidden"
-              >
-                {/* Subtle Card Background Accent Glow */}
-                <div className="absolute -top-12 -right-12 w-28 h-28 bg-[#DDB892]/10 rounded-full blur-2xl group-hover:bg-[#6F4E37]/15 transition-all pointer-events-none" />
-
-                <div>
-                  <div className={`w-12 sm:w-14 h-12 sm:h-14 rounded-2xl bg-gradient-to-br ${cat.bg} border ${cat.border} text-[#6F4E37] flex items-center justify-center mb-5 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-2xs`}>
-                    <Icon size={24} className="text-[#6F4E37]" />
-                  </div>
-                  <h3 className="font-extrabold text-lg sm:text-xl text-[#2C1810] mb-2 group-hover:text-[#6F4E37] transition-colors flex items-center justify-between">
-                    <span>{cat.label}</span>
-                  </h3>
-                  <p className="text-xs sm:text-sm font-medium text-stone-500 leading-relaxed mb-6">{cat.desc}</p>
-                </div>
-
-                <div className="pt-2">
-                  <Link
-                    href={`/customer/cafe?category=${cat.id}`}
-                    className="inline-flex items-center justify-between w-full text-xs font-extrabold text-[#6F4E37] bg-[#FAF0E6]/70 group-hover:bg-[#6F4E37] group-hover:text-white px-4 py-2.5 rounded-2xl transition-all duration-300 shadow-2xs"
-                  >
-                    <span>Explore {cat.label}</span>
-                    <ArrowRight size={15} className="group-hover:translate-x-1 transition-transform" />
-                  </Link>
-                </div>
-              </motion.div>
-            );
-          })}
-        </div>
-
-      </section>
-
-
-
-      {/* ==================== 8. FAHARA SAFETY & BOOKING GUARANTEE ==================== */}
-      <section className="py-12 sm:py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
-        <div className="text-center max-w-3xl mx-auto mb-10 sm:mb-16">
-          <span className="text-xs font-black uppercase tracking-widest text-[#6F4E37] bg-[#DDB892]/25 px-3.5 py-1.5 rounded-full border border-[#DDB892]/40 inline-block mb-3">
-            Fahara Guarantee
-          </span>
-          <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black text-[#2C1810]">Your Trust & Safety First</h2>
-          <p className="text-stone-600 font-medium text-xs sm:text-base mt-2">
-            We ensure every cafe venue booking meets the highest standards of safety, privacy, and reliability.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-          {faharaSafetyCommitments.map((item) => {
-            const Icon = item.icon;
-            return (
-              <motion.div 
-                key={item.id}
-                whileHover={{ y: -6 }}
-                className="bg-white p-5 sm:p-7 rounded-2xl sm:rounded-3xl border border-stone-200/80 shadow-xs hover:shadow-lg transition-all flex flex-col justify-between"
-              >
-                <div>
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="w-12 h-12 rounded-2xl bg-[#FFF8F0] border border-[#DDB892]/50 text-[#6F4E37] flex items-center justify-center font-black shadow-2xs">
-                      <Icon size={22} />
-                    </div>
-                    <span className="text-[10px] font-black uppercase tracking-wider text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200/60">
-                      {item.badge}
-                    </span>
-                  </div>
-
-                  <h3 className="font-black text-base sm:text-lg text-[#2C1810] mb-2">{item.title}</h3>
-                  <p className="text-xs font-medium text-stone-500 leading-relaxed">{item.desc}</p>
-                </div>
-              </motion.div>
-            );
-          })}
-        </div>
-
-      </section>
-
-      {/* ==================== PARTNER ONBOARDING & BENEFITS SECTIONS ==================== */}
       
-      {/* SECTION 1 — HOW CAFES & RESTAURANTS JOIN FAHARA */}
-      <section id="partner-onboarding" className="py-12 sm:py-20 bg-[#FFF8F0] border-t border-[#E8DED5]">
+      {/* 1. NAVIGATION BAR */}
+      <HomeNavbar />
+
+      {/* 2. HERO SECTION */}
+      <HomeHero />
+
+      {/* 3. FOUR-FEATURE TRUST STRIP */}
+      <HomeTrustSection />
+
+      {/* 4. GROW YOUR BUSINESS WITH FAHARA SECTION */}
+      <section id="partner-subscription" className="py-16 sm:py-24 bg-white border-b border-[#E8DED5] relative overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          
-          <div className="text-center max-w-3xl mx-auto mb-12 sm:mb-16">
-            <span className="text-[11px] font-black uppercase tracking-widest text-[#6F4E37] bg-white px-4 py-1.5 rounded-full border border-[#DDB892]/50 inline-block mb-3 shadow-2xs">
-              PARTNER ONBOARDING
-            </span>
-            <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black text-[#2C1810] tracking-tight">
-              How Cafes & Restaurants Join Fahara
-            </h2>
-            <p className="text-stone-600 font-medium text-xs sm:text-sm md:text-base mt-2.5 max-w-2xl mx-auto leading-relaxed">
-              Get your venue listed, showcase your space and start reaching customers looking for cafes, dining and event venues.
-            </p>
-          </div>
-
-          {/* 4-Step Process Layout */}
-          <div className="relative">
-            {/* Horizontal Connecting Line (Desktop) */}
-            <div className="hidden lg:block absolute top-1/2 left-[10%] right-[10%] h-0.5 bg-[#DDB892]/40 -translate-y-6 z-0" />
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 relative z-10">
-              {partnerOnboardingSteps.map((stepItem, idx) => {
-                const Icon = stepItem.icon;
-                return (
-                  <motion.div
-                    key={stepItem.step}
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.4, delay: idx * 0.1 }}
-                    whileHover={{ y: -6 }}
-                    className="bg-white p-6 sm:p-7 rounded-3xl border border-[#E8DED5] shadow-xs hover:shadow-lg hover:border-[#6F4E37]/40 transition-all flex flex-col justify-between group"
-                  >
-                    <div>
-                      {/* Step Header: Step Number & Icon */}
-                      <div className="flex items-center justify-between mb-5">
-                        <div className="w-10 h-10 rounded-2xl bg-[#6F4E37] text-white flex items-center justify-center font-black text-sm shadow-2xs shrink-0">
-                          {stepItem.step}
-                        </div>
-                        <div className="w-11 h-11 rounded-2xl bg-[#FFF8F0] border border-[#E8DED5] text-[#6F4E37] flex items-center justify-center group-hover:bg-[#6F4E37] group-hover:text-white transition-colors shrink-0">
-                          <Icon size={20} />
-                        </div>
-                      </div>
-
-                      <h3 className="font-extrabold text-base sm:text-lg text-[#2C1810] mb-2 group-hover:text-[#6F4E37] transition-colors">
-                        {stepItem.title}
-                      </h3>
-                      <p className="text-xs sm:text-sm font-medium text-stone-500 leading-relaxed">
-                        {stepItem.desc}
-                      </p>
-                    </div>
-                  </motion.div>
-                );
-              })}
-            </div>
-          </div>
-
-        </div>
-      </section>
-
-      {/* SECTION 2 — WHY PARTNER WITH FAHARA & PARTNER CTA */}
-      <section id="why-partner" className="py-12 sm:py-20 bg-white border-t border-[#E8DED5]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          
-          <div className="text-center max-w-3xl mx-auto mb-12 sm:mb-16">
-            <span className="text-[11px] font-black uppercase tracking-widest text-[#6F4E37] bg-[#FFF8F0] px-4 py-1.5 rounded-full border border-[#DDB892]/50 inline-block mb-3 shadow-2xs">
-              PARTNER BENEFITS
-            </span>
-            <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black text-[#2C1810] tracking-tight">
-              Why Partner With Fahara?
-            </h2>
-            <p className="text-stone-600 font-medium text-xs sm:text-sm md:text-base mt-2.5 max-w-2xl mx-auto leading-relaxed">
-              Turn your cafe or restaurant into a discoverable destination for everyday dining, celebrations and special events.
-            </p>
-          </div>
-
-          {/* 6 Benefit Cards Grid (3x2 Desktop, Single Column Mobile) */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 mb-16">
-            {partnerBenefits.map((benefit, idx) => {
-              const Icon = benefit.icon;
-              return (
-                <motion.div
-                  key={benefit.title}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.4, delay: idx * 0.08 }}
-                  whileHover={{ y: -6 }}
-                  className="bg-[#FFF8F0]/60 p-6 sm:p-7 rounded-3xl border border-[#E8DED5] shadow-2xs hover:shadow-md hover:border-[#6F4E37]/40 hover:bg-white transition-all flex flex-col justify-between group"
-                >
-                  <div>
-                    <div className="w-12 h-12 rounded-2xl bg-white border border-[#E8DED5] text-[#6F4E37] flex items-center justify-center mb-5 group-hover:bg-[#6F4E37] group-hover:text-white transition-colors shadow-2xs">
-                      <Icon size={22} />
-                    </div>
-
-                    <h3 className="font-extrabold text-base sm:text-lg text-[#2C1810] mb-2 group-hover:text-[#6F4E37] transition-colors">
-                      {benefit.title}
-                    </h3>
-                    <p className="text-xs sm:text-sm font-medium text-stone-500 leading-relaxed">
-                      {benefit.desc}
-                    </p>
-                  </div>
-                </motion.div>
-              );
-            })}
-          </div>
-
-          {/* PARTNER CTA */}
-          <div className="bg-gradient-to-r from-[#2C1810] via-[#3D251E] to-[#6F4E37] rounded-3xl p-8 sm:p-12 text-white shadow-xl relative overflow-hidden text-center max-w-4xl mx-auto">
-            {/* Decorative Background Elements */}
-            <div className="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
-            <div className="absolute bottom-0 left-0 -ml-16 -mb-16 w-64 h-64 bg-[#DDB892]/20 rounded-full blur-3xl pointer-events-none" />
-
-            <div className="relative z-10 max-w-2xl mx-auto space-y-4">
-              <span className="text-[10px] font-black uppercase tracking-widest text-amber-200 bg-white/10 px-3.5 py-1.5 rounded-full border border-white/15 inline-block">
-                VENUE PARTNERSHIP
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
+            
+            {/* LEFT COLUMN: HEADING, DESCRIPTION, BENEFITS & CTA */}
+            <div className="lg:col-span-6 space-y-6 text-left">
+              <span className="text-[11px] font-black uppercase tracking-widest text-[#6F4E37] bg-[#FFF8F0] px-4 py-1.5 rounded-full border border-[#DDB892]/50 inline-flex items-center gap-1.5 shadow-2xs">
+                <Store className="w-3.5 h-3.5 text-[#6F4E37]" />
+                <span>FOR BUSINESS OWNERS</span>
               </span>
-              <h3 className="text-2xl sm:text-3xl lg:text-4xl font-black text-white tracking-tight">
-                Ready to Grow With Fahara?
-              </h3>
-              <p className="text-xs sm:text-sm font-medium text-amber-100/80 leading-relaxed">
-                List your cafe or restaurant and start reaching customers looking for their next place to dine, celebrate and connect.
+
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-[#2C1810] tracking-tight leading-tight">
+                Grow Your Business With Fahara
+              </h2>
+
+              <p className="text-sm sm:text-base lg:text-lg text-stone-600 font-medium leading-relaxed max-w-xl">
+                Showcase your venue or event services to verified customers looking for cafes, private dining rooms and celebration spaces with zero booking commission.
               </p>
 
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-3.5 pt-4">
-                <Link
-                  href="/owner/signup"
-                  className="w-full sm:w-auto px-7 py-3.5 rounded-2xl bg-[#6F4E37] hover:bg-[#5a3e2b] text-white font-extrabold text-xs sm:text-sm shadow-md transition-all flex items-center justify-center gap-2 border border-amber-400/30"
-                >
-                  <span>Partner With Fahara</span>
-                  <ArrowRight size={16} />
-                </Link>
+              {/* BENEFIT INDICATORS LIST */}
+              <div className="space-y-3.5 pt-2">
+                <div className="flex items-start gap-3">
+                  <div className="w-6 h-6 rounded-full bg-[#FFF8F0] border border-[#DDB892]/60 text-[#6F4E37] flex items-center justify-center shrink-0 mt-0.5">
+                    <CheckCircle2 size={15} />
+                  </div>
+                  <div>
+                    <h4 className="font-extrabold text-sm text-[#2C1810]">Direct Customer Discovery</h4>
+                    <p className="text-xs text-stone-500 font-medium mt-0.5">Put your profile directly before high-intent customers booking moments.</p>
+                  </div>
+                </div>
 
-                <Link
-                  href="/owner/login"
-                  className="w-full sm:w-auto px-7 py-3.5 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-extrabold text-xs sm:text-sm backdrop-blur-md border border-white/20 transition-all flex items-center justify-center gap-2"
+                <div className="flex items-start gap-3">
+                  <div className="w-6 h-6 rounded-full bg-[#FFF8F0] border border-[#DDB892]/60 text-[#6F4E37] flex items-center justify-center shrink-0 mt-0.5">
+                    <CheckCircle2 size={15} />
+                  </div>
+                  <div>
+                    <h4 className="font-extrabold text-sm text-[#2C1810]">Full Operational Control</h4>
+                    <p className="text-xs text-stone-500 font-medium mt-0.5">Manage time slots, private sections, menus, reviews and reservations from your dedicated dashboard.</p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <div className="w-6 h-6 rounded-full bg-[#FFF8F0] border border-[#DDB892]/60 text-[#6F4E37] flex items-center justify-center shrink-0 mt-0.5">
+                    <CheckCircle2 size={15} />
+                  </div>
+                  <div>
+                    <h4 className="font-extrabold text-sm text-[#2C1810]">Simple Monthly Billing</h4>
+                    <p className="text-xs text-stone-500 font-medium mt-0.5">Fixed low subscription starting from ₹149/month with no hidden booking cuts.</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* CTA BUTTON */}
+              <div className="pt-2">
+                <a
+                  href="#become-partner"
+                  className="inline-flex items-center gap-2 px-7 py-3.5 bg-[#6F4E37] hover:bg-[#4A2C11] text-white rounded-2xl text-xs sm:text-sm font-black shadow-md hover:shadow-lg transition-all min-h-[46px]"
                 >
-                  <span>Learn How It Works</span>
-                </Link>
+                  <span>Become a Partner</span>
+                  <ArrowRight size={16} />
+                </a>
+              </div>
+            </div>
+
+            {/* RIGHT COLUMN: VENUE IMAGE WITH COMPACT FLOATING BENEFIT CARDS */}
+            <div className="lg:col-span-6 relative">
+              <div className="relative rounded-3xl overflow-hidden shadow-2xl border border-stone-200 aspect-[4/3] bg-stone-100 max-w-lg mx-auto lg:max-w-none">
+                <img 
+                  src="/cafe1.jpg" 
+                  alt="Fahara Partner Venue" 
+                  className="w-full h-full object-cover"
+                />
+
+                {/* OVERLAY BADGE (SAFE FOR MOBILE & DESKTOP) */}
+                <div className="absolute top-3 left-3 bg-white/95 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-stone-200 text-[#2C1810] flex items-center gap-2 shadow-md">
+                  <Sparkles size={14} className="text-amber-500" />
+                  <span className="text-[11px] font-black uppercase tracking-wider">Partner Showcase</span>
+                </div>
+              </div>
+
+              {/* FLOATING BENEFIT CARDS (ADAPTIVE: FLOATING ON LG, STACKED INSIDE ON MOBILE/TABLET) */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4 lg:mt-0 lg:absolute lg:-bottom-6 lg:left-6 lg:right-6 z-20">
+                <div className="bg-white/95 backdrop-blur-md p-3.5 rounded-2xl border border-stone-200 shadow-xl flex items-center gap-3 text-left">
+                  <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center shrink-0 border border-emerald-200">
+                    <Store size={20} />
+                  </div>
+                  <div>
+                    <span className="text-[10px] font-black uppercase tracking-wider text-emerald-700 block">Fast Setup</span>
+                    <span className="text-xs font-black text-[#2C1810] block">Live in under 2 minutes</span>
+                  </div>
+                </div>
+
+                <div className="bg-white/95 backdrop-blur-md p-3.5 rounded-2xl border border-stone-200 shadow-xl flex items-center gap-3 text-left">
+                  <div className="w-10 h-10 rounded-xl bg-amber-50 text-[#6F4E37] flex items-center justify-center shrink-0 border border-amber-200">
+                    <Zap size={20} />
+                  </div>
+                  <div>
+                    <span className="text-[10px] font-black uppercase tracking-wider text-[#6F4E37] block">Zero Commission</span>
+                    <span className="text-xs font-black text-[#2C1810] block">Keep 100% of earnings</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      {/* 5. PARTNER SUBSCRIPTION PRICING SECTION (HIGHLY INTERACTIVE & MODERN) */}
+      <section id="pricing" className="py-20 sm:py-28 bg-[#FFF8F0] border-b border-[#E8DED5] relative overflow-hidden">
+        {/* Modern Dynamic Ambient Glows & Subtle Grid Pattern */}
+        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[700px] h-[350px] bg-gradient-to-tr from-[#6F4E37]/10 via-[#A67B5B]/15 to-transparent rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute top-0 right-0 w-96 h-96 bg-[#DDB892]/20 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-0 left-0 w-96 h-96 bg-[#6F4E37]/10 rounded-full blur-3xl pointer-events-none" />
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          
+          {/* SECTION HEADER */}
+          <div className="text-center max-w-3xl mx-auto mb-12 sm:mb-16">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/90 backdrop-blur-md border border-[#DDB892]/70 shadow-sm mb-4">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+              <Store className="w-3.5 h-3.5 text-[#6F4E37]" />
+              <span className="text-[11px] font-black uppercase tracking-wider text-[#6F4E37]">TRANSPARENT PARTNER PLANS</span>
+            </div>
+
+            <h2 className="text-3xl sm:text-5xl lg:text-6xl font-black text-[#2C1810] tracking-tight leading-tight">
+              Invest in Growth, <span className="bg-gradient-to-r from-[#6F4E37] via-[#8B5A3C] to-[#2C1810] bg-clip-text text-transparent">Keep 100% Revenue</span>
+            </h2>
+
+            <p className="text-sm sm:text-base lg:text-lg text-stone-600 font-medium mt-4 leading-relaxed max-w-2xl mx-auto">
+              Simple, transparent monthly pricing tailored to your hospitality business. Zero booking commissions, zero transaction surcharges.
+            </p>
+
+            {/* INTERACTIVE ROLE SELECTOR PILL TABS */}
+            <div className="mt-8 inline-flex items-center p-1.5 bg-white/90 backdrop-blur-md rounded-2xl border border-[#E8DED5] shadow-lg max-w-full overflow-x-auto">
+              <button
+                type="button"
+                onClick={() => setSelectedPartnerType('CAFE')}
+                className={`px-5 py-2.5 rounded-xl text-xs sm:text-sm font-black transition-all duration-300 flex items-center gap-2 cursor-pointer ${
+                  selectedPartnerType === 'CAFE'
+                    ? 'bg-[#6F4E37] text-white shadow-md scale-102'
+                    : 'text-stone-600 hover:text-[#2C1810] hover:bg-stone-50'
+                }`}
+              >
+                <Coffee size={16} />
+                <span>Cafe Owner</span>
+                <span className="text-[10px] px-1.5 py-0.5 rounded-md bg-white/20 text-white font-extrabold ml-1">₹299</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setSelectedPartnerType('RESTAURANT')}
+                className={`px-5 py-2.5 rounded-xl text-xs sm:text-sm font-black transition-all duration-300 flex items-center gap-2 cursor-pointer ${
+                  selectedPartnerType === 'RESTAURANT'
+                    ? 'bg-[#6F4E37] text-white shadow-md scale-102'
+                    : 'text-stone-600 hover:text-[#2C1810] hover:bg-stone-50'
+                }`}
+              >
+                <Utensils size={16} />
+                <span>Restaurant</span>
+                <span className="text-[10px] px-1.5 py-0.5 rounded-md bg-emerald-100 text-emerald-800 font-extrabold ml-1">₹149</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setSelectedPartnerType('EVENT')}
+                className={`px-5 py-2.5 rounded-xl text-xs sm:text-sm font-black transition-all duration-300 flex items-center gap-2 cursor-pointer ${
+                  selectedPartnerType === 'EVENT'
+                    ? 'bg-[#6F4E37] text-white shadow-md scale-102'
+                    : 'text-stone-600 hover:text-[#2C1810] hover:bg-stone-50'
+                }`}
+              >
+                <PartyPopper size={16} />
+                <span>Event Manager</span>
+                <span className="text-[10px] px-1.5 py-0.5 rounded-md bg-white/20 text-white font-extrabold ml-1">₹299</span>
+              </button>
+            </div>
+          </div>
+
+          {/* 3 INTERACTIVE PRICING CARDS */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 items-stretch">
+            
+            {/* CARD 1: CAFE OWNERS */}
+            <div 
+              onClick={() => setSelectedPartnerType('CAFE')}
+              className={`group bg-white/95 backdrop-blur-xl p-7 sm:p-8 rounded-[32px] transition-all duration-400 flex flex-col justify-between text-left relative overflow-hidden cursor-pointer ${
+                selectedPartnerType === 'CAFE'
+                  ? 'border-2 border-[#6F4E37] shadow-[0_24px_50px_rgba(111,78,55,0.22)] -translate-y-2 ring-4 ring-[#6F4E37]/15'
+                  : 'border border-[#E8DED5] hover:border-[#6F4E37]/50 shadow-md hover:shadow-xl hover:-translate-y-1'
+              }`}
+            >
+              <div className="absolute top-0 right-0 bg-gradient-to-l from-[#6F4E37] to-[#8B5A3C] text-white text-[9px] font-black uppercase tracking-widest px-4 py-1.5 rounded-bl-2xl shadow-sm flex items-center gap-1">
+                <Sparkles size={11} className="text-amber-300" />
+                <span>MOST POPULAR</span>
+              </div>
+
+              <div>
+                <div className={`w-14 h-14 rounded-2xl flex items-center justify-center font-black transition-all duration-300 mb-5 ${
+                  selectedPartnerType === 'CAFE'
+                    ? 'bg-gradient-to-br from-[#6F4E37] to-[#4A2C11] text-white shadow-lg shadow-[#6F4E37]/25 scale-105'
+                    : 'bg-[#FFF8F0] border border-[#DDB892]/60 text-[#6F4E37] group-hover:scale-105'
+                }`}>
+                  <Coffee size={28} />
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="text-2xl font-black text-[#2C1810]">Cafe Owners</h3>
+                    <span className="text-[11px] font-extrabold text-[#6F4E37] uppercase tracking-wider block mt-0.5">Seating &amp; Packages</span>
+                  </div>
+                  {selectedPartnerType === 'CAFE' && (
+                    <span className="text-[10px] font-black uppercase tracking-wider text-white bg-[#6F4E37] px-2.5 py-1 rounded-full shadow-xs">Selected</span>
+                  )}
+                </div>
+                <p className="text-xs font-medium text-stone-500 mt-2.5 leading-relaxed">
+                  For cafes, bistros, coffee lounges offering table bookings, group hangouts, and custom birthday celebration packages.
+                </p>
+
+                {/* PRICE DISPLAY */}
+                <div className="my-6 p-4 rounded-2xl bg-[#FFF8F0]/70 border border-[#E8DED5] flex items-baseline justify-between">
+                  <div className="flex items-baseline gap-1.5">
+                    <span className="text-4xl sm:text-5xl font-black text-[#6F4E37]">₹299</span>
+                    <span className="text-xs font-black text-stone-500">/ month</span>
+                  </div>
+                  <span className="text-[10px] font-black uppercase tracking-wider text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-md">
+                    No Commission
+                  </span>
+                </div>
+
+                {/* FEATURES */}
+                <ul className="space-y-3.5 text-xs font-bold text-[#2C1810]">
+                  <li className="flex items-start gap-2.5">
+                    <div className="w-5 h-5 rounded-full bg-emerald-100/80 text-emerald-700 flex items-center justify-center shrink-0 mt-0.5">
+                      <CheckCircle2 size={13} />
+                    </div>
+                    <span>Complete Cafe profile, address &amp; high-res gallery</span>
+                  </li>
+                  <li className="flex items-start gap-2.5">
+                    <div className="w-5 h-5 rounded-full bg-emerald-100/80 text-emerald-700 flex items-center justify-center shrink-0 mt-0.5">
+                      <CheckCircle2 size={13} />
+                    </div>
+                    <span>Table layouts, seat capacity &amp; slot booking management</span>
+                  </li>
+                  <li className="flex items-start gap-2.5">
+                    <div className="w-5 h-5 rounded-full bg-emerald-100/80 text-emerald-700 flex items-center justify-center shrink-0 mt-0.5">
+                      <CheckCircle2 size={13} />
+                    </div>
+                    <span>Celebration packages &amp; add-on decoration inclusions</span>
+                  </li>
+                  <li className="flex items-start gap-2.5">
+                    <div className="w-5 h-5 rounded-full bg-emerald-100/80 text-emerald-700 flex items-center justify-center shrink-0 mt-0.5">
+                      <CheckCircle2 size={13} />
+                    </div>
+                    <span>Verified customer reviews &amp; instant notifications</span>
+                  </li>
+                  <li className="flex items-start gap-2.5">
+                    <div className="w-5 h-5 rounded-full bg-emerald-100/80 text-emerald-700 flex items-center justify-center shrink-0 mt-0.5">
+                      <CheckCircle2 size={13} />
+                    </div>
+                    <span>Dedicated Cafe Owner portal with real-time analytics</span>
+                  </li>
+                </ul>
+              </div>
+
+              <div className="pt-8">
+                <a
+                  href={FAHARA_LINKS.cafeSignup}
+                  className="w-full py-4 px-5 bg-gradient-to-r from-[#6F4E37] to-[#523723] hover:from-[#523723] hover:to-[#361F12] text-white rounded-2xl text-xs sm:text-sm font-black transition-all duration-300 flex items-center justify-center gap-2.5 shadow-lg shadow-[#6F4E37]/25 hover:shadow-xl hover:scale-101 active:scale-98 min-h-[48px]"
+                >
+                  <span>Start Cafe Partnership</span>
+                  <ArrowRight size={16} />
+                </a>
+              </div>
+            </div>
+
+            {/* CARD 2: RESTAURANT OWNERS */}
+            <div 
+              onClick={() => setSelectedPartnerType('RESTAURANT')}
+              className={`group bg-white/95 backdrop-blur-xl p-7 sm:p-8 rounded-[32px] transition-all duration-400 flex flex-col justify-between text-left relative overflow-hidden cursor-pointer ${
+                selectedPartnerType === 'RESTAURANT'
+                  ? 'border-2 border-[#6F4E37] shadow-[0_24px_50px_rgba(111,78,55,0.22)] -translate-y-2 ring-4 ring-[#6F4E37]/15'
+                  : 'border border-[#E8DED5] hover:border-[#6F4E37]/50 shadow-md hover:shadow-xl hover:-translate-y-1'
+              }`}
+            >
+              <div className="absolute top-0 right-0 bg-emerald-600 text-white text-[9px] font-black uppercase tracking-widest px-4 py-1.5 rounded-bl-2xl shadow-sm flex items-center gap-1">
+                <span>BEST VALUE</span>
+              </div>
+
+              <div>
+                <div className={`w-14 h-14 rounded-2xl flex items-center justify-center font-black transition-all duration-300 mb-5 ${
+                  selectedPartnerType === 'RESTAURANT'
+                    ? 'bg-gradient-to-br from-[#6F4E37] to-[#4A2C11] text-white shadow-lg shadow-[#6F4E37]/25 scale-105'
+                    : 'bg-[#FFF8F0] border border-[#DDB892]/60 text-[#6F4E37] group-hover:scale-105'
+                }`}>
+                  <Utensils size={28} />
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="text-2xl font-black text-[#2C1810]">Restaurant Owners</h3>
+                    <span className="text-[11px] font-extrabold text-[#6F4E37] uppercase tracking-wider block mt-0.5">Tables &amp; Menus</span>
+                  </div>
+                  {selectedPartnerType === 'RESTAURANT' && (
+                    <span className="text-[10px] font-black uppercase tracking-wider text-white bg-[#6F4E37] px-2.5 py-1 rounded-full shadow-xs">Selected</span>
+                  )}
+                </div>
+                <p className="text-xs font-medium text-stone-500 mt-2.5 leading-relaxed">
+                  For family diners, fine-dining restaurants and multi-cuisine spaces seeking online footfall without heavy commission cuts.
+                </p>
+
+                {/* PRICE DISPLAY */}
+                <div className="my-6 p-4 rounded-2xl bg-[#FFF8F0]/70 border border-[#E8DED5] flex items-baseline justify-between">
+                  <div className="flex items-baseline gap-1.5">
+                    <span className="text-4xl sm:text-5xl font-black text-[#6F4E37]">₹149</span>
+                    <span className="text-xs font-black text-stone-500">/ month</span>
+                  </div>
+                  <span className="text-[10px] font-black uppercase tracking-wider text-amber-800 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-md">
+                    Save 50%
+                  </span>
+                </div>
+
+                {/* FEATURES (NO EVENT PACKAGES) */}
+                <ul className="space-y-3.5 text-xs font-bold text-[#2C1810]">
+                  <li className="flex items-start gap-2.5">
+                    <div className="w-5 h-5 rounded-full bg-emerald-100/80 text-emerald-700 flex items-center justify-center shrink-0 mt-0.5">
+                      <CheckCircle2 size={13} />
+                    </div>
+                    <span>Restaurant profile, food menu, hours &amp; dining gallery</span>
+                  </li>
+                  <li className="flex items-start gap-2.5">
+                    <div className="w-5 h-5 rounded-full bg-emerald-100/80 text-emerald-700 flex items-center justify-center shrink-0 mt-0.5">
+                      <CheckCircle2 size={13} />
+                    </div>
+                    <span>Featured in local dining &amp; restaurant search results</span>
+                  </li>
+                  <li className="flex items-start gap-2.5">
+                    <div className="w-5 h-5 rounded-full bg-emerald-100/80 text-emerald-700 flex items-center justify-center shrink-0 mt-0.5">
+                      <CheckCircle2 size={13} />
+                    </div>
+                    <span>Guest table reservations &amp; dining slot confirmations</span>
+                  </li>
+                  <li className="flex items-start gap-2.5">
+                    <div className="w-5 h-5 rounded-full bg-emerald-100/80 text-emerald-700 flex items-center justify-center shrink-0 mt-0.5">
+                      <CheckCircle2 size={13} />
+                    </div>
+                    <span>Special dining deals, food offers &amp; promotion tags</span>
+                  </li>
+                  <li className="flex items-start gap-2.5">
+                    <div className="w-5 h-5 rounded-full bg-emerald-100/80 text-emerald-700 flex items-center justify-center shrink-0 mt-0.5">
+                      <CheckCircle2 size={13} />
+                    </div>
+                    <span>Direct diner feedback, ratings &amp; business insights</span>
+                  </li>
+                </ul>
+              </div>
+
+              <div className="pt-8">
+                <a
+                  href={FAHARA_LINKS.restaurantSignup}
+                  className={`w-full py-4 px-5 rounded-2xl text-xs sm:text-sm font-black transition-all duration-300 flex items-center justify-center gap-2.5 shadow-md hover:shadow-xl min-h-[48px] hover:scale-101 active:scale-98 ${
+                    selectedPartnerType === 'RESTAURANT'
+                      ? 'bg-gradient-to-r from-[#6F4E37] to-[#523723] text-white shadow-lg shadow-[#6F4E37]/25'
+                      : 'bg-white border-2 border-[#6F4E37] text-[#6F4E37] hover:bg-[#6F4E37] hover:text-white'
+                  }`}
+                >
+                  <span>Start Restaurant Partnership</span>
+                  <ArrowRight size={16} />
+                </a>
+              </div>
+            </div>
+
+            {/* CARD 3: EVENT MANAGERS */}
+            <div 
+              onClick={() => setSelectedPartnerType('EVENT')}
+              className={`group bg-white/95 backdrop-blur-xl p-7 sm:p-8 rounded-[32px] transition-all duration-400 flex flex-col justify-between text-left relative overflow-hidden md:col-span-2 lg:col-span-1 cursor-pointer ${
+                selectedPartnerType === 'EVENT'
+                  ? 'border-2 border-[#6F4E37] shadow-[0_24px_50px_rgba(111,78,55,0.22)] -translate-y-2 ring-4 ring-[#6F4E37]/15'
+                  : 'border border-[#E8DED5] hover:border-[#6F4E37]/50 shadow-md hover:shadow-xl hover:-translate-y-1'
+              }`}
+            >
+              <div className="absolute top-0 right-0 bg-[#A67B5B] text-white text-[9px] font-black uppercase tracking-widest px-4 py-1.5 rounded-bl-2xl shadow-sm flex items-center gap-1">
+                <span>EVENTS &amp; PLANNERS</span>
+              </div>
+
+              <div>
+                <div className={`w-14 h-14 rounded-2xl flex items-center justify-center font-black transition-all duration-300 mb-5 ${
+                  selectedPartnerType === 'EVENT'
+                    ? 'bg-gradient-to-br from-[#6F4E37] to-[#4A2C11] text-white shadow-lg shadow-[#6F4E37]/25 scale-105'
+                    : 'bg-[#FFF8F0] border border-[#DDB892]/60 text-[#6F4E37] group-hover:scale-105'
+                }`}>
+                  <PartyPopper size={28} />
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="text-2xl font-black text-[#2C1810]">Event Managers</h3>
+                    <span className="text-[11px] font-extrabold text-[#6F4E37] uppercase tracking-wider block mt-0.5">Services &amp; Packages</span>
+                  </div>
+                  {selectedPartnerType === 'EVENT' && (
+                    <span className="text-[10px] font-black uppercase tracking-wider text-white bg-[#6F4E37] px-2.5 py-1 rounded-full shadow-xs">Selected</span>
+                  )}
+                </div>
+                <p className="text-xs font-medium text-stone-500 mt-2.5 leading-relaxed">
+                  For decorators, party organizers, planners and sound/light artists offering full occasion experiences.
+                </p>
+
+                {/* PRICE DISPLAY */}
+                <div className="my-6 p-4 rounded-2xl bg-[#FFF8F0]/70 border border-[#E8DED5] flex items-baseline justify-between">
+                  <div className="flex items-baseline gap-1.5">
+                    <span className="text-4xl sm:text-5xl font-black text-[#6F4E37]">₹299</span>
+                    <span className="text-xs font-black text-stone-500">/ month</span>
+                  </div>
+                  <span className="text-[10px] font-black uppercase tracking-wider text-purple-700 bg-purple-50 border border-purple-200 px-2 py-0.5 rounded-md">
+                    Direct Leads
+                  </span>
+                </div>
+
+                {/* FEATURES */}
+                <ul className="space-y-3.5 text-xs font-bold text-[#2C1810]">
+                  <li className="flex items-start gap-2.5">
+                    <div className="w-5 h-5 rounded-full bg-emerald-100/80 text-emerald-700 flex items-center justify-center shrink-0 mt-0.5">
+                      <CheckCircle2 size={13} />
+                    </div>
+                    <span>Dedicated Event Manager showcase profile &amp; portfolio</span>
+                  </li>
+                  <li className="flex items-start gap-2.5">
+                    <div className="w-5 h-5 rounded-full bg-emerald-100/80 text-emerald-700 flex items-center justify-center shrink-0 mt-0.5">
+                      <CheckCircle2 size={13} />
+                    </div>
+                    <span>Multi-tiered party packages &amp; custom service catalogue</span>
+                  </li>
+                  <li className="flex items-start gap-2.5">
+                    <div className="w-5 h-5 rounded-full bg-emerald-100/80 text-emerald-700 flex items-center justify-center shrink-0 mt-0.5">
+                      <CheckCircle2 size={13} />
+                    </div>
+                    <span>Direct customer celebration inquiries &amp; instant chat leads</span>
+                  </li>
+                  <li className="flex items-start gap-2.5">
+                    <div className="w-5 h-5 rounded-full bg-emerald-100/80 text-emerald-700 flex items-center justify-center shrink-0 mt-0.5">
+                      <CheckCircle2 size={13} />
+                    </div>
+                    <span>Event calendar, booking schedule &amp; client ratings</span>
+                  </li>
+                  <li className="flex items-start gap-2.5">
+                    <div className="w-5 h-5 rounded-full bg-emerald-100/80 text-emerald-700 flex items-center justify-center shrink-0 mt-0.5">
+                      <CheckCircle2 size={13} />
+                    </div>
+                    <span>Specialized Event Manager dashboard with direct payouts</span>
+                  </li>
+                </ul>
+              </div>
+
+              <div className="pt-8">
+                <a
+                  href={FAHARA_LINKS.eventManagerSignup}
+                  className={`w-full py-4 px-5 rounded-2xl text-xs sm:text-sm font-black transition-all duration-300 flex items-center justify-center gap-2.5 shadow-md hover:shadow-xl min-h-[48px] hover:scale-101 active:scale-98 ${
+                    selectedPartnerType === 'EVENT'
+                      ? 'bg-gradient-to-r from-[#6F4E37] to-[#523723] text-white shadow-lg shadow-[#6F4E37]/25'
+                      : 'bg-white border-2 border-[#6F4E37] text-[#6F4E37] hover:bg-[#6F4E37] hover:text-white'
+                  }`}
+                >
+                  <span>Start Event Partnership</span>
+                  <ArrowRight size={16} />
+                </a>
+              </div>
+            </div>
+
+          </div>
+
+          {/* PARTNER ASSURANCE CARDS (MODERN INTERACTIVE GLASS CARDS WITH MICRO-HOVER) */}
+          {/* PARTNER ASSURANCE HIGHLIGHTS (MODERN MINIMALIST INTERACTIVE ROW) */}
+          <div className="mt-16 pt-10 border-t border-[#E8DED5]/80">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8 max-w-5xl mx-auto">
+              
+              {/* ITEM 1 */}
+              <div className="group flex flex-col items-center text-center p-3 sm:p-4 rounded-2xl hover:bg-white/60 transition-all duration-300">
+                <span className="text-base sm:text-lg font-black text-[#2C1810] tracking-tight group-hover:text-[#6F4E37] transition-colors">
+                  0% Commissions
+                </span>
+                <span className="text-xs sm:text-[13px] text-stone-500 font-medium mt-1">
+                  Keep 100% customer payments
+                </span>
+              </div>
+
+              {/* ITEM 2 */}
+              <div className="group flex flex-col items-center text-center p-3 sm:p-4 rounded-2xl hover:bg-white/60 transition-all duration-300">
+                <span className="text-base sm:text-lg font-black text-[#2C1810] tracking-tight group-hover:text-[#6F4E37] transition-colors">
+                  Instant Activation
+                </span>
+                <span className="text-xs sm:text-[13px] text-stone-500 font-medium mt-1">
+                  Go live in under 2 minutes
+                </span>
+              </div>
+
+              {/* ITEM 3 */}
+              <div className="group flex flex-col items-center text-center p-3 sm:p-4 rounded-2xl hover:bg-white/60 transition-all duration-300">
+                <span className="text-base sm:text-lg font-black text-[#2C1810] tracking-tight group-hover:text-[#6F4E37] transition-colors">
+                  Cancel Anytime
+                </span>
+                <span className="text-xs sm:text-[13px] text-stone-500 font-medium mt-1">
+                  No lock-ins or contracts
+                </span>
+              </div>
+
+              {/* ITEM 4 */}
+              <div className="group flex flex-col items-center text-center p-3 sm:p-4 rounded-2xl hover:bg-white/60 transition-all duration-300">
+                <span className="text-base sm:text-lg font-black text-[#2C1810] tracking-tight group-hover:text-[#6F4E37] transition-colors">
+                  Direct Support
+                </span>
+                <span className="text-xs sm:text-[13px] text-stone-500 font-medium mt-1">
+                  Dedicated onboarding manager
+                </span>
+              </div>
+
+            </div>
+
+            {/* FLOATING ZERO-PENALTY PILL BADGE (EXACTLY MATCHING USER'S VISION) */}
+            <div className="mt-10 sm:mt-12 text-center">
+              <div className="inline-flex items-center gap-2.5 px-6 sm:px-8 py-3 rounded-full bg-white/90 backdrop-blur-md border border-[#DDB892]/80 shadow-[0_4px_20px_rgba(111,78,55,0.06)] hover:shadow-[0_8px_25px_rgba(111,78,55,0.12)] hover:border-[#6F4E37]/50 hover:-translate-y-0.5 transition-all duration-300 cursor-default group">
+                <ShieldCheck className="w-4 h-4 text-stone-700 group-hover:text-[#6F4E37] transition-colors shrink-0" strokeWidth={2.2} />
+                <span className="text-xs sm:text-sm font-semibold text-stone-800 tracking-tight">
+                  Cancel or pause your subscription anytime with zero penalties.
+                </span>
               </div>
             </div>
           </div>
@@ -1423,94 +573,16 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ==================== 9. FREQUENTLY ASKED QUESTIONS (FAQ) ==================== */}
-      <section id="faq" className="py-12 sm:py-20 bg-[#F5EBE0] border-y border-[#DDB892]/40">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          
-          <div className="text-center mb-10 sm:mb-16">
-            <span className="text-xs font-black uppercase tracking-widest text-[#6F4E37] bg-white px-3.5 py-1.5 rounded-full border border-[#DDB892]/50 inline-block mb-3">
-              Have Questions?
-            </span>
-            <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black text-[#2C1810]">Frequently Asked Questions</h2>
-            <p className="text-stone-600 font-medium text-xs sm:text-base mt-2">
-              Everything you need to know about booking cafe spaces on Fahara.
-            </p>
-          </div>
+      {/* 6. BECOME A FAHARA PARTNER (WHATSAPP ENQUIRY FORM) */}
+      <HomeBecomePartnerForm />
 
-          <div className="space-y-3 sm:space-y-4">
-            {faqs.map((faq, index) => {
-              const isOpen = openFaq === index;
-              return (
-                <div 
-                  key={index} 
-                  className="bg-white rounded-xl sm:rounded-2xl border border-stone-200/80 overflow-hidden shadow-2xs transition-all"
-                >
-                  <button 
-                    onClick={() => setOpenFaq(isOpen ? null : index)}
-                    suppressHydrationWarning
-                    className="w-full px-4 sm:px-6 py-4 sm:py-5 flex items-center justify-between text-left font-black text-xs sm:text-base text-[#2C1810] hover:text-[#6F4E37] transition-colors cursor-pointer gap-2"
-                  >
-                    <span>{faq.question}</span>
-                    <ChevronDown size={16} className={`transform transition-transform shrink-0 ${isOpen ? 'rotate-180 text-[#6F4E37]' : 'text-stone-400'}`} />
-                  </button>
+      {/* 7. HOW FAHARA WORKS */}
+      <HomeHowItWorks />
 
-                  <AnimatePresence>
-                    {isOpen && (
-                      <motion.div 
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: 'auto', opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        className="px-4 sm:px-6 pb-4 sm:pb-5 text-xs sm:text-sm font-medium text-stone-600 leading-relaxed border-t border-stone-100 pt-3"
-                      >
-                        {faq.answer}
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
-              );
-            })}
-          </div>
+      {/* 7. FINAL CTA BANNER */}
+      <HomeFinalCTA />
 
-        </div>
-      </section>
-
-      {/* ==================== 10. AUTH & DISCOVERY CTA ==================== */}
-      <section className="py-14 sm:py-20 bg-gradient-to-r from-[#2C1810] via-[#4A2C11] to-[#6F4E37] text-white text-center relative overflow-hidden">
-        <div className="max-w-4xl mx-auto px-4 relative z-10">
-          <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black tracking-tight mb-3 sm:mb-4">Ready to Book Your Next Cafe Experience?</h2>
-          <p className="text-xs sm:text-base lg:text-lg text-[#FFF8F0]/90 mb-6 sm:mb-8 font-medium max-w-2xl mx-auto">
-            Log in or sign up today to discover, customize, and reserve top-rated cafe spaces in your city.
-          </p>
-
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
-            <Link 
-              href="/login" 
-              className="w-full sm:w-auto px-7 py-3.5 sm:py-4 bg-white text-[#2C1810] font-black text-xs sm:text-sm rounded-xl sm:rounded-2xl shadow-xl hover:bg-[#FFF8F0] transition-all flex items-center justify-center gap-2"
-            >
-              <LogIn size={16} />
-              <span>Log In Now</span>
-            </Link>
-
-            <Link 
-              href="/register" 
-              className="w-full sm:w-auto px-7 py-3.5 sm:py-4 bg-gradient-to-r from-amber-600 to-amber-700 text-white font-black text-xs sm:text-sm rounded-xl sm:rounded-2xl shadow-xl hover:opacity-95 transition-all flex items-center justify-center gap-2"
-            >
-              <UserPlus size={16} />
-              <span>Create Account</span>
-            </Link>
-
-            <Link 
-              href="/customer/cafe" 
-              className="w-full sm:w-auto px-7 py-3.5 sm:py-4 bg-white/10 hover:bg-white/20 text-white font-black text-xs sm:text-sm rounded-xl sm:rounded-2xl border border-white/20 transition-all flex items-center justify-center gap-2"
-            >
-              <Search size={16} />
-              <span>Browse All Cafes</span>
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* ==================== 11. FOOTER ==================== */}
+      {/* 8. DARK-BROWN FOOTER */}
       <Footer />
 
     </div>

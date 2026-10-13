@@ -145,7 +145,7 @@ export default function CustomerNavbar({
   const userInitials = userName ? userName.substring(0, 2).toUpperCase() : 'FC';
 
   return (
-    <header className="bg-white/95 backdrop-blur-xl border-b border-stone-200/80 sticky top-0 z-50 shadow-[0_4px_20px_rgba(0,0,0,0.04)] py-2 sm:py-3 print:hidden" suppressHydrationWarning>
+    <header className="hidden md:block bg-white/95 backdrop-blur-xl border-b border-stone-200/80 sticky top-0 z-50 shadow-[0_4px_20px_rgba(0,0,0,0.04)] py-2 sm:py-3 print:hidden" suppressHydrationWarning>
       <div className="container mx-auto px-2.5 sm:px-4 flex flex-col gap-2" suppressHydrationWarning>
         
         {/* Top Row: Logo & Brand | Search Bar | Notifications & Profile */}

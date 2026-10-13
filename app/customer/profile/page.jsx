@@ -7,7 +7,7 @@ import {
   Mail, Phone, Calendar, User, MapPin, Award, Edit2, Shield, 
   Settings, Bell, FileText, Heart, Camera, Check, Copy, Sparkles, 
   ChevronRight, ArrowUpRight, Star, Lock, CheckCircle2, RefreshCw, X, Save,
-  Plus, Trash2, Eye, EyeOff, Smartphone, Laptop, Moon, Sun, Monitor, Loader2
+  Plus, Trash2, Eye, EyeOff, Smartphone, Laptop, Moon, Sun, Monitor, Loader2, ArrowLeft
 } from 'lucide-react';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
@@ -26,6 +26,9 @@ import CustomerNavbar from '@/app/components/layout/CustomerNavbar';
 import FaharaInteractiveLoader from '@/app/components/common/FaharaInteractiveLoader';
 import ModernDatePicker from '@/app/components/common/ModernDatePicker';
 import ModernSelect from '@/app/components/common/ModernSelect';
+import MobileProfileView from '@/app/components/profile/MobileProfileView';
+import MobileNotificationsView from '@/app/components/profile/MobileNotificationsView';
+import { authService } from '@/services/auth.service';
 
 function ProfileDashboardContent() {
   const router = useRouter();
@@ -45,8 +48,28 @@ function ProfileDashboardContent() {
   const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
   const fileInputRef = useRef(null);
 
-  const { user, setUser } = useAuthStore();
+  const { user, setUser, logout } = useAuthStore();
   const { favoriteCafes, setFavorites } = useFavoritesStore();
+
+  // Mobile navigation mode: 'menu' (Reference Image 1 profile menu) or 'tab' (active sub-section)
+  const [mobileViewMode, setMobileViewMode] = useState(
+    searchParams.has('tab') ? 'tab' : 'menu'
+  );
+
+  const handleLogout = async () => {
+    try {
+      await authService.logout().catch(() => null);
+    } catch (err) {
+      // Ignore API errors on logout
+    }
+    logout();
+    document.cookie = 'accessToken=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax';
+    if (typeof localStorage !== 'undefined') {
+      localStorage.removeItem('fahara-auth-storage');
+    }
+    toast.success('Logged out successfully');
+    window.location.href = '/login';
+  };
 
   const handleAvatarUpload = async (e) => {
     const file = e.target.files?.[0];
@@ -104,6 +127,7 @@ function ProfileDashboardContent() {
 
   const handleTabChange = (tabId) => {
     setActiveTabState(tabId);
+    setMobileViewMode('tab');
     setIsEditing(false);
     router.replace(`/customer/profile?tab=${tabId}`, { scroll: false });
   };
@@ -647,7 +671,7 @@ function ProfileDashboardContent() {
       />
 
       {/* Main Container Wrapper */}
-      <div className="max-w-[1600px] w-full mx-auto px-3 sm:px-4 lg:pl-3 lg:pr-6 xl:px-6 py-4 flex flex-col lg:flex-row gap-6">
+      <div className="max-w-[1600px] w-full mx-auto px-0 md:px-4 lg:pl-3 lg:pr-6 xl:px-6 py-0 md:py-4 flex flex-col lg:flex-row gap-6">
         
         {/* Left Aside Navigation Panel (Desktop 1024px+ Completely Fixed Non-Movable) */}
         <aside className="hidden lg:block w-72 xl:w-80 flex-shrink-0 fixed top-[5.5rem] z-20">
@@ -657,8 +681,59 @@ function ProfileDashboardContent() {
         {/* Main Content Body */}
         <main className="flex-1 min-w-0 space-y-6 lg:ml-80 xl:ml-88">
 
-          {/* Profile Header Card */}
-          <div className="bg-white/95 backdrop-blur-xl rounded-3xl border border-stone-200/90 shadow-[0_8px_30px_rgba(0,0,0,0.04)] overflow-hidden font-sans">
+          {/* Mobile Profile View (Reference Image 1 Layout - Mobile Only) */}
+          <div className="md:hidden w-full">
+            {mobileViewMode === 'menu' ? (
+              <MobileProfileView
+                profile={profile}
+                user={user}
+                fileInputRef={fileInputRef}
+                handleAvatarUpload={handleAvatarUpload}
+                isUploadingAvatar={isUploadingAvatar}
+                onLogout={handleLogout}
+                onOpenEdit={() => {
+                  setActiveTabState('personal');
+                  setIsEditing(true);
+                  setMobileViewMode('tab');
+                }}
+                activeTab={activeTab}
+                onSelectTab={(tabId) => {
+                  setActiveTabState(tabId);
+                  setIsEditing(false);
+                  setMobileViewMode('tab');
+                  router.replace(`/customer/profile?tab=${tabId}`, { scroll: false });
+                }}
+                loyaltyCredits={loyaltySummary?.credit_balance || 0}
+              />
+            ) : (
+              /* Mobile Sub-Tab Header Bar (Hidden for 'notifications' which features its own dedicated sticky header) */
+              activeTab !== 'notifications' && (
+                <div className="px-3 pt-3">
+                  <div className="flex items-center justify-between bg-white rounded-2xl p-3 border border-[#E8DED5] shadow-xs mb-4">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setMobileViewMode('menu');
+                        router.replace('/customer/profile', { scroll: false });
+                      }}
+                      className="flex items-center gap-2 text-xs font-black text-[#6F4E37] bg-[#FFF8F0] hover:bg-[#F5EBE1] active:scale-95 px-3 py-2 rounded-xl transition-all cursor-pointer border border-[#DDB892]/40"
+                    >
+                      <ArrowLeft size={15} />
+                      <span>Profile Menu</span>
+                    </button>
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs font-black text-[#2C1810] uppercase tracking-wider">
+                        {tabs.find((t) => t.id === activeTab)?.label || 'Section'}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              )
+            )}
+          </div>
+
+          {/* Profile Header Card (Desktop & Tablet: hidden on mobile) */}
+          <div className="hidden md:block bg-white/95 backdrop-blur-xl rounded-3xl border border-stone-200/90 shadow-[0_8px_30px_rgba(0,0,0,0.04)] overflow-hidden font-sans">
             {/* Top Cover Banner */}
             <div className="relative h-32 sm:h-44 w-full bg-gradient-to-r from-[#4A2C11] via-[#5C3D28] to-[#6F4E37]">
               <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:16px_16px]"></div>
@@ -751,8 +826,8 @@ function ProfileDashboardContent() {
             </div>
           </div>
 
-          {/* Horizontal Section Pill Tabs Bar (Mobile & Tablet Only) */}
-          <div className="flex lg:hidden overflow-x-auto no-scrollbar gap-2 p-1.5 bg-white rounded-2xl border border-stone-200/80 shadow-2xs">
+          {/* Horizontal Section Pill Tabs Bar (Tablet Only - hidden on mobile) */}
+          <div className="hidden sm:flex lg:hidden overflow-x-auto no-scrollbar gap-2 p-1.5 bg-white rounded-2xl border border-stone-200/80 shadow-2xs">
             {tabs.map((tab) => {
               const Icon = tab.icon;
               const isActive = activeTab === tab.id;
@@ -773,6 +848,9 @@ function ProfileDashboardContent() {
               );
             })}
           </div>
+
+          {/* Profile Tab Contents - Always shown on Desktop (md+), on Mobile only when in 'tab' sub-view */}
+          <div className={`${mobileViewMode === 'menu' ? 'hidden md:block' : activeTab === 'notifications' ? 'block px-0 md:px-0' : 'block px-3 md:px-0'}`}>
 
             {/* TAB VIEW 1: Personal Information */}
             {activeTab === 'personal' && (
@@ -1599,7 +1677,7 @@ function ProfileDashboardContent() {
               </AnimatePresence>
             )}
 
-            {/* TAB VIEW 4: Notifications Preferences */}
+            {/* TAB VIEW 4: Notifications (Mobile Redesign vs Desktop Preferences) */}
             {activeTab === 'notifications' && (
               <AnimatePresence mode="wait">
                 <motion.div 
@@ -1607,41 +1685,54 @@ function ProfileDashboardContent() {
                   initial={{ opacity: 0, y: 15 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -15 }}
-                  className="bg-white rounded-3xl shadow-xl shadow-stone-200/50 border border-stone-200/80 p-6 sm:p-8 space-y-6"
+                  className="space-y-6"
                 >
-                  <div className="pb-4 border-b border-stone-100">
-                    <h2 className="text-xl sm:text-2xl font-black text-stone-900 tracking-tight">{t('notificationPreferences', 'Notification Preferences')}</h2>
-                    <p className="text-stone-500 text-xs sm:text-sm mt-0.5">Control how and when you receive updates from Fahara</p>
+                  {/* MOBILE REDESIGNED NOTIFICATIONS (md:hidden) */}
+                  <div className="md:hidden">
+                    <MobileNotificationsView 
+                      onBack={() => {
+                        setMobileViewMode('menu');
+                        router.replace('/customer/profile', { scroll: false });
+                      }}
+                    />
                   </div>
 
-                  <div className="space-y-4">
-                    {[
-                      { key: 'bookingAlerts', title: 'Booking Status & Reminders', desc: 'Receive instant push notifications and reminders about your cafe bookings' },
-                      { key: 'emailAlerts', title: 'Email Notifications', desc: 'Receive booking confirmations, receipts, invoices, and security updates via email' },
-                      { key: 'eventInvites', title: 'Event Invites & Community', desc: 'Notifications about live music events and local gatherings' },
-                      { key: 'newsletter', title: 'Weekly Cafe Newsletter', desc: 'Curated list of newly featured cafe spots in your city' },
-                    ].map((item) => (
-                      <div 
-                        key={item.key}
-                        className="p-4 sm:p-5 rounded-2xl bg-stone-50/70 border border-stone-100 hover:border-amber-200 transition-all flex items-center justify-between gap-4"
-                      >
-                        <div>
-                          <h3 className="font-bold text-stone-900 text-sm">{item.title}</h3>
-                          <p className="text-xs text-stone-500 mt-0.5">{item.desc}</p>
-                        </div>
-                        <button
-                          onClick={() => handleNotificationToggle(item.key)}
-                          className={`w-12 h-6 rounded-full transition-colors relative p-1 flex-shrink-0 ${
-                            notifications[item.key] ? 'bg-[var(--color-primary)]' : 'bg-stone-300'
-                          }`}
+                  {/* DESKTOP NOTIFICATIONS PREFERENCES (hidden md:block - Preserved Desktop UI) */}
+                  <div className="hidden md:block bg-white rounded-3xl shadow-xl shadow-stone-200/50 border border-stone-200/80 p-6 sm:p-8 space-y-6">
+                    <div className="pb-4 border-b border-stone-100">
+                      <h2 className="text-xl sm:text-2xl font-black text-stone-900 tracking-tight">{t('notificationPreferences', 'Notification Preferences')}</h2>
+                      <p className="text-stone-500 text-xs sm:text-sm mt-0.5">Control how and when you receive updates from Fahara</p>
+                    </div>
+
+                    <div className="space-y-4">
+                      {[
+                        { key: 'bookingAlerts', title: 'Booking Status & Reminders', desc: 'Receive instant push notifications and reminders about your cafe bookings' },
+                        { key: 'emailAlerts', title: 'Email Notifications', desc: 'Receive booking confirmations, receipts, invoices, and security updates via email' },
+                        { key: 'eventInvites', title: 'Event Invites & Community', desc: 'Notifications about live music events and local gatherings' },
+                        { key: 'newsletter', title: 'Weekly Cafe Newsletter', desc: 'Curated list of newly featured cafe spots in your city' },
+                      ].map((item) => (
+                        <div 
+                          key={item.key}
+                          className="p-4 sm:p-5 rounded-2xl bg-stone-50/70 border border-stone-100 hover:border-amber-200 transition-all flex items-center justify-between gap-4"
                         >
-                          <motion.div 
-                            animate={{ x: notifications[item.key] ? 24 : 0 }}
-                            className="w-4 h-4 bg-white rounded-full shadow"
-                          />
-                        </button>
-                      </div>
-                    ))}
+                          <div>
+                            <h3 className="font-bold text-stone-900 text-sm">{item.title}</h3>
+                            <p className="text-xs text-stone-500 mt-0.5">{item.desc}</p>
+                          </div>
+                          <button
+                            onClick={() => handleNotificationToggle(item.key)}
+                            className={`w-12 h-6 rounded-full transition-colors relative p-1 flex-shrink-0 ${
+                              notifications[item.key] ? 'bg-[var(--color-primary)]' : 'bg-stone-300'
+                            }`}
+                          >
+                            <motion.div 
+                              animate={{ x: notifications[item.key] ? 24 : 0 }}
+                              className="w-4 h-4 bg-white rounded-full shadow"
+                            />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 </motion.div>
               </AnimatePresence>
@@ -1702,6 +1793,7 @@ function ProfileDashboardContent() {
                 </motion.div>
               </AnimatePresence>
             )}
+          </div>
         </main>
       </div>
 

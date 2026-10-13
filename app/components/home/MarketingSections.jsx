@@ -3,35 +3,46 @@ import { ShieldCheck, CalendarCheck, Award, ThumbsUp } from 'lucide-react';
 
 export function WhyChooseSection() {
   const reasons = [
-    { title: 'Verified Cafes', desc: 'Every venue is manually vetted for quality and safety.', icon: ShieldCheck },
-    { title: 'Secure Booking', desc: '100% secure payment protection and instant confirmation.', icon: CalendarCheck },
-    { title: 'Premium Experience', desc: 'Unmatched VIP service tailored for your specific events.', icon: Award },
-    { title: 'Trusted Reviews', desc: 'Real reviews from verified customers who booked the venue.', icon: ThumbsUp },
+    { title: 'Verified Cafes', desc: 'Every venue is manually vetted for quality, ambience, and safety standards.', icon: ShieldCheck, tag: '01' },
+    { title: 'Secure Booking', desc: '100% secure payment protection and instant table/space confirmation.', icon: CalendarCheck, tag: '02' },
+    { title: 'Premium Experience', desc: 'Unmatched VIP service tailored for your birthdays, events, and reunions.', icon: Award, tag: '03' },
+    { title: 'Trusted Reviews', desc: 'Real ratings & authentic reviews from customers who booked through Fahara.', icon: ThumbsUp, tag: '04' },
   ];
 
   return (
-    <section className="py-20 bg-white">
-      <div className="container mx-auto px-4">
-        <div className="text-center max-w-2xl mx-auto mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold text-[var(--color-text-primary)] mb-4">Why Choose Fahara</h2>
-          <p className="text-[var(--color-text-secondary)] text-lg">We provide the most seamless and premium cafe discovery and event booking experience in the industry.</p>
+    <section className="py-20 bg-gradient-to-b from-[#FFFDF9] via-[#FAF5EF] to-white relative overflow-hidden border-b border-[#E8DED5]">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div className="text-center max-w-3xl mx-auto mb-16">
+          <span className="inline-block px-4 py-1.5 rounded-full bg-[#FFF8F0] border border-[#E8DED5] text-[#6F4E37] text-xs font-bold uppercase tracking-wider mb-4 shadow-2xs">
+            Why Choose Fahara
+          </span>
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-[#2C1810] tracking-tight leading-tight">
+            Built for Memorable Gatherings
+          </h2>
+          <p className="text-[#8B6E59] text-base sm:text-lg mt-3 font-medium max-w-2xl mx-auto">
+            We provide the most seamless, transparent, and premium cafe discovery &amp; event booking experience.
+          </p>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
           {reasons.map((reason, idx) => (
             <motion.div 
               key={reason.title}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: idx * 0.1 }}
-              className="flex flex-col items-center text-center p-6"
+              transition={{ delay: idx * 0.1, duration: 0.4 }}
+              className="group relative bg-white/90 backdrop-blur-sm border border-[#E8DED5] hover:border-[#6F4E37]/40 rounded-3xl p-7 flex flex-col justify-between shadow-[0_4px_20px_rgba(44,24,16,0.03)] hover:shadow-[0_20px_40px_rgba(111,78,55,0.12)] hover:-translate-y-2 transition-all duration-300 overflow-hidden"
             >
-              <div className="w-16 h-16 rounded-2xl bg-[var(--color-primary)]/10 text-[var(--color-primary)] flex items-center justify-center mb-6">
-                <reason.icon size={32} />
+              <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-[#6F4E37] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              <div className="flex items-center justify-between mb-6">
+                <div className="w-14 h-14 rounded-2xl bg-[#FFF8F0] border border-[#E8DED5] flex items-center justify-center text-[#6F4E37] shadow-2xs group-hover:bg-[#6F4E37] group-hover:text-white group-hover:border-[#6F4E37] transition-all duration-300">
+                  <reason.icon size={26} />
+                </div>
+                <span className="text-xs font-black text-[#A67B5B]/40 group-hover:text-[#6F4E37] transition-colors">{reason.tag}</span>
               </div>
-              <h3 className="text-xl font-bold mb-3 text-[var(--color-text-primary)]">{reason.title}</h3>
-              <p className="text-[var(--color-text-secondary)]">{reason.desc}</p>
+              <h3 className="text-xl font-bold mb-2 text-[#2C1810] group-hover:text-[#6F4E37] transition-colors duration-200 tracking-tight">{reason.title}</h3>
+              <p className="text-[#7A6253] text-sm leading-relaxed">{reason.desc}</p>
             </motion.div>
           ))}
         </div>

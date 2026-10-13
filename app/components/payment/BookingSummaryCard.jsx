@@ -136,7 +136,7 @@ export default function BookingSummaryCard({ bookingData }) {
 
           {packageInclusions.length > 0 && (
             <div className="pt-2 border-t border-[#DDB892]/40">
-              <span className="text-[10px] font-black text-[#6F4E37] uppercase tracking-wider block mb-2">Package Inclusions Breakdown</span>
+              <span className="text-[10px] font-black text-[#6F4E37] uppercase tracking-wider block mb-2">What's Included with Package</span>
               <div className="grid grid-cols-1 gap-2">
                 {packageInclusions.map((item, idx) => (
                   <div key={idx} className="flex items-center justify-between bg-white/95 px-3 py-2 rounded-xl text-xs font-black text-[#2C1810] border border-[#DDB892]/50 shadow-2xs">

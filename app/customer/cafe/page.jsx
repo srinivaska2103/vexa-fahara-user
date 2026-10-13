@@ -20,12 +20,15 @@ import InfiniteScroll from '@/app/components/cafes/InfiniteScroll';
 import { useLanguage } from '@/context/LanguageContext';
 import { motion } from 'framer-motion';
 import FaharaInteractiveLoader from '@/app/components/common/FaharaInteractiveLoader';
+import { CafeGridSkeleton, MapSkeleton } from '@/app/components/common/FaharaLoadingSystem';
 import ModernEmptyState from '@/app/components/common/ModernEmptyState';
 import FaharaHeroBannerCarousel from '@/app/components/home/FaharaHeroBannerCarousel';
 import DealsAndOffersSection from '@/app/components/home/DealsAndOffersSection';
 import DiscoveryCategorySection from '@/app/components/home/DiscoveryCategorySection';
 import CategorySectionHeader from '@/app/components/home/CategorySectionHeader';
 import CategoryVenueSection from '@/app/components/home/CategoryVenueSection';
+import MobileCafeHeader from '@/app/components/home/MobileCafeHeader';
+import MobileCafeHomeView from '@/app/components/home/MobileCafeHomeView';
 
 const MapComponent = dynamic(
   () => import('@/app/components/home/MapComponent'),
@@ -138,9 +141,9 @@ export default function AdvancedCafeDiscoveryPage() {
 
   const { 
     viewMode, setViewMode, clearFilters, query, category, setCategory,
-    openNow, availableToday, distance, amenities, sortBy, userLocation
+    openNow, availableToday, distance, amenities, sortBy, userLocation,
+    isMobileFilterOpen, setIsMobileFilterOpen
   } = useSearchStore();
-  const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
   const [selectedEventPackage, setSelectedEventPackage] = useState('');
   const { t } = useLanguage();
 
@@ -572,23 +575,50 @@ export default function AdvancedCafeDiscoveryPage() {
 
   return (
     <div className="min-h-screen bg-[#FFF8F0] flex flex-col font-sans antialiased selection:bg-[#6F4E37] selection:text-white pb-20 lg:pb-8">
-      {/* Top Navbar */}
+      {/* ── MOBILE-ONLY HEADER (320px - 767px): Reference 2 Style ── */}
+      <MobileCafeHeader onFilterClick={() => setIsMobileFilterOpen(true)} />
+
+      {/* ── DESKTOP & TABLET TOP NAVBAR (md: 768px+): Untouched Existing Desktop Navbar ── */}
       <CustomerNavbar
         showSearch={true}
         showViewToggles={true}
         onFilterClick={() => setIsMobileFilterOpen(true)}
       />
 
-      {/* Main Responsive Layout Wrapper */}
-      <div className="flex-1 max-w-[1550px] w-full mx-auto px-3 sm:px-4 lg:pl-3 lg:pr-6 xl:px-4 py-4 sm:py-6 flex flex-col lg:flex-row gap-5 lg:gap-6">
+      {/* ── MOBILE-ONLY CAFE HOME VIEW (320px - 767px): References 1 & 2 Redesign ── */}
+      <MobileCafeHomeView
+        cafes={cafes}
+        rawCafes={rawCafes}
+        sortedCafes={sortedCafes}
+        categories={dynamicMindCategories}
+        isLoading={isLoading}
+        onOpenFilter={() => setIsMobileFilterOpen(true)}
+        onSelectCategory={(catId) => {
+          if (catId === 'all-spaces' || catId === 'All Spaces') {
+            setCategory('');
+          } else {
+            setCategory(catId);
+          }
+        }}
+        selectedCategory={category}
+        onResetFilters={clearFilters}
+        viewMode={viewMode}
+        setViewMode={setViewMode}
+        hasNextPage={hasNextPage}
+        isFetchingNextPage={isFetchingNextPage}
+        fetchNextPage={fetchNextPage}
+      />
+
+      {/* ── MOBILE FILTER DRAWER (Available on all screen sizes, controlled by isMobileFilterOpen) ── */}
+      <FilterDrawer isOpen={isMobileFilterOpen} onClose={() => setIsMobileFilterOpen(false)} cafes={rawCafes} />
+
+      {/* ── DESKTOP & TABLET VIEWPORT (md: 768px+): Untouched Existing Layout & Sidebar ── */}
+      <div className="hidden md:flex flex-1 max-w-[1550px] w-full mx-auto px-3 sm:px-4 lg:pl-3 lg:pr-6 xl:px-4 py-4 sm:py-6 flex-col lg:flex-row gap-5 lg:gap-6">
 
         {/* Desktop Sidebar (1024px+) */}
         <aside className="hidden lg:block w-80 xl:w-84 flex-shrink-0 sticky top-24 self-start max-h-[calc(100vh-6.5rem)]">
           <FilterSidebar cafes={rawCafes} />
         </aside>
-
-        {/* Mobile Filter Drawer (360px - 1023px) */}
-        <FilterDrawer isOpen={isMobileFilterOpen} onClose={() => setIsMobileFilterOpen(false)} cafes={rawCafes} />
 
         {/* Main Content Body */}
         <main className="flex-1 flex flex-col min-w-0 min-h-[500px]">
@@ -715,7 +745,21 @@ export default function AdvancedCafeDiscoveryPage() {
 
           {/* MAIN CATEGORY-WISE LISTINGS OR MAP */}
           {isLoading ? (
-            <FaharaInteractiveLoader message={t('curatingCafes', 'Discovering Top Rated Venues & Cafes...')} fullScreen={false} />
+            viewMode === 'map' ? (
+              <MapSkeleton />
+            ) : (
+              <div className="space-y-6">
+                <div className="flex items-center justify-between pb-2">
+                  <div className="flex items-center gap-2">
+                    <span className="w-2.5 h-2.5 rounded-full bg-[#6F4E37] animate-pulse" />
+                    <span className="text-xs font-black uppercase tracking-wider text-[#6F4E37]">
+                      Curating top venues & spaces...
+                    </span>
+                  </div>
+                </div>
+                <CafeGridSkeleton count={8} />
+              </div>
+            )
           ) : viewMode === 'map' ? (
             <div className="w-full h-[520px] sm:h-[620px] rounded-3xl overflow-hidden border border-stone-200/80 shadow-md relative z-0 isolate">
               <MapComponent center={[12.9716, 77.5946]} markers={sortedCafes} />

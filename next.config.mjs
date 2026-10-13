@@ -47,6 +47,24 @@ const nextConfig = {
         destination: process.env.NEXT_PUBLIC_EVENT_MANAGER_URL ? `${process.env.NEXT_PUBLIC_EVENT_MANAGER_URL}/event/login` : 'http://localhost:3002/event/login',
         permanent: false,
       },
+      {
+        source: '/cafes/:id',
+        destination: '/customer/cafe/:id',
+        permanent: false,
+      },
+      {
+        source: '/cafes',
+        destination: '/customer/cafe',
+        permanent: false,
+      },
+    ];
+  },
+  async rewrites() {
+    return [
+      {
+        source: '/cafes/:id',
+        destination: '/customer/cafe/:id',
+      },
     ];
   },
 };

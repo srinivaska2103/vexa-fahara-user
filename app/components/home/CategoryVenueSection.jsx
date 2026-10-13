@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import CafeCard from '@/app/components/cards/CafeCard';
+import { CafeCardSkeleton } from '@/app/components/common/FaharaLoadingSystem';
 
 /**
  * Icon mapping helper for Venue Categories (using Lucide icons per prompt)
@@ -139,17 +140,17 @@ export default function CategoryVenueSection({
       <div className={`space-y-6 ${className}`}>
         <div className="w-full bg-white rounded-[24px] border border-[#E8DED5] p-4 sm:p-6 min-h-[90px] flex items-center justify-between animate-pulse">
           <div className="flex items-center gap-3">
-            <div className="w-[56px] h-[56px] sm:w-[64px] sm:h-[64px] rounded-full bg-stone-200 shrink-0" />
+            <div className="w-[56px] h-[56px] sm:w-[64px] sm:h-[64px] rounded-full bg-[#EADBCE]/50 shrink-0" />
             <div className="space-y-2">
-              <div className="h-6 w-32 bg-stone-200 rounded-lg" />
-              <div className="h-4 w-44 bg-stone-100 rounded-md" />
+              <div className="h-6 w-36 bg-[#EADBCE]/60 rounded-lg" />
+              <div className="h-4 w-48 bg-[#EADBCE]/40 rounded-md" />
             </div>
           </div>
-          <div className="h-[40px] w-28 bg-stone-200 rounded-full" />
+          <div className="h-[40px] w-28 bg-[#EADBCE]/50 rounded-full" />
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {[1, 2, 3, 4].map(i => (
-            <div key={i} className="h-72 bg-white rounded-2xl border border-stone-200 animate-pulse" />
+            <CafeCardSkeleton key={i} />
           ))}
         </div>
       </div>

@@ -2,16 +2,19 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { Compass, CalendarCheck, Heart, User } from 'lucide-react';
+import { usePathname, useRouter } from 'next/navigation';
+import { Home, Compass, CalendarCheck, Heart, User, LayoutGrid, SlidersHorizontal, Map } from 'lucide-react';
 import { useFavoritesStore } from '@/stores/favorites.store';
 import { useAuthStore } from '@/stores/auth.store';
+import { useSearchStore } from '@/stores/search.store';
 import { useLanguage } from '@/context/LanguageContext';
 import { motion } from 'framer-motion';
 import { profileService } from '@/services/profile.service';
+import { cn } from '@/lib/utils';
 
 export default function MobileBottomNav() {
   const pathname = usePathname();
+  const router = useRouter();
   const { t } = useLanguage();
   const favoriteCafes = useFavoritesStore((state) => state.favoriteCafes || []);
   const favoriteEvents = useFavoritesStore((state) => state.favoriteEvents || []);
@@ -19,6 +22,9 @@ export default function MobileBottomNav() {
 
   const [profileImage, setProfileImage] = useState(user?.avatar || user?.profile_image || null);
   const [imageError, setImageError] = useState(false);
+
+  const viewMode = useSearchStore((state) => state.viewMode);
+  const setViewMode = useSearchStore((state) => state.setViewMode);
 
   useEffect(() => {
     if (!user) return;
@@ -46,10 +52,15 @@ export default function MobileBottomNav() {
     }
   }, [user]);
 
-  // Hidden on landing page, auth, booking checkout, legal, and support pages
+  const isMobileFilterOpen = useSearchStore((state) => state.isMobileFilterOpen);
+  const setIsMobileFilterOpen = useSearchStore((state) => state.setIsMobileFilterOpen);
+
+  // Hidden on landing page, auth, booking checkout, customer payment, legal, support pages, and cafe details pages (which have dedicated sticky booking bar)
   if (
     pathname === '/' ||
     pathname.startsWith('/booking') ||
+    pathname.startsWith('/cafes/') ||
+    pathname.startsWith('/customer/payment') ||
     [
       '/login',
       '/register',
@@ -80,10 +91,25 @@ export default function MobileBottomNav() {
   const navItems = [
     { 
       id: 'explore',
-      label: 'Explore', 
+      label: 'Home', 
       href: '/customer/cafe', 
-      icon: Compass,
+      icon: Home,
       isActive: pathname === '/customer/cafe' || pathname.startsWith('/cafes') || pathname === '/' || pathname === '/customer/discover'
+    },
+    { 
+      id: 'wishlist',
+      label: 'Favorites', 
+      href: '/customer/favorites', 
+      icon: Heart,
+      badge: totalWishlistCount > 0 ? totalWishlistCount : null,
+      isActive: pathname.startsWith('/customer/favorites') || pathname.startsWith('/customer/wishlist')
+    },
+    { 
+      id: 'map',
+      label: viewMode === 'map' ? 'Grid' : 'Map', 
+      isMapCenter: true,
+      icon: Map,
+      isActive: viewMode === 'map'
     },
     { 
       id: 'bookings',
@@ -91,14 +117,6 @@ export default function MobileBottomNav() {
       href: '/customer/bookings', 
       icon: CalendarCheck,
       isActive: pathname.startsWith('/customer/bookings')
-    },
-    { 
-      id: 'wishlist',
-      label: 'Wishlist', 
-      href: '/customer/favorites', 
-      icon: Heart,
-      badge: totalWishlistCount > 0 ? totalWishlistCount : null,
-      isActive: pathname.startsWith('/customer/favorites') || pathname.startsWith('/customer/wishlist')
     },
     { 
       id: 'profile',
@@ -111,30 +129,47 @@ export default function MobileBottomNav() {
   ];
 
   return (
-    <div className="lg:hidden fixed bottom-3 left-3 right-3 z-50 select-none print:hidden flex justify-center pointer-events-none">
+    <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 select-none print:hidden flex justify-center pointer-events-none">
       
-      {/* ── MODERN FLOATING PILL CONTAINER (VISIBLE ONLY ON MOBILE < 1024px) ── */}
-      <div className="relative w-full max-w-sm mx-auto bg-white/95 backdrop-blur-2xl border border-stone-200/90 rounded-full p-1.5 shadow-[0_12px_40px_rgba(44,24,16,0.14)] flex items-center justify-between gap-1 overflow-hidden pointer-events-auto">
+      {/* ── CLEAN BOTTOM MENU BAR WITH CENTER FILTER & ROUNDED TOP CORNERS ── */}
+      <div className="relative w-full bg-white/95 backdrop-blur-2xl rounded-t-[28px] border-t border-x border-[#E8DED5] py-2 px-3 xs:px-4 shadow-[0_-8px_30px_rgba(111,78,55,0.08)] flex items-center justify-around overflow-visible pointer-events-auto">
         {navItems.map((item) => {
           const Icon = item.icon;
           const isActive = item.isActive;
 
-          if (isActive) {
+          // Special Center Map Action Button
+          if (item.isMapCenter) {
             return (
-              <Link key={item.id} href={item.href} className="flex-1 min-w-0">
-                <motion.div
-                  layoutId="activeTabPillNav"
-                  transition={{ type: 'spring', damping: 25, stiffness: 350 }}
-                  className="bg-[#4A2C11] text-white rounded-full py-2.5 px-3.5 flex items-center justify-center gap-1.5 shadow-md shadow-[#4A2C11]/30"
-                >
-                  <div className="p-1 rounded-full bg-white/15 flex items-center justify-center shrink-0">
-                    <Icon size={16} className="text-white" />
-                  </div>
-                  <span className="font-black text-xs tracking-wide whitespace-nowrap truncate">
-                    {item.label}
-                  </span>
-                </motion.div>
-              </Link>
+              <button
+                key={item.id}
+                type="button"
+                suppressHydrationWarning
+                onClick={() => {
+                  if (pathname !== '/customer/cafe') {
+                    setViewMode('map');
+                    router.push('/customer/cafe');
+                  } else {
+                    setViewMode(viewMode === 'map' ? 'grid' : 'map');
+                  }
+                }}
+                className="flex flex-col items-center justify-center py-0.5 px-2.5 relative active:scale-90 transition-transform group cursor-pointer"
+                aria-label={viewMode === 'map' ? "Show Grid View" : "Show Map View"}
+              >
+                <div className={cn(
+                  "w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 shadow-xs border",
+                  isActive
+                    ? "bg-[#6F4E37] text-white border-[#6F4E37] shadow-sm shadow-[#6F4E37]/20 scale-105"
+                    : "bg-[#FFF8F0] text-[#6F4E37] border-[#DDB892]/60 group-hover:bg-[#6F4E37] group-hover:text-white"
+                )}>
+                  <Icon size={17} strokeWidth={2.2} />
+                </div>
+                <span className={cn(
+                  "text-[9px] font-extrabold uppercase tracking-wider mt-0.5 transition-colors",
+                  isActive ? "text-[#6F4E37]" : "text-stone-400 group-hover:text-[#6F4E37]"
+                )}>
+                  {item.label}
+                </span>
+              </button>
             );
           }
 
@@ -142,31 +177,56 @@ export default function MobileBottomNav() {
             <Link
               key={item.id}
               href={item.href}
-              className="p-2.5 rounded-full text-stone-700 hover:text-[#4A2C11] hover:bg-stone-100/80 transition-all flex items-center justify-center relative shrink-0"
+              className="flex flex-col items-center justify-center py-1 px-2.5 relative active:scale-90 transition-transform group"
               aria-label={item.label}
             >
               {item.isAvatar ? (
-                <div className="w-7 h-7 rounded-full bg-gradient-to-tr from-[#4A2C11] to-[#6F4E37] text-white font-black text-xs flex items-center justify-center border-2 border-white shadow-xs overflow-hidden hover:scale-105 transition-transform shrink-0">
+                <div className={cn(
+                  "w-6 h-6 rounded-full overflow-hidden transition-all duration-200 border",
+                  isActive ? "ring-2 ring-[#6F4E37] border-[#FFF8F0]" : "border-[#E8DED5] opacity-75 group-hover:opacity-100"
+                )}>
                   {profileImage && !imageError ? (
                     <img 
                       src={profileImage} 
-                      alt="User Profile" 
+                      alt="Profile" 
                       className="w-full h-full object-cover" 
                       onError={() => setImageError(true)}
                     />
                   ) : (
-                    <span>{userInitial}</span>
+                    <div className="w-full h-full bg-[#6F4E37] text-[#FFF8F0] font-black text-[10px] flex items-center justify-center">
+                      {userInitial}
+                    </div>
                   )}
                 </div>
               ) : (
-                <div className="relative flex items-center justify-center shrink-0">
-                  <Icon size={19} className="text-[#4A2C11]" />
+                <div className="relative flex items-center justify-center">
+                  <Icon
+                    size={22}
+                    strokeWidth={isActive ? 2.2 : 1.8}
+                    className={cn(
+                      "transition-all duration-200",
+                      isActive
+                        ? "text-[#6F4E37] fill-[#6F4E37]/15 scale-105"
+                        : "text-stone-400 hover:text-[#6F4E37]"
+                    )}
+                  />
                   {item.badge && (
-                    <span className="absolute -top-1.5 -right-2 bg-rose-500 text-white text-[9px] font-black w-4 h-4 rounded-full flex items-center justify-center border-2 border-white shadow-xs">
+                    <span className="absolute -top-1.5 -right-2 bg-gradient-to-r from-rose-500 to-red-500 text-white text-[8px] font-black w-3.5 h-3.5 rounded-full flex items-center justify-center border border-white shadow-xs">
                       {item.badge}
                     </span>
                   )}
                 </div>
+              )}
+
+              {/* Clean Dot indicator under active icon */}
+              {isActive ? (
+                <motion.div
+                  layoutId="activeBottomDot"
+                  className="w-1.5 h-1.5 rounded-full bg-[#6F4E37] mt-1 shadow-2xs"
+                  transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+                />
+              ) : (
+                <div className="w-1.5 h-1.5 rounded-full bg-transparent mt-1" />
               )}
             </Link>
           );

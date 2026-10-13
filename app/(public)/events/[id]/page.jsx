@@ -32,83 +32,33 @@ export default function EventDetailsPage() {
       try { rawInc = JSON.parse(rawInc); } catch (e) { rawInc = []; }
     }
 
-    // Case 1: inclusions is an ARRAY of inclusion cards (new tier schema)
-    if (Array.isArray(rawInc) && rawInc.length > 0) {
-      return rawInc.map((inc, idx) => {
-        let icon = CheckCircle2;
-        const nameLower = (inc.name || inc.category || inc.title || '').toLowerCase();
-        if (nameLower.includes('food') || nameLower.includes('cater') || nameLower.includes('buffet') || nameLower.includes('starter')) icon = Utensils;
-        else if (nameLower.includes('cake') || nameLower.includes('baker')) icon = CakeIcon;
-        else if (nameLower.includes('decor') || nameLower.includes('theme') || nameLower.includes('balloon')) icon = Sparkles;
-        else if (nameLower.includes('music') || nameLower.includes('dj') || nameLower.includes('sound')) icon = Music;
-
-        let items = [];
-        if (Array.isArray(inc.tiers) && inc.tiers.length > 0) {
-          items = inc.tiers.map(t => ({
-            name: t.tier_name || t.name || 'Tier Item',
-            description: t.description || inc.description || '',
-            price: Number(t.unit_price ?? t.price ?? 0)
-          }));
-        } else if (Array.isArray(inc.items) && inc.items.length > 0) {
-          items = inc.items.map(i => ({
-            name: i.name || i.title || 'Item',
-            description: i.description || i.desc || '',
-            price: Number(i.price ?? i.unitPrice ?? i.unit_price ?? 0)
-          }));
-        } else {
-          items = [{
-            name: inc.name || inc.title || 'Included Service',
-            description: inc.description || inc.desc || '',
-            price: Number(inc.basic_price ?? inc.unit_price ?? inc.price ?? 0)
-          }];
-        }
-
-        return {
-          title: inc.name || inc.category || inc.title || `Inclusion #${idx + 1}`,
-          key: `inc_${idx}_${(inc.name || '').replace(/\s+/g, '_')}`,
-          icon: icon,
-          active: true,
-          items: items,
-          theme: 'from-[#6F4E37]/10 via-amber-500/5 to-[#6F4E37]/10 border-[#DDB892]/60 text-[#6F4E37] bg-[#6F4E37]/10'
-        };
-      });
+    let itemsList = [];
+    if (Array.isArray(rawInc)) {
+      itemsList = rawInc;
+    } else if (rawInc && typeof rawInc === 'object') {
+      if (Array.isArray(rawInc.items)) itemsList = rawInc.items;
+      else if (Array.isArray(rawInc.inclusions)) itemsList = rawInc.inclusions;
     }
 
-    // Case 2: inclusions is an OBJECT (legacy schema)
-    const objInc = (rawInc && typeof rawInc === 'object' && !Array.isArray(rawInc)) ? rawInc : {};
-    const foodItemsRaw = objInc.food_items || event?.food_items || [];
-    const cakeItemsRaw = objInc.cake_items || event?.cake_items || [];
-    const decorItemsRaw = objInc.decoration_items || event?.decoration_items || [];
-    const musicItemsRaw = objInc.music_items || event?.music_items || [];
-    const otherItemsRaw = objInc.other_items || event?.other_items || [];
+    if (itemsList.length === 0) return [];
 
-    const isFood = objInc.food !== undefined ? Boolean(objInc.food) : foodItemsRaw.length > 0;
-    const isCake = objInc.cake !== undefined ? Boolean(objInc.cake) : cakeItemsRaw.length > 0;
-    const isDecor = objInc.decoration !== undefined ? Boolean(objInc.decoration) : decorItemsRaw.length > 0;
-    const isMusic = objInc.music !== undefined ? Boolean(objInc.music) : musicItemsRaw.length > 0;
-    const isOther = objInc.other !== undefined ? Boolean(objInc.other) : otherItemsRaw.length > 0;
-
-    return [
-      { title: 'Food & Catering', key: 'food_items', icon: Utensils, active: isFood, items: foodItemsRaw, theme: 'from-amber-500/10 via-orange-500/5 to-amber-500/10 border-amber-200/80 text-amber-900 bg-amber-500/10' },
-      { title: 'Celebration Cake', key: 'cake_items', icon: CakeIcon, active: isCake, items: cakeItemsRaw, theme: 'from-rose-500/10 via-pink-500/5 to-rose-500/10 border-rose-200/80 text-rose-900 bg-pink-500/10' },
-      { title: 'Theme Decoration', key: 'decoration_items', icon: Sparkles, active: isDecor, items: decorItemsRaw, theme: 'from-purple-500/10 via-indigo-500/5 to-purple-500/10 border-purple-200/80 text-purple-900 bg-purple-500/10' },
-      { title: 'Music & DJ Setup', key: 'music_items', icon: Music, active: isMusic, items: musicItemsRaw, theme: 'from-sky-500/10 via-cyan-500/5 to-sky-500/10 border-sky-200/80 text-sky-900 bg-sky-500/10' },
-      { title: 'Other Special Inclusions', key: 'other_items', icon: CheckCircle2, active: isOther, items: otherItemsRaw, theme: 'from-emerald-500/10 via-teal-500/5 to-emerald-500/10 border-emerald-200/80 text-emerald-900 bg-emerald-500/10' },
-    ].filter(cat => cat.active);
+    return [{
+      title: 'Included Package Features',
+      key: 'package_features',
+      icon: CheckCircle2,
+      active: true,
+      items: itemsList.map(item => ({
+        name: item.name || item.title || item.category || 'Included Feature',
+        description: item.description || item.basic_desc || item.standard_desc || '',
+        quantity: item.quantity ? `${item.quantity} ${item.unit || ''}`.trim() : null
+      })),
+      theme: 'from-[#6F4E37]/10 via-amber-500/5 to-[#6F4E37]/10 border-[#DDB892]/60 text-[#6F4E37] bg-[#6F4E37]/10'
+    }];
   }, [event]);
 
   const packagePrice = useMemo(() => {
-    const directPrice = Number(event?.price ?? event?.base_price ?? 0);
-    let incSum = 0;
-    activeInclusionCategories.forEach(cat => {
-      if (Array.isArray(cat.items)) {
-        cat.items.forEach(item => {
-          incSum += Number(item.price || item.unitPrice || item.unit_price || 0);
-        });
-      }
-    });
-    return incSum > directPrice ? incSum : (directPrice > 0 ? directPrice : incSum);
-  }, [event, activeInclusionCategories]);
+    return Number(event?.price ?? event?.base_price ?? 0);
+  }, [event]);
 
   const handleShareClick = () => {
     if (typeof window !== 'undefined' && navigator.clipboard) {

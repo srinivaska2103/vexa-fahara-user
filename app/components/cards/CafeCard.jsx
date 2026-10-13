@@ -8,12 +8,14 @@ import {
   Footprints
 } from 'lucide-react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { cn, checkIfCafeOpen } from '@/lib/utils';
 import { useFavoritesStore } from '@/stores/favorites.store';
 import { useLanguage } from '@/context/LanguageContext';
 import toast from 'react-hot-toast';
 
 export default function CafeCard({ cafe, activeCategory = '' }) {
+  const router = useRouter();
   const { t } = useLanguage();
   const [isOpen, setIsOpen] = useState(true);
   const [activeImgIndex, setActiveImgIndex] = useState(0);
@@ -295,6 +297,12 @@ export default function CafeCard({ cafe, activeCategory = '' }) {
     setActiveImgIndex((prev) => (prev - 1 + imageList.length) % imageList.length);
   };
 
+  const handleCardClick = () => {
+    if (cafeId) {
+      router.push(`/customer/cafe/${cafeId}`);
+    }
+  };
+
   return (
     <motion.div 
       initial={{ opacity: 0, y: 12 }}
@@ -303,12 +311,13 @@ export default function CafeCard({ cafe, activeCategory = '' }) {
       whileTap={{ scale: 0.98 }}
       onHoverStart={() => setIsHovered(true)}
       onHoverEnd={() => setIsHovered(false)}
+      onClick={handleCardClick}
       transition={{ type: 'spring', stiffness: 350, damping: 22 }}
-      className="bg-white rounded-[22px] border border-[#E5D7CA]/80 shadow-[0_4px_20px_rgba(44,24,16,0.04)] hover:shadow-[0_18px_42px_rgba(111,78,55,0.15)] hover:border-[#6F4E37]/50 transition-all duration-300 flex flex-col h-full w-full group relative cursor-pointer"
+      className="bg-white rounded-[24px] sm:rounded-[28px] overflow-hidden border border-[#E5D7CA]/80 shadow-[0_4px_20px_rgba(44,24,16,0.04)] hover:shadow-[0_18px_42px_rgba(111,78,55,0.15)] hover:border-[#6F4E37]/50 transition-all duration-300 flex flex-col h-full w-full group relative cursor-pointer"
     >
         {/* 🖼️ Image Section */}
         <div 
-          className="relative aspect-[16/10] w-full overflow-hidden rounded-t-[22px] bg-stone-100 select-none"
+          className="relative aspect-[16/10] w-full overflow-hidden bg-stone-100 select-none"
           onTouchStart={(e) => {
             setTouchEnd(null);
             setTouchStart(e.targetTouches[0].clientX);
@@ -478,19 +487,19 @@ export default function CafeCard({ cafe, activeCategory = '' }) {
       </div>
 
       {/* CONTENT SECTION */}
-      <div className="p-3.5 sm:p-4.5 flex flex-col flex-1 justify-between bg-white relative z-30 gap-2.5 sm:gap-3">
+      <div className="p-2.5 sm:p-4 flex flex-col flex-1 justify-between bg-white relative z-30 gap-2 sm:gap-3 rounded-b-[24px] sm:rounded-b-[28px]">
         <div>
           {/* Title & Real Rating Pill */}
           <div className="flex justify-between items-start mb-1 gap-1.5 sm:gap-2">
-            <h3 className="text-sm sm:text-base md:text-lg font-bold text-[#2C1810] tracking-tight leading-snug line-clamp-1 group-hover:text-[#6F4E37] transition-colors duration-300">
+            <h3 className="text-[13px] sm:text-base md:text-lg font-bold text-[#2C1810] tracking-tight leading-snug line-clamp-1 group-hover:text-[#6F4E37] transition-colors duration-300">
               {name}
             </h3>
             
             {hasRating ? (
-              <div className="flex items-center bg-[#FFF8E7] text-[#5C4033] border border-[#FEE199] px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full text-[11px] sm:text-xs font-black shrink-0 shadow-2xs">
-                <Star size={12} className="fill-amber-400 text-amber-400 mr-1 stroke-[1.5]" />
+              <div className="flex items-center bg-[#FFF8E7] text-[#5C4033] border border-[#FEE199] px-1.5 py-0.5 sm:px-2.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-black shrink-0 shadow-2xs">
+                <Star size={11} className="fill-amber-400 text-amber-400 mr-1 stroke-[1.5]" />
                 <span>{rating}</span>
-                {reviewsCount > 0 && <span className="text-[#8B5A2B] ml-0.5 text-[10px]">({reviewsCount})</span>}
+                {reviewsCount > 0 && <span className="text-[#8B5A2B] ml-0.5 text-[9px] sm:text-[10px]">({reviewsCount})</span>}
               </div>
             ) : (
               <div className="text-[9px] sm:text-[10px] font-bold text-stone-400 bg-stone-100 px-2 py-0.5 rounded-full border border-stone-200 shrink-0 whitespace-nowrap">
@@ -501,14 +510,14 @@ export default function CafeCard({ cafe, activeCategory = '' }) {
           
           {/* LOCATION */}
           {city && (
-            <div className="flex items-center justify-between text-xs text-stone-500 mb-2.5">
+            <div className="flex items-center justify-between text-[11px] sm:text-xs text-stone-500 mb-2">
               <div className="flex items-center truncate max-w-[72%] font-medium">
-                <MapPin size={13} className="mr-1 flex-shrink-0 text-[#6F4E37]" />
+                <MapPin size={12} className="mr-1 flex-shrink-0 text-[#6F4E37]" />
                 <span className="truncate font-bold text-stone-600">{city}</span>
               </div>
               {distance && (
-                <div className="flex items-center font-extrabold bg-stone-100 px-2 py-0.5 rounded-lg text-stone-600 text-[10px] border border-stone-200 flex-shrink-0">
-                  <Navigation size={10} className="mr-1 text-stone-400" />
+                <div className="flex items-center font-extrabold bg-stone-100 px-1.5 py-0.5 rounded-lg text-stone-600 text-[9px] sm:text-[10px] border border-stone-200 flex-shrink-0">
+                  <Navigation size={9} className="mr-1 text-stone-400" />
                   {distance}
                 </div>
               )}
@@ -516,7 +525,7 @@ export default function CafeCard({ cafe, activeCategory = '' }) {
           )}
 
           {/* MODERN INTERACTIVE AMENITY CHIPS */}
-          <div className="flex items-center gap-1.5 flex-wrap relative z-20">
+          <div className="flex items-center gap-1 sm:gap-1.5 flex-wrap relative z-20">
             {amenityList.length > 0 ? (
               <>
                 {amenityList.slice(0, 2).map((am, i) => (
@@ -524,10 +533,10 @@ export default function CafeCard({ cafe, activeCategory = '' }) {
                     key={i}
                     whileHover={{ scale: 1.05, y: -1 }}
                     whileTap={{ scale: 0.95 }}
-                    className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-gradient-to-r from-[#FFFBF7] via-[#FFF8F0] to-[#FFF5EC] border border-[#E8DED5] text-[#5C3D26] hover:text-[#2C1810] hover:border-[#6F4E37]/50 text-[11px] font-extrabold capitalize shadow-2xs hover:shadow-xs transition-all cursor-pointer"
+                    className="inline-flex items-center gap-1 px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full bg-gradient-to-r from-[#FFFBF7] via-[#FFF8F0] to-[#FFF5EC] border border-[#E8DED5] text-[#5C3D26] hover:text-[#2C1810] hover:border-[#6F4E37]/50 text-[10px] sm:text-[11px] font-extrabold capitalize shadow-2xs hover:shadow-xs transition-all cursor-pointer"
                   >
-                    <span className="w-3.5 h-3.5 rounded-full bg-emerald-500/15 text-emerald-600 flex items-center justify-center shrink-0">
-                      <Check size={9} className="stroke-[3]" />
+                    <span className="w-3 h-3 sm:w-3.5 sm:h-3.5 rounded-full bg-emerald-500/15 text-emerald-600 flex items-center justify-center shrink-0">
+                      <Check size={8} className="stroke-[3]" />
                     </span>
                     <span>{String(am).replace('_', ' ')}</span>
                   </motion.div>
@@ -544,10 +553,10 @@ export default function CafeCard({ cafe, activeCategory = '' }) {
                       setShowAmenityPopover(!showAmenityPopover);
                       setShowCapabilityPopover(false);
                     }}
-                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#F5EDE4] hover:bg-[#6F4E37] text-[#6F4E37] hover:text-white border border-[#E8DED5] text-[11px] font-black shadow-2xs transition-all duration-200 cursor-pointer"
+                    className="inline-flex items-center gap-0.5 px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full bg-[#F5EDE4] hover:bg-[#6F4E37] text-[#6F4E37] hover:text-white border border-[#E8DED5] text-[10px] sm:text-[11px] font-black shadow-2xs transition-all duration-200 cursor-pointer"
                   >
                     <span>+{amenityList.length - 2} more</span>
-                    <ChevronDown size={11} className={cn("transition-transform duration-200", showAmenityPopover && "rotate-180")} />
+                    <ChevronDown size={10} className={cn("transition-transform duration-200", showAmenityPopover && "rotate-180")} />
                   </motion.button>
                 )}
 
@@ -586,7 +595,7 @@ export default function CafeCard({ cafe, activeCategory = '' }) {
                 </AnimatePresence>
               </>
             ) : (
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-stone-100 border border-stone-200 text-stone-600 text-[11px] font-extrabold capitalize">
+              <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-stone-100 border border-stone-200 text-stone-600 text-[10px] sm:text-[11px] font-extrabold capitalize">
                 <span>{cafe?.category || cafe?.service_type || 'Venue'}</span>
               </div>
             )}
@@ -594,7 +603,7 @@ export default function CafeCard({ cafe, activeCategory = '' }) {
 
           {/* MODERN INTERACTIVE EVENT CAPABILITY BADGES */}
           {eventCapabilities.length > 0 && (
-            <div className="flex items-center gap-1.5 flex-wrap mt-2.5 pt-2.5 border-t border-stone-100/90 relative z-20">
+            <div className="flex items-center gap-1 sm:gap-1.5 flex-wrap mt-2 pt-2 border-t border-stone-100/90 relative z-20">
               {visibleCapabilities.map((cap) => (
                 <motion.div
                   key={cap.id}
@@ -602,11 +611,11 @@ export default function CafeCard({ cafe, activeCategory = '' }) {
                   whileTap={{ scale: 0.95 }}
                 >
                   <Link 
-                    href={`/cafes/${cafeId}`}
+                    href={`/customer/cafe/${cafeId}`}
                     onClick={(e) => e.stopPropagation()}
-                    className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gradient-to-r from-amber-500/10 via-orange-500/10 to-rose-500/10 hover:from-amber-500/20 hover:to-rose-500/20 border border-amber-300/70 hover:border-amber-400 text-[#4A2C11] text-[11px] font-black hover:shadow-xs transition-all cursor-pointer shadow-2xs group/badge"
+                    className="inline-flex items-center gap-1 px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full bg-gradient-to-r from-amber-500/10 via-orange-500/10 to-rose-500/10 hover:from-amber-500/20 hover:to-rose-500/20 border border-amber-300/70 hover:border-amber-400 text-[#4A2C11] text-[10px] sm:text-[11px] font-black hover:shadow-xs transition-all cursor-pointer shadow-2xs group/badge"
                   >
-                    <Sparkles size={12} className="text-amber-600 group-hover/badge:scale-110 transition-transform shrink-0" />
+                    <Sparkles size={11} className="text-amber-600 group-hover/badge:scale-110 transition-transform shrink-0" />
                     <span>{cap.label}</span>
                   </Link>
                 </motion.div>
@@ -623,10 +632,10 @@ export default function CafeCard({ cafe, activeCategory = '' }) {
                     setShowCapabilityPopover(!showCapabilityPopover);
                     setShowAmenityPopover(false);
                   }}
-                  className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#FFF8F0] hover:bg-[#6F4E37] text-[#6F4E37] hover:text-white border border-[#DDB892]/60 text-[11px] font-black shadow-2xs transition-all duration-200 cursor-pointer"
+                  className="inline-flex items-center gap-0.5 px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full bg-[#FFF8F0] hover:bg-[#6F4E37] text-[#6F4E37] hover:text-white border border-[#DDB892]/60 text-[10px] sm:text-[11px] font-black shadow-2xs transition-all duration-200 cursor-pointer"
                 >
                   <span>+{remainingCapCount} more</span>
-                  <ChevronDown size={11} className={cn("transition-transform duration-200", showCapabilityPopover && "rotate-180")} />
+                  <ChevronDown size={10} className={cn("transition-transform duration-200", showCapabilityPopover && "rotate-180")} />
                 </motion.button>
               )}
 
@@ -654,7 +663,7 @@ export default function CafeCard({ cafe, activeCategory = '' }) {
                       {eventCapabilities.map((cap) => (
                         <Link
                           key={cap.id}
-                          href={`/cafes/${cafeId}`}
+                          href={`/customer/cafe/${cafeId}`}
                           className="flex items-center gap-2 text-xs font-extrabold text-[#2C1810] hover:text-[#6F4E37] transition-colors"
                         >
                           <Sparkles size={11} className="text-amber-600 shrink-0" />
@@ -670,25 +679,25 @@ export default function CafeCard({ cafe, activeCategory = '' }) {
         </div>
 
         {/* CAPABILITY-BASED CTAs & PRICING DISPLAY */}
-        <div className="pt-2.5 sm:pt-3 border-t border-stone-100 flex items-center justify-between gap-1.5 sm:gap-2">
+        <div className="pt-2 sm:pt-3 border-t border-stone-100 flex items-center justify-between gap-1.5 sm:gap-2">
           {/* Left: Walking status or Price Display */}
           {isWalkingCafe ? (
             <div className="flex flex-col min-w-0">
-              <span className="text-[11px] sm:text-xs font-black text-emerald-800 bg-emerald-50 border border-emerald-300/70 px-2.5 py-1 rounded-xl shrink-0 truncate flex items-center gap-1">
-                <Footprints size={11} className="text-emerald-600" />
+              <span className="text-[10px] sm:text-xs font-black text-emerald-800 bg-emerald-50 border border-emerald-300/70 px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-xl shrink-0 truncate flex items-center gap-1">
+                <Footprints size={10} className="text-emerald-600" />
                 Walk In
               </span>
             </div>
           ) : hasValidPrice ? (
             <div className="flex flex-col min-w-0">
               <div className="flex items-baseline gap-0.5">
-                <span className="text-[10px] sm:text-xs font-medium text-stone-400">From</span>
-                <span className="text-sm sm:text-base md:text-lg font-black text-[#2C1810] tracking-tight ml-0.5 sm:ml-1">₹{numPrice}</span>
-                <span className="text-[9px] sm:text-[10px] font-bold text-stone-400 uppercase tracking-wider">/hr</span>
+                <span className="text-[9px] sm:text-xs font-medium text-stone-400">From</span>
+                <span className="text-xs sm:text-base md:text-lg font-black text-[#2C1810] tracking-tight ml-0.5 sm:ml-1">₹{numPrice}</span>
+                <span className="text-[8px] sm:text-[10px] font-bold text-stone-400 uppercase tracking-wider">/hr</span>
               </div>
             </div>
           ) : (
-            <span className="text-[11px] sm:text-xs font-extrabold text-[#6F4E37] bg-[#FFF8F0] border border-[#DDB892]/60 px-2.5 py-1 rounded-xl shrink-0 truncate">
+            <span className="text-[10px] sm:text-xs font-extrabold text-[#6F4E37] bg-[#FFF8F0] border border-[#DDB892]/60 px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-xl shrink-0 truncate">
               Price on request
             </span>
           )}
@@ -699,10 +708,10 @@ export default function CafeCard({ cafe, activeCategory = '' }) {
               <motion.button 
                 whileHover={{ scale: 1.04 }}
                 whileTap={{ scale: 0.95 }}
-                className="py-1.5 px-3 sm:py-2 sm:px-4 bg-gradient-to-r from-[#4A2C11] via-[#5A3825] to-[#6F4E37] hover:from-[#361f0a] hover:to-[#573d2a] text-white font-black rounded-xl text-[11px] sm:text-xs flex items-center justify-center gap-1.5 shadow-md hover:shadow-lg hover:shadow-[#4A2C11]/25 transition-all duration-300 cursor-pointer group/btn shrink-0"
+                className="py-1 px-2.5 sm:py-2 sm:px-4 bg-gradient-to-r from-[#4A2C11] via-[#5A3825] to-[#6F4E37] hover:from-[#361f0a] hover:to-[#573d2a] text-white font-black rounded-xl text-[10px] sm:text-xs flex items-center justify-center gap-1 sm:gap-1.5 shadow-md hover:shadow-lg hover:shadow-[#4A2C11]/25 transition-all duration-300 cursor-pointer group/btn shrink-0"
               >
                 <span className="whitespace-nowrap">View Details</span>
-                <ArrowRight size={12} className="group-hover/btn:translate-x-1 transition-transform shrink-0" />
+                <ArrowRight size={11} className="group-hover/btn:translate-x-1 transition-transform shrink-0" />
               </motion.button>
             </Link>
           </div>

@@ -106,7 +106,7 @@ export default function EventCustomizationSection() {
             <h3 className="text-2xl font-black text-[#2C1810]">Add-on Event Services</h3>
             <p className="text-xs sm:text-sm font-bold text-stone-500">Handpicked event arrangements delivered right at your cafe venue</p>
           </div>
-          <Link href="/events" className="mt-3 sm:mt-0 text-xs font-black text-[#6F4E37] hover:text-[#4A2C11] flex items-center gap-1">
+          <Link href="/customer/cafe" className="mt-3 sm:mt-0 text-xs font-black text-[#6F4E37] hover:text-[#4A2C11] flex items-center gap-1">
             <span>Explore All Services</span>
             <ArrowRight size={14} />
           </Link>
@@ -142,7 +142,7 @@ export default function EventCustomizationSection() {
                     <span className="text-lg font-black text-[#2C1810]">{service.price}</span>
                   </div>
 
-                  <Link href="/events">
+                  <Link href={service.id ? `/events/${service.id}` : "/customer/cafe"}>
                     <button className="px-4 py-2 bg-[#FFF8F0] hover:bg-[#6F4E37] text-[#6F4E37] hover:text-white border border-[#DDB892]/60 rounded-xl text-xs font-black transition-all active:scale-95 cursor-pointer">
                       View Service
                     </button>

@@ -13,7 +13,7 @@ export default function FilterDrawer({ isOpen, onClose, mode, bookingStats, acti
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-50 flex lg:hidden">
+        <div className="fixed inset-0 z-[60] flex lg:hidden">
           {/* Backdrop */}
           <motion.div 
             initial={{ opacity: 0 }}
@@ -61,9 +61,29 @@ export default function FilterDrawer({ isOpen, onClose, mode, bookingStats, acti
             </div>
             
             {/* Scrollable Filter Content */}
-            <div className="flex-1 overflow-y-auto p-4">
+            <div className="flex-1 overflow-y-auto p-4 pb-24">
               <FilterSidebar showHeader={false} showNavigation={false} mode={mode} bookingStats={bookingStats} activeTab={activeTab} onTabChange={(tabId) => { onTabChange && onTabChange(tabId); onClose(); }} cafes={cafes} />
             </div>
+
+            {/* Mobile Footer Apply Button */}
+            {mode !== 'bookings' && mode !== 'profile' && (
+              <div className="p-3 border-t border-stone-100 bg-white shadow-lg flex gap-2">
+                <button
+                  type="button"
+                  onClick={clearFilters}
+                  className="flex-1 py-2.5 rounded-xl border border-stone-200 text-xs font-bold text-stone-600 hover:bg-stone-50 active:scale-95 transition-all"
+                >
+                  Clear
+                </button>
+                <button
+                  type="button"
+                  onClick={onClose}
+                  className="flex-[2] py-2.5 rounded-xl bg-[#6F4E37] hover:bg-[#5a3e2b] text-white text-xs font-black shadow-md shadow-[#6F4E37]/20 active:scale-95 transition-all"
+                >
+                  Apply Filters
+                </button>
+              </div>
+            )}
           </motion.div>
         </div>
       )}

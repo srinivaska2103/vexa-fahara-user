@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useId } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Clock, CheckCircle2, AlertCircle, RefreshCw, Calendar, X } from 'lucide-react';
+import { Clock, CheckCircle2, AlertCircle, RefreshCw, Calendar, X, ChevronUp, ChevronDown } from 'lucide-react';
 import { checkIfTimeWithinBusinessHours } from '@/lib/utils';
 import toast from 'react-hot-toast';
 
@@ -227,12 +227,130 @@ export default function StartTimePicker({
     if (onClose) onClose();
   };
 
+  // Up/Down adjustments for mobile compact picker
+  const stepHour = (delta) => {
+    let currentH = parseInt(hour, 10);
+    let nextH = currentH + delta;
+    if (nextH > 12) nextH = 1;
+    if (nextH < 1) nextH = 12;
+    handleUpdate(nextH.toString().padStart(2, '0'), min, ampm);
+  };
+
+  const stepMin = (delta) => {
+    const mins = ['00', '15', '30', '45'];
+    let idx = mins.indexOf(min);
+    if (idx === -1) idx = 0;
+    let nextIdx = (idx + delta + mins.length) % mins.length;
+    handleUpdate(hour, mins[nextIdx], ampm);
+  };
+
+  const toggleAmpm = () => {
+    handleUpdate(hour, min, ampm === 'AM' ? 'PM' : 'AM');
+  };
+
   return (
     <div className="w-full font-sans relative" id={pickerId}>
       {/* ------------------------------------------------------------------ */}
-      {/* TOP SELECTED TIME DISPLAY BAR */}
+      {/* MOBILE COMPACT NATIVE 3-COLUMN TIME PICKER (Modern & Responsive)   */}
       {/* ------------------------------------------------------------------ */}
-      <div className="w-full bg-[#FAF7F2] border border-[#E8DED3] rounded-3xl p-3.5 sm:p-4 flex items-center justify-between shadow-2xs">
+      <div className="md:hidden w-full bg-gradient-to-b from-white to-[#FDFBF9] border border-[#E8DED5] rounded-[22px] p-3.5 shadow-[0_2px_10px_rgba(44,24,16,0.04)] transition-all">
+        {/* Label and Current Value Header */}
+        <div className="flex items-center justify-between text-[11px] font-bold text-stone-500 px-1 mb-2.5">
+          <span className="uppercase tracking-wider font-extrabold text-stone-400">{label}</span>
+          <span className="text-[#6F4E37] font-black tracking-tight bg-[#FFF8F0] border border-[#DDB892]/60 px-2.5 py-0.5 rounded-full shadow-2xs">
+            {formattedDisplay}
+          </span>
+        </div>
+
+        {/* 3 Adjacent Interactive Columns */}
+        <div className="flex items-center justify-between gap-1.5 xs:gap-2">
+          {/* Column 1: Hours (08 h) */}
+          <div className="flex-1 min-w-0 bg-[#FAF7F2] hover:bg-[#FFF8F0] border border-[#E8DED5] focus-within:border-[#DDB892] rounded-2xl p-1.5 flex flex-col items-center justify-between h-[96px] shadow-2xs transition-colors">
+            <motion.button
+              whileTap={{ scale: 0.85 }}
+              type="button"
+              onClick={() => stepHour(1)}
+              aria-label="Increase hour"
+              className="w-full py-1 text-stone-400 hover:text-[#6F4E37] active:text-[#6F4E37] flex items-center justify-center cursor-pointer transition-colors"
+            >
+              <ChevronUp size={18} strokeWidth={2.4} />
+            </motion.button>
+            <span className="text-base sm:text-lg font-black text-[#2C1810] tracking-tight select-none">
+              {hour}<span className="text-xs font-semibold text-stone-400 ml-0.5">h</span>
+            </span>
+            <motion.button
+              whileTap={{ scale: 0.85 }}
+              type="button"
+              onClick={() => stepHour(-1)}
+              aria-label="Decrease hour"
+              className="w-full py-1 text-stone-400 hover:text-[#6F4E37] active:text-[#6F4E37] flex items-center justify-center cursor-pointer transition-colors"
+            >
+              <ChevronDown size={18} strokeWidth={2.4} />
+            </motion.button>
+          </div>
+
+          {/* Separator Colon */}
+          <span className="text-base font-black text-stone-300 select-none pb-0.5 shrink-0">:</span>
+
+          {/* Column 2: Minutes (10 m) */}
+          <div className="flex-1 min-w-0 bg-[#FAF7F2] hover:bg-[#FFF8F0] border border-[#E8DED5] focus-within:border-[#DDB892] rounded-2xl p-1.5 flex flex-col items-center justify-between h-[96px] shadow-2xs transition-colors">
+            <motion.button
+              whileTap={{ scale: 0.85 }}
+              type="button"
+              onClick={() => stepMin(1)}
+              aria-label="Increase minute"
+              className="w-full py-1 text-stone-400 hover:text-[#6F4E37] active:text-[#6F4E37] flex items-center justify-center cursor-pointer transition-colors"
+            >
+              <ChevronUp size={18} strokeWidth={2.4} />
+            </motion.button>
+            <span className="text-base sm:text-lg font-black text-[#2C1810] tracking-tight select-none">
+              {min}<span className="text-xs font-semibold text-stone-400 ml-0.5">m</span>
+            </span>
+            <motion.button
+              whileTap={{ scale: 0.85 }}
+              type="button"
+              onClick={() => stepMin(-1)}
+              aria-label="Decrease minute"
+              className="w-full py-1 text-stone-400 hover:text-[#6F4E37] active:text-[#6F4E37] flex items-center justify-center cursor-pointer transition-colors"
+            >
+              <ChevronDown size={18} strokeWidth={2.4} />
+            </motion.button>
+          </div>
+
+          {/* Column 3: AM / PM Period Selector */}
+          <div className="w-[68px] xs:w-[74px] shrink-0 bg-[#FAF7F2] border border-[#E8DED5] rounded-2xl p-1 flex flex-col items-center justify-center h-[96px] gap-1 shadow-2xs">
+            <motion.button
+              whileTap={{ scale: 0.92 }}
+              type="button"
+              onClick={() => handleUpdate(hour, min, 'AM')}
+              className={`w-full py-2 rounded-xl text-xs font-black transition-all cursor-pointer ${
+                ampm === 'AM'
+                  ? 'bg-white text-[#6F4E37] shadow-sm border border-[#DDB892]/70 font-black'
+                  : 'text-stone-400 hover:text-stone-600'
+              }`}
+            >
+              AM
+            </motion.button>
+            <motion.button
+              whileTap={{ scale: 0.92 }}
+              type="button"
+              onClick={() => handleUpdate(hour, min, 'PM')}
+              className={`w-full py-2 rounded-xl text-xs font-black transition-all cursor-pointer ${
+                ampm === 'PM'
+                  ? 'bg-white text-[#6F4E37] shadow-sm border border-[#DDB892]/70 font-black'
+                  : 'text-stone-400 hover:text-stone-600'
+              }`}
+            >
+              PM
+            </motion.button>
+          </div>
+        </div>
+      </div>
+
+      {/* ------------------------------------------------------------------ */}
+      {/* DESKTOP SELECTED TIME DISPLAY BAR (Preserved)                      */}
+      {/* ------------------------------------------------------------------ */}
+      <div className="hidden md:flex w-full bg-[#FAF7F2] border border-[#E8DED3] rounded-3xl p-3.5 sm:p-4 items-center justify-between shadow-2xs">
         {/* Selected Time Badge */}
         <div className="flex items-center gap-2">
           <div className="bg-white border border-[#DDB892]/70 px-4 py-2 rounded-2xl shadow-2xs font-black text-sm sm:text-base text-[#2D2420] flex items-center gap-1.5">
@@ -253,7 +371,7 @@ export default function StartTimePicker({
       </div>
 
       {/* ------------------------------------------------------------------ */}
-      {/* EXPANDABLE TIME SELECTOR PANEL */}
+      {/* EXPANDABLE TIME SELECTOR PANEL (Desktop Only)                      */}
       {/* ------------------------------------------------------------------ */}
       <AnimatePresence>
         {isOpen && (
@@ -263,7 +381,7 @@ export default function StartTimePicker({
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -10, scale: 0.98 }}
             transition={{ duration: 0.25, ease: 'easeOut' }}
-            className="mt-3 bg-[#FAF7F2] border border-[#E8DED3] rounded-3xl p-4 sm:p-6 shadow-[0_12px_36px_rgba(45,36,32,0.08)] space-y-5"
+            className="hidden md:block mt-3 bg-[#FAF7F2] border border-[#E8DED3] rounded-3xl p-4 sm:p-6 shadow-[0_12px_36px_rgba(45,36,32,0.08)] space-y-5"
           >
             {/* Header */}
             <div className="flex items-center justify-between pb-3 border-b border-[#E8DED3]">

@@ -278,7 +278,7 @@ export default function DiscoveryCategorySection({
                   {item.title}
                 </span>
 
-                {/* Grammatical Real Venue Count (1 Venue, 2 Venues, etc.) */}
+                {/* Venue Count */}
                 {item.count > 0 && (
                   <span className={`text-[11px] sm:text-xs font-bold mt-0.5 text-center truncate transition-colors ${
                     isSelected ? 'text-[#5C4033]' : 'text-stone-400 group-hover:text-stone-600'

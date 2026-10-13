@@ -160,7 +160,7 @@ export default function AboutPage() {
                 <ArrowRight size={16} />
               </Link>
               <Link 
-                href="/events"
+                href="/customer/cafe"
                 className="w-full sm:w-auto px-8 py-4 bg-white/10 hover:bg-white/20 text-white font-black rounded-2xl border border-white/20 backdrop-blur-md active:scale-95 transition-all flex items-center justify-center gap-2 text-sm"
               >
                 <span>Explore Event Services</span>
@@ -346,7 +346,7 @@ export default function AboutPage() {
               <Link href="/customer/cafe" className="w-full sm:w-auto px-8 py-4 bg-white text-[#2C1810] font-black rounded-2xl shadow-xl hover:bg-[#FFF8F0] transition-all">
                 Explore Cafes
               </Link>
-              <Link href="/events" className="w-full sm:w-auto px-8 py-4 bg-white/10 hover:bg-white/20 text-white font-black rounded-2xl border border-white/20 transition-all">
+              <Link href="/customer/cafe" className="w-full sm:w-auto px-8 py-4 bg-white/10 hover:bg-white/20 text-white font-black rounded-2xl border border-white/20 transition-all">
                 Find Event Services
               </Link>
             </div>

@@ -4,7 +4,11 @@ import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { useBookingStore } from '@/stores/booking.store';
 import { useCafeDetails, useCafeTables, useCafeTableAvailability } from '@/hooks/useCafeDetails';
-import { ArrowLeft, ChevronRight, ShieldCheck, Sparkles, Check, ChevronUp, Users, Utensils, Cake as CakeIcon, Music, CheckCircle2, LayoutGrid, MapPin } from 'lucide-react';
+import { 
+  ArrowLeft, ChevronRight, ShieldCheck, Sparkles, Check, ChevronUp, 
+  Users, Utensils, Cake as CakeIcon, Music, CheckCircle2, LayoutGrid, 
+  MapPin, Info, AlertCircle 
+} from 'lucide-react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -13,6 +17,7 @@ import CustomerNavbar from '@/app/components/layout/CustomerNavbar';
 import EventArrangementSection from '@/app/components/booking-redesign/EventArrangementSection';
 import BookingInformationForm from '@/app/components/booking-redesign/BookingInformationForm';
 import StickyBookingSummary from '@/app/components/booking-redesign/StickyBookingSummary';
+import PackageSelectorCards from '@/app/components/booking-redesign/PackageSelectorCards';
 import FaharaInteractiveLoader from '@/app/components/common/FaharaInteractiveLoader';
 
 import { useSearchParams } from 'next/navigation';
@@ -200,7 +205,7 @@ function BookingContent() {
         const incId = inc.id || inc.inclusion_id || `inc_${idx}`;
 
         const tierItems = tiersArr.length > 0 ? tiersArr.map(t => {
-          const tName = t.tier_name || t.name || t.tierName || 'Tier';
+          const tName = t.tier_name || t.name || t.tierName || 'Included';
           const formattedTName = tName.charAt(0).toUpperCase() + tName.slice(1).toLowerCase();
           const tPrice = Number(t.unit_price ?? t.price ?? 0);
           const tId = t.id || t.tier_id || t.tierId || `${incId}_${tName.toLowerCase()}`;
@@ -222,52 +227,20 @@ function BookingContent() {
           };
         }) : [
           {
-            id: `${incId}_basic`,
-            tierId: `${incId}_basic`,
-            tier_id: `${incId}_basic`,
+            id: `${incId}_item`,
+            tierId: `${incId}_item`,
+            tier_id: `${incId}_item`,
             inclusionId: incId,
             inclusion_id: incId,
-            name: 'Basic',
-            price: Number(bPrice),
-            unitPrice: Number(bPrice),
+            name: inc.name || inc.category || 'Included Feature',
+            price: Number(inc.unit_price ?? inc.basic_price ?? inc.price ?? 0),
+            unitPrice: Number(inc.unit_price ?? inc.basic_price ?? inc.price ?? 0),
             pricing_type: pType,
-            description: bDesc,
-            tier_name: 'BASIC',
-            tierName: 'BASIC',
-            level: 'Basic',
-            tierLevel: 'Basic'
-          },
-          {
-            id: `${incId}_standard`,
-            tierId: `${incId}_standard`,
-            tier_id: `${incId}_standard`,
-            inclusionId: incId,
-            inclusion_id: incId,
-            name: 'Standard',
-            price: Number(sPrice || bPrice),
-            unitPrice: Number(sPrice || bPrice),
-            pricing_type: pType,
-            description: sDesc,
-            tier_name: 'STANDARD',
-            tierName: 'STANDARD',
-            level: 'Standard',
-            tierLevel: 'Standard'
-          },
-          {
-            id: `${incId}_premium`,
-            tierId: `${incId}_premium`,
-            tier_id: `${incId}_premium`,
-            inclusionId: incId,
-            inclusion_id: incId,
-            name: 'Premium',
-            price: Number(pPrice || sPrice || bPrice),
-            unitPrice: Number(pPrice || sPrice || bPrice),
-            pricing_type: pType,
-            description: pDesc,
-            tier_name: 'PREMIUM',
-            tierName: 'PREMIUM',
-            level: 'Premium',
-            tierLevel: 'Premium'
+            description: inc.description || inc.basic_desc || 'Included with package',
+            tier_name: null,
+            tierName: null,
+            level: null,
+            tierLevel: null
           }
         ];
 
@@ -368,9 +341,8 @@ function BookingContent() {
     });
 
     const directPrice = Number(currentPackage.price || currentPackage.base_price || 0);
-    return (hasCategoryItems && sum > directPrice) 
-      ? sum 
-      : (directPrice > 0 ? directPrice : sum);
+    if (directPrice > 0) return directPrice;
+    return (hasCategoryItems && sum > 0) ? sum : 0;
   }, [currentPackage, activeInclusionCategories, selectedInclusionOptions, guestCount]);
 
   // Construct selected inclusions payload for Zustand store and backend booking
@@ -538,10 +510,11 @@ function BookingContent() {
   }, [cafeId, setCafeId, reset]);
 
   useEffect(() => {
-    if (cafe && cafe.price_per_hour) {
+    if (cafe) {
+      const targetPrice = cafe.provides_event_services ? 0 : (cafe.price_per_hour ? Number(cafe.price_per_hour) : 0);
       const currentStorePrice = useBookingStore.getState().cafePrice;
-      if (currentStorePrice !== cafe.price_per_hour) {
-        setCafePrice(cafe.price_per_hour);
+      if (currentStorePrice !== targetPrice) {
+        setCafePrice(targetPrice);
       }
     }
   }, [cafe, setCafePrice]);
@@ -591,27 +564,128 @@ function BookingContent() {
   return (
     <div className="min-h-screen bg-[#FFF8F0] font-sans antialiased selection:bg-[#6F4E37] selection:text-white pb-24 lg:pb-12">
       
-      {/* Top Navbar */}
-      <CustomerNavbar showSearch={true} showViewToggles={false} />
+      {/* ── MOBILE-ONLY STICKY BOOKING TICKET HEADER (Reference Image 1) ── */}
+      <header className="md:hidden sticky top-0 z-40 bg-[#FFF8F0] border-b border-[#E8DED5] px-4 pt-3 pb-3.5 shadow-2xs">
+        {/* Top Bar: Back Arrow, Centered Title, Info Icon */}
+        <div className="flex items-center justify-between relative mb-3.5">
+          <button
+            type="button"
+            onClick={() => {
+              if (activeStepTab === 'info') {
+                setActiveStepTab('packages');
+              } else {
+                router.push(`/cafes/${cafeId}`);
+              }
+            }}
+            aria-label="Back"
+            className="w-9 h-9 rounded-full bg-white/80 hover:bg-white active:scale-90 border border-[#E8DED5] flex items-center justify-center text-[#2C1810] shadow-2xs transition-all cursor-pointer"
+          >
+            <ArrowLeft size={18} strokeWidth={2.2} />
+          </button>
 
-      <main className="container mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-6 max-w-7xl">
+          <h1 className="text-base font-extrabold text-[#2C1810] tracking-tight text-center">
+            Booking Ticket
+          </h1>
+
+          <button
+            type="button"
+            onClick={() => setMobileSummaryOpen(!mobileSummaryOpen)}
+            aria-label="Booking Details"
+            className="w-9 h-9 rounded-full bg-white/80 hover:bg-white active:scale-90 border border-[#E8DED5] flex items-center justify-center text-[#2C1810] shadow-2xs transition-all cursor-pointer"
+          >
+            <Info size={17} strokeWidth={2.2} />
+          </button>
+        </div>
+
+        {/* 3-Step Horizontal Stepper (Booking -> Payment -> Finish) */}
+        <div className="px-3">
+          <div className="relative flex items-center justify-between">
+            {/* Background Base Track Line */}
+            <div className="absolute top-[9px] left-3 right-3 h-[2px] bg-[#E8DED5] -z-0" />
+            
+            {/* Active Progress Fill Line */}
+            <div 
+              className="absolute top-[9px] left-3 h-[2px] bg-[#6F4E37] transition-all duration-300 -z-0"
+              style={{
+                width: activeStepTab === 'info' ? '50%' : '0%'
+              }}
+            />
+
+            {/* Step 1: Booking */}
+            <div 
+              onClick={() => setActiveStepTab('packages')}
+              className="flex flex-col items-center relative z-10 cursor-pointer group"
+            >
+              <div className="w-5 h-5 rounded-full bg-[#FFF8F0] border-2 border-[#6F4E37] flex items-center justify-center shadow-xs">
+                <div className="w-2 h-2 rounded-full bg-[#6F4E37]" />
+              </div>
+              <span className="text-[11px] font-black text-[#2C1810] mt-1.5 leading-none">
+                Booking
+              </span>
+            </div>
+
+            {/* Step 2: Payment */}
+            <div 
+              onClick={() => {
+                if (activeStepTab === 'packages') setActiveStepTab('info');
+              }}
+              className="flex flex-col items-center relative z-10 cursor-pointer group"
+            >
+              <div className={`w-5 h-5 rounded-full bg-[#FFF8F0] border-2 transition-colors flex items-center justify-center ${
+                activeStepTab === 'info' 
+                  ? 'border-[#6F4E37]' 
+                  : 'border-[#E8DED5]'
+              }`}>
+                {activeStepTab === 'info' ? (
+                  <div className="w-2 h-2 rounded-full bg-[#6F4E37]" />
+                ) : (
+                  <div className="w-2 h-2 rounded-full bg-[#E8DED5]" />
+                )}
+              </div>
+              <span className={`text-[11px] font-bold mt-1.5 leading-none transition-colors ${
+                activeStepTab === 'info' ? 'text-[#2C1810]' : 'text-stone-400'
+              }`}>
+                Payment
+              </span>
+            </div>
+
+            {/* Step 3: Finish */}
+            <div className="flex flex-col items-center relative z-10 select-none">
+              <div className="w-5 h-5 rounded-full bg-[#FFF8F0] border-2 border-[#E8DED5] flex items-center justify-center">
+                <div className="w-2 h-2 rounded-full bg-[#E8DED5]" />
+              </div>
+              <span className="text-[11px] font-bold text-stone-400 mt-1.5 leading-none">
+                Finish
+              </span>
+            </div>
+
+          </div>
+        </div>
+      </header>
+
+      {/* Top Navbar for Desktop & Tablet */}
+      <div className="hidden md:block">
+        <CustomerNavbar showSearch={true} showViewToggles={false} />
+      </div>
+
+      <main className="container mx-auto px-2 sm:px-6 lg:px-8 py-3 sm:py-6 max-w-7xl">
         
-        {/* Navigation Breadcrumb Row */}
-        <div className="mb-4 flex items-center justify-between gap-2">
-          <Link href={`/cafes/${cafeId}`} className="inline-flex items-center text-xs sm:text-sm font-extrabold bg-white hover:bg-[#FFF8F0] hover:text-[#6F4E37] text-stone-700 px-3.5 py-2 rounded-2xl border border-stone-200/80 transition-all shadow-2xs">
-            <ArrowLeft size={15} className="mr-1.5 shrink-0" />
+        {/* Navigation Breadcrumb Row (DESKTOP ONLY) */}
+        <div className="hidden md:flex mb-3 sm:mb-4 items-center justify-between gap-2 flex-wrap">
+          <Link href={`/cafes/${cafeId}`} className="inline-flex items-center text-xs sm:text-sm font-extrabold bg-white hover:bg-[#FFF8F0] hover:text-[#6F4E37] text-stone-700 px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-2xl border border-stone-200/80 transition-all shadow-2xs max-w-[70%]">
+            <ArrowLeft size={14} className="mr-1.5 shrink-0" />
             <span className="truncate">Back to {cafe.name || 'Venue'}</span>
           </Link>
 
-          <span className="text-[10px] sm:text-xs font-black text-[#6F4E37] bg-white border border-[#DDB892]/60 px-3 py-1.5 rounded-full shadow-2xs flex items-center gap-1.5">
-            <Sparkles size={13} className="text-amber-500" />
+          <span className="text-[10px] sm:text-xs font-black text-[#6F4E37] bg-white border border-[#DDB892]/60 px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-full shadow-2xs flex items-center gap-1.5 shrink-0">
+            <Sparkles size={12} className="text-amber-500" />
             <span>Instant Reservation</span>
           </span>
         </div>
 
-        {/* STEP-BY-STEP SECTION NAVIGATION BAR */}
-        <div className="bg-white rounded-2xl border border-stone-200 p-1.5 mb-5 shadow-xs overflow-x-auto">
-          <div className="flex items-center gap-1.5 min-w-max">
+        {/* STEP-BY-STEP SECTION NAVIGATION BAR (DESKTOP ONLY) */}
+        <div className="hidden md:block bg-white rounded-2xl border border-stone-200 p-1 sm:p-1.5 mb-4 sm:mb-5 shadow-xs overflow-x-auto no-scrollbar">
+          <div className="flex items-center gap-1.5 w-full">
             {stepsList.map((item) => {
               const isActive = activeStepTab === item.id;
               return (
@@ -624,18 +698,18 @@ function BookingContent() {
                       el.scrollIntoView({ behavior: 'smooth', block: 'start' });
                     }
                   }}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all duration-200 cursor-pointer ${
+                  className={`flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition-all duration-200 cursor-pointer flex-1 min-w-0 ${
                     isActive 
                       ? 'bg-[#6F4E37] text-white shadow-xs' 
                       : 'bg-stone-50 hover:bg-stone-100 text-stone-700 border border-stone-200'
                   }`}
                 >
-                  <span className={`w-5 h-5 rounded-full flex items-center justify-center font-bold text-[10px] transition-colors ${
+                  <span className={`w-4 h-4 sm:w-5 sm:h-5 rounded-full flex items-center justify-center font-bold text-[9px] sm:text-[10px] shrink-0 transition-colors ${
                     isActive ? 'bg-white text-[#6F4E37]' : 'bg-stone-200 text-stone-700'
                   }`}>
                     {item.step}
                   </span>
-                  <span className="tracking-tight">{item.label}</span>
+                  <span className="tracking-tight truncate text-[11px] sm:text-xs">{item.label}</span>
                 </button>
               );
             })}
@@ -643,31 +717,31 @@ function BookingContent() {
         </div>
 
         {/* 2-Column Balanced Grid Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6 items-start">
           
           {/* Main Content Area (7/12 cols desktop) */}
-          <div className="lg:col-span-7 xl:col-span-8 space-y-6 min-w-0">
+          <div className="lg:col-span-7 xl:col-span-8 space-y-5 sm:space-y-6 min-w-0">
             
             {/* Step 1 Tab Content: Table Selection & Inclusion Add-Ons */}
             {activeStepTab === 'packages' && (
-              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }} id="step-packages" className="space-y-6">
+              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }} id="step-packages" className="space-y-5 sm:space-y-6">
                 
                 {/* 1. REAL TABLE SELECTION CARD */}
-                <div className="bg-white rounded-2xl border border-stone-200 p-5 sm:p-6 space-y-4 shadow-xs">
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-stone-100 gap-3">
+                <div className="bg-white rounded-2xl border border-stone-200 p-4 sm:p-6 space-y-3.5 sm:space-y-4 shadow-xs">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-stone-100 gap-2.5">
                     <div>
-                      <div className="flex items-center gap-2">
-                        <h2 className="text-lg sm:text-xl font-black text-[#2C1810]">Select Your Table</h2>
-                        <span className="px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-black uppercase">Live Layout</span>
+                      <div className="flex items-center gap-1.5 flex-wrap">
+                        <h2 className="text-base sm:text-xl font-black text-[#2C1810]">Select Your Table</h2>
+                        <span className="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-[9px] sm:text-[10px] font-black uppercase">Live Layout</span>
                       </div>
-                      <p className="text-xs text-stone-500 font-medium mt-0.5">Tables are matched based on your guest count ({guestCount} {guestCount === 1 ? 'Guest' : 'Guests'})</p>
+                      <p className="text-[11px] sm:text-xs text-stone-500 font-medium mt-0.5">Tables are matched based on your guest count ({guestCount} {guestCount === 1 ? 'Guest' : 'Guests'})</p>
                     </div>
 
-                    <div className="flex items-center gap-2 self-start sm:self-auto">
+                    <div className="flex items-center justify-between sm:justify-end gap-2 flex-wrap">
                       {/* Guest Count Quick Adjuster */}
-                      <div className="flex items-center gap-1.5 bg-[#FFF8F0] border border-[#DDB892]/60 px-3 py-1 rounded-2xl">
-                        <Users size={13} className="text-[#6F4E37]" />
-                        <span className="text-[11px] font-extrabold text-stone-600">Guests:</span>
+                      <div className="flex items-center gap-1.5 bg-[#FFF8F0] border border-[#DDB892]/60 px-2.5 py-1 rounded-xl">
+                        <Users size={12} className="text-[#6F4E37] shrink-0" />
+                        <span className="text-[10px] sm:text-[11px] font-extrabold text-stone-600">Guests:</span>
                         <button
                           type="button"
                           onClick={() => setGuestCount(Math.max(1, guestCount - 1))}
@@ -675,7 +749,7 @@ function BookingContent() {
                         >
                           -
                         </button>
-                        <span className="text-xs font-black text-[#6F4E37] px-1">{guestCount}</span>
+                        <span className="text-xs font-black text-[#6F4E37] px-0.5">{guestCount}</span>
                         <button
                           type="button"
                           onClick={() => setGuestCount(guestCount + 1)}
@@ -685,7 +759,7 @@ function BookingContent() {
                         </button>
                       </div>
 
-                      <span className="text-xs font-extrabold px-3 py-1 rounded-full bg-stone-100 text-stone-700 border border-stone-200">
+                      <span className="text-[11px] sm:text-xs font-extrabold px-2.5 py-1 rounded-full bg-stone-100 text-stone-700 border border-stone-200 shrink-0">
                         {displayTablesList.length} Available {displayTablesList.length === 1 ? 'Table' : 'Tables'}
                       </span>
                     </div>
@@ -785,160 +859,20 @@ function BookingContent() {
                 {/* 2. EVENT ARRANGEMENT SECTION (Shown only when cafe does not provide own event packages) */}
                 <EventArrangementSection cafe={cafe} />
 
-                {/* 3. PROVIDED PACKAGE INCLUSIONS (Only shown for Cafe package when no 3rd party event manager is active) */}
-                {!isRestaurant && !selectedEventCompany && activeInclusionCategories.length > 0 && (
-                  <div className="bg-white rounded-2xl border border-stone-200 p-5 sm:p-6 space-y-5 shadow-xs">
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-stone-100 gap-2">
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <h2 className="text-lg sm:text-xl font-black text-[#2C1810]">
-                            {selectedEventCompany 
-                              ? `Inclusions Provided by ${selectedEventCompany.companyName || selectedEventCompany.name}` 
-                              : 'Package Inclusions Provided by Cafe'}
-                          </h2>
-                          {currentPackage?.package_name || currentPackage?.service_name ? (
-                            <span className="px-2.5 py-0.5 rounded-full bg-[#FFF8F0] text-[#6F4E37] border border-[#DDB892]/60 text-[10px] font-black uppercase">
-                              {currentPackage.package_name || currentPackage.service_name}
-                            </span>
-                          ) : null}
-                        </div>
-                        <p className="text-xs text-stone-500 font-medium mt-0.5">
-                          {selectedEventCompany ? `Customizable level options for ${selectedEventCompany.name}` : 'Everything included in this package provided directly by the venue'}
-                        </p>
-                      </div>
-                      <span className="text-xs font-extrabold px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200/80 flex items-center gap-1.5 self-start sm:self-auto">
-                        <CheckCircle2 size={14} className="text-emerald-600" />
-                        <span>All Included</span>
-                      </span>
-                    </div>
-
-                    {/* Cafe Package Selector if cafe offers multiple packages (hidden when 3rd party event manager is active) */}
-                    {cafePackages.length > 1 && !selectedEventCompany && (
-                      <div className="p-3 rounded-2xl bg-stone-50 border border-stone-200/80 space-y-2">
-                        <span className="text-xs font-extrabold text-[#2C1810] block">Select Event Package:</span>
-                        <div className="flex flex-wrap gap-2">
-                          {cafePackages.map((pkg) => {
-                            const isSelected = currentPackage?.id === pkg.id;
-                            return (
-                              <button
-                                key={pkg.id}
-                                type="button"
-                                onClick={() => setSelectedPkgId(pkg.id)}
-                                className={`px-3.5 py-2 rounded-xl text-xs font-black transition-all cursor-pointer border ${
-                                  isSelected
-                                    ? 'bg-[#6F4E37] text-white border-[#6F4E37] shadow-sm'
-                                    : 'bg-white text-stone-700 border-stone-200 hover:bg-[#FFF8F0] hover:text-[#6F4E37]'
-                                }`}
-                              >
-                                {pkg.package_name || 'Package'}
-                              </button>
-                            );
-                          })}
-                        </div>
-                      </div>
-                    )}
-
-                    <div className="space-y-4">
-                      {activeInclusionCategories.map((cat) => {
-                        const CatIcon = cat.icon;
-                        const selectedIdx = selectedInclusionOptions[cat.key] ?? 0;
-                        const selectedItemName = cat.items?.[selectedIdx]?.name ? (cat.items[selectedIdx].name.charAt(0).toUpperCase() + cat.items[selectedIdx].name.slice(1)) : '';
-
-                        return (
-                          <div key={cat.title} className="p-4.5 rounded-2xl bg-gradient-to-r from-stone-50 via-white to-stone-50/60 border border-stone-200/80 space-y-3 shadow-2xs">
-                            <div className="flex items-center justify-between">
-                              <div className="flex items-center gap-2.5">
-                                <div className={`w-8 h-8 rounded-xl ${cat.theme} flex items-center justify-center font-bold shadow-2xs`}>
-                                  <CatIcon size={17} />
-                                </div>
-                                <div>
-                                  <h3 className="font-extrabold text-sm text-[#2C1810]">{cat.title}</h3>
-                                  <p className="text-[10px] text-[#6F4E37] font-extrabold">
-                                    {selectedItemName ? `Selected: ${selectedItemName}` : 'Select 1 Option'}
-                                  </p>
-                                </div>
-                              </div>
-                              <span className="text-[10px] font-black px-2.5 py-1 rounded-full bg-[#FFF8F0] text-[#6F4E37] border border-[#DDB892]/60">
-                                Select 1 Tier
-                              </span>
-                            </div>
-
-                            {cat.items && cat.items.length > 0 ? (
-                              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2.5 pt-1">
-                                {cat.items.map((item, idx) => {
-                                  const isSelected = selectedIdx === idx;
-                                  const formattedName = item.name ? (item.name.charAt(0).toUpperCase() + item.name.slice(1)) : 'Service Tier';
-                                  const itemDesc = item.description || item.desc || '';
-                                  const itemPrice = Number(item.price) || 0;
-                                  const selectedPrice = Number(cat.items[selectedIdx]?.price || 0);
-                                  const priceDiff = itemPrice - selectedPrice;
-                                  const diffText = priceDiff === 0 
-                                    ? 'Selected base' 
-                                    : priceDiff > 0 
-                                      ? `+₹${priceDiff}${cat.key === 'food_items' ? '/guest' : ''}` 
-                                      : `-₹${Math.abs(priceDiff)}${cat.key === 'food_items' ? '/guest' : ''}`;
-
-                                  return (
-                                    <motion.div 
-                                      key={`${cat.key}-${idx}-${item.name}`}
-                                      whileHover={{ y: -2 }}
-                                      whileTap={{ scale: 0.98 }}
-                                      onClick={() => handleSelectOption(cat.key, idx)}
-                                      className={`p-4 rounded-xl border flex flex-col justify-between cursor-pointer transition-all duration-200 relative select-none ${
-                                        isSelected 
-                                          ? 'bg-amber-50/40 border-[#6F4E37] ring-1 ring-[#6F4E37]/30 shadow-xs' 
-                                          : 'bg-white border-stone-200 hover:border-stone-300 hover:bg-stone-50/50'
-                                      }`}
-                                    >
-                                      <div className="flex items-start gap-2.5 min-w-0 mb-3 relative z-10">
-                                        <div className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-black shrink-0 mt-0.5 transition-all duration-200 ${
-                                          isSelected ? 'bg-[#6F4E37] text-white' : 'border border-stone-300 bg-white'
-                                        }`}>
-                                          {isSelected && <Check size={12} className="stroke-[3]" />}
-                                        </div>
-                                        <div className="flex flex-col min-w-0">
-                                          <span className={`text-xs sm:text-sm font-bold truncate transition-colors ${isSelected ? 'text-[#2C1810]' : 'text-stone-700'}`}>
-                                            {formattedName}
-                                          </span>
-                                          {itemDesc && (
-                                            <span className="text-[11px] font-normal text-stone-500 line-clamp-2 mt-0.5 leading-relaxed">
-                                              {itemDesc}
-                                            </span>
-                                          )}
-                                        </div>
-                                      </div>
-
-                                      <div className="flex items-center justify-between pt-2.5 border-t border-stone-100 mt-auto text-[10px] font-medium relative z-10">
-                                        <div className="flex flex-col">
-                                          <span className="text-stone-400 text-[9px] font-bold">
-                                            {itemPrice > 0 ? `₹${itemPrice}${cat.key === 'food_items' ? '/guest' : ''}` : 'Included'}
-                                          </span>
-                                          <span className={`transition-all font-bold ${
-                                            priceDiff > 0 ? 'text-amber-700' : priceDiff < 0 ? 'text-emerald-700' : 'text-stone-500'
-                                          }`}>
-                                            {diffText}
-                                          </span>
-                                        </div>
-                                        <span className={`px-2.5 py-1 rounded-md text-[9px] font-bold uppercase tracking-wider transition-all ${
-                                          isSelected 
-                                            ? 'bg-[#6F4E37] text-white' 
-                                            : 'bg-stone-100 text-stone-600 border border-stone-200 hover:bg-stone-200'
-                                        }`}>
-                                          {isSelected ? 'SELECTED ✓' : 'SELECT'}
-                                        </span>
-                                      </div>
-                                    </motion.div>
-                                  );
-                                })}
-                              </div>
-                            ) : (
-                              <p className="text-xs text-stone-500 font-medium italic pl-2">Standard offering included with package.</p>
-                            )}
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
+                {/* 3. FAHARA EVENT PACKAGES SELECTION */}
+                {!isRestaurant && !selectedEventCompany && cafePackages.length > 0 && (
+                  <PackageSelectorCards
+                    packages={cafePackages}
+                    selectedPackageId={currentPackage?.id || selectedPkgId}
+                    onSelectPackage={(pkgId) => {
+                      setSelectedPkgId(pkgId);
+                      const selectedPkg = cafePackages.find(p => String(p.id) === String(pkgId));
+                      if (selectedPkg) {
+                        setPackage(selectedPkg);
+                      }
+                    }}
+                    guestCount={guestCount}
+                  />
                 )}
 
               </motion.div>
@@ -952,40 +886,43 @@ function BookingContent() {
             )}
 
             {/* Interactive Step Navigation Controls */}
-            <div className="flex items-center justify-between p-4 rounded-2xl bg-white border border-stone-200 shadow-xs">
+            <div className="flex items-center justify-between gap-2 p-3 sm:p-4 rounded-2xl bg-white border border-[#E8DED5] shadow-xs">
               <button
+                type="button"
                 onClick={() => {
                   if (activeStepTab === 'info') setActiveStepTab('packages');
                   window.scrollTo({ top: 0, behavior: 'smooth' });
                 }}
                 disabled={activeStepTab === 'packages'}
-                className={`px-4 py-2.5 rounded-2xl font-black text-xs border transition-all cursor-pointer ${
+                className={`flex-1 sm:flex-initial py-2.5 px-3 sm:px-4 rounded-xl font-bold text-xs border transition-all cursor-pointer text-center ${
                   activeStepTab === 'packages'
                     ? 'opacity-40 bg-stone-100 text-stone-400 border-stone-200 cursor-not-allowed'
-                    : 'bg-white text-[#2C1810] border-stone-300 hover:bg-stone-50'
+                    : 'bg-white text-[#2C1810] border-stone-300 hover:bg-stone-50 active:scale-95'
                 }`}
               >
-                &larr; Previous Step
+                &larr; Prev
               </button>
 
-              <div className="text-xs font-black text-[#6F4E37]">
-                Step {activeStepTab === 'packages' ? '1 of 2' : '2 of 2'}
+              <div className="text-[11px] sm:text-xs font-black text-[#6F4E37] shrink-0 px-1 text-center">
+                {activeStepTab === 'packages' ? '1 of 2' : '2 of 2'}
               </div>
 
-              <button
+              <motion.button
+                whileTap={{ scale: 0.95 }}
+                type="button"
                 onClick={() => {
                   if (activeStepTab === 'packages') setActiveStepTab('info');
                   window.scrollTo({ top: 0, behavior: 'smooth' });
                 }}
                 disabled={activeStepTab === 'info'}
-                className={`px-4 py-2.5 rounded-2xl font-black text-xs transition-all cursor-pointer ${
+                className={`flex-1 sm:flex-initial py-2.5 px-3 sm:px-5 rounded-xl font-black text-xs transition-all cursor-pointer text-center shadow-xs ${
                   activeStepTab === 'info'
-                    ? 'opacity-40 bg-stone-100 text-stone-400 border-stone-200 cursor-not-allowed'
-                    : 'bg-gradient-to-r from-[#4A2C11] to-[#6F4E37] text-white shadow-md hover:shadow-lg'
+                    ? 'opacity-40 bg-stone-100 text-stone-400 border border-stone-200 cursor-not-allowed shadow-none'
+                    : 'bg-[#6F4E37] hover:bg-[#5C3F2B] active:bg-[#4A2C11] text-white'
                 }`}
               >
-                Next Step &rarr;
-              </button>
+                Next &rarr;
+              </motion.button>
             </div>
           </div>
           
@@ -1017,7 +954,7 @@ function BookingContent() {
           <button
             type="button"
             onClick={() => setMobileSummaryOpen(!mobileSummaryOpen)}
-            className="px-6 py-3 bg-gradient-to-r from-[#4A2C11] to-[#6F4E37] text-white font-black text-xs rounded-2xl shadow-lg shadow-[#4A2C11]/25 hover:shadow-xl active:scale-95 transition-all flex items-center gap-1.5"
+            className="px-6 py-3 bg-[#6F4E37] hover:bg-[#5C3F2B] active:bg-[#4A2C11] text-white font-black text-xs rounded-2xl shadow-md transition-all flex items-center gap-1.5 cursor-pointer"
           >
             <span>{mobileSummaryOpen ? 'Hide Details' : (isRestaurant ? 'Reserve Table' : 'Book Now & Pay')}</span>
             <ChevronUp size={14} className={`transition-transform ${mobileSummaryOpen ? 'rotate-180' : ''}`} />

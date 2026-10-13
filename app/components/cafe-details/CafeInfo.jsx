@@ -2,7 +2,7 @@
 
 import { 
   Users, Building, ChevronDown, ChevronUp, CheckCircle, Clock, 
-  Sparkles, Copy, Check, Coffee, HeartHandshake, UtensilsCrossed, ShieldCheck 
+  Sparkles, Copy, Check, Coffee, HeartHandshake, UtensilsCrossed, ShieldCheck, ArrowRight
 } from 'lucide-react';
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -168,6 +168,22 @@ export default function CafeInfo({ cafe }) {
               </div>
               <p className="text-[11px] text-stone-600 font-medium leading-relaxed">Enjoy exclusive access and dedicated service at your reserved space.</p>
             </motion.div>
+          </div>
+
+          {/* Direct In-Tab Book Now CTA Action (Visible on desktop where there is no mobile floating bar) */}
+          <div className="mt-6 pt-4 border-t border-stone-100 hidden md:flex flex-row items-center justify-between gap-3">
+            <div className="text-left w-auto">
+              <span className="text-[11px] font-black text-stone-400 uppercase tracking-widest block">Instant Venue Reservation</span>
+              <span className="text-sm font-black text-[#2C1810]">Ready to celebrate or reserve your table?</span>
+            </div>
+            
+            <a
+              href={`/booking/${cafe?.id || 1}`}
+              className="w-auto px-7 py-3 rounded-full bg-[#6F4E37] hover:bg-[#4A2C11] text-white text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 shadow-md hover:shadow-lg active:scale-95 transition-all cursor-pointer shrink-0"
+            >
+              <span>Book Now</span>
+              <ArrowRight size={14} />
+            </a>
           </div>
         </div>
 

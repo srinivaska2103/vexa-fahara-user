@@ -29,6 +29,8 @@ import StickyBookingCard from '@/app/components/cafe-details/StickyBookingCard';
 import FilterSidebar from '@/app/components/cafes/FilterSidebar';
 import SimilarCafes from '@/app/components/cafe-details/SimilarCafes';
 import FaharaInteractiveLoader from '@/app/components/common/FaharaInteractiveLoader';
+import MobileCafeDetailsLoader from '@/app/components/common/MobileCafeDetailsLoader';
+import MobileCafeDetailsView from '@/app/components/cafe-details/MobileCafeDetailsView';
 
 export default function CafeDetailsPage() {
   const params = useParams();
@@ -67,9 +69,7 @@ export default function CafeDetailsPage() {
 
   if (isLoading || isPending) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-[#FFF8F0] p-4">
-        <FaharaInteractiveLoader message="Loading Cafe Details & Venue Photos..." />
-      </div>
+      <MobileCafeDetailsLoader message="Finding your perfect cafe..." fullScreen={true} />
     );
   }
 
@@ -144,16 +144,25 @@ export default function CafeDetailsPage() {
   };
 
   return (
-    <div suppressHydrationWarning className="min-h-screen bg-[#FFF8F0] font-sans antialiased selection:bg-[#6F4E37] selection:text-white pb-36 lg:pb-12">
+    <div suppressHydrationWarning className="min-h-screen bg-[#FFF8F0] font-sans antialiased selection:bg-[#6F4E37] selection:text-white">
       
       {/* Lightbox Modal */}
       <GalleryLightbox images={lightboxImages} />
 
-      {/* Top Navbar with Search Bar */}
-      <CustomerNavbar showSearch={true} showViewToggles={false} />
+      {/* ── MOBILE-ONLY CAFE DETAILS VIEW (<768px): Reference 1 Inspired Layout ── */}
+      <MobileCafeDetailsView 
+        cafe={cafe} 
+        reviews={reviews} 
+        lightboxImages={lightboxImages} 
+      />
 
-      {/* Main Responsive Container */}
-      <main className="container mx-auto px-3 sm:px-6 lg:px-8 py-3 sm:py-5 max-w-7xl overflow-x-hidden">
+      {/* ── DESKTOP & TABLET VIEW (md: 768px+): Untouched Existing Desktop Experience ── */}
+      <div className="hidden md:block pb-36 lg:pb-12">
+        {/* Top Navbar with Search Bar */}
+        <CustomerNavbar showSearch={true} showViewToggles={false} />
+
+        {/* Main Responsive Container */}
+        <main className="container mx-auto px-3 sm:px-6 lg:px-8 py-3 sm:py-5 max-w-7xl overflow-x-hidden">
         
         {/* Back Button Navigation Row */}
         <div className="mb-4 flex items-center justify-between gap-3">
@@ -419,10 +428,23 @@ export default function CafeDetailsPage() {
                     </div>
                   );
                 }
+                if (cafe?.provides_event_services || !cafe?.price_per_hour) {
+                  return (
+                    <div>
+                      <div className="text-lg sm:text-xl font-black text-[#2C1810] leading-none">
+                        Event Packages Available
+                      </div>
+                      <span className="text-[9px] font-black text-emerald-700 uppercase tracking-wider flex items-center gap-1 mt-1">
+                        <ShieldCheck size={12} className="text-emerald-600 shrink-0" />
+                        <span>Select Package Below</span>
+                      </span>
+                    </div>
+                  );
+                }
                 return (
                   <div>
                     <div className="text-lg sm:text-xl font-black text-[#2C1810] leading-none">
-                      ₹{cafe?.price_per_hour || 499} <span className="font-bold text-xs text-stone-400">/ hour</span>
+                      ₹{cafe.price_per_hour} <span className="font-bold text-xs text-stone-400">/ hour</span>
                     </div>
                     <span className="text-[9px] font-black text-emerald-700 uppercase tracking-wider flex items-center gap-1 mt-1">
                       <ShieldCheck size={12} className="text-emerald-600 shrink-0" />
@@ -444,6 +466,7 @@ export default function CafeDetailsPage() {
             </>
           )}
         </div>
+      </div>
       </div>
 
     </div>

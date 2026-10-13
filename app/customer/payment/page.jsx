@@ -297,27 +297,32 @@ function PaymentPageContent() {
     if (!pricingBreakdown) return null;
     const cafeItems = pricingBreakdown.cafe?.items || pricingBreakdown.cafeInclusions || [];
     const eventItems = pricingBreakdown.event?.items || pricingBreakdown.eventInclusions || [];
-    // Include ALL items — cafe charge is shown as a top-level item too
-    const allItems = [...cafeItems, ...eventItems];
+    // Only include non-cafe charge inclusion items if available
+    const allItems = [...cafeItems, ...eventItems].filter(i => i.itemType !== 'CAFE_CHARGE');
     if (allItems.length === 0) return null;
     return allItems.map(i => {
-      const isCafeCharge = i.itemType === 'CAFE_CHARGE';
-      const name = i.name || i.itemName || 'Item';
-      const selectedTier = i.selectedTier || {};
-      const rawTier = selectedTier.level || selectedTier.name || i.tierLevel || i.tierName || i.level || null;
-      const formattedTier = rawTier ? (rawTier.charAt(0).toUpperCase() + rawTier.slice(1).toLowerCase()) : '';
+      const name = i.name || i.itemName || 'Included Feature';
       const desc = i.description || '';
-      const descPart = !isCafeCharge && desc ? ` (${desc})` : '';
-      const tierStr = formattedTier ? ` (${formattedTier}${descPart})` : (descPart ? ` (${descPart})` : '');
-      // Use pre-computed calculation string from backend if available
-      const calc = i.calculation || (isCafeCharge ? `₹${(i.unitPrice || 0).toFixed(2)} total` : `₹${(i.unitPrice || 0).toFixed(2)} × ${i.guestCount || i.quantity || 1} = ₹${(i.amount || 0).toFixed(2)}`);
-      return `${name}${tierStr} • ${calc}`;
+      const descPart = desc ? ` — ${desc}` : '';
+      return `${name}${descPart}`;
     });
   })();
 
+  // Filter and sanitize inclusions list to remove legacy tier labels like BASIC, STANDARD, PREMIUM
+  const cleanInclusions = inclusions.map(item => {
+    if (typeof item !== 'string') return '';
+    return item
+      .replace(/\s*\((BASIC|STANDARD|PREMIUM)\)/gi, '')
+      .replace(/\s*\(Basic|Standard|Premium\)/gi, '')
+      .replace(/\s*•\s*₹[0-9.]+\s*×\s*[0-9.]+\s*=\s*₹[0-9.]+/gi, '')
+      .replace(/\s*\(\+₹[0-9.]+(\/guest|\/unit)?(\s*×\s*[0-9]+\s*guests)?\s*=\s*₹[0-9.]+\)/gi, '')
+      .replace(/\s*\(\+₹[0-9.]+\)/gi, '')
+      .trim();
+  }).filter(Boolean);
+
   const resolvedInclusions = (pricingInclusionStrings && pricingInclusionStrings.length > 0)
     ? pricingInclusionStrings
-    : inclusions.filter(Boolean);
+    : cleanInclusions;
 
   const bookingData = {
     bookingNumber: booking.booking_number,
@@ -346,6 +351,9 @@ function PaymentPageContent() {
 
   const priceData = pricingBreakdown ? {
     ...pricingBreakdown,
+    cafeCharges: pricingBreakdown.cafeCharges || parseFloat(booking.cafe_amount) || 0,
+    eventCharges: pricingBreakdown.eventCharges || parseFloat(booking.event_service_amount) || 0,
+    eventPackageName: booking.event_services?.service_name || booking.event_services?.title || booking.packages?.package_name || null,
     platformFee: pricingBreakdown.platformFee,
     transactionFee: pricingBreakdown.transactionFee,
     gst: pricingBreakdown.gst,
@@ -354,6 +362,7 @@ function PaymentPageContent() {
   } : {
     cafeCharges: parseFloat(booking.cafe_amount) || 0,
     eventCharges: parseFloat(booking.event_service_amount) || 0,
+    eventPackageName: booking.event_services?.service_name || booking.event_services?.title || booking.packages?.package_name || null,
     additionalCharges: (parseFloat(booking.food_amount) || 0) + (parseFloat(booking.decoration_amount) || 0) + (parseFloat(booking.extra_person_amount) || 0),
     discount: parseFloat(booking.discount) || 0,
     subtotal: parseFloat(booking.subtotal) || 0,

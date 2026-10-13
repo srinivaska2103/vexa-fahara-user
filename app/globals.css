@@ -20,7 +20,16 @@
   --color-danger: #DC2626;
   --color-info: #2563EB;
 
-  --font-sans: var(--font-plus-jakarta-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-plus-jakarta-sans), ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-serif: var(--font-playfair), "Playfair Display", Georgia, Cambria, "Times New Roman", Times, serif;
+}
+
+.font-serif {
+  font-family: var(--font-playfair), "Playfair Display", Georgia, serif !important;
+}
+
+.font-sans {
+  font-family: var(--font-plus-jakarta-sans), ui-sans-serif, system-ui, sans-serif !important;
 }
 
 :root {
@@ -70,4 +79,29 @@ body {
   margin-inline: auto;
   padding-inline: 1rem;
   width: 100%;
+}
+
+/* Hide default browser search cancel (X) buttons to avoid duplicate icons */
+input[type="search"]::-webkit-search-cancel-button,
+input[type="search"]::-webkit-search-decoration,
+input[type="search"]::-webkit-search-results-button,
+input[type="search"]::-webkit-search-results-decoration {
+  -webkit-appearance: none;
+  appearance: none;
+  display: none;
+}
+input::-ms-clear {
+  display: none;
+}
+
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes progress {
+  0% { transform: translateX(-100%); }
+  50% { transform: translateX(0%); }
+  100% { transform: translateX(100%); }
 }

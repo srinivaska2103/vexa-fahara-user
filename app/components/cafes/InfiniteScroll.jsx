@@ -122,13 +122,13 @@ export default function InfiniteScroll({ hasNextPage, fetchNextPage, isFetchingN
 
           {/* OPTIONAL CTA BUTTON */}
           <div className="-mt-1 sm:-mt-4 relative z-10">
-            <Link href="/customer/events">
+            <Link href="/customer/cafe">
               <motion.button 
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.96 }}
                 className="group inline-flex items-center gap-2 h-9 sm:h-11 px-5 sm:px-7 rounded-full bg-[#6F4E37] hover:bg-[#5A3215] text-white text-xs sm:text-sm font-bold shadow-md transition-all cursor-pointer"
               >
-                <span>Explore Events</span>
+                <span>Explore Venues</span>
                 <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform stroke-[2.5]" />
               </motion.button>
             </Link>

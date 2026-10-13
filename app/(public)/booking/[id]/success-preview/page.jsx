@@ -57,7 +57,7 @@ export default function BookingSuccessPreviewPage() {
         </div>
         
         <div className="flex flex-col gap-3">
-           <Link href="/customer/dashboard/bookings">
+           <Link href="/customer/bookings">
              <button className="w-full bg-[var(--color-primary)] text-white font-bold py-3.5 rounded-xl hover:bg-[var(--color-secondary)] transition-colors shadow-md">
                View My Bookings
              </button>

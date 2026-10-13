@@ -1,16 +1,30 @@
 import { NextResponse } from 'next/server';
 
-export function proxy(request) {
+export function middleware(request) {
   const token = request.cookies.get('accessToken')?.value;
   const { pathname } = request.nextUrl;
+
+  // If user accesses /cafes/:id directly, rewrite cleanly to /customer/cafe/:id
+  if (pathname.startsWith('/cafes/')) {
+    const cafeId = pathname.replace('/cafes/', '');
+    if (cafeId) {
+      return NextResponse.rewrite(new URL(`/customer/cafe/${cafeId}`, request.url));
+    }
+  }
+
+  // If user accesses /cafes directly, redirect to /customer/cafe
+  if (pathname === '/cafes') {
+    return NextResponse.redirect(new URL('/customer/cafe', request.url));
+  }
 
   // Public customer routes that guests can browse without login
   const isPublicCustomerRoute = 
     pathname === '/customer/cafe' || 
-    pathname.startsWith('/customer/cafe/') || 
-    pathname === '/customer/cafes' || 
-    pathname === '/customer/discover' || 
-    pathname === '/customer/compare';
+    pathname.startsWith('/customer/cafe') || 
+    pathname.startsWith('/customer/cafes') || 
+    pathname.startsWith('/customer/discover') || 
+    pathname.startsWith('/customer/compare') ||
+    pathname.startsWith('/customer/search');
 
   // Protected customer sub-routes requiring mandatory authentication
   const isProtectedCustomerRoute = pathname.startsWith('/customer') && !isPublicCustomerRoute;
@@ -32,11 +46,13 @@ export function proxy(request) {
   return NextResponse.next();
 }
 
-export default proxy;
+export default middleware;
 
 export const config = {
   matcher: [
     '/customer/:path*',
+    '/cafes/:path*',
+    '/cafes',
     '/login',
     '/register'
   ],

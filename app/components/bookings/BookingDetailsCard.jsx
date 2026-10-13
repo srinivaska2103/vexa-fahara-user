@@ -206,40 +206,32 @@ export default function BookingDetailsCard({ booking }) {
                 {displayInclusions.map((inc, idx) => {
                   const tierKey = String(inc.tierName || inc.tierLevel || '').toUpperCase();
                   const colors = getTierColors(tierKey);
-                  const isPerGuest = String(inc.pricingType || '').toUpperCase() === 'PER_GUEST';
-                  const guestCount = booking.total_persons || booking.number_of_guests || 1;
-                  const computedAmount = isPerGuest
-                    ? (inc.unitPrice * Number(guestCount)).toFixed(2)
-                    : inc.amount > 0 ? inc.amount.toFixed(2) : (inc.unitPrice * inc.quantity).toFixed(2);
+                  const displayBadge = (tierKey && !['BASIC', 'STANDARD', 'PREMIUM', 'INCLUDED'].includes(tierKey)) ? tierKey : null;
 
                   return (
-                    <div key={inc.tierId || idx} className={`p-4 rounded-3xl border ${colors.bg} ${colors.border} flex items-center gap-3.5`}>
-                      <div className={`w-10 h-10 rounded-2xl border flex items-center justify-center shrink-0 font-black text-sm ${colors.bg} ${colors.border} ${colors.text}`}>
-                        {tierKey ? tierKey.charAt(0) : '★'}
-                      </div>
-                      <div className="min-w-0 flex-1">
-                        <div className="flex flex-wrap items-center gap-2">
-                          <h4 className="font-extrabold text-[#2C1810] text-sm">{inc.name}</h4>
-                          {tierKey && (
-                            <span className={`text-[10px] font-black border px-2.5 py-0.5 rounded-full uppercase tracking-wider ${colors.pill}`}>
-                              {tierKey}
-                            </span>
+                    <div key={inc.tierId || idx} className="p-4 rounded-3xl border bg-white border-stone-200/80 flex items-center justify-between gap-3.5 shadow-2xs">
+                      <div className="flex items-center gap-3.5 min-w-0">
+                        <div className="w-9 h-9 rounded-2xl bg-emerald-50 text-emerald-700 border border-emerald-200 flex items-center justify-center shrink-0 font-bold text-sm">
+                          ✓
+                        </div>
+                        <div className="min-w-0 space-y-0.5">
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <h4 className="font-extrabold text-[#2C1810] text-xs sm:text-sm truncate">{inc.name}</h4>
+                            {displayBadge && (
+                              <span className={`text-[10px] font-black border px-2.5 py-0.5 rounded-full uppercase tracking-wider ${colors.pill}`}>
+                                {displayBadge}
+                              </span>
+                            )}
+                          </div>
+                          {inc.description && (
+                            <p className="text-xs text-stone-500 font-medium line-clamp-1">{inc.description}</p>
                           )}
-                          <span className="text-[10px] font-bold bg-white border border-stone-200 text-stone-500 px-2.5 py-0.5 rounded-full uppercase tracking-wider">
-                            {isPerGuest ? 'PER GUEST' : 'FIXED'}
-                          </span>
-                        </div>
-
-                        {inc.description && (
-                          <p className="text-xs text-stone-500 font-medium mt-0.5">{inc.description}</p>
-                        )}
-
-                        <div className="pt-1.5 text-xs font-bold text-stone-500 flex flex-wrap items-center gap-1.5">
-                          <span>Unit Price: <span className="text-[#2C1810]">₹{inc.unitPrice.toFixed(2)}</span></span>
-                          {isPerGuest && <span>× <span className="text-[#2C1810]">{guestCount} guests</span></span>}
-                          <span className={`font-black ml-1 ${colors.text}`}>= ₹{computedAmount}</span>
                         </div>
                       </div>
+
+                      <span className="text-[10px] font-black px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 shrink-0">
+                        INCLUDED
+                      </span>
                     </div>
                   );
                 })}

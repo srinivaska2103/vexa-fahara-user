@@ -24,10 +24,17 @@ export default function SearchBar() {
     { label: 'Birthday Party', type: 'category', value: 'Birthday Party' },
   ];
 
-  // Debounce search query update
+  // Keep localQuery in sync with store query if changed elsewhere
+  useEffect(() => {
+    setLocalQuery(query || '');
+  }, [query]);
+
+  // Debounce search query update only when localQuery differs from query
   useEffect(() => {
     const timer = setTimeout(() => {
-      if (localQuery !== query) setQuery(localQuery);
+      if (localQuery !== query) {
+        setQuery(localQuery);
+      }
     }, 400);
     return () => clearTimeout(timer);
   }, [localQuery, query, setQuery]);

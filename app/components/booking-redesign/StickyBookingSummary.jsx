@@ -174,23 +174,23 @@ export default function StickyBookingSummary({ cafeName, selectedInclusionsPaylo
 
           {/* ── DATE / TIME / GUESTS PILLS ── */}
           <div className="grid grid-cols-3 gap-2 mb-5">
-            <div className="flex flex-col items-center justify-center p-2.5 rounded-xl bg-[#FFF8F0] border border-[#DDB892]/60 text-center">
-              <span className="text-[9px] font-bold text-stone-400 uppercase tracking-wider mb-0.5">Date</span>
+            <div className="flex flex-col items-center justify-center p-2.5 rounded-xl bg-[#FFF8F0] border border-[#E8DED5] text-center">
+              <span className="text-[9px] font-bold text-stone-500 uppercase tracking-wider mb-0.5">Date</span>
               <span className="text-xs font-black text-[#2C1810] truncate max-w-full">
                 {selectedDate || 'Select Date'}
               </span>
             </div>
 
-            <div className="flex flex-col items-center justify-center p-2.5 rounded-xl bg-emerald-50/70 border border-emerald-200/80 text-center">
-              <span className="text-[9px] font-bold text-emerald-600 uppercase tracking-wider mb-0.5">Time</span>
-              <span className="text-xs font-black text-emerald-900 truncate max-w-full">
+            <div className="flex flex-col items-center justify-center p-2.5 rounded-xl bg-[#FFF8F0] border border-[#E8DED5] text-center">
+              <span className="text-[9px] font-bold text-stone-500 uppercase tracking-wider mb-0.5">Time</span>
+              <span className="text-xs font-black text-[#2C1810] truncate max-w-full">
                 {selectedTimeSlot ? selectedTimeSlot.start : '—'}
               </span>
             </div>
 
-            <div className="flex flex-col items-center justify-center p-2.5 rounded-xl bg-blue-50/70 border border-blue-200/80 text-center">
-              <span className="text-[9px] font-bold text-blue-600 uppercase tracking-wider mb-0.5">Guests</span>
-              <span className="text-xs font-black text-blue-900 truncate max-w-full">
+            <div className="flex flex-col items-center justify-center p-2.5 rounded-xl bg-[#FFF8F0] border border-[#E8DED5] text-center">
+              <span className="text-[9px] font-bold text-stone-500 uppercase tracking-wider mb-0.5">Guests</span>
+              <span className="text-xs font-black text-[#2C1810] truncate max-w-full">
                 {guestCount} {guestCount === 1 ? 'Guest' : 'Guests'}
               </span>
             </div>
@@ -198,11 +198,11 @@ export default function StickyBookingSummary({ cafeName, selectedInclusionsPaylo
 
           {/* ── SELECTION TAGS ── */}
           {(selectedTable || selectedEventCompany || (selectedPackage && !isRestaurant && !selectedEventCompany && (pricing?.cafePackageCharge || 0) > 0)) && (
-            <div className="mb-5 p-3.5 rounded-2xl bg-amber-50/50 border border-amber-200/70 space-y-2">
+            <div className="mb-5 p-3.5 rounded-2xl bg-stone-50 border border-stone-200 space-y-2">
               {selectedTable && (
                 <div className="flex items-center justify-between text-xs">
-                  <span className="font-bold text-stone-500">Selected Table</span>
-                  <span className="font-black text-emerald-800 bg-emerald-100/80 px-2.5 py-0.5 rounded-lg border border-emerald-200 text-xs">
+                  <span className="font-semibold text-stone-500">Selected Table</span>
+                  <span className="font-black text-[#2C1810] bg-white px-2.5 py-0.5 rounded-lg border border-stone-200 text-xs">
                     #{selectedTable.table_number || selectedTable.name} · {selectedTable.capacity} Seats
                   </span>
                 </div>
@@ -210,8 +210,8 @@ export default function StickyBookingSummary({ cafeName, selectedInclusionsPaylo
               {/* Event company shown as Package tag */}
               {selectedEventCompany && !isRestaurant && (
                 <div className="flex items-center justify-between text-xs">
-                  <span className="font-bold text-stone-500">Selected Package</span>
-                  <span className="font-black text-purple-900 bg-purple-100/80 px-2.5 py-0.5 rounded-lg border border-purple-200 text-xs">
+                  <span className="font-semibold text-stone-500">Selected Package</span>
+                  <span className="font-black text-[#6F4E37] bg-white px-2.5 py-0.5 rounded-lg border border-[#E8DED5] text-xs">
                     {selectedEventCompany.name}
                   </span>
                 </div>
@@ -219,25 +219,27 @@ export default function StickyBookingSummary({ cafeName, selectedInclusionsPaylo
               {/* Only show Package tag when cafe has a genuine package (not event company service) */}
               {selectedPackage && !isRestaurant && !selectedEventCompany && (pricing?.cafePackageCharge || 0) > 0 && (
                 <div className="flex items-center justify-between text-xs">
-                  <span className="font-bold text-stone-500">Package</span>
-                  <span className="font-black text-[#2C1810]">{selectedPackage.name || 'Custom Add-Ons'}</span>
+                  <span className="font-semibold text-stone-500">Package</span>
+                  <span className="font-black text-[#2C1810] bg-white px-2.5 py-0.5 rounded-lg border border-stone-200 text-xs">
+                    {selectedPackage.name || 'Custom Add-Ons'}
+                  </span>
                 </div>
               )}
             </div>
           )}
 
           {/* ── DIVIDER ── */}
-          <div className="h-px mb-5 bg-stone-100" />
+          <div className="h-px mb-5 bg-stone-200/80" />
 
           {/* ── PRICING ── */}
           {isRestaurant ? (
-            <div className="p-4 rounded-2xl border border-emerald-200/90 bg-emerald-50/60 mb-5">
-              <div className="flex items-center gap-2 text-emerald-900 font-extrabold text-xs mb-1">
-                <CheckCircle size={15} className="text-emerald-600 shrink-0" />
+            <div className="p-4 rounded-2xl border border-stone-200 bg-stone-50 mb-5">
+              <div className="flex items-center gap-2 text-[#2C1810] font-black text-xs mb-1">
+                <CheckCircle size={15} className="text-[#6F4E37] shrink-0" />
                 <span>Direct Table Reservation — Free</span>
               </div>
-              <p className="text-[11px] text-emerald-800 font-medium leading-relaxed pl-5">
-                No payment required. Reserve now and order at the restaurant!
+              <p className="text-[11px] text-stone-600 font-medium leading-relaxed pl-5">
+                No advance payment required. Reserve now and dine at the restaurant.
               </p>
             </div>
           ) : (
@@ -248,17 +250,10 @@ export default function StickyBookingSummary({ cafeName, selectedInclusionsPaylo
                 const hours = selectedTimeSlot?.hours || 1;
                 const ratePerHr = hours > 0 ? Math.round((pricing.cafeCharge / hours) * 100) / 100 : pricing.cafeCharge;
                 return (
-                  <div
-                    className="flex items-center justify-between px-4 py-3 rounded-2xl border-2"
-                    style={{
-                      background: 'linear-gradient(135deg, #FFF7ED 0%, #FEF0D9 100%)',
-                      borderColor: '#F0C080',
-                      boxShadow: '0 4px 12px rgba(240,192,128,0.25), inset 0 1px 0 rgba(255,255,255,0.75)',
-                    }}
-                  >
+                  <div className="flex items-center justify-between px-4 py-3 rounded-2xl border border-[#E8DED5] bg-[#FFF8F0]">
                     <div>
-                      <div className="text-xs font-black text-[#2C1810]">☕ Cafe Charges</div>
-                      <div className="text-[10px] text-[#A67B5B] font-semibold mt-0.5">
+                      <div className="text-xs font-black text-[#2C1810]">Cafe Charges</div>
+                      <div className="text-[10px] text-stone-500 font-medium mt-0.5">
                         ₹{ratePerHr.toFixed(2)}/hr × {hours} {hours === 1 ? 'hr' : 'hrs'}
                       </div>
                     </div>
@@ -267,80 +262,30 @@ export default function StickyBookingSummary({ cafeName, selectedInclusionsPaylo
                 );
               })()}
 
-              {/* Standalone cafe package charge — only shown when cafe actually has a real package and no event company */}
-              {selectedPackage && !hasInclusions && !selectedEventCompany && (pricing?.cafePackageCharge || 0) > 0 && (
-                <div
-                  className="flex items-center justify-between px-4 py-3 rounded-2xl border-2"
-                  style={{
-                    background: 'linear-gradient(135deg, #F0EEF8 0%, #E8E4F5 100%)',
-                    borderColor: '#A99DDB',
-                    boxShadow: '0 4px 12px rgba(169,157,219,0.25), inset 0 1px 0 rgba(255,255,255,0.7)',
-                  }}
-                >
-                  <span className="text-xs font-black text-[#2C1810] truncate mr-2">🎁 {selectedPackage.name}</span>
+              {/* Standalone cafe package charge */}
+              {selectedPackage && !selectedEventCompany && (pricing?.cafePackageCharge || 0) > 0 && (
+                <div className="flex items-center justify-between px-4 py-3 rounded-2xl border border-[#E8DED5] bg-[#FFF8F0]">
+                  <span className="text-xs font-black text-[#2C1810] truncate mr-2">{selectedPackage.name}</span>
                   <span className="text-sm font-black text-[#2C1810] shrink-0">₹{(pricing?.cafePackageCharge || 0).toLocaleString()}</span>
-                </div>
-              )}
-
-              {/* Inclusions card */}
-              {hasInclusions && (
-                <div className="rounded-xl border border-stone-200 overflow-hidden bg-white shadow-2xs">
-                  <div className="px-3.5 py-2 bg-[#6F4E37] text-white">
-                    <span className="text-[10px] font-bold uppercase tracking-wider">Inclusions Breakdown</span>
-                  </div>
-                  <div className="divide-y divide-stone-100 bg-white">
-                    {displayInclusionItems.map((item, idx) => {
-                      const pricingType = String(item.pricingType || item.pricing_type || 'FIXED').toUpperCase();
-                      const unitPrice = Number(item.unitPrice || item.unit_price || 0);
-                      const rawTier = item.tierName || '';
-                      const tierLabel = rawTier ? (rawTier.charAt(0).toUpperCase() + rawTier.slice(1).toLowerCase()) : '';
-                      let itemAmt = 0;
-                      let calcLabel = '';
-                      if (pricingType === 'PER_GUEST') {
-                        itemAmt = unitPrice * guestCount;
-                        calcLabel = `₹${unitPrice.toFixed(2)} × ${guestCount} guests`;
-                      } else {
-                        const qty = Math.max(1, Number(item.quantity || 1));
-                        itemAmt = unitPrice * qty;
-                        calcLabel = qty > 1 ? `₹${unitPrice.toFixed(2)} × ${qty}` : `₹${itemAmt.toFixed(2)}`;
-                      }
-                      return (
-                        <div key={idx} className="flex items-center justify-between px-3.5 py-2.5">
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-center gap-1.5 flex-wrap">
-                              <span className="text-[11px] font-bold text-[#2C1810] truncate">✓ {item.inclusionName || item.itemName || item.name}</span>
-                              {tierLabel && (
-                                <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-md bg-[#FFF8F0] text-[#6F4E37] border border-[#DDB892]/60">
-                                  {tierLabel}
-                                </span>
-                              )}
-                            </div>
-                            <div className="text-[10px] text-stone-500 font-medium mt-0.5">{calcLabel}</div>
-                          </div>
-                          <span className="text-xs font-bold text-[#2C1810] shrink-0 ml-3">₹{itemAmt.toFixed(2)}</span>
-                        </div>
-                      );
-                    })}
-                  </div>
                 </div>
               )}
 
               {/* Event company chip */}
               {selectedEventCompany && (
-                <div className="flex items-center justify-between px-3.5 py-2.5 rounded-xl border border-stone-200 bg-white">
-                  <span className="text-xs font-bold text-[#2C1810] truncate mr-2">🎭 {selectedEventCompany.name}</span>
-                  <span className="text-sm font-bold text-[#2C1810] shrink-0">₹{(pricing?.eventCompanyCharge || 0).toLocaleString()}</span>
+                <div className="flex items-center justify-between px-4 py-3 rounded-2xl border border-[#E8DED5] bg-[#FFF8F0]">
+                  <span className="text-xs font-black text-[#2C1810] truncate mr-2">{selectedEventCompany.name}</span>
+                  <span className="text-sm font-black text-[#2C1810] shrink-0">₹{(pricing?.eventCompanyCharge || 0).toLocaleString()}</span>
                 </div>
               )}
 
               {/* Discount chip */}
               {discountAmount > 0 && (
-                <div className="flex items-center justify-between px-3.5 py-2 rounded-xl border border-emerald-200 bg-emerald-50/60">
-                  <div className="flex items-center gap-1.5 text-emerald-800">
-                    <Tag size={12} />
+                <div className="flex items-center justify-between px-3.5 py-2.5 rounded-xl border border-stone-200 bg-stone-50">
+                  <div className="flex items-center gap-1.5 text-[#2C1810]">
+                    <Tag size={12} className="text-[#6F4E37]" />
                     <span className="text-xs font-bold">Discount Applied</span>
                   </div>
-                  <span className="text-sm font-bold text-emerald-700">-₹{discountAmount.toLocaleString()}</span>
+                  <span className="text-sm font-black text-[#6F4E37]">-₹{discountAmount.toLocaleString()}</span>
                 </div>
               )}
 
@@ -357,7 +302,7 @@ export default function StickyBookingSummary({ cafeName, selectedInclusionsPaylo
                     className={`flex items-center justify-between px-3.5 py-2 ${i < 3 ? 'border-b border-stone-100' : ''}`}
                     style={{ background: i === 0 ? '#FFF8F0' : 'white' }}
                   >
-                    <span className={`text-[11px] ${row.bold ? 'font-bold text-[#2C1810]' : 'font-medium text-stone-500'}`}>
+                    <span className={`text-[11px] ${row.bold ? 'font-black text-[#2C1810]' : 'font-medium text-stone-500'}`}>
                       {row.label}{row.icon}
                     </span>
                     <span className={`text-xs ${row.bold ? 'font-black text-[#2C1810]' : 'font-bold text-stone-700'}`}>
@@ -371,10 +316,10 @@ export default function StickyBookingSummary({ cafeName, selectedInclusionsPaylo
 
           {/* ── GRAND TOTAL CARD ── */}
           {!isRestaurant && (
-            <div className="flex items-center justify-between px-4 py-3 rounded-xl mb-4 bg-[#6F4E37] text-white">
+            <div className="flex items-center justify-between px-4 py-3 rounded-xl mb-4 bg-[#6F4E37] text-white shadow-xs">
               <div>
-                <div className="text-[9px] font-bold uppercase tracking-wider text-amber-200">Grand Total</div>
-                <div className="text-[10px] text-white/70 font-normal">Incl. all taxes & fees</div>
+                <div className="text-[10px] font-black uppercase tracking-wider text-[#DDB892]">Grand Total</div>
+                <div className="text-[10px] text-white/80 font-normal">Incl. all taxes & fees</div>
               </div>
               <div className="text-xl sm:text-2xl font-black text-white tracking-tight">
                 ₹{Number((pricing?.total || 0).toFixed(2)).toLocaleString()}
@@ -384,18 +329,11 @@ export default function StickyBookingSummary({ cafeName, selectedInclusionsPaylo
 
           {/* ── UNAVAILABILITY WARNING ── */}
           {!timeCheck.isValid && (
-            <div
-              className="mb-4 p-3.5 rounded-2xl border-2 flex items-start gap-2.5"
-              style={{
-                background: '#FEF2F2',
-                borderColor: '#FCA5A5',
-                boxShadow: '0 3px 10px rgba(252,165,165,0.28)',
-              }}
-            >
-              <AlertCircle className="w-4 h-4 text-rose-500 shrink-0 mt-0.5" />
+            <div className="mb-4 p-3.5 rounded-2xl border border-stone-300 bg-stone-50 flex items-start gap-2.5">
+              <AlertCircle className="w-4 h-4 text-stone-700 shrink-0 mt-0.5" />
               <div>
-                <p className="font-black uppercase tracking-wider text-[10px] text-rose-700">Not Available at This Time</p>
-                <p className="text-[11px] leading-relaxed text-rose-700/90 mt-0.5">{timeCheck.message}</p>
+                <p className="font-black uppercase tracking-wider text-[10px] text-[#2C1810]">Not Available at This Time</p>
+                <p className="text-[11px] leading-relaxed text-stone-600 mt-0.5">{timeCheck.message}</p>
               </div>
             </div>
           )}
@@ -404,10 +342,10 @@ export default function StickyBookingSummary({ cafeName, selectedInclusionsPaylo
           <button
             onClick={handlePayment}
             disabled={isProcessing || !timeCheck.isValid}
-            className={`w-full py-3.5 rounded-xl font-extrabold text-sm flex items-center justify-center gap-2 transition-all ${
+            className={`w-full py-3.5 rounded-xl font-black text-sm flex items-center justify-center gap-2 transition-all shadow-sm ${
               !timeCheck.isValid
-                ? 'bg-stone-100 text-stone-400 border border-stone-200 cursor-not-allowed'
-                : 'bg-[#6F4E37] hover:bg-[#5C402E] text-white shadow-xs cursor-pointer active:scale-98'
+                ? 'bg-stone-100 text-stone-400 border border-stone-200 cursor-not-allowed shadow-none'
+                : 'bg-[#6F4E37] hover:bg-[#5C3F2B] active:bg-[#4A2C11] text-white cursor-pointer active:scale-98'
             }`}
           >
             {isProcessing ? (
@@ -418,15 +356,12 @@ export default function StickyBookingSummary({ cafeName, selectedInclusionsPaylo
             ) : !timeCheck.isValid ? (
               <span>Venue Not Available</span>
             ) : (
-              <>
-                <Star size={14} className="text-amber-300 fill-amber-300" />
-                <span>{isRestaurant ? 'Reserve Now' : 'Proceed To Payment'}</span>
-              </>
+              <span>{isRestaurant ? 'Reserve Now' : 'Proceed To Payment'}</span>
             )}
           </button>
 
-          <div className="mt-3 flex items-center justify-center gap-1.5 text-[10px] font-bold text-[#A67B5B]">
-            <ShieldCheck size={12} className="text-emerald-500" />
+          <div className="mt-3 flex items-center justify-center gap-1.5 text-[10px] font-bold text-stone-500">
+            <ShieldCheck size={12} className="text-[#6F4E37]" />
             <span>Secure &amp; Instant Confirmation</span>
           </div>
 

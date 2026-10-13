@@ -1,6 +1,1 @@
-import { redirect } from 'next/navigation';
-
-export default async function CustomerCafeRedirectPage({ params }) {
-  const { id } = await params;
-  redirect(`/cafes/${id}`);
-}
+export { default } from '@/app/(public)/cafes/[id]/page';
