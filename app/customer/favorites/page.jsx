@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useMemo, Suspense } from 'react';
+import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useFavoritesStore } from '@/stores/favorites.store';
