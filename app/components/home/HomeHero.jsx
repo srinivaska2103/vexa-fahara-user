@@ -225,11 +225,13 @@ export default function HomeHero() {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Search cafes, restaurants, event spaces..."
+                  suppressHydrationWarning
                   className="w-full bg-transparent border-none outline-none text-xs sm:text-sm font-semibold text-[#2C1810] placeholder-[#9C8B7F] pl-3 pr-3 py-2"
                 />
                 <button
                   type="submit"
                   aria-label="Submit venue search"
+                  suppressHydrationWarning
                   className="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-[#6F4E37] hover:bg-[#533824] text-white flex items-center justify-center shrink-0 shadow-md hover:scale-105 active:scale-95 transition-all cursor-pointer min-h-[40px] min-w-[40px]"
                 >
                   <ArrowRight size={18} strokeWidth={2.5} />
@@ -438,12 +440,14 @@ export default function HomeHero() {
                               }
                             }}
                             placeholder="Search cafes, events or locations..."
+                            suppressHydrationWarning
                             className="w-full bg-transparent border-none outline-none text-[9.5px] text-[#2C1810] placeholder-stone-400 font-medium"
                           />
                         </div>
                         <button 
                           type="button"
                           onClick={() => router.push('/customer/cafe')}
+                          suppressHydrationWarning
                           className="w-8 h-8 rounded-full bg-[#FFF8F0] text-[#2C1810] flex items-center justify-center shrink-0 shadow-xs hover:bg-white transition-colors cursor-pointer"
                         >
                           <SlidersHorizontal size={13} />

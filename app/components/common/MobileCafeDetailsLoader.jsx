@@ -232,9 +232,9 @@ export default function MobileCafeDetailsLoader({
       <div className="relative z-10 flex flex-col items-center max-w-xs mx-auto space-y-6">
         
         {/* 1. Small Animated Spinner & 2. "Loading..." Label */}
-        <div className="flex flex-col items-center gap-2">
+        <div className="flex flex-col items-center gap-3">
           {/* Smooth Two-tone Indeterminate Donut Spinner in Theme Primary & Accent */}
-          <div className="relative w-8 h-8">
+          <div className="relative w-10 h-10">
             <svg className="w-full h-full animate-spin" viewBox="0 0 36 36">
               <circle
                 cx="18"
@@ -242,7 +242,7 @@ export default function MobileCafeDetailsLoader({
                 r="14"
                 fill="none"
                 stroke="currentColor"
-                strokeWidth="4"
+                strokeWidth="3.5"
                 className="text-[#E8DED5] dark:text-stone-800 opacity-60"
               />
               <circle
@@ -251,7 +251,7 @@ export default function MobileCafeDetailsLoader({
                 r="14"
                 fill="none"
                 stroke="currentColor"
-                strokeWidth="4"
+                strokeWidth="3.5"
                 strokeDasharray="50 100"
                 strokeLinecap="round"
                 className="text-[#6F4E37] dark:text-[#DDB892]"
@@ -259,18 +259,13 @@ export default function MobileCafeDetailsLoader({
             </svg>
           </div>
 
-          <span className="text-sm font-black tracking-tight text-[#2C1810] dark:text-[#FFF8F0]">
+          <span className="text-base font-black tracking-tight text-[#2C1810] dark:text-[#FFF8F0]">
             Loading...
           </span>
         </div>
 
-        {/* 3. Large Animated Cloud Character */}
-        <div className="py-2">
-          <AnimatedCloudCharacter />
-        </div>
-
-        {/* 4. Short Contextual Loading Message */}
-        <div className="pt-2">
+        {/* 2. Short Contextual Loading Message */}
+        <div className="pt-1">
           <p className="text-xs sm:text-sm font-medium text-[#6B5B4F] dark:text-[#DDB892] tracking-tight leading-relaxed max-w-[260px]">
             {message}
           </p>

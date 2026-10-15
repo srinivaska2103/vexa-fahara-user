@@ -62,7 +62,7 @@ export default function HomeHowItWorks() {
   const activeSteps = activeTab === 'CUSTOMER' ? customerSteps : partnerSteps;
 
   return (
-    <section id="how-it-works" className="py-16 sm:py-24 bg-[#FFF8F0] border-b border-[#E8DED5] relative overflow-hidden">
+    <section id="how-it-works" suppressHydrationWarning className="py-16 sm:py-24 bg-[#FFF8F0] border-b border-[#E8DED5] relative overflow-hidden">
       
       {/* Background radial glows matching theme */}
       <div className="absolute top-10 left-1/4 w-80 h-80 bg-[#EAD8C7]/30 rounded-full blur-3xl pointer-events-none" />

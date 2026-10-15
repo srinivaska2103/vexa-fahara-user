@@ -31,7 +31,7 @@ export default function HomePage() {
   const [openPartnerFaq, setOpenPartnerFaq] = useState(null);
 
   return (
-    <div className="min-h-screen bg-[#FFF8F0] font-sans antialiased text-[#2C1810] selection:bg-[#6F4E37] selection:text-white">
+    <div suppressHydrationWarning className="min-h-screen bg-[#FFF8F0] font-sans antialiased text-[#2C1810] selection:bg-[#6F4E37] selection:text-white">
       
       {/* 1. NAVIGATION BAR */}
       <HomeNavbar />

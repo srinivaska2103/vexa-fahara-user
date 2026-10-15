@@ -16,7 +16,6 @@ import {
   RefreshCw
 } from 'lucide-react';
 import CustomerNavbar from '@/app/components/layout/CustomerNavbar';
-import Footer from '@/app/components/home/Footer';
 
 export default function QrLandingPage() {
   const params = useParams();
@@ -208,8 +207,6 @@ export default function QrLandingPage() {
           )}
         </div>
       </main>
-
-      <Footer />
     </div>
   );
 }
