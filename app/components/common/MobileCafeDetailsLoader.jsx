@@ -264,7 +264,12 @@ export default function MobileCafeDetailsLoader({
           </span>
         </div>
 
-        {/* 2. Short Contextual Loading Message */}
+        {/* 2. Theme-Based Animated Cloud Character */}
+        <div className="py-1">
+          <AnimatedCloudCharacter />
+        </div>
+
+        {/* 3. Short Contextual Loading Message */}
         <div className="pt-1">
           <p className="text-xs sm:text-sm font-medium text-[#6B5B4F] dark:text-[#DDB892] tracking-tight leading-relaxed max-w-[260px]">
             {message}
