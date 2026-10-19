@@ -1,11 +1,11 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Heart, MapPin, Star, ArrowRight, Navigation, Sparkles, 
   ChevronLeft, ChevronRight, ChevronDown, Share2, Check, ShieldCheck, 
-  Footprints
+  Footprints, Coffee, Sun, Calendar, Wind, Wifi, X
 } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -25,7 +25,20 @@ export default function CafeCard({ cafe, activeCategory = '' }) {
   const [touchEnd, setTouchEnd] = useState(null);
 
   const [showAmenityPopover, setShowAmenityPopover] = useState(false);
-  const [showCapabilityPopover, setShowCapabilityPopover] = useState(false);
+  const [popoverPlacement, setPopoverPlacement] = useState('bottom'); // 'bottom' or 'top'
+  const amenityTriggerRef = useRef(null);
+
+  // Close popover on Escape key press
+  useEffect(() => {
+    if (!showAmenityPopover) return;
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        setShowAmenityPopover(false);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [showAmenityPopover]);
 
   useEffect(() => {
     setIsOpen(checkIfCafeOpen(cafe));
@@ -307,414 +320,270 @@ export default function CafeCard({ cafe, activeCategory = '' }) {
     <motion.div 
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
-      whileHover={{ y: -6, scale: 1.015 }}
+      whileHover={{ y: -4, scale: 1.01 }}
       whileTap={{ scale: 0.98 }}
       onHoverStart={() => setIsHovered(true)}
       onHoverEnd={() => setIsHovered(false)}
       onClick={handleCardClick}
       transition={{ type: 'spring', stiffness: 350, damping: 22 }}
-      className="bg-white rounded-[24px] sm:rounded-[28px] overflow-hidden border border-[#E5D7CA]/80 shadow-[0_4px_20px_rgba(44,24,16,0.04)] hover:shadow-[0_18px_42px_rgba(111,78,55,0.15)] hover:border-[#6F4E37]/50 transition-all duration-300 flex flex-col h-full w-full group relative cursor-pointer"
+      className="bg-white rounded-[22px] sm:rounded-[26px] overflow-visible border border-[#E8DED5] shadow-[0_6px_24px_rgba(44,24,16,0.06)] hover:shadow-[0_16px_36px_rgba(111,78,55,0.14)] hover:border-[#6F4E37]/50 transition-all duration-300 flex flex-col h-full w-full group relative cursor-pointer select-none"
     >
-        {/* 🖼️ Image Section */}
-        <div 
-          className="relative aspect-[16/10] w-full overflow-hidden bg-stone-100 select-none"
-          onTouchStart={(e) => {
-            setTouchEnd(null);
-            setTouchStart(e.targetTouches[0].clientX);
+      {/* 🖼️ Image Section - 16:9 Landscape Aspect Ratio with Rounded Top Corners */}
+      <div className="relative aspect-[16/9.5] w-full overflow-hidden rounded-t-[21px] sm:rounded-t-[25px] bg-stone-100 select-none">
+        <img 
+          src={coverImage} 
+          alt={name} 
+          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
+          onError={(e) => {
+            e.target.onerror = null;
+            e.target.src = 'https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&q=80';
           }}
-          onTouchMove={(e) => {
-            setTouchEnd(e.targetTouches[0].clientX);
-          }}
-          onTouchEnd={() => {
-            if (!touchStart || !touchEnd) return;
-            const distance = touchStart - touchEnd;
-            if (distance > 30) {
-              setActiveImgIndex((prev) => (prev + 1) % imageList.length);
-            } else if (distance < -30) {
-              setActiveImgIndex((prev) => (prev - 1 + imageList.length) % imageList.length);
-            }
-          }}
-        >
-          <AnimatePresence mode="wait">
-            <motion.img 
-              key={activeImgIndex}
-              src={imageList[activeImgIndex]} 
-              alt={name} 
-              initial={{ opacity: 0.88, scale: 1.03 }}
-              animate={{ opacity: 1, scale: isHovered ? 1.07 : 1 }}
-              exit={{ opacity: 0.88 }}
-              transition={{ duration: 0.35, ease: 'easeOut' }}
-              className="w-full h-full object-cover transition-transform duration-500 ease-out"
-              onError={(e) => {
-                e.target.onerror = null;
-                e.target.src = 'https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&q=80';
-              }}
-            />
-          </AnimatePresence>
-          
-          {/* Subtle Bottom Gradient */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-black/25 opacity-70 group-hover:opacity-85 transition-opacity duration-300 pointer-events-none" />
-          
-          {/* Gallery Carousel Controls */}
-          {imageList.length > 1 && (
-            <div className="absolute inset-x-2 top-1/2 -translate-y-1/2 flex items-center justify-between z-20 pointer-events-auto opacity-90 sm:opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-              <button
-                type="button"
-                onClick={prevImage}
-                className="w-7 h-7 rounded-full bg-black/45 hover:bg-[#6F4E37] text-white backdrop-blur-md flex items-center justify-center shadow-md active:scale-90 transition-all cursor-pointer border border-white/30"
-                aria-label="Previous photo"
-              >
-                <ChevronLeft size={15} />
-              </button>
-              <button
-                type="button"
-                onClick={nextImage}
-                className="w-7 h-7 rounded-full bg-black/45 hover:bg-[#6F4E37] text-white backdrop-blur-md flex items-center justify-center shadow-md active:scale-90 transition-all cursor-pointer border border-white/30"
-                aria-label="Next photo"
-              >
-                <ChevronRight size={15} />
-              </button>
-            </div>
-          )}
+        />
+        
+        {/* Subtle Bottom Gradient */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-black/25 pointer-events-none" />
 
-          {/* Carousel Dots */}
-          {imageList.length > 1 && (
-            <div className="absolute bottom-3 inset-x-0 flex items-center justify-center gap-1.5 z-20 pointer-events-auto">
-              {imageList.slice(0, 5).map((_, idx) => (
-                <button
-                  type="button"
-                  key={idx}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    setActiveImgIndex(idx);
-                  }}
-                  className={cn(
-                    "h-1.5 rounded-full transition-all duration-300 cursor-pointer",
-                    idx === activeImgIndex 
-                      ? "w-4 bg-amber-300 shadow-xs" 
-                      : "w-1.5 bg-white/60 hover:bg-white"
-                  )}
-                  aria-label={`View photo ${idx + 1}`}
-                />
-              ))}
-            </div>
-          )}
-
-        {/* VERIFIED & DEALS/OFFERS PROMOTIONAL BADGES */}
-        <div className="absolute top-3 left-3 z-20 flex flex-col gap-1.5 items-start">
-          {activeOffer ? (
-            <Link href={`/customer/cafe/${cafeId}`} onClick={(e) => e.stopPropagation()}>
-              <motion.div 
-                whileHover={{ scale: 1.06 }}
-                whileTap={{ scale: 0.95 }}
-                className="bg-gradient-to-r from-[#FF758C] via-[#FF7E5F] to-[#FEB47B] text-white text-[10px] sm:text-[11px] font-black px-3 py-1 rounded-full shadow-[0_4px_14px_rgba(255,117,140,0.45)] flex items-center gap-1.5 border border-white/50 backdrop-blur-md cursor-pointer hover:shadow-lg transition-all"
-                title={`${activeOffer.text} - Tap to view offer details`}
-              >
-                <Sparkles size={12} className="text-amber-100 animate-pulse shrink-0" />
-                <span className="uppercase tracking-wider">{activeOffer.text}</span>
-              </motion.div>
-            </Link>
-          ) : isVerified ? (
-            <div className="bg-white/95 text-[#2C1810] text-[10px] font-black px-2.5 py-1 rounded-full shadow-md flex items-center gap-1 border border-stone-200/60 backdrop-blur-md">
-              <ShieldCheck size={12} className="text-emerald-600 fill-emerald-100" />
-              <span>Verified</span>
-            </div>
-          ) : null}
-        </div>
-
-        {/* OPEN STATUS BADGE */}
-        <div className="absolute bottom-3 left-3 flex items-center gap-2 z-20">
-          <span className={cn(
-            "px-2.5 py-1 rounded-full text-[10px] font-black tracking-wider uppercase flex items-center gap-1.5 backdrop-blur-md shadow-md border transition-all",
-            isOpen 
-              ? "bg-emerald-600/90 text-white border-emerald-300/40" 
-              : "bg-stone-900/85 text-stone-200 border-stone-700/60"
-          )}>
-            <span className={cn(
-              "w-1.5 h-1.5 rounded-full",
-              isOpen ? "bg-white animate-pulse" : "bg-stone-400"
-            )} />
-            {isOpen ? t('openNow', 'OPEN NOW') : t('closed', 'CLOSED')}
+        {/* Top-Left Cafe Brand Pill Overlay */}
+        <div className="absolute top-3 left-3 z-20 max-w-[65%]">
+          <span className="px-3 py-1 rounded-full bg-white/95 backdrop-blur-xs text-[#2C1810] text-[11px] sm:text-xs font-black tracking-tight truncate block shadow-sm border border-white/60">
+            {name}
           </span>
         </div>
 
-        {/* TOP RIGHT ACTIONS */}
-        <div className="absolute top-3 right-3 flex items-center gap-1.5 z-20">
-          <motion.button
-            whileHover={{ scale: 1.08 }}
-            whileTap={{ scale: 0.88 }}
-            onClick={handleShareClick}
-            aria-label={`Share ${name}`}
-            className="w-9 h-9 rounded-full bg-white/85 hover:bg-white text-stone-700 hover:text-[#6F4E37] backdrop-blur-md flex items-center justify-center transition-all shadow-md active:scale-95 cursor-pointer border border-stone-200/50"
-            title="Share Venue"
-          >
-            <Share2 size={14} />
-          </motion.button>
+        {/* Top-Right Heart / Favourite Button */}
+        <motion.button 
+          whileHover={{ scale: 1.12 }}
+          whileTap={{ scale: 0.88 }}
+          onClick={handleFavoriteClick}
+          aria-label={`Add ${name} to wishlist`}
+          className="absolute top-3 right-3 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white/95 hover:bg-white text-stone-700 hover:text-rose-500 backdrop-blur-xs flex items-center justify-center transition-all shadow-md active:scale-95 group/fav cursor-pointer border border-white/60 z-20"
+        >
+          <Heart 
+            size={16} 
+            className={cn(
+              "transition-all duration-300", 
+              favorite 
+                ? "fill-rose-500 text-rose-500 scale-110" 
+                : "group-hover/fav:text-rose-500 text-stone-700"
+            )} 
+          />
+        </motion.button>
 
-          <motion.button 
-            whileHover={{ scale: 1.08 }}
-            whileTap={{ scale: 0.88 }}
-            onClick={handleFavoriteClick}
-            aria-label={`Add ${name} to wishlist`}
-            className="w-9 h-9 rounded-full bg-white/85 hover:bg-white text-stone-700 hover:text-rose-500 backdrop-blur-md flex items-center justify-center transition-all shadow-md active:scale-95 group/fav cursor-pointer border border-stone-200/50 relative"
-          >
-            <Heart 
-              size={14} 
-              className={cn(
-                "transition-all duration-300", 
-                favorite 
-                  ? "fill-rose-500 text-rose-500 scale-110" 
-                  : "group-hover/fav:text-rose-500 text-stone-700"
-              )} 
-            />
-
-            <AnimatePresence>
-              {heartAnim && (
-                <motion.span
-                  initial={{ scale: 0, opacity: 1, y: 0 }}
-                  animate={{ scale: 2, opacity: 0, y: -18 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.5 }}
-                  className="absolute inset-0 flex items-center justify-center pointer-events-none"
-                >
-                  <Heart size={16} className="fill-rose-500 text-rose-500" />
-                </motion.span>
-              )}
-            </AnimatePresence>
-          </motion.button>
-        </div>
+        {/* Bottom-Left Overlay: Dark Translucent Star Rating & Reviews Badge */}
+        {hasRating ? (
+          <div className="absolute bottom-2.5 left-3 z-20 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-black/75 backdrop-blur-md text-white text-[11px] sm:text-xs font-black border border-white/20 shadow-md">
+            <Star size={12} className="fill-amber-400 text-amber-400 stroke-none" />
+            <span>{rating}</span>
+            {reviewsCount > 0 && (
+              <span className="text-stone-300 text-[10px] font-medium">({reviewsCount})</span>
+            )}
+          </div>
+        ) : (
+          <div className="absolute bottom-2.5 left-3 z-20 flex items-center gap-1 px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-md text-stone-200 text-[10px] font-bold border border-white/10 shadow-xs">
+            <span>New on Fahara</span>
+          </div>
+        )}
       </div>
 
       {/* CONTENT SECTION */}
-      <div className="p-2.5 sm:p-4 flex flex-col flex-1 justify-between bg-white relative z-30 gap-2 sm:gap-3 rounded-b-[24px] sm:rounded-b-[28px]">
-        <div>
-          {/* Title & Real Rating Pill */}
-          <div className="flex justify-between items-start mb-1 gap-1.5 sm:gap-2">
-            <h3 className="text-[13px] sm:text-base md:text-lg font-bold text-[#2C1810] tracking-tight leading-snug line-clamp-1 group-hover:text-[#6F4E37] transition-colors duration-300">
+      <div className="p-3 sm:p-4 flex flex-col flex-1 justify-between bg-white rounded-b-[21px] sm:rounded-b-[25px] relative z-10 gap-2.5">
+        <div className="space-y-1.5">
+          {/* Cafe Name in Bold Uppercase */}
+          <div>
+            <h3 className="text-sm sm:text-base font-black text-[#2C1810] uppercase tracking-wide truncate group-hover:text-[#6F4E37] transition-colors leading-tight">
               {name}
             </h3>
-            
-            {hasRating ? (
-              <div className="flex items-center bg-[#FFF8E7] text-[#5C4033] border border-[#FEE199] px-1.5 py-0.5 sm:px-2.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-black shrink-0 shadow-2xs">
-                <Star size={11} className="fill-amber-400 text-amber-400 mr-1 stroke-[1.5]" />
-                <span>{rating}</span>
-                {reviewsCount > 0 && <span className="text-[#8B5A2B] ml-0.5 text-[9px] sm:text-[10px]">({reviewsCount})</span>}
-              </div>
-            ) : (
-              <div className="text-[9px] sm:text-[10px] font-bold text-stone-400 bg-stone-100 px-2 py-0.5 rounded-full border border-stone-200 shrink-0 whitespace-nowrap">
-                No ratings yet
-              </div>
-            )}
           </div>
           
-          {/* LOCATION */}
-          {city && (
-            <div className="flex items-center justify-between text-[11px] sm:text-xs text-stone-500 mb-2">
-              <div className="flex items-center truncate max-w-[72%] font-medium">
-                <MapPin size={12} className="mr-1 flex-shrink-0 text-[#6F4E37]" />
-                <span className="truncate font-bold text-stone-600">{city}</span>
-              </div>
-              {distance && (
-                <div className="flex items-center font-extrabold bg-stone-100 px-1.5 py-0.5 rounded-lg text-stone-600 text-[9px] sm:text-[10px] border border-stone-200 flex-shrink-0">
-                  <Navigation size={9} className="mr-1 text-stone-400" />
-                  {distance}
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* MODERN INTERACTIVE AMENITY CHIPS */}
-          <div className="flex items-center gap-1 sm:gap-1.5 flex-wrap relative z-20">
-            {amenityList.length > 0 ? (
+          {/* Location & Distance on One Compact Line */}
+          <div className="flex items-center text-[11px] sm:text-xs text-stone-500 font-medium truncate">
+            <MapPin size={12} className="mr-1 text-[#6F4E37] shrink-0" />
+            <span className="truncate text-stone-600 font-semibold">{city || 'Location available'}</span>
+            {distance && (
               <>
-                {amenityList.slice(0, 2).map((am, i) => (
-                  <motion.div
-                    key={i}
-                    whileHover={{ scale: 1.05, y: -1 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="inline-flex items-center gap-1 px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full bg-gradient-to-r from-[#FFFBF7] via-[#FFF8F0] to-[#FFF5EC] border border-[#E8DED5] text-[#5C3D26] hover:text-[#2C1810] hover:border-[#6F4E37]/50 text-[10px] sm:text-[11px] font-extrabold capitalize shadow-2xs hover:shadow-xs transition-all cursor-pointer"
-                  >
-                    <span className="w-3 h-3 sm:w-3.5 sm:h-3.5 rounded-full bg-emerald-500/15 text-emerald-600 flex items-center justify-center shrink-0">
-                      <Check size={8} className="stroke-[3]" />
-                    </span>
-                    <span>{String(am).replace('_', ' ')}</span>
-                  </motion.div>
-                ))}
+                <span className="mx-1.5 text-stone-300 font-bold">•</span>
+                <span className="text-stone-500 shrink-0 font-medium">{distance}</span>
+              </>
+            )}
+          </div>
 
-                {amenityList.length > 2 && (
-                  <motion.button
-                    type="button"
-                    whileHover={{ scale: 1.06 }}
-                    whileTap={{ scale: 0.94 }}
+          {/* Compact Feature Chips (max 3 visible chips + N more popover) */}
+          <div className="flex items-center gap-1.5 flex-wrap pt-1 relative z-20">
+            {(() => {
+              // Extract professional display chips (combining indoor/outdoor, amenities & categories)
+              const featureChips = [];
+              if (categoryStr.includes('indoor') || amenityList.some(a => String(a).toLowerCase().includes('indoor'))) {
+                featureChips.push({ label: 'Indoor', icon: 'coffee' });
+              }
+              if (categoryStr.includes('outdoor') || amenityList.some(a => String(a).toLowerCase().includes('outdoor'))) {
+                featureChips.push({ label: 'Outdoor', icon: 'sun' });
+              }
+              if (supportsEventBooking || categoryStr.includes('event')) {
+                featureChips.push({ label: 'Events', icon: 'calendar' });
+              }
+
+              // Append other amenities if space allows
+              amenityList.forEach(am => {
+                const raw = String(am).toLowerCase();
+                const clean = String(am).replace('_', ' ');
+                if (!featureChips.some(c => c.label.toLowerCase() === clean.toLowerCase())) {
+                  let iconType = 'check';
+                  if (raw.includes('ac') || raw.includes('air') || raw.includes('cooling')) iconType = 'wind';
+                  else if (raw.includes('wifi') || raw.includes('internet')) iconType = 'wifi';
+                  else if (raw.includes('coffee') || raw.includes('cafe')) iconType = 'coffee';
+
+                  featureChips.push({ 
+                    label: clean.length <= 3 ? clean.toUpperCase() : clean.charAt(0).toUpperCase() + clean.slice(1), 
+                    icon: iconType 
+                  });
+                }
+              });
+
+              if (featureChips.length === 0) {
+                featureChips.push({ label: cafe?.category || 'Cafe', icon: 'coffee' });
+              }
+
+              const visibleChips = featureChips.slice(0, 2);
+              const remainingChips = featureChips.slice(2);
+
+              return (
+                <>
+                  {visibleChips.map((chip, idx) => (
+                    <span
+                      key={idx}
+                      className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#FFF8F0] border border-[#E8DED5] text-[10px] sm:text-[11px] font-bold text-[#6F4E37] shadow-2xs"
+                    >
+                      {chip.icon === 'coffee' && <Coffee size={11} className="text-[#6F4E37] shrink-0" strokeWidth={2.2} />}
+                      {chip.icon === 'sun' && <Sun size={11} className="text-amber-600 shrink-0" strokeWidth={2.2} />}
+                      {chip.icon === 'calendar' && <Calendar size={11} className="text-[#6F4E37] shrink-0" strokeWidth={2.2} />}
+                      {chip.icon === 'wind' && <Wind size={11} className="text-sky-600 shrink-0" strokeWidth={2.2} />}
+                      {chip.icon === 'wifi' && <Wifi size={11} className="text-emerald-600 shrink-0" strokeWidth={2.2} />}
+                      {chip.icon === 'check' && <Check size={10} className="text-emerald-600 stroke-[3] shrink-0" />}
+                      <span>{chip.label}</span>
+                    </span>
+                  ))}
+
+                  {remainingChips.length > 0 && (
+                    <div>
+                      <button
+                        type="button"
+                        suppressHydrationWarning
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          setShowAmenityPopover(!showAmenityPopover);
+                        }}
+                        className="inline-flex items-center gap-0.5 px-2 py-1 rounded-full bg-[#F5EDE4] hover:bg-[#6F4E37] text-[#6F4E37] hover:text-white border border-[#E8DED5] text-[10px] sm:text-[11px] font-black shadow-2xs transition-all cursor-pointer"
+                        aria-label="Toggle Features List"
+                      >
+                        <span>+{remainingChips.length}</span>
+                        <ChevronDown size={10} className={cn("transition-transform duration-200", showAmenityPopover && "rotate-180")} />
+                      </button>
+                    </div>
+                  )}
+                </>
+              );
+            })()}
+          </div>
+
+          {/* Expandable Features Drawer (Smoothly expands inside the card above the price footer, never clipped or overlapping) */}
+          <AnimatePresence>
+            {showAmenityPopover && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={{ duration: 0.2 }}
+                onClick={(e) => e.stopPropagation()}
+                className="overflow-hidden border border-[#E8DED5] rounded-xl bg-[#FFFDF9] shadow-inner p-2.5 mt-2 space-y-1.5"
+              >
+                <div className="flex items-center justify-between border-b border-[#F5EDE4] pb-1">
+                  <span className="text-[10px] font-black text-[#6F4E37] uppercase tracking-wider">
+                    All Features ({(() => {
+                      const list = [];
+                      if (categoryStr.includes('indoor') || amenityList.some(a => String(a).toLowerCase().includes('indoor'))) list.push('Indoor');
+                      if (categoryStr.includes('outdoor') || amenityList.some(a => String(a).toLowerCase().includes('outdoor'))) list.push('Outdoor');
+                      if (supportsEventBooking || categoryStr.includes('event')) list.push('Events');
+                      amenityList.forEach(am => {
+                        const clean = String(am).replace('_', ' ');
+                        if (!list.some(c => c.toLowerCase() === clean.toLowerCase())) {
+                          list.push(clean.length <= 3 ? clean.toUpperCase() : clean.charAt(0).toUpperCase() + clean.slice(1));
+                        }
+                      });
+                      return list.length || 1;
+                    })()})
+                  </span>
+                  <button 
+                    type="button" 
+                    suppressHydrationWarning
                     onClick={(e) => {
                       e.preventDefault();
                       e.stopPropagation();
-                      setShowAmenityPopover(!showAmenityPopover);
-                      setShowCapabilityPopover(false);
+                      setShowAmenityPopover(false);
                     }}
-                    className="inline-flex items-center gap-0.5 px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full bg-[#F5EDE4] hover:bg-[#6F4E37] text-[#6F4E37] hover:text-white border border-[#E8DED5] text-[10px] sm:text-[11px] font-black shadow-2xs transition-all duration-200 cursor-pointer"
+                    className="w-5 h-5 rounded-full bg-[#F5EDE4] hover:bg-[#E8DED5] text-[#6F4E37] flex items-center justify-center transition-colors active:scale-90 cursor-pointer"
+                    aria-label="Close Features"
                   >
-                    <span>+{amenityList.length - 2} more</span>
-                    <ChevronDown size={10} className={cn("transition-transform duration-200", showAmenityPopover && "rotate-180")} />
-                  </motion.button>
-                )}
+                    <X size={11} strokeWidth={2.5} />
+                  </button>
+                </div>
 
-                <AnimatePresence>
-                  {showAmenityPopover && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 6, scale: 0.95 }}
-                      animate={{ opacity: 1, y: 0, scale: 1 }}
-                      exit={{ opacity: 0, y: 4, scale: 0.95 }}
-                      transition={{ duration: 0.15 }}
-                      onClick={(e) => e.stopPropagation()}
-                      className="absolute bottom-full right-0 mb-2 w-56 sm:w-60 max-w-full bg-white backdrop-blur-xl border border-[#DDB892]/80 rounded-2xl shadow-2xl p-3.5 z-50 text-left space-y-2"
-                    >
-                      <div className="flex items-center justify-between border-b border-stone-100 pb-2 gap-2">
-                        <span className="text-[11px] font-black text-[#6F4E37] uppercase tracking-wider truncate">All Amenities ({amenityList.length})</span>
-                        <button 
-                          type="button" 
-                          onClick={() => setShowAmenityPopover(false)}
-                          className="w-5 h-5 rounded-full bg-stone-100 hover:bg-stone-200 text-stone-500 hover:text-stone-800 flex items-center justify-center text-xs font-bold transition-colors shrink-0 cursor-pointer"
-                        >
-                          ✕
-                        </button>
+                {/* Grid of features */}
+                <div className="grid grid-cols-2 gap-1.5 max-h-36 overflow-y-auto overscroll-contain pr-0.5 text-[11px] font-bold text-[#2C1810]">
+                  {(() => {
+                    const list = [];
+                    if (categoryStr.includes('indoor') || amenityList.some(a => String(a).toLowerCase().includes('indoor'))) list.push('Indoor');
+                    if (categoryStr.includes('outdoor') || amenityList.some(a => String(a).toLowerCase().includes('outdoor'))) list.push('Outdoor');
+                    if (supportsEventBooking || categoryStr.includes('event')) list.push('Events');
+                    amenityList.forEach(am => {
+                      const clean = String(am).replace('_', ' ');
+                      if (!list.some(c => c.toLowerCase() === clean.toLowerCase())) {
+                        list.push(clean.length <= 3 ? clean.toUpperCase() : clean.charAt(0).toUpperCase() + clean.slice(1));
+                      }
+                    });
+                    if (list.length === 0) list.push(cafe?.category || 'Cafe');
+                    return list.map((item, i) => (
+                      <div key={i} className="flex items-center gap-1.5 py-0.5 px-1 rounded-md bg-white border border-[#E8DED5]/60">
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#6F4E37] shrink-0" />
+                        <span className="truncate text-[10px] sm:text-[11px] text-[#4A2C11]">{item}</span>
                       </div>
-                      <div className="max-h-44 overflow-y-auto space-y-2 pr-1 no-scrollbar">
-                        {amenityList.map((am, idx) => (
-                          <div key={idx} className="flex items-center gap-2 text-xs font-extrabold text-[#2C1810]">
-                            <span className="w-4 h-4 rounded-full bg-emerald-500/15 text-emerald-600 flex items-center justify-center shrink-0">
-                              <Check size={10} className="stroke-[3]" />
-                            </span>
-                            <span className="capitalize leading-snug">{String(am).replace('_', ' ')}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </>
-            ) : (
-              <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-stone-100 border border-stone-200 text-stone-600 text-[10px] sm:text-[11px] font-extrabold capitalize">
-                <span>{cafe?.category || cafe?.service_type || 'Venue'}</span>
+                    ));
+                  })()}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+
+        {/* BOTTOM PRICE & CIRCULAR ACTION BUTTON FOOTER */}
+        <div className="pt-2 sm:pt-2.5 border-t border-stone-100 flex items-center justify-between mt-1">
+          {/* Left Price Display */}
+          <div>
+            {hasValidPrice ? (
+              <div className="flex items-baseline gap-1">
+                <span className="text-base sm:text-lg font-black text-[#2C1810] tracking-tight">₹{numPrice}</span>
+                <span className="text-[11px] sm:text-xs font-bold text-stone-500">for 2</span>
               </div>
+            ) : isWalkingCafe ? (
+              <span className="text-[10px] sm:text-xs font-black text-emerald-800 bg-emerald-50 border border-emerald-300 px-2 py-0.5 rounded-full">
+                Walk In
+              </span>
+            ) : (
+              <span className="text-xs sm:text-sm font-black text-[#6F4E37]">
+                Price on request
+              </span>
             )}
           </div>
 
-          {/* MODERN INTERACTIVE EVENT CAPABILITY BADGES */}
-          {eventCapabilities.length > 0 && (
-            <div className="flex items-center gap-1 sm:gap-1.5 flex-wrap mt-2 pt-2 border-t border-stone-100/90 relative z-20">
-              {visibleCapabilities.map((cap) => (
-                <motion.div
-                  key={cap.id}
-                  whileHover={{ scale: 1.05, y: -1 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <Link 
-                    href={`/customer/cafe/${cafeId}`}
-                    onClick={(e) => e.stopPropagation()}
-                    className="inline-flex items-center gap-1 px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full bg-gradient-to-r from-amber-500/10 via-orange-500/10 to-rose-500/10 hover:from-amber-500/20 hover:to-rose-500/20 border border-amber-300/70 hover:border-amber-400 text-[#4A2C11] text-[10px] sm:text-[11px] font-black hover:shadow-xs transition-all cursor-pointer shadow-2xs group/badge"
-                  >
-                    <Sparkles size={11} className="text-amber-600 group-hover/badge:scale-110 transition-transform shrink-0" />
-                    <span>{cap.label}</span>
-                  </Link>
-                </motion.div>
-              ))}
-
-              {remainingCapCount > 0 && (
-                <motion.button
-                  type="button"
-                  whileHover={{ scale: 1.06 }}
-                  whileTap={{ scale: 0.94 }}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    setShowCapabilityPopover(!showCapabilityPopover);
-                    setShowAmenityPopover(false);
-                  }}
-                  className="inline-flex items-center gap-0.5 px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full bg-[#FFF8F0] hover:bg-[#6F4E37] text-[#6F4E37] hover:text-white border border-[#DDB892]/60 text-[10px] sm:text-[11px] font-black shadow-2xs transition-all duration-200 cursor-pointer"
-                >
-                  <span>+{remainingCapCount} more</span>
-                  <ChevronDown size={10} className={cn("transition-transform duration-200", showCapabilityPopover && "rotate-180")} />
-                </motion.button>
-              )}
-
-              <AnimatePresence>
-                {showCapabilityPopover && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 6, scale: 0.95 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, y: 4, scale: 0.95 }}
-                    transition={{ duration: 0.15 }}
-                    onClick={(e) => e.stopPropagation()}
-                    className="absolute bottom-full right-0 mb-2 w-56 sm:w-60 max-w-full bg-white backdrop-blur-xl border border-[#DDB892]/80 rounded-2xl shadow-2xl p-3.5 z-50 text-left space-y-2"
-                  >
-                    <div className="flex items-center justify-between border-b border-stone-100 pb-2 gap-2">
-                      <span className="text-[11px] font-black text-[#6F4E37] uppercase tracking-wider truncate">Event Services ({eventCapabilities.length})</span>
-                      <button 
-                        type="button" 
-                        onClick={() => setShowCapabilityPopover(false)}
-                        className="w-5 h-5 rounded-full bg-stone-100 hover:bg-stone-200 text-stone-500 hover:text-stone-800 flex items-center justify-center text-xs font-bold transition-colors shrink-0 cursor-pointer"
-                      >
-                        ✕
-                      </button>
-                    </div>
-                    <div className="max-h-40 overflow-y-auto space-y-1.5 pr-1 no-scrollbar">
-                      {eventCapabilities.map((cap) => (
-                        <Link
-                          key={cap.id}
-                          href={`/customer/cafe/${cafeId}`}
-                          className="flex items-center gap-2 text-xs font-extrabold text-[#2C1810] hover:text-[#6F4E37] transition-colors"
-                        >
-                          <Sparkles size={11} className="text-amber-600 shrink-0" />
-                          <span>{cap.label}</span>
-                        </Link>
-                      ))}
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-          )}
-        </div>
-
-        {/* CAPABILITY-BASED CTAs & PRICING DISPLAY */}
-        <div className="pt-2 sm:pt-3 border-t border-stone-100 flex items-center justify-between gap-1.5 sm:gap-2">
-          {/* Left: Walking status or Price Display */}
-          {isWalkingCafe ? (
-            <div className="flex flex-col min-w-0">
-              <span className="text-[10px] sm:text-xs font-black text-emerald-800 bg-emerald-50 border border-emerald-300/70 px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-xl shrink-0 truncate flex items-center gap-1">
-                <Footprints size={10} className="text-emerald-600" />
-                Walk In
-              </span>
-            </div>
-          ) : hasValidPrice ? (
-            <div className="flex flex-col min-w-0">
-              <div className="flex items-baseline gap-0.5">
-                <span className="text-[9px] sm:text-xs font-medium text-stone-400">From</span>
-                <span className="text-xs sm:text-base md:text-lg font-black text-[#2C1810] tracking-tight ml-0.5 sm:ml-1">₹{numPrice}</span>
-                <span className="text-[8px] sm:text-[10px] font-bold text-stone-400 uppercase tracking-wider">/hr</span>
-              </div>
-            </div>
-          ) : (
-            <span className="text-[10px] sm:text-xs font-extrabold text-[#6F4E37] bg-[#FFF8F0] border border-[#DDB892]/60 px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-xl shrink-0 truncate">
-              Price on request
-            </span>
-          )}
-
-          {/* Right Primary View Details Button */}
-          <div className="flex items-center gap-1 sm:gap-1.5 ml-auto shrink-0">
-            <Link href={`/customer/cafe/${cafeId}`}>
-              <motion.button 
-                whileHover={{ scale: 1.04 }}
-                whileTap={{ scale: 0.95 }}
-                className="py-1 px-2.5 sm:py-2 sm:px-4 bg-gradient-to-r from-[#4A2C11] via-[#5A3825] to-[#6F4E37] hover:from-[#361f0a] hover:to-[#573d2a] text-white font-black rounded-xl text-[10px] sm:text-xs flex items-center justify-center gap-1 sm:gap-1.5 shadow-md hover:shadow-lg hover:shadow-[#4A2C11]/25 transition-all duration-300 cursor-pointer group/btn shrink-0"
-              >
-                <span className="whitespace-nowrap">View Details</span>
-                <ArrowRight size={11} className="group-hover/btn:translate-x-1 transition-transform shrink-0" />
-              </motion.button>
-            </Link>
-          </div>
+          {/* Right Circular Brown Arrow Action Button */}
+          <motion.div 
+            whileHover={{ scale: 1.08 }}
+            whileTap={{ scale: 0.92 }}
+            className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-[#6F4E37] hover:bg-[#523723] text-white flex items-center justify-center shadow-md active:scale-95 transition-all shrink-0 cursor-pointer"
+            title="View Cafe Details"
+          >
+            <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform" />
+          </motion.div>
         </div>
       </div>
     </motion.div>

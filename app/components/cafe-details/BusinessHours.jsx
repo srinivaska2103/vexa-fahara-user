@@ -3,20 +3,22 @@
 import { Clock, CheckCircle } from 'lucide-react';
 import { checkIfCafeOpen, parseTimeToMinutes, formatMinutesTo12Hour } from '@/lib/utils';
 
-export default function BusinessHours({ cafe }) {
+export default function BusinessHours({ cafe, isMobileView = false }) {
   const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
   const todayDayName = new Date().toLocaleDateString('en-US', { weekday: 'long', timeZone: 'Asia/Kolkata' });
   const isCurrentlyOpen = checkIfCafeOpen(cafe);
   
   return (
-    <div className="mb-8">
-      <div className="bg-white/90 backdrop-blur-xl rounded-3xl p-6 sm:p-8 border border-stone-200/90 shadow-[0_8px_30px_rgba(0,0,0,0.04)] font-sans">
+    <div className={isMobileView ? "mb-2 font-sans" : "mb-8 font-sans"}>
+      <div className={isMobileView ? "bg-transparent p-0 border-0 shadow-none font-sans" : "bg-white/90 backdrop-blur-xl rounded-3xl p-6 sm:p-8 border border-stone-200/90 shadow-[0_8px_30px_rgba(0,0,0,0.04)] font-sans"}>
         
         {/* Header with Live Status Badge */}
-        <div className="flex items-center justify-between mb-6 pb-5 border-b border-stone-100">
+        <div className={`flex items-center justify-between ${isMobileView ? 'mb-3 pb-3 border-b border-stone-100' : 'mb-6 pb-5 border-b border-stone-100'}`}>
           <div>
-            <h2 className="text-xl sm:text-2xl font-black text-[#2C1810] tracking-tight">Business Hours</h2>
-            <p className="text-xs text-stone-500 font-medium mt-0.5">Weekly operating schedule and venue availability.</p>
+            <h2 className={isMobileView ? "text-base font-black text-[#2C1810] tracking-tight" : "text-xl sm:text-2xl font-black text-[#2C1810] tracking-tight"}>Business Hours</h2>
+            {!isMobileView && (
+              <p className="text-xs text-stone-500 font-medium mt-0.5">Weekly operating schedule and venue availability.</p>
+            )}
           </div>
           
           <div className={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-black border shadow-2xs ${

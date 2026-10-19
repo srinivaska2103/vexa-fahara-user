@@ -52,3 +52,22 @@ export const useCafeTableAvailability = (id, bookingDate, startTime, endTime) =>
     refetchInterval: 5000,
   });
 };
+
+export const useCafeAvailability = (id, from, to) => {
+  return useQuery({
+    queryKey: ['cafe-vendor-availability', id, from, to],
+    queryFn: () => cafeDetailsService.getCafeAvailability(id, from, to),
+    enabled: !!id,
+    refetchInterval: 10000,
+  });
+};
+
+export const useEventManagerAvailability = (eventManagerId, from, to) => {
+  return useQuery({
+    queryKey: ['event-manager-availability', eventManagerId, from, to],
+    queryFn: () => cafeDetailsService.getEventManagerAvailability(eventManagerId, from, to),
+    enabled: !!eventManagerId,
+    refetchInterval: 10000,
+  });
+};
+

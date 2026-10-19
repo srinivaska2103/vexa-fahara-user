@@ -1,15 +1,16 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Search, Coffee, Utensils, PartyPopper, Star, Heart, 
   MapPin, ArrowRight, Sparkles, Bell, SlidersHorizontal, 
-  Home, Calendar, LayoutGrid, Cake, Cookie
+  Home, Calendar, LayoutGrid, Cake, Cookie, ChevronLeft, ChevronRight
 } from 'lucide-react';
+import FaharaPromotionalCarousel, { PROMOTIONAL_SLIDES } from './FaharaPromotionalCarousel';
 
 export default function HomeHero() {
   const router = useRouter();
@@ -72,6 +73,47 @@ export default function HomeHero() {
   const [phoneCategory, setPhoneCategory] = useState('ALL');
   const [phoneActiveTab, setPhoneActiveTab] = useState('home');
   const [wishlist, setWishlist] = useState({ 1: true, 2: true, 3: false, 4: false });
+  const [phoneBannerIndex, setPhoneBannerIndex] = useState(0);
+
+  // Auto-advance the phone banner carousel every 5s
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setPhoneBannerIndex((prev) => (prev + 1) % PROMOTIONAL_SLIDES.length);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, []);
+
+  // Time-based greeting & rotating subtitle carousel for phone mockup
+  const [phoneGreeting, setPhoneGreeting] = useState('Good day');
+  const [heroSubtitleIndex, setHeroSubtitleIndex] = useState(0);
+  const ROTATING_HERO_SUBTITLES = [
+    "Let's find your perfect cafe.",
+    "Discover events. Make memories.",
+    "Book your next celebration with Fahara."
+  ];
+
+  useEffect(() => {
+    const updatePhoneGreeting = () => {
+      const hour = new Date().getHours();
+      if (hour >= 5 && hour < 12) {
+        setPhoneGreeting('Good morning');
+      } else if (hour >= 12 && hour < 17) {
+        setPhoneGreeting('Good afternoon');
+      } else {
+        setPhoneGreeting('Good evening');
+      }
+    };
+    updatePhoneGreeting();
+    const interval = setInterval(updatePhoneGreeting, 60000);
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setHeroSubtitleIndex((prev) => (prev + 1) % ROTATING_HERO_SUBTITLES.length);
+    }, 3500);
+    return () => clearInterval(timer);
+  }, [ROTATING_HERO_SUBTITLES.length]);
 
   // Filtered mock items based on category and search
   const filteredVenues = mockVenues.filter((v) => {
@@ -416,14 +458,25 @@ export default function HomeHero() {
                         </div>
                       </div>
 
-                      {/* User Greeting: "Hi, Srini! 👋 Let's find the best cafe!" */}
-                      <div className="text-left mt-4">
-                        <h4 className="text-[16px] sm:text-[17px] font-black text-white leading-tight flex items-center gap-1.5">
-                          Hi, Srini! <span className="text-[16px]">👋</span>
+                      {/* User Greeting: Dynamic time-based greeting + Rotating subtitle */}
+                      <div className="text-left mt-4" suppressHydrationWarning>
+                        <h4 className="text-[16px] sm:text-[17px] font-black text-white leading-tight" suppressHydrationWarning>
+                          {phoneGreeting}!
                         </h4>
-                        <p className="text-[10px] text-stone-300 font-medium mt-0.5">
-                          Let's find the best cafe!
-                        </p>
+                        <div className="h-4 overflow-hidden mt-0.5 flex items-center">
+                          <AnimatePresence mode="wait">
+                            <motion.p
+                              key={heroSubtitleIndex}
+                              initial={{ opacity: 0, y: 5 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              exit={{ opacity: 0, y: -5 }}
+                              transition={{ duration: 0.35, ease: 'easeOut' }}
+                              className="text-[10px] text-[#DDB892] font-semibold tracking-wide truncate w-full motion-reduce:transition-none"
+                            >
+                              {ROTATING_HERO_SUBTITLES[heroSubtitleIndex]}
+                            </motion.p>
+                          </AnimatePresence>
+                        </div>
                       </div>
 
                       {/* Search Bar + Filter Square Button */}
@@ -453,44 +506,162 @@ export default function HomeHero() {
                           <SlidersHorizontal size={13} />
                         </button>
                       </div>
-
-                      {/* HERO BANNER CARD: "LIMITED TIME / Made Fresh. Made for You." */}
-                      <div className="mt-3.5 bg-[#FFF8F0] rounded-2xl p-3 text-[#2C1810] shadow-sm flex items-center justify-between gap-2.5 overflow-hidden relative">
-                        <div className="text-left flex-1 z-10">
-                          <span className="text-[7px] font-black text-[#A67B5B] uppercase bg-[#FAF2EB] border border-[#DDB892]/50 px-1.5 py-0.5 rounded-full inline-block mb-1">
-                            LIMITED TIME
-                          </span>
-                          <h5 className="text-[12px] font-black text-[#2C1810] leading-tight">
-                            Made Fresh.<br />Made for You.
-                          </h5>
-                          <p className="text-[7.5px] text-stone-500 font-medium mt-1 leading-snug line-clamp-2">
-                            Real brews, handcrafted bites, made the Fahara way.
-                          </p>
-                          <button 
-                            type="button"
-                            onClick={() => router.push('/customer/cafe')}
-                            className="mt-2 px-2.5 py-1 rounded-full bg-[#6F4E37] text-white text-[8px] font-extrabold flex items-center gap-1 shadow-2xs hover:bg-[#523723] cursor-pointer"
-                          >
-                            <span>Explore Now</span>
-                            <ArrowRight size={8} strokeWidth={2.5} />
-                          </button>
-                        </div>
-
-                        {/* Bakery / Cafe display image matching reference */}
-                        <div className="w-[105px] h-[88px] rounded-xl overflow-hidden shrink-0 shadow-2xs border border-stone-200/60">
-                          <img 
-                            src="/cafe2.jpg" 
-                            alt="Made Fresh Banner" 
-                            className="w-full h-full object-cover" 
-                          />
-                        </div>
-                      </div>
-
                     </div>
 
-                    {/* CATEGORIES SECTION */}
-                    <div className="pt-3.5 px-3.5 sm:px-4">
-                      <div className="flex items-center justify-between mb-2 px-0.5">
+                    {/* HERO BANNER CARD: Interactive 4-slide promotional carousel matching design reference with horizontal movement and generous breathing room */}
+                    {(() => {
+                      const slide = PROMOTIONAL_SLIDES[phoneBannerIndex];
+                      const handlePhoneNext = () => {
+                        setPhoneBannerIndex((prev) => (prev + 1) % PROMOTIONAL_SLIDES.length);
+                      };
+                      const handlePhonePrev = () => {
+                        setPhoneBannerIndex((prev) => (prev - 1 + PROMOTIONAL_SLIDES.length) % PROMOTIONAL_SLIDES.length);
+                      };
+
+                      return (
+                        <div className="px-3.5 sm:px-4 mt-3 mb-6">
+                          <div 
+                            className="relative bg-[#FFF8F0] rounded-[24px] pt-4 px-4 pb-7 text-[#2C1810] shadow-[0_8px_24px_rgba(44,24,16,0.12)] border border-[#E8DED5] overflow-hidden select-none"
+                            onTouchStart={(e) => {
+                              e.currentTarget._touchStartX = e.touches[0].clientX;
+                            }}
+                            onTouchEnd={(e) => {
+                              if (e.currentTarget._touchStartX !== undefined) {
+                                const diffX = e.currentTarget._touchStartX - e.changedTouches[0].clientX;
+                                if (diffX > 35) {
+                                  handlePhoneNext();
+                                } else if (diffX < -35) {
+                                  handlePhonePrev();
+                                }
+                              }
+                            }}
+                          >
+                            {/* Horizontal drag & animation container */}
+                            <AnimatePresence mode="wait">
+                              <motion.div
+                                key={slide.id}
+                                drag="x"
+                                dragConstraints={{ left: 0, right: 0 }}
+                                dragElastic={0.2}
+                                onDragEnd={(e, { offset, velocity }) => {
+                                  const swipe = offset.x;
+                                  if (swipe < -35 || velocity.x < -300) {
+                                    handlePhoneNext();
+                                  } else if (swipe > 35 || velocity.x > 300) {
+                                    handlePhonePrev();
+                                  }
+                                }}
+                                initial={{ opacity: 0, x: 28 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                exit={{ opacity: 0, x: -28 }}
+                                transition={{ duration: 0.28, ease: 'easeOut' }}
+                                className="cursor-grab active:cursor-grabbing flex flex-col justify-between"
+                              >
+                                {/* Badge */}
+                                <div className="flex items-center justify-between mb-1">
+                                  <span className={`text-[7.5px] font-black uppercase px-2 py-0.5 rounded-full inline-block border tracking-wider ${
+                                    slide.isUpcoming 
+                                      ? 'bg-[#FFE8D6] text-[#A64B2A] border-[#F4A261]/40' 
+                                      : 'bg-[#FAF2EB] text-[#A67B5B] border-[#DDB892]/50'
+                                  }`}>
+                                    {slide.badge}
+                                  </span>
+                                  
+                                  {/* Small arrow indicators */}
+                                  <div className="flex items-center gap-1">
+                                    <button
+                                      type="button"
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        handlePhonePrev();
+                                      }}
+                                      aria-label="Previous banner"
+                                      className="w-5 h-5 rounded-full bg-stone-200/60 hover:bg-stone-200 flex items-center justify-center text-stone-700 transition-colors"
+                                    >
+                                      <ChevronLeft size={11} strokeWidth={2.5} />
+                                    </button>
+                                    <button
+                                      type="button"
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        handlePhoneNext();
+                                      }}
+                                      aria-label="Next banner"
+                                      className="w-5 h-5 rounded-full bg-stone-200/60 hover:bg-stone-200 flex items-center justify-center text-stone-700 transition-colors"
+                                    >
+                                      <ChevronRight size={11} strokeWidth={2.5} />
+                                    </button>
+                                  </div>
+                                </div>
+
+                                {/* Title & Description with comfortable spacing */}
+                                <h5 className="text-[12px] font-black text-[#2C1810] leading-snug line-clamp-2 mt-1">
+                                  {slide.heading}
+                                </h5>
+                                <p className="text-[8px] text-stone-600 font-medium mt-1 leading-normal line-clamp-2">
+                                  {slide.description}
+                                </p>
+
+                                {/* Button */}
+                                <div className="mt-2.5">
+                                  <button 
+                                    type="button"
+                                    onClick={() => {
+                                      if (slide.ctaLink) {
+                                        if (slide.ctaLink.startsWith('#')) {
+                                          const el = document.getElementById(slide.ctaLink.replace('#', ''));
+                                          if (el) el.scrollIntoView({ behavior: 'smooth' });
+                                        } else {
+                                          router.push(slide.ctaLink);
+                                        }
+                                      }
+                                    }}
+                                    className={`px-3 py-1.5 rounded-full text-white text-[8px] font-extrabold flex items-center gap-1 shadow-2xs transition-all ${
+                                      slide.isUpcoming 
+                                        ? 'bg-stone-400 cursor-default' 
+                                        : 'bg-[#6F4E37] hover:bg-[#523723] cursor-pointer'
+                                    }`}
+                                  >
+                                    <span>{slide.cta}</span>
+                                    {!slide.isUpcoming && <ArrowRight size={8} strokeWidth={2.5} />}
+                                  </button>
+                                </div>
+
+                                {/* Full-width cafe photo matching the reference image */}
+                                <div className="mt-3.5 w-full h-[105px] rounded-xl overflow-hidden shadow-2xs border border-stone-200/70 bg-stone-100 relative">
+                                  <img 
+                                    src={slide.image} 
+                                    alt={slide.imageAlt} 
+                                    className="w-full h-full object-cover select-none pointer-events-none"
+                                    onError={(e) => { e.currentTarget.src = '/cat_cafes.jpg'; }}
+                                  />
+                                  <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none" />
+                                </div>
+                              </motion.div>
+                            </AnimatePresence>
+
+                            {/* Mini pagination dots with horizontal navigation */}
+                            <div className="flex items-center justify-center gap-1.5 mt-3 pt-0.5">
+                              {PROMOTIONAL_SLIDES.map((s, idx) => (
+                                <button
+                                  key={s.id}
+                                  type="button"
+                                  onClick={() => setPhoneBannerIndex(idx)}
+                                  aria-label={`Go to slide ${idx + 1}`}
+                                  className={`h-1 rounded-full transition-all duration-300 cursor-pointer ${
+                                    phoneBannerIndex === idx ? 'w-4 bg-[#6F4E37]' : 'w-1.5 bg-stone-300 hover:bg-stone-400'
+                                  }`}
+                                />
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })()}
+
+                    {/* CATEGORIES SECTION (Sticky / Fixed in view while scrolling) */}
+                    <div className="sticky top-0 z-10 bg-[#FFF8F0]/95 backdrop-blur-sm pt-3 px-3.5 sm:px-4 pb-2 border-b border-[#E8DED5]/60 shadow-[0_4px_12px_rgba(44,24,16,0.03)]">
+                      <div className="flex items-center justify-between mb-1.5 px-0.5">
                         <span className="text-[11px] font-black tracking-wider text-[#2C1810] uppercase">CATEGORIES</span>
                         <button 
                           type="button"
@@ -621,53 +792,57 @@ export default function HomeHero() {
                       </div>
 
                       {/* Mock Venues List */}
-                      <div className="space-y-2 pb-2">
+                      <div className="flex gap-2.5 overflow-x-auto no-scrollbar -mx-3.5 px-3.5 pb-2 pt-0.5 scroll-smooth snap-x snap-mandatory">
                         {filteredVenues.map((venue) => (
                           <div 
                             key={venue.id}
                             onClick={() => router.push('/customer/cafe')}
-                            className="rounded-2xl border border-stone-200/90 overflow-hidden bg-white shadow-2xs hover:shadow-md transition-all cursor-pointer group"
+                            className="snap-start shrink-0 w-[122px] rounded-[15px] border border-[#E8DED5] overflow-hidden bg-white shadow-2xs hover:shadow-md transition-all cursor-pointer p-1.5 select-none"
                           >
-                            <div className="relative h-20 w-full overflow-hidden bg-stone-900">
+                            {/* Landscape Image with Badge & Heart Overlay */}
+                            <div className="relative aspect-[16/10.5] w-full rounded-[10px] overflow-hidden bg-stone-100">
                               <img 
                                 src={venue.image} 
                                 alt={venue.name} 
                                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                               />
-                              <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/10 to-transparent pointer-events-none" />
+                              <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-black/25 pointer-events-none" />
                               
+                              {/* Top-Left Badge */}
+                              <div className="absolute top-1 left-1 z-10 max-w-[65%]">
+                                <span className="px-1.5 py-0.5 rounded-full bg-white/95 text-[#2C1810] text-[6.5px] font-black tracking-tight truncate block shadow-2xs">
+                                  {venue.name.split(' ')[0]}
+                                </span>
+                              </div>
+
                               {/* Wishlist toggle */}
                               <button 
                                 type="button"
                                 onClick={(e) => toggleWishlist(venue.id, e)}
-                                className="absolute top-1.5 right-1.5 w-6 h-6 rounded-full bg-white/95 text-red-500 flex items-center justify-center shadow-xs hover:scale-110 active:scale-90 transition-transform cursor-pointer z-10"
+                                className="absolute top-1 right-1 w-5 h-5 rounded-full bg-white/95 text-red-500 flex items-center justify-center shadow-xs active:scale-90 transition-transform cursor-pointer z-10"
                                 title="Wishlist"
                               >
-                                <Heart size={11} className={wishlist[venue.id] ? 'fill-red-500 text-red-500' : 'text-stone-400'} />
+                                <Heart size={10} className={wishlist[venue.id] ? 'fill-red-500 text-red-500' : 'text-stone-400'} />
                               </button>
-
-                              {/* Badge */}
-                              <span className="absolute top-1.5 left-2 bg-black/60 backdrop-blur-xs text-white text-[7px] font-bold px-1.5 py-0.5 rounded-full">
-                                {venue.badge}
-                              </span>
-
-                              {/* Title & subtitle inside image */}
-                              <div className="absolute bottom-1.5 left-2 text-left pr-2">
-                                <span className="text-[11px] font-black text-white block leading-tight">{venue.name}</span>
-                                <span className="text-[7.5px] text-stone-200 block font-medium mt-0.5">{venue.subtitle}</span>
-                              </div>
                             </div>
 
-                            {/* Card Bottom Meta row */}
-                            <div className="px-2.5 py-1.5 flex items-center justify-between text-[8.5px] font-semibold text-stone-600 bg-white">
-                              <span className="text-[#6F4E37] font-bold">{venue.location}</span>
-                              <div className="flex items-center gap-2">
-                                <span className="text-stone-400 text-[8px]">{venue.price}</span>
-                                <div className="flex items-center gap-0.5 text-[#2C1810]">
-                                  <Star size={9.5} className="fill-amber-400 text-amber-400" />
-                                  <span className="font-extrabold">{venue.rating}</span>
-                                  <span className="text-stone-400 text-[7.5px]">({venue.reviews})</span>
-                                </div>
+                            {/* Info below image */}
+                            <div className="pt-1.5 px-0.5 flex flex-col gap-0.5">
+                              <span className="text-[9.5px] font-black text-[#2C1810] uppercase tracking-wide truncate block">
+                                {venue.name}
+                              </span>
+                              
+                              {/* Rating & reviews */}
+                              <div className="flex items-center gap-1">
+                                <Star size={9} className="fill-amber-400 text-amber-400 shrink-0" />
+                                <span className="text-[9px] font-black text-[#2C1810]">{venue.rating}</span>
+                                <span className="text-[7.5px] font-medium text-stone-400">({venue.reviews})</span>
+                              </div>
+
+                              {/* Price & distance */}
+                              <div className="flex items-center justify-between text-[8.5px] pt-0.5 font-bold text-stone-600">
+                                <span>{venue.price.replace(' for two', ' for 2')}</span>
+                                <span className="text-stone-400 text-[7.5px]">1.2 km</span>
                               </div>
                             </div>
                           </div>
@@ -774,6 +949,12 @@ export default function HomeHero() {
             </div>
           </div>
 
+        </div>
+
+        {/* ==================== HOMEPAGE PROMOTIONAL BANNER CAROUSEL ==================== */}
+        {/* Responsive text-left / image-right horizontal split banner matching reference design */}
+        <div className="mt-10 sm:mt-12 md:mt-14 max-w-7xl mx-auto">
+          <FaharaPromotionalCarousel />
         </div>
 
       </div>

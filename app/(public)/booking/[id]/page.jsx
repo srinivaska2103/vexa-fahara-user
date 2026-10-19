@@ -3,7 +3,8 @@
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { useBookingStore } from '@/stores/booking.store';
-import { useCafeDetails, useCafeTables, useCafeTableAvailability } from '@/hooks/useCafeDetails';
+import { useCafeDetails, useCafeTables, useCafeTableAvailability, useCafeAvailability, useEventManagerAvailability } from '@/hooks/useCafeDetails';
+import { checkIfTimeWithinBusinessHours } from '@/lib/utils';
 import { 
   ArrowLeft, ChevronRight, ShieldCheck, Sparkles, Check, ChevronUp, 
   Users, Utensils, Cake as CakeIcon, Music, CheckCircle2, LayoutGrid, 
@@ -22,6 +23,7 @@ import FaharaInteractiveLoader from '@/app/components/common/FaharaInteractiveLo
 
 import { useSearchParams } from 'next/navigation';
 import { useMemo, Suspense } from 'react';
+import { calculateAllowedGuestCount } from '@/lib/capacityUtils';
 
 export default function RedesignedBookingPage() {
   return (
@@ -37,7 +39,24 @@ function BookingContent() {
   const targetPackageId = searchParams.get('packageId') || searchParams.get('package_id');
 
   const router = useRouter();
-  const { setCafeId, setCafePrice, reset, cafeId: storeCafeId, pricing, setTable, selectedTable, setPackage, selectedPackage, guestCount, setGuestCount, setSelectedInclusionsPayload, setSelectedInclusionItems, selectedDate, selectedTimeSlot } = useBookingStore();
+  const { 
+    setCafeId, 
+    setCafePrice, 
+    reset, 
+    cafeId: storeCafeId, 
+    pricing, 
+    setTable, 
+    selectedTable, 
+    setPackage, 
+    selectedPackage, 
+    selectedEventCompany,
+    guestCount, 
+    setGuestCount, 
+    setSelectedInclusionsPayload, 
+    setSelectedInclusionItems, 
+    selectedDate, 
+    selectedTimeSlot 
+  } = useBookingStore();
   const [activeStepTab, setActiveStepTab] = useState('packages');
   const [mobileSummaryOpen, setMobileSummaryOpen] = useState(false);
 
@@ -48,6 +67,54 @@ function BookingContent() {
   const { data: tablesResponse, isLoading: isTablesLoading } = useCafeTables(cafeId);
   const tablesData = tablesResponse?.data || {};
   const tablesList = Array.isArray(tablesData.tables) ? tablesData.tables : [];
+
+  // Fetch active vendor availability blocks for the cafe
+  const { data: vendorAvailabilityData } = useCafeAvailability(cafeId);
+  const activeBlocks = vendorAvailabilityData?.data?.blocks || [];
+
+  // Fetch active event manager availability blocks if a 3rd party event company is selected
+  const targetEventManagerId = selectedEventCompany?.originalEvent?.user_id || selectedEventCompany?.user_id;
+  const { data: eventManagerAvailabilityData } = useEventManagerAvailability(targetEventManagerId);
+  const activeEmBlocks = eventManagerAvailabilityData?.data?.blocks || [];
+
+  // Check if currently selected date/time overlaps with any active vendor or event manager block
+  const blockedConflict = useMemo(() => {
+    const combinedBlocks = [...activeBlocks, ...activeEmBlocks];
+    if (!selectedDate || !selectedTimeSlot?.start || !selectedTimeSlot?.end || !combinedBlocks.length) return null;
+    try {
+      const convertTimeTo24 = (timeStr) => {
+        if (!timeStr) return '00:00';
+        if (timeStr.includes(' ')) {
+          const [t, ampm] = timeStr.split(' ');
+          let [h, m] = t.split(':');
+          if (h === '12') h = '00';
+          if (ampm === 'PM') h = String(parseInt(h, 10) + 12);
+          return `${h.padStart(2, '0')}:${m}`;
+        }
+        return timeStr.slice(0, 5);
+      };
+
+      const [bY, bM, bD] = (typeof selectedDate === 'string' ? selectedDate : new Date(selectedDate).toISOString().split('T')[0]).split('-');
+      const [sH, sMin] = convertTimeTo24(selectedTimeSlot.start).split(':');
+      const [eH, eMin] = convertTimeTo24(selectedTimeSlot.end).split(':');
+      const startReq = new Date(Date.UTC(parseInt(bY, 10), parseInt(bM, 10) - 1, parseInt(bD, 10), parseInt(sH, 10), parseInt(sMin, 10), 0));
+      const endReq = new Date(Date.UTC(parseInt(bY, 10), parseInt(bM, 10) - 1, parseInt(bD, 10), parseInt(eH, 10), parseInt(eMin, 10), 0));
+
+      return combinedBlocks.find((b) => {
+        const bStart = new Date(b.start_at || b.startAt);
+        const bEnd = new Date(b.end_at || b.endAt);
+        return startReq < bEnd && endReq > bStart;
+      });
+    } catch {
+      return null;
+    }
+  }, [selectedDate, selectedTimeSlot, activeBlocks, activeEmBlocks]);
+
+  const timeCheck = (selectedDate && selectedTimeSlot)
+    ? checkIfTimeWithinBusinessHours(cafe, selectedDate, selectedTimeSlot.start, selectedTimeSlot.end)
+    : { isValid: true };
+
+  const isTimeSlotUnavailable = !timeCheck.isValid || Boolean(blockedConflict);
 
   // Parse date and time for table availability check
   const formattedBookingDate = useMemo(() => {
@@ -138,33 +205,47 @@ function BookingContent() {
   // Parse REAL cafe packages from the cafe API response
   const cafePackages = cafe?.cafe_packages || [];
 
-  // Selected Cafe Package (matching query parameter or first available)
+  // Selected Cafe Package (matching query parameter only if valid & compatible)
   const activePackage = useMemo(() => {
     if (!cafePackages || cafePackages.length === 0) return null;
     if (targetPackageId) {
       const match = cafePackages.find(p => String(p.id) === String(targetPackageId));
-      if (match) return match;
+      if (match) {
+        const pkgMax = match.maximum_persons || match.max_guests;
+        if (!pkgMax || guestCount <= pkgMax) {
+          return match;
+        }
+      }
     }
-    return cafePackages[0];
-  }, [cafePackages, targetPackageId]);
+    return null;
+  }, [cafePackages, targetPackageId, guestCount]);
 
-  const [selectedPkgId, setSelectedPkgId] = useState(null);
-  const { selectedEventCompany } = useBookingStore();
+  const [selectedPkgId, setSelectedPkgId] = useState(targetPackageId || null);
 
   const currentPackage = useMemo(() => {
     // If user selected a 3rd party event company, use its package/event
     if (selectedEventCompany?.originalEvent) {
       return selectedEventCompany.originalEvent;
     }
+    if (selectedPkgId === 'none') {
+      return null;
+    }
     if (cafePackages && cafePackages.length > 0) {
       if (selectedPkgId) {
         const match = cafePackages.find(p => String(p.id) === String(selectedPkgId));
-        if (match) return match;
+        if (match) {
+          const pkgMax = match.maximum_persons || match.max_guests;
+          // If guestCount exceeds package limit, do not enforce this package
+          if (!pkgMax || guestCount <= pkgMax) {
+            return match;
+          }
+          return null;
+        }
       }
       return activePackage;
     }
     return null;
-  }, [selectedEventCompany, cafePackages, selectedPkgId, activePackage]);
+  }, [selectedEventCompany, cafePackages, selectedPkgId, activePackage, guestCount]);
 
   // Parse inclusions for current package
   const parsedPackageInclusions = useMemo(() => {
@@ -539,6 +620,20 @@ function BookingContent() {
     }
   }, [guestCount, displayTablesList, setTable]);
 
+  // Capacity calculations for Step 1 & overall page
+  const capacityInfo = useMemo(() => {
+    return calculateAllowedGuestCount({
+      cafe,
+      selectedTable,
+      cafePackage: selectedPackage || currentPackage,
+      eventService: selectedEventCompany,
+      inclusions: selectedEventCompany?.selectedInclusions || selectedInclusionsPayload || []
+    });
+  }, [cafe, selectedTable, selectedPackage, currentPackage, selectedEventCompany, selectedInclusionsPayload]);
+
+  const maxAllowedGuests = capacityInfo.maximumAllowedGuests;
+  const isCapacityExceeded = maxAllowedGuests !== null && guestCount > maxAllowedGuests;
+
   if (isLoading) {
     return (
       <FaharaInteractiveLoader 
@@ -684,8 +779,8 @@ function BookingContent() {
         </div>
 
         {/* STEP-BY-STEP SECTION NAVIGATION BAR (DESKTOP ONLY) */}
-        <div className="hidden md:block bg-white rounded-2xl border border-stone-200 p-1 sm:p-1.5 mb-4 sm:mb-5 shadow-xs overflow-x-auto no-scrollbar">
-          <div className="flex items-center gap-1.5 w-full">
+        <div className="hidden md:block bg-stone-100/80 p-1.5 mb-5 rounded-2xl border border-stone-200/80 shadow-2xs">
+          <div className="flex items-center gap-2 w-full">
             {stepsList.map((item) => {
               const isActive = activeStepTab === item.id;
               return (
@@ -698,18 +793,18 @@ function BookingContent() {
                       el.scrollIntoView({ behavior: 'smooth', block: 'start' });
                     }
                   }}
-                  className={`flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition-all duration-200 cursor-pointer flex-1 min-w-0 ${
+                  className={`flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs font-black transition-all duration-200 cursor-pointer flex-1 min-w-0 ${
                     isActive 
-                      ? 'bg-[#6F4E37] text-white shadow-xs' 
-                      : 'bg-stone-50 hover:bg-stone-100 text-stone-700 border border-stone-200'
+                      ? 'bg-white text-[#2C1810] shadow-sm border border-stone-200/80 ring-1 ring-black/5' 
+                      : 'text-stone-500 hover:text-stone-800 hover:bg-stone-200/50'
                   }`}
                 >
-                  <span className={`w-4 h-4 sm:w-5 sm:h-5 rounded-full flex items-center justify-center font-bold text-[9px] sm:text-[10px] shrink-0 transition-colors ${
-                    isActive ? 'bg-white text-[#6F4E37]' : 'bg-stone-200 text-stone-700'
+                  <span className={`w-5 h-5 rounded-lg flex items-center justify-center font-black text-[10px] shrink-0 transition-all ${
+                    isActive ? 'bg-[#6F4E37] text-white shadow-2xs' : 'bg-stone-200 text-stone-500'
                   }`}>
                     {item.step}
                   </span>
-                  <span className="tracking-tight truncate text-[11px] sm:text-xs">{item.label}</span>
+                  <span className="tracking-tight truncate text-xs">{item.label}</span>
                 </button>
               );
             })}
@@ -752,8 +847,17 @@ function BookingContent() {
                         <span className="text-xs font-black text-[#6F4E37] px-0.5">{guestCount}</span>
                         <button
                           type="button"
-                          onClick={() => setGuestCount(guestCount + 1)}
-                          className="w-5 h-5 bg-white border border-stone-300 rounded-md text-[#2C1810] font-black hover:bg-stone-100 flex items-center justify-center text-xs active:scale-95 transition-all cursor-pointer"
+                          disabled={maxAllowedGuests && guestCount >= maxAllowedGuests}
+                          onClick={() => {
+                            if (!maxAllowedGuests || guestCount < maxAllowedGuests) {
+                              setGuestCount(guestCount + 1);
+                            }
+                          }}
+                          className={`w-5 h-5 rounded-md flex items-center justify-center text-xs transition-all ${
+                            maxAllowedGuests && guestCount >= maxAllowedGuests
+                              ? 'bg-stone-100 text-stone-300 border border-stone-200 cursor-not-allowed'
+                              : 'bg-white border border-stone-300 text-[#2C1810] font-black hover:bg-stone-100 active:scale-95 cursor-pointer'
+                          }`}
                         >
                           +
                         </button>
@@ -863,12 +967,18 @@ function BookingContent() {
                 {!isRestaurant && !selectedEventCompany && cafePackages.length > 0 && (
                   <PackageSelectorCards
                     packages={cafePackages}
-                    selectedPackageId={currentPackage?.id || selectedPkgId}
+                    selectedPackageId={currentPackage?.id || null}
                     onSelectPackage={(pkgId) => {
-                      setSelectedPkgId(pkgId);
-                      const selectedPkg = cafePackages.find(p => String(p.id) === String(pkgId));
-                      if (selectedPkg) {
-                        setPackage(selectedPkg);
+                      if (String(currentPackage?.id) === String(pkgId)) {
+                        // User clicked already-selected package -> deselect it
+                        setSelectedPkgId('none');
+                        setPackage(null);
+                      } else {
+                        setSelectedPkgId(pkgId);
+                        const selectedPkg = cafePackages.find(p => String(p.id) === String(pkgId));
+                        if (selectedPkg) {
+                          setPackage(selectedPkg);
+                        }
                       }
                     }}
                     guestCount={guestCount}
@@ -954,7 +1064,12 @@ function BookingContent() {
           <button
             type="button"
             onClick={() => setMobileSummaryOpen(!mobileSummaryOpen)}
-            className="px-6 py-3 bg-[#6F4E37] hover:bg-[#5C3F2B] active:bg-[#4A2C11] text-white font-black text-xs rounded-2xl shadow-md transition-all flex items-center gap-1.5 cursor-pointer"
+            disabled={isTimeSlotUnavailable || isCapacityExceeded}
+            className={`px-6 py-3 font-black text-xs rounded-2xl shadow-md transition-all flex items-center gap-1.5 ${
+              isTimeSlotUnavailable || isCapacityExceeded
+                ? 'opacity-40 bg-[#6F4E37] text-white cursor-not-allowed pointer-events-none'
+                : 'bg-[#6F4E37] hover:bg-[#5C3F2B] active:bg-[#4A2C11] text-white cursor-pointer'
+            }`}
           >
             <span>{mobileSummaryOpen ? 'Hide Details' : (isRestaurant ? 'Reserve Table' : 'Book Now & Pay')}</span>
             <ChevronUp size={14} className={`transition-transform ${mobileSummaryOpen ? 'rotate-180' : ''}`} />

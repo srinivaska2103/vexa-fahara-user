@@ -65,6 +65,46 @@ export default function MobileCafeHeader({ onFilterClick }) {
   const [isNotifOpen, setIsNotifOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
 
+  // Dynamic time-based greeting state (client-side only to avoid hydration mismatches)
+  const [greetingPrefix, setGreetingPrefix] = useState('Good day');
+  const [subtitleIndex, setSubtitleIndex] = useState(0);
+
+  const ROTATING_SUBTITLES = [
+    "Let's find your perfect cafe.",
+    "Discover events. Make memories.",
+    "Book your next celebration with Fahara."
+  ];
+
+  // Calculate dynamic greeting:
+  // 5:00 AM to 11:59 AM -> "Good morning"
+  // 12:00 PM to 4:59 PM -> "Good afternoon"
+  // 5:00 PM to 4:59 AM  -> "Good evening"
+  useEffect(() => {
+    const updateGreeting = () => {
+      const hour = new Date().getHours();
+      if (hour >= 5 && hour < 12) {
+        setGreetingPrefix('Good morning');
+      } else if (hour >= 12 && hour < 17) {
+        setGreetingPrefix('Good afternoon');
+      } else {
+        setGreetingPrefix('Good evening');
+      }
+    };
+
+    updateGreeting();
+    const greetingInterval = setInterval(updateGreeting, 60000); // Check every minute
+    return () => clearInterval(greetingInterval);
+  }, []);
+
+  // Rotate subtitles every 3.5 seconds
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setSubtitleIndex((prev) => (prev + 1) % ROTATING_SUBTITLES.length);
+    }, 3500);
+
+    return () => clearInterval(timer);
+  }, [ROTATING_SUBTITLES.length]);
+
   // Load profile avatar & loyalty credits & notifications
   useEffect(() => {
     if (!user) return;
@@ -109,31 +149,15 @@ export default function MobileCafeHeader({ onFilterClick }) {
   };
 
   const unreadCount = notifications.filter((n) => !n.is_read).length;
-  const userName = user?.name || user?.full_name || (user?.email ? user.email.split('@')[0] : 'Guest');
+  const rawUserName = user?.name || user?.full_name || (user?.email ? user.email.split('@')[0] : '');
+  const userName = rawUserName.trim();
   const userInitials = userName ? userName.substring(0, 2).toUpperCase() : 'FC';
 
-  // Check scroll position to dynamically round bottom of header when scrolled past hero banner
-  const [isScrolled, setIsScrolled] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 120);
-    };
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    handleScroll();
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
   return (
-    <div className="md:hidden w-full sticky top-0 z-40 bg-[#2C1810]" suppressHydrationWarning>
-      {/* ── 1. NON-SCROLLABLE STICKY HEADER (Permanently Fixed at Top) ── */}
-      <div className={cn(
-        "relative w-full bg-[#2C1810] text-white px-4 pt-3.5 pb-2 transition-all duration-200 overflow-visible border-0",
-        isScrolled 
-          ? "rounded-b-[28px] shadow-[0_14px_32px_rgba(20,9,5,0.45)]" 
-          : "rounded-b-none shadow-none"
-      )} suppressHydrationWarning>
-        <div className="relative z-10 flex flex-col space-y-3" suppressHydrationWarning>
+    <>
+      {/* ── TOP HEADER ROW (Logo, Notifications, Avatar) ── */}
+      <div className="md:hidden relative w-full bg-[#2C1810] text-white px-4 pt-3.5 pb-1 transition-all duration-200 overflow-visible border-0" suppressHydrationWarning>
+        <div className="relative z-10 flex flex-col space-y-2.5" suppressHydrationWarning>
           
           {/* Navigation Row (Logo + Notifications + Avatar) */}
           <div className="flex items-center justify-between">
@@ -368,59 +392,79 @@ export default function MobileCafeHeader({ onFilterClick }) {
 
           </div>
 
-          {/* Greeting Row (Permanently Visible & Non-Scrollable) */}
+          {/* Greeting Row (Dynamic time-based greeting + Rotating subtitle carousel) */}
           <div className="flex flex-col pt-0.5" suppressHydrationWarning>
-            <h1 className="text-xl xs:text-2xl font-black text-[#FFF8F0] tracking-tight leading-tight flex items-center gap-1.5" suppressHydrationWarning>
-              <span suppressHydrationWarning>Hi, {userName}!</span>
-              <span className="text-xl">👋</span>
+            <h1 className="text-xl xs:text-2xl font-black text-[#FFF8F0] tracking-tight leading-tight" suppressHydrationWarning>
+              <span suppressHydrationWarning>
+                {userName ? `${greetingPrefix}, ${userName}!` : `${greetingPrefix}!`}
+              </span>
             </h1>
-            <p className="text-xs text-[#DDB892] font-semibold tracking-wide mt-0.5">
-              Let's find the best cafe!
-            </p>
-          </div>
 
-          {/* Search & Filter Controls (Always Sticky and Visible) */}
-          <div className="flex items-center gap-2.5 pt-0.5 pb-0.5">
-            {/* Search Pill Input */}
-            <div className="relative flex-1 flex items-center bg-[#FFF8F0] rounded-full px-4 py-2.5 shadow-inner border border-white/20">
-              <Search size={16} className="text-[#8C5E3C] shrink-0 mr-2.5 pointer-events-none" />
-              <input
-                type="text"
-                value={searchInput}
-                onChange={handleSearchChange}
-                placeholder="Search cafes, events or locations..."
-                suppressHydrationWarning
-                autoComplete="off"
-                spellCheck="false"
-                className="w-full bg-transparent text-[#2C1810] placeholder:text-stone-400 text-xs font-bold focus:outline-none cursor-text pr-1"
-              />
-              {Boolean(searchInput) && (
-                <button
-                  type="button"
-                  suppressHydrationWarning
-                  onClick={handleClearSearch}
-                  className="text-stone-400 hover:text-stone-700 p-0.5 rounded-full active:scale-90 transition-transform cursor-pointer shrink-0 ml-1"
-                  aria-label="Clear search"
+            {/* Rotating Subtitle Carousel (fixed height container to prevent layout shifts) */}
+            <div className="relative h-4.5 xs:h-5 overflow-hidden mt-0.5 flex items-center">
+              <AnimatePresence mode="wait">
+                <motion.p
+                  key={subtitleIndex}
+                  initial={{ opacity: 0, y: 7 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -7 }}
+                  transition={{ duration: 0.35, ease: 'easeOut' }}
+                  className="text-xs text-[#DDB892] font-semibold tracking-wide truncate w-full text-left motion-reduce:transition-none"
                 >
-                  <X size={13} />
-                </button>
-              )}
+                  {ROTATING_SUBTITLES[subtitleIndex]}
+                </motion.p>
+              </AnimatePresence>
             </div>
-
-            {/* Circular Filter Toggle Button */}
-            <button
-              type="button"
-              suppressHydrationWarning
-              onClick={onFilterClick}
-              className="w-11 h-11 rounded-full bg-[#FFF8F0] flex items-center justify-center text-[#6F4E37] active:scale-90 transition-transform cursor-pointer shrink-0 shadow-md hover:bg-white"
-              aria-label="Open Filters"
-            >
-              <SlidersHorizontal size={17} strokeWidth={2.3} />
-            </button>
           </div>
 
         </div>
       </div>
-    </div>
+
+      {/* ── STICKY SEARCH & FILTER ROW (Floating at top on scroll) ── */}
+      <div 
+        id="mobile-sticky-search-bar"
+        className="md:hidden sticky top-0 z-40 w-full bg-[#2C1810] px-4 py-2.5 shadow-[0_8px_20px_rgba(20,9,5,0.35)]"
+        suppressHydrationWarning
+      >
+        <div className="flex items-center gap-2.5">
+          {/* Search Pill Input */}
+          <div className="relative flex-1 flex items-center bg-[#FFF8F0] rounded-full px-4 py-2.5 shadow-inner border border-white/20">
+            <Search size={16} className="text-[#8C5E3C] shrink-0 mr-2.5 pointer-events-none" />
+            <input
+              type="text"
+              value={searchInput}
+              onChange={handleSearchChange}
+              placeholder="Search cafes, events or locations..."
+              suppressHydrationWarning
+              autoComplete="off"
+              spellCheck="false"
+              className="w-full bg-transparent text-[#2C1810] placeholder:text-stone-400 text-xs font-bold focus:outline-none cursor-text pr-1"
+            />
+            {Boolean(searchInput) && (
+              <button
+                type="button"
+                suppressHydrationWarning
+                onClick={handleClearSearch}
+                className="text-stone-400 hover:text-stone-700 p-0.5 rounded-full active:scale-90 transition-transform cursor-pointer shrink-0 ml-1"
+                aria-label="Clear search"
+              >
+                <X size={13} />
+              </button>
+            )}
+          </div>
+
+          {/* Circular Filter Toggle Button */}
+          <button
+            type="button"
+            suppressHydrationWarning
+            onClick={onFilterClick}
+            className="w-11 h-11 rounded-full bg-[#FFF8F0] flex items-center justify-center text-[#6F4E37] active:scale-90 transition-transform cursor-pointer shrink-0 shadow-md hover:bg-white"
+            aria-label="Open Filters"
+          >
+            <SlidersHorizontal size={17} strokeWidth={2.3} />
+          </button>
+        </div>
+      </div>
+    </>
   );
 }

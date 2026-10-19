@@ -4,8 +4,20 @@ import { Star, ShieldCheck, ThumbsUp } from 'lucide-react';
 import { useState } from 'react';
 
 export default function ReviewCard({ review }) {
-  const [helpfulCount, setHelpfulCount] = useState(3);
-  const [hasLiked, setHasLiked] = useState(false);
+  const reviewId = review?.id || review?._id;
+  const initialHelpful = Number(review?.helpful_count ?? review?.helpful ?? review?.likes ?? 0);
+
+  const [helpfulCount, setHelpfulCount] = useState(initialHelpful);
+  const [hasLiked, setHasLiked] = useState(() => {
+    if (typeof window !== 'undefined' && reviewId) {
+      try {
+        return localStorage.getItem(`fahara_review_liked_${reviewId}`) === 'true';
+      } catch (e) {
+        return false;
+      }
+    }
+    return false;
+  });
 
   const { rating, review: comment, created_at, users } = review || {};
   
@@ -15,11 +27,23 @@ export default function ReviewCard({ review }) {
 
   const handleHelpfulClick = () => {
     if (!hasLiked) {
-      setHelpfulCount(helpfulCount + 1);
+      const nextCount = helpfulCount + 1;
+      setHelpfulCount(nextCount);
       setHasLiked(true);
+      if (typeof window !== 'undefined' && reviewId) {
+        try {
+          localStorage.setItem(`fahara_review_liked_${reviewId}`, 'true');
+        } catch (e) {}
+      }
     } else {
-      setHelpfulCount(helpfulCount - 1);
+      const nextCount = Math.max(0, helpfulCount - 1);
+      setHelpfulCount(nextCount);
       setHasLiked(false);
+      if (typeof window !== 'undefined' && reviewId) {
+        try {
+          localStorage.removeItem(`fahara_review_liked_${reviewId}`);
+        } catch (e) {}
+      }
     }
   };
 

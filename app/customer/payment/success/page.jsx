@@ -8,6 +8,7 @@ import { bookingService } from '@/services/booking.service';
 import { XCircle, ArrowLeft, RefreshCcw } from 'lucide-react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
+import FaharaInteractiveLoader from '@/app/components/common/FaharaInteractiveLoader';
 
 import CustomerNavbar from '@/app/components/layout/CustomerNavbar';
 
@@ -105,12 +106,10 @@ function PaymentSuccessContent() {
 
   if (status === 'loading') {
     return (
-      <div className="min-h-[70vh] flex items-center justify-center p-4">
-        <div className="animate-pulse flex flex-col items-center">
-          <div className="w-12 h-12 border-4 border-[#6F4E37] border-t-transparent rounded-full animate-spin mb-4"></div>
-          <p className="text-[#6F4E37] font-black text-sm">Verifying your payment...</p>
-        </div>
-      </div>
+      <FaharaInteractiveLoader 
+        message="Verifying your payment..." 
+        fullScreen={true} 
+      />
     );
   }
   

@@ -133,12 +133,10 @@ function PaymentPageContent() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="animate-pulse flex flex-col items-center">
-          <div className="w-12 h-12 border-4 border-[#6F4E37] border-t-transparent rounded-full animate-spin mb-4"></div>
-          <p className="text-[#A67B5B] font-medium">Loading booking details...</p>
-        </div>
-      </div>
+      <FaharaInteractiveLoader 
+        message="Loading booking details..." 
+        fullScreen={true} 
+      />
     );
   }
 

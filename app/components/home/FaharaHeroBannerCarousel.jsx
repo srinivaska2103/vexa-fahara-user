@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowRight, Sparkles, Tag, Store, CalendarCheck, Utensils, Coins, ChevronLeft, ChevronRight, Play, Pause } from 'lucide-react';
+import { ArrowRight, Sparkles, Tag, Store, CalendarCheck, Utensils, Coins, Play, Pause } from 'lucide-react';
 import Link from 'next/link';
 import { FAHARA_LINKS } from '@/app/constants/faharaLinks';
 
@@ -85,21 +85,32 @@ export default function FaharaHeroBannerCarousel() {
   const [isPaused, setIsPaused] = useState(false);
   const [touchStart, setTouchStart] = useState(null);
   const [touchEnd, setTouchEnd] = useState(null);
+  const timerRef = useRef(null);
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
+  // Check prefers-reduced-motion
+  const prefersReducedMotion = typeof window !== 'undefined' 
+    ? window.matchMedia('(prefers-reduced-motion: reduce)').matches 
+    : false;
+
   // Minimum swipe distance threshold (in px)
   const minSwipeDistance = 40;
 
+  // Autoplay interval every 4.5 seconds with proper cleanup
   useEffect(() => {
-    if (isPaused) return;
-    const interval = setInterval(() => {
+    if (!mounted || isPaused) return;
+
+    timerRef.current = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % BANNERS.length);
-    }, 5000);
-    return () => clearInterval(interval);
-  }, [isPaused]);
+    }, 4500);
+
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+    };
+  }, [mounted, isPaused]);
 
   const handleNext = () => {
     setCurrentIndex((prev) => (prev + 1) % BANNERS.length);
@@ -111,6 +122,7 @@ export default function FaharaHeroBannerCarousel() {
 
   // Touch handlers for mobile swipe
   const onTouchStart = (e) => {
+    setIsPaused(true);
     setTouchEnd(null);
     setTouchStart(e.targetTouches[0].clientX);
   };
@@ -120,7 +132,10 @@ export default function FaharaHeroBannerCarousel() {
   };
 
   const onTouchEnd = () => {
-    if (!touchStart || !touchEnd) return;
+    if (!touchStart || !touchEnd) {
+      setIsPaused(false);
+      return;
+    }
     const distance = touchStart - touchEnd;
     const isLeftSwipe = distance > minSwipeDistance;
     const isRightSwipe = distance < -minSwipeDistance;
@@ -129,11 +144,20 @@ export default function FaharaHeroBannerCarousel() {
     } else if (isRightSwipe) {
       handlePrev();
     }
+    // Resume autoplay after short delay
+    setTimeout(() => setIsPaused(false), 2000);
+  };
+
+  const goToSlide = (idx) => {
+    setCurrentIndex(idx);
+    setIsPaused(true);
+    // Resume autoplay after interaction
+    setTimeout(() => setIsPaused(false), 3000);
   };
 
   if (!mounted) {
     return (
-      <div className="relative w-full mb-5 min-h-[170px] xs:min-h-[185px] sm:min-h-[200px] md:min-h-[220px] overflow-hidden rounded-2xl border border-stone-200/80 bg-[#2C1810] animate-pulse" />
+      <div className="relative w-full mb-3 min-h-[135px] sm:min-h-[155px] md:min-h-[170px] overflow-hidden rounded-2xl border border-stone-200/80 bg-[#2C1810] animate-pulse" />
     );
   }
 
@@ -142,43 +166,44 @@ export default function FaharaHeroBannerCarousel() {
   return (
     <div 
       suppressHydrationWarning
-      className="relative w-full mb-5 overflow-hidden rounded-2xl border border-stone-200/80 shadow-md bg-[#2C1810] group"
+      className="relative w-full mb-3 overflow-hidden rounded-2xl border border-stone-200/80 shadow-md bg-[#2C1810] select-none"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
       onTouchStart={onTouchStart}
       onTouchMove={onTouchMove}
       onTouchEnd={onTouchEnd}
     >
-      <div className="relative w-full min-h-[175px] xs:min-h-[185px] sm:min-h-[200px] md:min-h-[220px] flex items-center overflow-hidden">
+      {/* 20-25% more compact banner container */}
+      <div className="relative w-full min-h-[135px] xs:min-h-[145px] sm:min-h-[160px] md:min-h-[175px] flex items-center overflow-hidden">
         
         {/* Animated Banner Slide */}
         <AnimatePresence mode="wait">
           <motion.div
             key={currentBanner.id}
-            initial={{ opacity: 0, scale: 0.99, x: 16 }}
-            animate={{ opacity: 1, scale: 1, x: 0 }}
-            exit={{ opacity: 0, scale: 0.99, x: -16 }}
-            transition={{ duration: 0.35, ease: 'easeOut' }}
+            initial={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, x: 12 }}
+            animate={prefersReducedMotion ? { opacity: 1 } : { opacity: 1, x: 0 }}
+            exit={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, x: -12 }}
+            transition={{ duration: 0.3, ease: 'easeOut' }}
             className={`absolute inset-0 w-full h-full ${currentBanner.bgColor || 'bg-[#2C1810]'}`}
           >
             {/* Ambient Decorative Color Layer & Glowing Orbs */}
             <div className="absolute inset-0 w-full h-full overflow-hidden pointer-events-none">
-              <div className={`absolute -right-12 -top-12 w-80 h-80 rounded-full blur-3xl opacity-50 ${currentBanner.glowColor}`} />
-              <div className={`absolute right-1/4 -bottom-16 w-60 h-60 rounded-full blur-2xl opacity-35 ${currentBanner.glowColor}`} />
-              <div className="absolute left-6 -bottom-12 w-48 h-48 rounded-full blur-2xl opacity-15 bg-white" />
+              <div className={`absolute -right-10 -top-10 w-64 h-64 rounded-full blur-3xl opacity-45 ${currentBanner.glowColor}`} />
+              <div className={`absolute right-1/4 -bottom-12 w-48 h-48 rounded-full blur-2xl opacity-30 ${currentBanner.glowColor}`} />
+              <div className="absolute left-6 -bottom-10 w-36 h-36 rounded-full blur-2xl opacity-15 bg-white" />
               <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-white/10 via-transparent to-transparent opacity-70" />
             </div>
 
-            {/* Banner Content Container */}
-            <div className="relative z-10 h-full w-full max-w-2xl flex flex-col justify-center px-4 sm:px-8 py-3.5 sm:py-5 text-white space-y-2 sm:space-y-2.5 pr-12 sm:pr-16">
+            {/* Banner Content Container (Full width without reserved arrow space) */}
+            <div className="relative z-10 h-full w-full flex flex-col justify-center px-3.5 sm:px-6 py-2.5 sm:py-3.5 text-white space-y-1.5 sm:space-y-2">
               
               {/* Badge */}
               <div className="self-start">
                 {(() => {
                   const BadgeIcon = currentBanner.icon || Sparkles;
                   return (
-                    <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-black tracking-wide shadow-xs ${currentBanner.badgeBg}`}>
-                      <BadgeIcon size={12} className="shrink-0" />
+                    <span className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] sm:text-[11px] font-black tracking-wide shadow-xs ${currentBanner.badgeBg}`}>
+                      <BadgeIcon size={11} className="shrink-0" />
                       <span>{currentBanner.badge}</span>
                     </span>
                   );
@@ -186,74 +211,60 @@ export default function FaharaHeroBannerCarousel() {
               </div>
 
               {/* Title */}
-              <h2 className="text-sm xs:text-base sm:text-xl lg:text-2xl font-black leading-snug tracking-tight text-white drop-shadow-md line-clamp-2">
+              <h2 className="text-xs xs:text-sm sm:text-lg lg:text-xl font-black leading-snug tracking-tight text-white drop-shadow-md line-clamp-1 sm:line-clamp-2 max-w-[85%] sm:max-w-[75%]">
                 {currentBanner.title}
               </h2>
 
               {/* Subtitle */}
-              <p className="text-[11px] sm:text-xs text-amber-100/90 font-medium max-w-lg leading-relaxed line-clamp-2 drop-shadow-xs">
+              <p className="text-[10px] sm:text-xs text-amber-100/90 font-medium max-w-[88%] sm:max-w-xl leading-tight sm:leading-relaxed line-clamp-1 sm:line-clamp-2 drop-shadow-xs">
                 {currentBanner.subtitle}
               </p>
 
-              {/* Interactive CTA Button */}
-              {currentBanner.ctaText && currentBanner.ctaLink && (
-                <div className="pt-0.5">
-                  <Link href={currentBanner.ctaLink}>
-                    <button className="group inline-flex items-center gap-1.5 px-3 sm:px-4 py-1.5 sm:py-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white rounded-lg sm:rounded-xl text-[11px] sm:text-xs font-black shadow-md hover:shadow-lg transition-all cursor-pointer active:scale-95">
+              {/* Bottom Interactive Row: CTA Button + Pagination Dots */}
+              <div className="pt-0.5 flex items-center justify-between gap-3">
+                {currentBanner.ctaText && currentBanner.ctaLink ? (
+                  <Link href={currentBanner.ctaLink} onClick={(e) => e.stopPropagation()}>
+                    <button 
+                      type="button"
+                      className="group inline-flex items-center gap-1.5 px-3 py-1 sm:px-3.5 sm:py-1.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white rounded-lg sm:rounded-xl text-[10px] sm:text-xs font-black shadow-md hover:shadow-lg transition-all cursor-pointer active:scale-95"
+                    >
                       <span>{currentBanner.ctaText}</span>
-                      <ArrowRight size={13} className="group-hover:translate-x-1 transition-transform" />
+                      <ArrowRight size={12} className="group-hover:translate-x-0.5 transition-transform" />
                     </button>
                   </Link>
+                ) : <div />}
+
+                {/* Pagination Dots & Play/Pause Control (Compact, clean & aligned) */}
+                <div className="flex items-center gap-1.5 bg-black/45 backdrop-blur-md px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full border border-white/20 shadow-sm shrink-0">
+                  <button
+                    type="button"
+                    onClick={() => setIsPaused(!isPaused)}
+                    aria-label={isPaused ? "Play slide transition" : "Pause slide transition"}
+                    className="text-white/80 hover:text-amber-400 transition-colors mr-0.5 cursor-pointer"
+                  >
+                    {isPaused ? <Play className="w-2.5 h-2.5 fill-current" /> : <Pause className="w-2.5 h-2.5 fill-current" />}
+                  </button>
+
+                  <div className="flex items-center gap-1">
+                    {BANNERS.map((b, idx) => (
+                      <button
+                        key={b.id}
+                        type="button"
+                        suppressHydrationWarning
+                        onClick={() => goToSlide(idx)}
+                        aria-label={`Go to banner ${idx + 1}`}
+                        className={`h-1.5 rounded-full transition-all duration-300 cursor-pointer ${
+                          currentIndex === idx ? 'w-4 sm:w-5 bg-amber-400 shadow-xs' : 'w-1.5 bg-white/40 hover:bg-white/80'
+                        }`}
+                      />
+                    ))}
+                  </div>
                 </div>
-              )}
+              </div>
+
             </div>
           </motion.div>
         </AnimatePresence>
-
-        {/* Interactive Left & Right Navigation Arrows (Subtle, sleek, non-intrusive) */}
-        <button
-          type="button"
-          onClick={handlePrev}
-          aria-label="Previous Banner"
-          className="absolute left-2 top-1/2 -translate-y-1/2 z-20 w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-black/35 hover:bg-black/60 text-white backdrop-blur-md border border-white/20 flex items-center justify-center transition-all opacity-70 group-hover:opacity-100 hover:scale-105 active:scale-90 shadow-md cursor-pointer"
-        >
-          <ChevronLeft className="w-4 h-4" />
-        </button>
-
-        <button
-          type="button"
-          onClick={handleNext}
-          aria-label="Next Banner"
-          className="absolute right-2 top-1/2 -translate-y-1/2 z-20 w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-black/35 hover:bg-black/60 text-white backdrop-blur-md border border-white/20 flex items-center justify-center transition-all opacity-70 group-hover:opacity-100 hover:scale-105 active:scale-90 shadow-md cursor-pointer"
-        >
-          <ChevronRight className="w-4 h-4" />
-        </button>
-
-        {/* Pagination Dots & Play/Pause Control (Compact and neatly aligned in the corner) */}
-        <div className="absolute bottom-2.5 right-3 sm:right-5 z-20 flex items-center gap-1.5 bg-black/45 backdrop-blur-md px-2.5 py-1 rounded-full border border-white/20 shadow-md">
-          <button
-            type="button"
-            onClick={() => setIsPaused(!isPaused)}
-            aria-label={isPaused ? "Play slide transition" : "Pause slide transition"}
-            className="text-white/80 hover:text-amber-400 transition-colors mr-0.5 cursor-pointer"
-          >
-            {isPaused ? <Play className="w-2.5 h-2.5 fill-current" /> : <Pause className="w-2.5 h-2.5 fill-current" />}
-          </button>
-
-          <div className="flex items-center gap-1">
-            {BANNERS.map((b, idx) => (
-              <button
-                key={b.id}
-                suppressHydrationWarning
-                onClick={() => setCurrentIndex(idx)}
-                aria-label={`Go to banner ${idx + 1}`}
-                className={`h-1.5 rounded-full transition-all duration-300 cursor-pointer ${
-                  currentIndex === idx ? 'w-5 bg-amber-400 shadow-xs' : 'w-1.5 bg-white/40 hover:bg-white/80'
-                }`}
-              />
-            ))}
-          </div>
-        </div>
 
       </div>
     </div>

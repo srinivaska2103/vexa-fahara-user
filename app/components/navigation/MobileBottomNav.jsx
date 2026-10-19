@@ -55,12 +55,13 @@ export default function MobileBottomNav() {
   const isMobileFilterOpen = useSearchStore((state) => state.isMobileFilterOpen);
   const setIsMobileFilterOpen = useSearchStore((state) => state.setIsMobileFilterOpen);
 
-  // Hidden on landing page, auth, booking checkout, customer payment, legal, support pages, and cafe details pages (which have dedicated sticky booking bar)
+  // Hidden on landing page, cafe details pages, auth, booking checkout, customer payment, legal, and support pages
   if (
     pathname === '/' ||
     pathname.startsWith('/booking') ||
-    pathname.startsWith('/cafes/') ||
     pathname.startsWith('/customer/payment') ||
+    pathname.startsWith('/customer/cafe/') ||
+    pathname.startsWith('/cafes/') ||
     [
       '/login',
       '/register',
@@ -132,7 +133,10 @@ export default function MobileBottomNav() {
     <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 select-none print:hidden flex justify-center pointer-events-none">
       
       {/* ── CLEAN BOTTOM MENU BAR WITH CENTER FILTER & ROUNDED TOP CORNERS ── */}
-      <div className="relative w-full bg-white/95 backdrop-blur-2xl rounded-t-[28px] border-t border-x border-[#E8DED5] py-2 px-3 xs:px-4 shadow-[0_-8px_30px_rgba(111,78,55,0.08)] flex items-center justify-around overflow-visible pointer-events-auto">
+      <div 
+        style={{ paddingBottom: 'calc(0.5rem + env(safe-area-inset-bottom, 0px))' }}
+        className="relative w-full bg-white/95 backdrop-blur-2xl rounded-t-[28px] border-t border-x border-[#E8DED5] pt-2 pb-2 px-3 xs:px-4 shadow-[0_-8px_30px_rgba(111,78,55,0.08)] flex items-center justify-around overflow-visible pointer-events-auto"
+      >
         {navItems.map((item) => {
           const Icon = item.icon;
           const isActive = item.isActive;

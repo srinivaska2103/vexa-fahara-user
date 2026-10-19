@@ -89,12 +89,12 @@ export default function InfiniteScroll({ hasNextPage, fetchNextPage, isFetchingN
   }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   return (
-    <div ref={ref} className="w-full flex justify-center py-4 sm:py-6 px-2 sm:px-4 overflow-hidden">
+    <div ref={ref} className="w-full flex justify-center py-2 sm:py-3 px-2 sm:px-4 overflow-hidden">
       {isFetchingNextPage ? (
         <motion.div 
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="flex items-center gap-2 px-4 py-2.5 rounded-full bg-white/90 border border-[#DDB892]/40 shadow-sm text-[#6F4E37] text-xs font-black"
+          className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/90 border border-[#DDB892]/40 shadow-sm text-[#6F4E37] text-xs font-black"
         >
           <Loader2 className="animate-spin text-[#6F4E37]" size={16} />
           <span>Discovering more spaces...</span>
@@ -109,10 +109,10 @@ export default function InfiniteScroll({ hasNextPage, fetchNextPage, isFetchingN
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, ease: 'easeOut' }}
-          className="w-full max-w-2xl mx-auto flex flex-col items-center text-center py-4 sm:py-6 px-2 sm:px-4 my-2 sm:my-4 bg-transparent relative"
+          className="w-full max-w-2xl mx-auto flex flex-col items-center text-center pt-2 pb-6 sm:py-6 px-3 sm:px-6 mt-2 mb-2 bg-transparent relative"
         >
           {/* BOY FINDING CAFES BANNER ILLUSTRATION - BORDERLESS & MOBILE RESPONSIVE */}
-          <div className="w-full shrink-0 max-w-[92vw] xs:max-w-[440px] sm:max-w-[550px]">
+          <div className="w-full shrink-0 max-w-[92vw] xs:max-w-[420px] sm:max-w-[520px]">
             <img 
               src="/coming_soon_banner.png" 
               alt="More Cafes Coming Soon to Fahara" 
@@ -120,13 +120,13 @@ export default function InfiniteScroll({ hasNextPage, fetchNextPage, isFetchingN
             />
           </div>
 
-          {/* OPTIONAL CTA BUTTON */}
-          <div className="-mt-1 sm:-mt-4 relative z-10">
+          {/* CTA BUTTON with clean spacing */}
+          <div className="mt-3 sm:mt-2 relative z-10">
             <Link href="/customer/cafe">
               <motion.button 
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.96 }}
-                className="group inline-flex items-center gap-2 h-9 sm:h-11 px-5 sm:px-7 rounded-full bg-[#6F4E37] hover:bg-[#5A3215] text-white text-xs sm:text-sm font-bold shadow-md transition-all cursor-pointer"
+                className="group inline-flex items-center gap-2 h-10 sm:h-11 px-6 sm:px-8 rounded-full bg-[#6F4E37] hover:bg-[#5A3215] text-white text-xs sm:text-sm font-bold shadow-md transition-all cursor-pointer"
               >
                 <span>Explore Venues</span>
                 <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform stroke-[2.5]" />

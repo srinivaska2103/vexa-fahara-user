@@ -4,7 +4,7 @@ import React from 'react';
 import { Gift, Sparkles, Tag, Percent, ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 
-export default function DiscountsSection({ cafe }) {
+export default function DiscountsSection({ cafe, isMobileView = false }) {
   const discountsList = Array.isArray(cafe?.discounts)
     ? cafe.discounts.filter(d => d && (d.title || d.name || Number(d.amount) > 0) && Number(d.amount) > 0)
     : (cafe?.discounts && typeof cafe.discounts === 'object')
@@ -33,19 +33,19 @@ export default function DiscountsSection({ cafe }) {
   ];
 
   return (
-    <div className="bg-white/95 backdrop-blur-xl border border-stone-200/90 rounded-3xl p-6 sm:p-8 space-y-6 shadow-2xs">
-      <div className="flex items-center gap-3 pb-4 border-b border-stone-200/60">
-        <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#6F4E37] to-[#A67B5B] text-white flex items-center justify-center font-extrabold shadow-md">
-          <Gift className="w-6 h-6" />
+    <div className={isMobileView ? "space-y-4" : "bg-white/95 backdrop-blur-xl border border-stone-200/90 rounded-3xl p-6 sm:p-8 space-y-6 shadow-2xs"}>
+      <div className="flex items-center gap-3 pb-3 border-b border-stone-200/60">
+        <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-gradient-to-br from-[#6F4E37] to-[#A67B5B] text-white flex items-center justify-center font-extrabold shadow-md shrink-0">
+          <Gift className="w-5 h-5 sm:w-6 sm:h-6" />
         </div>
-        <div>
-          <div className="flex items-center gap-2">
-            <h3 className="text-lg font-extrabold text-[#2C1810]">Active Deals & Promotional Offers</h3>
-            <span className="px-2.5 py-0.5 rounded-full bg-amber-500/15 text-amber-900 text-[10px] font-black uppercase border border-amber-300/40">
+        <div className="min-w-0">
+          <div className="flex items-center gap-2 flex-wrap">
+            <h3 className="text-sm sm:text-lg font-extrabold text-[#2C1810]">Active Deals & Promotional Offers</h3>
+            <span className="px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-900 text-[9px] sm:text-[10px] font-black uppercase border border-amber-300/40">
               {discountsList.length} Active Deals
             </span>
           </div>
-          <p className="text-xs text-stone-500">Exclusive venue booking discounts available for customer reservations</p>
+          <p className="text-[11px] sm:text-xs text-stone-500">Exclusive venue booking discounts available for customer reservations</p>
         </div>
       </div>
 

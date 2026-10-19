@@ -23,7 +23,7 @@ import {
   Check
 } from 'lucide-react';
 
-export default function AmenitiesSection({ cafe }) {
+export default function AmenitiesSection({ cafe, isMobileView = false }) {
   const [selectedAmenity, setSelectedAmenity] = useState(null);
   const [activeCategory, setActiveCategory] = useState('all');
 
@@ -34,18 +34,18 @@ export default function AmenitiesSection({ cafe }) {
     return null;
   }
 
-  // Comprehensive colorful amenity theme dictionary
+  // Cohesive Fahara theme-based amenity dictionary (#6F4E37, #A67B5B, #DDB892, #FFF8F0, #2C1810)
   const amenityMap = {
     'wifi': { 
       label: 'High-Speed Wi-Fi', 
       icon: Wifi,
       category: 'tech',
       badge: '500 Mbps Fiber',
-      gradient: 'from-cyan-500 to-blue-600',
-      bgLight: 'bg-cyan-50/80 hover:bg-cyan-100/80 border-cyan-200/80',
-      textAccent: 'text-cyan-700',
-      badgeBg: 'bg-cyan-100 text-cyan-800 border-cyan-200',
-      glow: 'shadow-cyan-500/20',
+      gradient: 'from-[#4A2C11] to-[#6F4E37]',
+      bgLight: 'bg-[#FFF8F0] hover:bg-[#FDF4E7] border-[#DDB892]/60',
+      textAccent: 'text-[#2C1810]',
+      badgeBg: 'bg-white text-[#6F4E37] border-[#DDB892]/80',
+      glow: 'shadow-[#6F4E37]/15',
       description: 'Ultra-fast, low-latency fiber internet available throughout the venue. Perfect for streaming, video conferencing, and team work sessions.'
     },
     'ac': { 
@@ -53,11 +53,11 @@ export default function AmenitiesSection({ cafe }) {
       icon: Wind,
       category: 'comfort',
       badge: 'Climate Control',
-      gradient: 'from-sky-400 to-indigo-600',
-      bgLight: 'bg-sky-50/80 hover:bg-sky-100/80 border-sky-200/80',
-      textAccent: 'text-sky-700',
-      badgeBg: 'bg-sky-100 text-sky-800 border-sky-200',
-      glow: 'shadow-sky-500/20',
+      gradient: 'from-[#6F4E37] to-[#8C6246]',
+      bgLight: 'bg-[#FFF8F0] hover:bg-[#FDF4E7] border-[#DDB892]/60',
+      textAccent: 'text-[#2C1810]',
+      badgeBg: 'bg-white text-[#6F4E37] border-[#DDB892]/80',
+      glow: 'shadow-[#6F4E37]/15',
       description: 'Dual-zone central air conditioning keeping the environment fresh, cool, and comfortable no matter the weather outside.'
     },
     'parking': { 
@@ -65,11 +65,11 @@ export default function AmenitiesSection({ cafe }) {
       icon: Car,
       category: 'services',
       badge: 'Valet / On-Site',
-      gradient: 'from-amber-500 to-orange-600',
-      bgLight: 'bg-amber-50/80 hover:bg-amber-100/80 border-amber-200/80',
-      textAccent: 'text-amber-800',
-      badgeBg: 'bg-amber-100 text-amber-900 border-amber-200',
-      glow: 'shadow-amber-500/20',
+      gradient: 'from-[#8C6246] to-[#A67B5B]',
+      bgLight: 'bg-[#FFF8F0] hover:bg-[#FDF4E7] border-[#DDB892]/60',
+      textAccent: 'text-[#2C1810]',
+      badgeBg: 'bg-white text-[#6F4E37] border-[#DDB892]/80',
+      glow: 'shadow-[#8C6246]/15',
       description: 'Hassle-free parking space for guests right at the venue. Secure and easy access for both cars and two-wheelers.'
     },
     'private_room': { 
@@ -77,11 +77,11 @@ export default function AmenitiesSection({ cafe }) {
       icon: Users,
       category: 'space',
       badge: 'Exclusive Access',
-      gradient: 'from-purple-500 to-indigo-600',
-      bgLight: 'bg-purple-50/80 hover:bg-purple-100/80 border-purple-200/80',
-      textAccent: 'text-purple-700',
-      badgeBg: 'bg-purple-100 text-purple-800 border-purple-200',
-      glow: 'shadow-purple-500/20',
+      gradient: 'from-[#4A2C11] to-[#6F4E37]',
+      bgLight: 'bg-[#FFF8F0] hover:bg-[#FDF4E7] border-[#DDB892]/60',
+      textAccent: 'text-[#2C1810]',
+      badgeBg: 'bg-white text-[#6F4E37] border-[#DDB892]/80',
+      glow: 'shadow-[#6F4E37]/15',
       description: 'Dedicated enclosed private section equipped for private dining, birthday celebrations, workshops, or confidential business meetings.'
     },
     'outdoor': { 
@@ -89,11 +89,11 @@ export default function AmenitiesSection({ cafe }) {
       icon: Sun,
       category: 'space',
       badge: 'Garden & Patio',
-      gradient: 'from-emerald-500 to-teal-600',
-      bgLight: 'bg-emerald-50/80 hover:bg-emerald-100/80 border-emerald-200/80',
-      textAccent: 'text-emerald-700',
-      badgeBg: 'bg-emerald-100 text-emerald-800 border-emerald-200',
-      glow: 'shadow-emerald-500/20',
+      gradient: 'from-[#6F4E37] to-[#A67B5B]',
+      bgLight: 'bg-[#FFF8F0] hover:bg-[#FDF4E7] border-[#DDB892]/60',
+      textAccent: 'text-[#2C1810]',
+      badgeBg: 'bg-white text-[#6F4E37] border-[#DDB892]/80',
+      glow: 'shadow-[#6F4E37]/15',
       description: 'Open-air al-fresco seating area surrounded by lush greenery, perfect for evening gatherings, coffee breaks, and photos.'
     },
     'indoor': { 
@@ -101,35 +101,71 @@ export default function AmenitiesSection({ cafe }) {
       icon: Home,
       category: 'space',
       badge: 'Cozy Ambience',
-      gradient: 'from-[#6F4E37] to-[#A67B5B]',
-      bgLight: 'bg-stone-100/80 hover:bg-amber-50/80 border-stone-200/80',
-      textAccent: 'text-[#6F4E37]',
-      badgeBg: 'bg-[#FFF8F0] text-[#6F4E37] border-[#DDB892]/60',
-      glow: 'shadow-[#6F4E37]/20',
+      gradient: 'from-[#5C3D28] to-[#8C6246]',
+      bgLight: 'bg-[#FFF8F0] hover:bg-[#FDF4E7] border-[#DDB892]/60',
+      textAccent: 'text-[#2C1810]',
+      badgeBg: 'bg-white text-[#6F4E37] border-[#DDB892]/80',
+      glow: 'shadow-[#5C3D28]/15',
       description: 'Warmly lit interior aesthetic with comfortable seating arrangements, power outlets, and acoustic wall panels.'
+    },
+    'sound': { 
+      label: 'Sound System', 
+      icon: Speaker,
+      category: 'tech',
+      badge: 'Available',
+      gradient: 'from-[#6F4E37] to-[#A67B5B]',
+      bgLight: 'bg-[#FFF8F0] hover:bg-[#FDF4E7] border-[#DDB892]/60',
+      textAccent: 'text-[#2C1810]',
+      badgeBg: 'bg-white text-[#6F4E37] border-[#DDB892]/80',
+      glow: 'shadow-[#6F4E37]/15',
+      description: 'Professional high-fidelity sound speakers ready for background music or private celebrations.'
     },
     'music': { 
       label: 'Sound System', 
       icon: Speaker,
       category: 'tech',
       badge: 'Hi-Fi Audio',
-      gradient: 'from-rose-500 to-pink-600',
-      bgLight: 'bg-rose-50/80 hover:bg-rose-100/80 border-rose-200/80',
-      textAccent: 'text-rose-700',
-      badgeBg: 'bg-rose-100 text-rose-800 border-rose-200',
-      glow: 'shadow-rose-500/20',
-      description: 'Premium Bluetooth surround sound speakers ready to pair with your playlist for customized background music.'
+      gradient: 'from-[#6F4E37] to-[#A67B5B]',
+      bgLight: 'bg-[#FFF8F0] hover:bg-[#FDF4E7] border-[#DDB892]/60',
+      textAccent: 'text-[#2C1810]',
+      badgeBg: 'bg-white text-[#6F4E37] border-[#DDB892]/80',
+      glow: 'shadow-[#6F4E37]/15',
+      description: 'Premium surround sound speakers ready to pair with your playlist for customized background music.'
+    },
+    'projector': { 
+      label: 'Projector & Screen', 
+      icon: Tv,
+      category: 'tech',
+      badge: 'Available',
+      gradient: 'from-[#4A2C11] to-[#6F4E37]',
+      bgLight: 'bg-[#FFF8F0] hover:bg-[#FDF4E7] border-[#DDB892]/60',
+      textAccent: 'text-[#2C1810]',
+      badgeBg: 'bg-white text-[#6F4E37] border-[#DDB892]/80',
+      glow: 'shadow-[#4A2C11]/15',
+      description: 'HD display projector and drop-down screen ideal for presentations, photo montages, or video screenings.'
+    },
+    'kids': { 
+      label: 'Kids Friendly', 
+      icon: Users,
+      category: 'services',
+      badge: 'Available',
+      gradient: 'from-[#8C6246] to-[#A67B5B]',
+      bgLight: 'bg-[#FFF8F0] hover:bg-[#FDF4E7] border-[#DDB892]/60',
+      textAccent: 'text-[#2C1810]',
+      badgeBg: 'bg-white text-[#6F4E37] border-[#DDB892]/80',
+      glow: 'shadow-[#8C6246]/15',
+      description: 'Safe and family-friendly environment with seating accommodations suitable for children and families.'
     },
     'live_music': { 
       label: 'Live Stage / Music', 
       icon: Music,
       category: 'tech',
       badge: 'Stage Ready',
-      gradient: 'from-fuchsia-500 to-pink-600',
-      bgLight: 'bg-fuchsia-50/80 hover:bg-fuchsia-100/80 border-fuchsia-200/80',
-      textAccent: 'text-fuchsia-700',
-      badgeBg: 'bg-fuchsia-100 text-fuchsia-800 border-fuchsia-200',
-      glow: 'shadow-fuchsia-500/20',
+      gradient: 'from-[#4A2C11] to-[#8C6246]',
+      bgLight: 'bg-[#FFF8F0] hover:bg-[#FDF4E7] border-[#DDB892]/60',
+      textAccent: 'text-[#2C1810]',
+      badgeBg: 'bg-white text-[#6F4E37] border-[#DDB892]/80',
+      glow: 'shadow-[#4A2C11]/15',
       description: 'Acoustic stage setup with mic support available for live acoustic performances, open mics, or live bands.'
     },
     'security': { 
@@ -137,11 +173,11 @@ export default function AmenitiesSection({ cafe }) {
       icon: Shield,
       category: 'services',
       badge: '24/7 Verified',
-      gradient: 'from-blue-600 to-slate-700',
-      bgLight: 'bg-slate-50/80 hover:bg-slate-100/80 border-slate-200/80',
-      textAccent: 'text-slate-700',
-      badgeBg: 'bg-slate-100 text-slate-800 border-slate-200',
-      glow: 'shadow-slate-500/20',
+      gradient: 'from-[#2C1810] to-[#5C3D28]',
+      bgLight: 'bg-[#FFF8F0] hover:bg-[#FDF4E7] border-[#DDB892]/60',
+      textAccent: 'text-[#2C1810]',
+      badgeBg: 'bg-white text-[#6F4E37] border-[#DDB892]/80',
+      glow: 'shadow-[#2C1810]/15',
       description: 'Round-the-clock CCTV monitoring and professional staff ensuring safety and security for all event attendees.'
     },
   };
@@ -150,17 +186,17 @@ export default function AmenitiesSection({ cafe }) {
     const normalized = key.toLowerCase().trim();
     if (amenityMap[normalized]) return amenityMap[normalized];
     
-    // Dynamic default for custom amenities
+    // Cohesive Fahara theme default for custom amenities
     return {
       label: key.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase()),
       icon: CheckCircle2,
       category: 'general',
       badge: 'Available',
-      gradient: 'from-orange-500 to-amber-600',
-      bgLight: 'bg-orange-50/80 hover:bg-orange-100/80 border-orange-200/80',
-      textAccent: 'text-orange-700',
-      badgeBg: 'bg-orange-100 text-orange-800 border-orange-200',
-      glow: 'shadow-orange-500/20',
+      gradient: 'from-[#6F4E37] to-[#A67B5B]',
+      bgLight: 'bg-[#FFF8F0] hover:bg-[#FDF4E7] border-[#DDB892]/60',
+      textAccent: 'text-[#2C1810]',
+      badgeBg: 'bg-white text-[#6F4E37] border-[#DDB892]/80',
+      glow: 'shadow-[#6F4E37]/15',
       description: `${key.replace(/_/g, ' ')} facility provided on-site for your reservation.`
     };
   };
@@ -180,31 +216,35 @@ export default function AmenitiesSection({ cafe }) {
   });
 
   return (
-    <div className="mb-10 font-sans">
-      <div className="bg-white/95 backdrop-blur-2xl rounded-3xl p-6 sm:p-8 border border-stone-200/90 shadow-[0_12px_40px_rgba(44,24,16,0.06)] relative overflow-hidden">
+    <div className={isMobileView ? "mb-2 font-sans" : "mb-10 font-sans"}>
+      <div className={isMobileView ? "bg-transparent p-0 border-0 shadow-none relative" : "bg-white/95 backdrop-blur-2xl rounded-3xl p-6 sm:p-8 border border-stone-200/90 shadow-[0_12px_40px_rgba(44,24,16,0.06)] relative overflow-hidden"}>
         
         {/* Decorative Top Accent Bar */}
-        <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-amber-500 via-emerald-500 via-cyan-500 to-[#6F4E37]" />
+        {!isMobileView && (
+          <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-amber-500 via-emerald-500 via-cyan-500 to-[#6F4E37]" />
+        )}
 
         {/* Section Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-5 border-b border-stone-100">
+        <div className={`flex flex-col sm:flex-row sm:items-center justify-between gap-3 ${isMobileView ? 'mb-4 pb-3 border-b border-stone-100' : 'mb-6 pb-5 border-b border-stone-100'}`}>
           <div>
-            <div className="flex items-center gap-2.5 mb-1">
-              <div className="p-2 rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 text-white shadow-md shadow-amber-500/20">
-                <Sparkles size={18} />
+            <div className="flex items-center gap-2 mb-1">
+              <div className="p-1.5 rounded-lg bg-gradient-to-br from-amber-500 to-orange-600 text-white shadow-xs">
+                <Sparkles size={15} />
               </div>
-              <h2 className="text-xl sm:text-2xl font-black text-[#2C1810] tracking-tight">
+              <h2 className={isMobileView ? "text-base font-black text-[#2C1810] tracking-tight" : "text-xl sm:text-2xl font-black text-[#2C1810] tracking-tight"}>
                 What this place offers
               </h2>
             </div>
-            <p className="text-xs text-stone-500 font-medium">
-              Click on any facility card to inspect details and features.
-            </p>
+            {!isMobileView && (
+              <p className="text-xs text-stone-500 font-medium">
+                Click on any facility card to inspect details and features.
+              </p>
+            )}
           </div>
 
           <div className="flex items-center gap-2">
-            <span className="text-xs font-black text-white bg-gradient-to-r from-[#6F4E37] to-[#A67B5B] px-3.5 py-1.5 rounded-full shadow-md shadow-[#6F4E37]/20 flex items-center gap-1.5">
-              <Zap size={14} className="animate-pulse text-amber-300" />
+            <span className="text-[11px] font-black text-white bg-gradient-to-r from-[#6F4E37] to-[#A67B5B] px-3 py-1 rounded-full shadow-xs flex items-center gap-1.5">
+              <Zap size={12} className="animate-pulse text-amber-300" />
               {amenitiesList.length} Verified Facilities
             </span>
           </div>

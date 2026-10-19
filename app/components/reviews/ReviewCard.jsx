@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
 import { format } from 'date-fns';
 import { motion } from 'framer-motion';
@@ -17,6 +17,15 @@ export default function ReviewCard({
   onReport 
 }) {
   const { editedReviews, isReported } = useReviewsStore();
+
+  const initialHelpful = Number(review?.helpful_count ?? review?.helpful ?? review?.likes ?? 0);
+  const [helpfulCount, setHelpfulCount] = useState(initialHelpful);
+  const [hasLiked, setHasLiked] = useState(() => {
+    if (typeof window !== 'undefined' && review?.id) {
+      try { return localStorage.getItem(`fahara_review_liked_${review.id}`) === 'true'; } catch (e) { return false; }
+    }
+    return false;
+  });
   
   // Merge any local edits
   const localEdit = editedReviews[review.id];
@@ -119,9 +128,29 @@ export default function ReviewCard({
       )}
 
       <div className="mt-6 flex items-center gap-2 pt-4 border-t border-[#E8DED5]">
-        <button className="flex items-center gap-1.5 text-xs font-medium text-gray-500 hover:text-[#6F4E37] transition-colors">
-          <ThumbsUp className="w-3.5 h-3.5" />
-          Helpful (0)
+        <button 
+          type="button"
+          onClick={() => {
+            if (!hasLiked) {
+              setHelpfulCount(c => c + 1);
+              setHasLiked(true);
+              if (review?.id) {
+                try { localStorage.setItem(`fahara_review_liked_${review.id}`, 'true'); } catch (e) {}
+              }
+            } else {
+              setHelpfulCount(c => Math.max(0, c - 1));
+              setHasLiked(false);
+              if (review?.id) {
+                try { localStorage.removeItem(`fahara_review_liked_${review.id}`); } catch (e) {}
+              }
+            }
+          }}
+          className={`flex items-center gap-1.5 text-xs font-medium transition-colors cursor-pointer ${
+            hasLiked ? 'text-emerald-700 font-bold' : 'text-gray-500 hover:text-[#6F4E37]'
+          }`}
+        >
+          <ThumbsUp className={`w-3.5 h-3.5 ${hasLiked ? 'fill-emerald-600 text-emerald-600' : ''}`} />
+          <span>Helpful ({helpfulCount})</span>
         </button>
       </div>
     </motion.div>

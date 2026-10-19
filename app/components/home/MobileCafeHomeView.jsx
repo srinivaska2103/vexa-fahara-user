@@ -95,55 +95,20 @@ export default function MobileCafeHomeView({
       </div>
 
       {/* 5. Fahara Promotional Banner Carousel (Compact height & rounded) */}
-      <div className="px-3.5 mb-5">
+      <div className="px-3.5 mb-2.5">
         <FaharaHeroBannerCarousel />
       </div>
 
       {/* 6. Main Discovery Feed & View Switcher */}
       <section className="px-3.5">
-        <div className="flex items-center justify-between mb-3 bg-white p-2.5 rounded-2xl border border-[#E8DED5] shadow-2xs">
+        <div className="flex items-center justify-between mb-2 bg-white px-3 py-2 rounded-xl border border-[#E8DED5] shadow-2xs">
           <div>
-            <span className="text-xs font-black text-[#2C1810] block">
+            <span className="text-xs font-black text-[#2C1810] block leading-tight">
               {selectedCategory ? `Venues in ${selectedCategory}` : 'Explore All Cafes'}
             </span>
             <span className="text-[10px] font-bold text-stone-500">
               {cafes.length} {cafes.length === 1 ? 'place' : 'places'} available
             </span>
-          </div>
-
-          <div className="flex items-center gap-1.5">
-            {/* View Mode Toggle */}
-            <div className="flex bg-stone-100 p-0.5 rounded-lg border border-stone-200">
-              <button
-                type="button"
-                suppressHydrationWarning
-                onClick={() => setViewMode('grid')}
-                className={`p-1.5 rounded-md ${viewMode === 'grid' ? 'bg-white shadow-2xs text-[#6F4E37]' : 'text-stone-500'}`}
-                aria-label="Grid view"
-              >
-                <LayoutGrid size={13} />
-              </button>
-              <button
-                type="button"
-                suppressHydrationWarning
-                onClick={() => setViewMode('map')}
-                className={`p-1.5 rounded-md ${viewMode === 'map' ? 'bg-white shadow-2xs text-[#6F4E37]' : 'text-stone-500'}`}
-                aria-label="Map view"
-              >
-                <Map size={13} />
-              </button>
-            </div>
-
-            {/* Filter button */}
-            <button
-              type="button"
-              suppressHydrationWarning
-              onClick={onOpenFilter}
-              className="p-1.5 rounded-lg bg-[#FFF8F0] border border-[#DDB892] text-[#6F4E37] active:scale-95 transition-transform"
-              aria-label="Filters"
-            >
-              <SlidersHorizontal size={13} />
-            </button>
           </div>
         </div>
 
@@ -163,11 +128,11 @@ export default function MobileCafeHomeView({
         ) : (
           <div className="w-full">
             {/* Horizontal scrollable cards container on mobile */}
-            <div className="flex gap-4 overflow-x-auto no-scrollbar -mx-3.5 px-3.5 pb-4 pt-1 scroll-smooth snap-x snap-mandatory">
+            <div className="flex gap-3.5 sm:gap-4 overflow-x-auto no-scrollbar -mx-3.5 px-3.5 pb-4 pt-1 scroll-smooth snap-x snap-mandatory">
               {cafes.map((cafe) => (
                 <div 
                   key={cafe.id || cafe._id || cafe.cafe_id} 
-                  className="w-[74vw] max-w-[265px] xs:max-w-[275px] shrink-0 snap-start"
+                  className="w-[82vw] xs:w-[78vw] sm:w-[320px] max-w-[340px] shrink-0 snap-start"
                 >
                   <CafeCard cafe={cafe} activeCategory={selectedCategory} />
                 </div>

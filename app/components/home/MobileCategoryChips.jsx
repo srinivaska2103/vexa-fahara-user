@@ -221,6 +221,39 @@ const getCategoryIconMeta = (id = '', title = '') => {
 export default function MobileCategoryChips({ categories = [], onOpenFilter }) {
   const selectedCategory = useSearchStore((state) => state.category);
   const setCategory = useSearchStore((state) => state.setCategory);
+  const [searchBarHeight, setSearchBarHeight] = React.useState(60);
+
+  // Measure actual height of the sticky search bar dynamically
+  React.useEffect(() => {
+    const measureSearchBar = () => {
+      const searchEl = document.getElementById('mobile-sticky-search-bar');
+      if (searchEl) {
+        const height = searchEl.getBoundingClientRect().height;
+        if (height > 0) {
+          setSearchBarHeight(height);
+        }
+      }
+    };
+
+    measureSearchBar();
+
+    const searchEl = document.getElementById('mobile-sticky-search-bar');
+    if (!searchEl) return;
+
+    let resizeObserver;
+    if (typeof ResizeObserver !== 'undefined') {
+      resizeObserver = new ResizeObserver(() => {
+        measureSearchBar();
+      });
+      resizeObserver.observe(searchEl);
+    }
+
+    window.addEventListener('resize', measureSearchBar, { passive: true });
+    return () => {
+      window.removeEventListener('resize', measureSearchBar);
+      if (resizeObserver) resizeObserver.disconnect();
+    };
+  }, []);
 
   // Normalizing categories list with 'All' as the first option
   const chips = [
@@ -241,22 +274,14 @@ export default function MobileCategoryChips({ categories = [], onOpenFilter }) {
   };
 
   return (
-    <div className="md:hidden w-full px-3.5 pt-3.5 pb-2 mb-4 select-none">
-      <div className="flex items-center justify-between mb-2.5">
+    <div 
+      className="md:hidden sticky z-30 w-full px-3.5 pt-3 pb-3 mb-4 select-none bg-[#FFF8F0] customer-cafe-doodle-bg border-b border-[#E8DED5]/80 shadow-[0_6px_16px_rgba(44,24,16,0.06)]"
+      style={{ top: `${searchBarHeight}px` }}
+    >
+      <div className="flex items-center justify-between mb-2.5 px-0.5">
         <span className="text-xs font-black text-[#2C1810] tracking-wide uppercase">
           Categories
         </span>
-        {onOpenFilter && (
-          <button
-            type="button"
-            suppressHydrationWarning
-            onClick={onOpenFilter}
-            className="flex items-center gap-1 text-[11px] font-bold text-[#6F4E37] active:scale-95 transition-transform"
-          >
-            <SlidersHorizontal size={12} />
-            <span>Filters</span>
-          </button>
-        )}
       </div>
 
       {/* ── ROUNDED CIRCLE STYLE (All categories with smooth horizontal scroll) ── */}

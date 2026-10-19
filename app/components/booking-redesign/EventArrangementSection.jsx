@@ -82,13 +82,24 @@ function parseInclusions(rawEvent) {
 }
 
 // ── Manager Card ──────────────────────────────────────────────────────────────
-function ManagerCard({ company, isSelected, onClick }) {
+function ManagerCard({ company, isSelected, onClick, cafe, selectedTable, guestCount }) {
   const event = company.originalEvent || {};
   const maxGuests = event.max_guests || company.max_guests;
   const duration = event.duration_hours || company.duration_hours;
   const pricingType = event.pricing_type || company.pricing_type || 'FIXED';
   const category = company.services?.[0] || event.category || 'Package';
   const rawInclusions = parseInclusions(event);
+  
+  // Calculate effective capacity for this Event Manager package taking cafe and table into account
+  const { calculateAllowedGuestCount } = require('@/lib/capacityUtils');
+  const capacityInfo = calculateAllowedGuestCount({
+    cafe,
+    selectedTable,
+    eventService: company,
+  });
+
+  const effectiveLimit = capacityInfo.maximumAllowedGuests;
+  const isCompatible = effectiveLimit === null || guestCount <= effectiveLimit;
   
   // Extract top inclusion names to preview on the card
   const inclusionNames = rawInclusions
@@ -98,14 +109,16 @@ function ManagerCard({ company, isSelected, onClick }) {
 
   return (
     <motion.div
-      whileHover={{ scale: 1.01 }}
-      whileTap={{ scale: 0.99 }}
-      onClick={onClick}
+      whileHover={isCompatible ? { scale: 1.01 } : {}}
+      whileTap={isCompatible ? { scale: 0.99 } : {}}
+      onClick={isCompatible ? onClick : undefined}
       className={cn(
-        'relative p-4 rounded-2xl border-2 cursor-pointer transition-all',
+        'relative p-4 rounded-2xl border-2 transition-all',
         isSelected
-          ? 'border-[#6F4E37] bg-[#FFF8F0] shadow-md ring-2 ring-[#6F4E37]/20'
-          : 'border-[#E8DED5] hover:border-[#A67B5B] bg-white hover:shadow-sm'
+          ? 'border-[#6F4E37] bg-[#FFF8F0] shadow-md ring-2 ring-[#6F4E37]/20 cursor-pointer'
+          : isCompatible
+          ? 'border-[#E8DED5] hover:border-[#A67B5B] bg-white hover:shadow-sm cursor-pointer'
+          : 'border-stone-200 bg-stone-50/90 opacity-75 cursor-not-allowed'
       )}
     >
       <div className="flex items-start gap-3.5">
@@ -122,7 +135,18 @@ function ManagerCard({ company, isSelected, onClick }) {
         <div className="flex-1 min-w-0">
           <div className="flex flex-col xs:flex-row xs:items-start justify-between gap-1 xs:gap-2">
             <div className="min-w-0 flex-1">
-              <h3 className="font-extrabold text-[#2C1810] text-xs sm:text-sm leading-tight truncate">{company.name}</h3>
+              <div className="flex items-center gap-2 flex-wrap">
+                <h3 className="font-extrabold text-[#2C1810] text-xs sm:text-sm leading-tight truncate">{company.name}</h3>
+                {isCompatible ? (
+                  <span className="text-[9px] font-black px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+                    Compatible
+                  </span>
+                ) : (
+                  <span className="text-[9px] font-black px-2 py-0.5 rounded-full bg-rose-50 text-rose-700 border border-rose-200">
+                    Incompatible ({effectiveLimit} max)
+                  </span>
+                )}
+              </div>
               <p className="text-[10px] sm:text-[11px] text-stone-500 font-medium truncate mt-0.5">By {company.companyName}</p>
             </div>
 
@@ -154,9 +178,20 @@ function ManagerCard({ company, isSelected, onClick }) {
 
             {/* Guest Capacity */}
             {maxGuests > 0 && (
-              <span className="flex items-center gap-1 text-[10px] font-medium text-stone-600 bg-stone-100 px-2 py-0.5 rounded-md border border-stone-200">
-                <Users size={11} className="text-stone-400" />
+              <span className={`flex items-center gap-1 text-[10px] font-medium px-2 py-0.5 rounded-md border ${
+                isCompatible
+                  ? 'text-stone-600 bg-stone-100 border-stone-200'
+                  : 'text-rose-700 bg-rose-50 border-rose-200'
+              }`}>
+                <Users size={11} className={isCompatible ? 'text-stone-400' : 'text-rose-500'} />
                 Up to {maxGuests} Guests
+              </span>
+            )}
+
+            {/* Effective Max Note if Cafe capacity limits the package */}
+            {cafe?.maximum_persons && maxGuests > cafe.maximum_persons && (
+              <span className="text-[9px] font-extrabold text-amber-800 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-md">
+                Venue max: {cafe.maximum_persons}
               </span>
             )}
 
@@ -167,6 +202,7 @@ function ManagerCard({ company, isSelected, onClick }) {
               </span>
             )}
           </div>
+
 
           {/* Inclusion Tags Preview */}
           {inclusionNames.length > 0 && (
@@ -199,8 +235,7 @@ function ManagerCard({ company, isSelected, onClick }) {
 }
 
 // ── Detail Panel ──────────────────────────────────────────────────────────────
-// ── Detail Panel ──────────────────────────────────────────────────────────────
-function ManagerDetailPanel({ company, onBack, onConfirm, guestCount }) {
+function ManagerDetailPanel({ company, onBack, onConfirm, guestCount, cafe, selectedTable }) {
   const { data, isLoading, isError } = useEventServiceById(company.id);
   const rawEvent = data?.data || company.originalEvent || {};
 
@@ -223,9 +258,73 @@ function ManagerDetailPanel({ company, onBack, onConfirm, guestCount }) {
     return startingPrice;
   }, [startingPrice, pricingType, guestCount]);
 
+  const { calculateAllowedGuestCount } = require('@/lib/capacityUtils');
+  const capacityInfo = useMemo(() => {
+    return calculateAllowedGuestCount({
+      cafe,
+      selectedTable,
+      eventService: {
+        ...company,
+        ...rawEvent,
+        originalEvent: rawEvent,
+        selectedInclusions: inclusionsList,
+      },
+      inclusions: inclusionsList,
+    });
+  }, [cafe, selectedTable, company, rawEvent, inclusionsList]);
+
+  const maxAllowed = capacityInfo.maximumAllowedGuests;
+  const isCapacityExceeded = maxAllowed !== null && guestCount > maxAllowed;
+
   const handleConfirm = () => {
+    if (isCapacityExceeded) {
+      import('react-hot-toast').then(m =>
+        m.default.error(`Your selected Event Manager package supports up to ${maxAllowed} guests. Choose a compatible package or reduce the guest count.`)
+      );
+      return;
+    }
     onConfirm(inclusionsList, totalPrice);
   };
+
+
+  const { selectedTimeSlot, selectedEventCompany } = useBookingStore();
+  const isCurrentlySelected = selectedEventCompany?.id === company.id;
+
+  const calculatedEventTime = useMemo(() => {
+    const durHours = Number(rawEvent.duration_hours || company.duration_hours || 0);
+    if (!selectedTimeSlot?.start || durHours <= 0) return null;
+
+    // selectedTimeSlot.start is in format "12:00 PM" or "12:00"
+    const startStr = selectedTimeSlot.start;
+    // parse 12h or 24h
+    let sH = 12;
+    let sM = 0;
+    if (startStr.includes('AM') || startStr.includes('PM')) {
+      const [timePart, modifier] = startStr.split(' ');
+      const [h, m] = timePart.split(':').map(Number);
+      sH = h % 12;
+      if (modifier === 'PM') sH += 12;
+      sM = m || 0;
+    } else {
+      const [h, m] = startStr.split(':').map(Number);
+      sH = h || 0;
+      sM = m || 0;
+    }
+
+    const startTotalMins = sH * 60 + sM;
+    const endTotalMins = startTotalMins + Math.round(durHours * 60);
+    const endH = Math.floor(endTotalMins / 60) % 24;
+    const endM = Math.floor(endTotalMins % 60);
+
+    const formatAMPM = (h, m) => {
+      const ampm = h >= 12 ? 'PM' : 'AM';
+      let formattedH = h % 12;
+      if (formattedH === 0) formattedH = 12;
+      return `${formattedH}:${m.toString().padStart(2, '0')} ${ampm}`;
+    };
+
+    return `${selectedTimeSlot.start} – ${formatAMPM(endH, endM)}`;
+  }, [selectedTimeSlot, rawEvent.duration_hours, company.duration_hours]);
 
   return (
     <motion.div
@@ -284,8 +383,17 @@ function ManagerDetailPanel({ company, onBack, onConfirm, guestCount }) {
           </p>
         </div>
 
-        {rawEvent.max_guests > 0 && (
+        {rawEvent.duration_hours > 0 && (
           <div className="bg-stone-50 border border-stone-200/80 rounded-xl p-3">
+            <p className="text-[10px] font-bold uppercase text-stone-400 tracking-wider">Event Duration</p>
+            <p className="text-sm font-black text-[#2C1810] mt-0.5">
+              {rawEvent.duration_hours} {Number(rawEvent.duration_hours) === 1 ? 'Hour' : 'Hours'}
+            </p>
+          </div>
+        )}
+
+        {rawEvent.max_guests > 0 && (
+          <div className="bg-stone-50 border border-stone-200/80 rounded-xl p-3 col-span-2 sm:col-span-1">
             <p className="text-[10px] font-bold uppercase text-stone-400 tracking-wider">Guest Capacity</p>
             <p className="text-sm font-bold text-stone-700 mt-0.5 flex items-center gap-1.5">
               <Users size={14} className="text-[#6F4E37]" />
@@ -293,16 +401,21 @@ function ManagerDetailPanel({ company, onBack, onConfirm, guestCount }) {
             </p>
           </div>
         )}
-
-        {rawEvent.duration_hours > 0 && (
-          <div className="bg-stone-50 border border-stone-200/80 rounded-xl p-3">
-            <p className="text-[10px] font-bold uppercase text-stone-400 tracking-wider">Event Duration</p>
-            <p className="text-sm font-bold text-stone-700 mt-0.5">
-              {rawEvent.duration_hours} Hours
-            </p>
-          </div>
-        )}
       </div>
+
+      {/* Calculated Event Time Banner */}
+      {calculatedEventTime && (
+        <div className="bg-[#FFF8F0] border border-[#DDB892]/60 rounded-xl p-3 flex items-center justify-between text-xs">
+          <div className="flex items-center gap-2">
+            <div className="w-2 h-2 rounded-full bg-[#6F4E37]" />
+            <span className="font-bold text-stone-600">Calculated Event Time:</span>
+            <span className="font-black text-[#6F4E37]">{calculatedEventTime}</span>
+          </div>
+          <span className="text-[10px] font-extrabold uppercase bg-white px-2 py-0.5 rounded-full border border-[#DDB892]/50 text-[#6F4E37]">
+            {rawEvent.duration_hours} {Number(rawEvent.duration_hours) === 1 ? 'Hour' : 'Hours'}
+          </span>
+        </div>
+      )}
 
       {/* Description if any */}
       {rawEvent?.description && (
@@ -390,11 +503,24 @@ function ManagerDetailPanel({ company, onBack, onConfirm, guestCount }) {
         </div>
         <button
           type="button"
+          disabled={isCapacityExceeded}
           onClick={handleConfirm}
-          className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[#4A2C11] to-[#6F4E37] hover:from-[#3D2509] hover:to-[#5C402E] text-white font-black text-xs rounded-xl shadow-md shadow-[#4A2C11]/20 transition-all active:scale-95 shrink-0 cursor-pointer"
+          className={`flex items-center gap-2 px-6 py-3 font-black text-xs rounded-xl shadow-md transition-all active:scale-95 shrink-0 ${
+            isCapacityExceeded
+              ? 'bg-stone-300 text-stone-500 cursor-not-allowed shadow-none'
+              : isCurrentlySelected
+              ? 'bg-emerald-700 hover:bg-emerald-800 text-white shadow-emerald-900/20 cursor-pointer'
+              : 'bg-gradient-to-r from-[#4A2C11] to-[#6F4E37] hover:from-[#3D2509] hover:to-[#5C402E] text-white shadow-[#4A2C11]/20 cursor-pointer'
+          }`}
         >
           <CheckCircle2 size={16} />
-          <span>Select This Package</span>
+          <span>
+            {isCapacityExceeded
+              ? `Exceeds Capacity (${maxAllowed} max)`
+              : isCurrentlySelected
+              ? 'Selected'
+              : 'Select This Package'}
+          </span>
         </button>
       </div>
     </motion.div>
@@ -406,8 +532,9 @@ export default function EventArrangementSection({ cafe }) {
   const {
     selectedEventCompany, setEventCompany,
     setPackage, setSelectedInclusionsPayload, setSelectedInclusionItems,
-    guestCount
+    guestCount, selectedTable
   } = useBookingStore();
+
 
   const [sortBy, setSortBy] = useState('Nearest');
   const [isSkipped, setIsSkipped] = useState(false);
@@ -575,7 +702,10 @@ export default function EventArrangementSection({ cafe }) {
                 onBack={() => setExpandedId(null)}
                 onConfirm={handleConfirm}
                 guestCount={guestCount || 1}
+                cafe={cafe}
+                selectedTable={selectedTable}
               />
+
             ) : (
               <motion.div
                 key="list"
@@ -618,11 +748,15 @@ export default function EventArrangementSection({ cafe }) {
                           company={company}
                           isSelected={isSelected}
                           onClick={() => handleCardClick(company)}
+                          cafe={cafe}
+                          selectedTable={selectedTable}
+                          guestCount={guestCount || 1}
                         />
                       );
                     })}
                   </div>
                 )}
+
               </motion.div>
             )}
 

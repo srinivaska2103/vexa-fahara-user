@@ -348,13 +348,15 @@ export default function StartTimePicker({
       </div>
 
       {/* ------------------------------------------------------------------ */}
-      {/* DESKTOP SELECTED TIME DISPLAY BAR (Preserved)                      */}
+      {/* DESKTOP SELECTED TIME DISPLAY BAR (Clean & Modern)                 */}
       {/* ------------------------------------------------------------------ */}
-      <div className="hidden md:flex w-full bg-[#FAF7F2] border border-[#E8DED3] rounded-3xl p-3.5 sm:p-4 items-center justify-between shadow-2xs">
+      <div className="hidden md:flex w-full bg-stone-50/90 border border-stone-200/90 rounded-2xl px-4 py-2.5 items-center justify-between shadow-2xs transition-all hover:bg-white hover:border-[#6F4E37]/30">
         {/* Selected Time Badge */}
-        <div className="flex items-center gap-2">
-          <div className="bg-white border border-[#DDB892]/70 px-4 py-2 rounded-2xl shadow-2xs font-black text-sm sm:text-base text-[#2D2420] flex items-center gap-1.5">
-            <span>{formattedDisplay}</span>
+        <div className="flex items-center gap-2.5">
+          <Clock size={16} className="text-[#6F4E37] shrink-0" />
+          <div className="flex flex-col">
+            <span className="text-[10px] font-bold text-stone-400 uppercase tracking-wider">{label}</span>
+            <span className="font-black text-sm sm:text-base text-[#2C1810] tracking-tight">{formattedDisplay}</span>
           </div>
         </div>
 
@@ -364,9 +366,9 @@ export default function StartTimePicker({
           onClick={() => setIsOpen(!isOpen)}
           aria-expanded={isOpen}
           aria-controls={`${pickerId}-panel`}
-          className="px-4 py-2 rounded-2xl bg-white border border-[#E8DED3] hover:bg-[#6F4E37] text-[#6F4E37] hover:text-white font-extrabold text-xs sm:text-sm transition-all cursor-pointer shadow-2xs"
+          className="px-3.5 py-1.5 rounded-xl bg-white border border-stone-200/90 hover:bg-[#6F4E37] text-stone-700 hover:text-white font-extrabold text-xs transition-all cursor-pointer shadow-2xs active:scale-95"
         >
-          {isOpen ? 'Close' : 'Change'}
+          {isOpen ? 'Done' : 'Change'}
         </button>
       </div>
 

@@ -1,18 +1,24 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { CheckCircle, Info, Loader2, AlertCircle, ShieldCheck, Zap, Tag, Coffee, Star } from 'lucide-react';
+import { CheckCircle, Info, Loader2, AlertCircle, ShieldCheck, Zap, Tag, Coffee, Star, Users } from 'lucide-react';
 import { useBookingStore } from '@/stores/booking.store';
 import { useRouter, useParams } from 'next/navigation';
-import { useCafeDetails } from '@/hooks/useCafeDetails';
+import { useCafeDetails, useCafeAvailability } from '@/hooks/useCafeDetails';
 import { checkIfCafeClosedOnDate, checkIfTimeWithinBusinessHours } from '@/lib/utils';
+import { calculateAllowedGuestCount, validateGuestCount } from '@/lib/capacityUtils';
 import { bookingService } from '@/services/booking.service';
 import toast from 'react-hot-toast';
+
 
 export default function StickyBookingSummary({ cafeName, selectedInclusionsPayload }) {
   const router = useRouter();
   const { id: cafeId } = useParams();
   const { data: cafeResponse } = useCafeDetails(cafeId);
   const cafe = cafeResponse?.data;
+
+  // Active Vendor Availability Blocks
+  const { data: vendorAvailabilityData } = useCafeAvailability(cafeId);
+  const activeBlocks = vendorAvailabilityData?.data?.blocks || [];
 
   const { 
     selectedDate, 
@@ -34,6 +40,53 @@ export default function StickyBookingSummary({ cafeName, selectedInclusionsPaylo
   const timeCheck = (selectedDate && selectedTimeSlot)
     ? checkIfTimeWithinBusinessHours(cafe, selectedDate, selectedTimeSlot.start, selectedTimeSlot.end, selectedEventCompany)
     : { isValid: true };
+
+  // Check if currently selected date/time overlaps with any active vendor block
+  const blockedConflict = useMemo(() => {
+    if (!selectedDate || !selectedTimeSlot?.start || !selectedTimeSlot?.end || !activeBlocks.length) return null;
+    try {
+      const convertTimeTo24 = (timeStr) => {
+        if (!timeStr) return '00:00';
+        if (timeStr.includes(' ')) {
+          const [t, ampm] = timeStr.split(' ');
+          let [h, m] = t.split(':');
+          if (h === '12') h = '00';
+          if (ampm === 'PM') h = String(parseInt(h, 10) + 12);
+          return `${h.padStart(2, '0')}:${m}`;
+        }
+        return timeStr.slice(0, 5);
+      };
+
+      const [bY, bM, bD] = selectedDate.split('-');
+      const [sH, sMin] = convertTimeTo24(selectedTimeSlot.start).split(':');
+      const [eH, eMin] = convertTimeTo24(selectedTimeSlot.end).split(':');
+      const startReq = new Date(Date.UTC(parseInt(bY, 10), parseInt(bM, 10) - 1, parseInt(bD, 10), parseInt(sH, 10), parseInt(sMin, 10), 0));
+      const endReq = new Date(Date.UTC(parseInt(bY, 10), parseInt(bM, 10) - 1, parseInt(bD, 10), parseInt(eH, 10), parseInt(eMin, 10), 0));
+
+      return activeBlocks.find((b) => {
+        const bStart = new Date(b.start_at || b.startAt);
+        const bEnd = new Date(b.end_at || b.endAt);
+        return startReq < bEnd && endReq > bStart;
+      });
+    } catch {
+      return null;
+    }
+  }, [selectedDate, selectedTimeSlot, activeBlocks]);
+
+  const isTimeSlotUnavailable = !timeCheck.isValid || Boolean(blockedConflict);
+
+  const capacityInfo = useMemo(() => {
+    return calculateAllowedGuestCount({
+      cafe,
+      selectedTable,
+      cafePackage: selectedPackage,
+      eventService: selectedEventCompany,
+      inclusions: selectedEventCompany?.selectedInclusions || selectedInclusionsPayload || []
+    });
+  }, [cafe, selectedTable, selectedPackage, selectedEventCompany, selectedInclusionsPayload]);
+
+  const maxAllowedGuests = capacityInfo.maximumAllowedGuests;
+  const isGuestCapacityExceeded = maxAllowedGuests !== null && guestCount > maxAllowedGuests;
 
   const handlePayment = async () => {
     if (!selectedDate || !selectedTimeSlot) {
@@ -68,6 +121,20 @@ export default function StickyBookingSummary({ cafeName, selectedInclusionsPaylo
       });
       return;
     }
+
+    // Capacity Validation Guard before proceeding to payment
+    const capacityValidation = validateGuestCount(guestCount, capacityInfo);
+    if (!capacityValidation.isValid) {
+      toast.error(capacityValidation.message, {
+        style: {
+          borderRadius: '12px',
+          background: '#2C1810',
+          color: '#fff',
+        },
+      });
+      return;
+    }
+
 
     setIsProcessing(true);
     try {
@@ -225,8 +292,49 @@ export default function StickyBookingSummary({ cafeName, selectedInclusionsPaylo
                   </span>
                 </div>
               )}
+
+              {/* Clean Capacity Breakdown */}
+              <div className="pt-2.5 border-t border-stone-200/70 space-y-1.5 text-xs">
+                {capacityInfo.cafeLimit && (
+                  <div className="flex items-center justify-between">
+                    <span className="font-semibold text-stone-500">Cafe Capacity</span>
+                    <span className="font-extrabold text-[#2C1810]">{capacityInfo.cafeLimit} guests</span>
+                  </div>
+                )}
+                {capacityInfo.cafePackageLimit && (
+                  <div className="flex items-center justify-between">
+                    <span className="font-semibold text-stone-500">Package Limit</span>
+                    <span className="font-extrabold text-[#6F4E37]">{capacityInfo.cafePackageLimit} guests</span>
+                  </div>
+                )}
+                {capacityInfo.eventManagerLimit && (
+                  <div className="flex items-center justify-between">
+                    <span className="font-semibold text-stone-500">Event Manager Limit</span>
+                    <span className="font-extrabold text-[#6F4E37]">{capacityInfo.eventManagerLimit} guests</span>
+                  </div>
+                )}
+                {maxAllowedGuests !== null && (
+                  <div className="flex items-center justify-between pt-1.5 border-t border-stone-200/50">
+                    <span className="font-bold text-stone-600">Max Allowed</span>
+                    <span className="font-black text-[#6F4E37] bg-white px-2 py-0.5 rounded-lg border border-[#E8DED5] text-[11px]">
+                      {maxAllowedGuests} guests
+                    </span>
+                  </div>
+                )}
+              </div>
+
+              {/* Capacity Warning Banner in Summary */}
+              {isGuestCapacityExceeded && (
+                <div className="p-3 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-xs font-bold flex items-start gap-2 shadow-2xs">
+                  <AlertCircle size={15} className="text-rose-600 shrink-0 mt-0.5" />
+                  <span>
+                    Your guest count ({guestCount}) exceeds the maximum allowed limit ({maxAllowedGuests} guests). Adjust guests before payment.
+                  </span>
+                </div>
+              )}
             </div>
           )}
+
 
           {/* ── DIVIDER ── */}
           <div className="h-px mb-5 bg-stone-200/80" />
@@ -328,12 +436,16 @@ export default function StickyBookingSummary({ cafeName, selectedInclusionsPaylo
           )}
 
           {/* ── UNAVAILABILITY WARNING ── */}
-          {!timeCheck.isValid && (
-            <div className="mb-4 p-3.5 rounded-2xl border border-stone-300 bg-stone-50 flex items-start gap-2.5">
-              <AlertCircle className="w-4 h-4 text-stone-700 shrink-0 mt-0.5" />
+          {isTimeSlotUnavailable && (
+            <div className="mb-4 p-3.5 rounded-2xl border border-rose-200 bg-rose-50/80 flex items-start gap-2.5">
+              <AlertCircle className="w-4 h-4 text-rose-700 shrink-0 mt-0.5" />
               <div>
-                <p className="font-black uppercase tracking-wider text-[10px] text-[#2C1810]">Not Available at This Time</p>
-                <p className="text-[11px] leading-relaxed text-stone-600 mt-0.5">{timeCheck.message}</p>
+                <p className="font-black uppercase tracking-wider text-[10px] text-rose-900">Not Available at This Time</p>
+                <p className="text-[11px] leading-relaxed text-rose-900/90 mt-0.5">
+                  {blockedConflict 
+                    ? `This venue is temporarily closed or hosting a private event during the selected time (${blockedConflict.reason === 'HOLIDAY' ? 'Holiday closure' : blockedConflict.reason === 'MAINTENANCE' ? 'Maintenance period' : 'Private closure'}). Please pick another slot.` 
+                    : timeCheck.message}
+                </p>
               </div>
             </div>
           )}
@@ -341,10 +453,10 @@ export default function StickyBookingSummary({ cafeName, selectedInclusionsPaylo
           {/* ── CTA BUTTON ── */}
           <button
             onClick={handlePayment}
-            disabled={isProcessing || !timeCheck.isValid}
+            disabled={isProcessing || isTimeSlotUnavailable || isGuestCapacityExceeded}
             className={`w-full py-3.5 rounded-xl font-black text-sm flex items-center justify-center gap-2 transition-all shadow-sm ${
-              !timeCheck.isValid
-                ? 'bg-stone-100 text-stone-400 border border-stone-200 cursor-not-allowed shadow-none'
+              isTimeSlotUnavailable || isGuestCapacityExceeded
+                ? 'opacity-40 bg-[#6F4E37] text-white cursor-not-allowed pointer-events-none select-none'
                 : 'bg-[#6F4E37] hover:bg-[#5C3F2B] active:bg-[#4A2C11] text-white cursor-pointer active:scale-98'
             }`}
           >
@@ -353,8 +465,8 @@ export default function StickyBookingSummary({ cafeName, selectedInclusionsPaylo
                 <Loader2 size={16} className="animate-spin" />
                 <span>Processing...</span>
               </>
-            ) : !timeCheck.isValid ? (
-              <span>Venue Not Available</span>
+            ) : (isTimeSlotUnavailable || isGuestCapacityExceeded) ? (
+              <span>{isRestaurant ? 'Reserve Table' : 'Book Now & Pay'}</span>
             ) : (
               <span>{isRestaurant ? 'Reserve Now' : 'Proceed To Payment'}</span>
             )}

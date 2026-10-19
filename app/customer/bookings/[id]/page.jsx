@@ -190,12 +190,36 @@ export default function BookingDetailsPage() {
   }
 
   const now = new Date();
-  const bookingCreatedAt = booking?.created_at ? new Date(booking.created_at) : null;
-  const hoursSinceCreation = bookingCreatedAt ? (now.getTime() - bookingCreatedAt.getTime()) / (1000 * 60 * 60) : 0;
-  const isWithin3Hours = hoursSinceCreation <= 3;
+  
+  // Calculate scheduled start time
+  let scheduledStartTime = null;
+  if (booking?.booking_date) {
+    let dateOnlyStr = typeof booking.booking_date === 'string' 
+      ? booking.booking_date.split('T')[0] 
+      : new Date(booking.booking_date).toISOString().split('T')[0];
+    
+    let hours = '00', mins = '00', secs = '00';
+    if (booking.start_time) {
+      if (typeof booking.start_time === 'string') {
+        const timePart = booking.start_time.includes('T') ? booking.start_time.split('T')[1].slice(0, 8) : booking.start_time;
+        const [h, m, s] = timePart.split(':');
+        hours = h ? h.padStart(2, '0') : '00';
+        mins = m ? m.padStart(2, '0') : '00';
+        secs = s ? s.padStart(2, '0') : '00';
+      } else if (booking.start_time instanceof Date) {
+        hours = String(booking.start_time.getUTCHours()).padStart(2, '0');
+        mins = String(booking.start_time.getUTCMinutes()).padStart(2, '0');
+        secs = String(booking.start_time.getUTCSeconds()).padStart(2, '0');
+      }
+    }
+    scheduledStartTime = new Date(`${dateOnlyStr}T${hours}:${mins}:${secs}Z`);
+  }
+
+  const hoursUntilStart = scheduledStartTime ? (scheduledStartTime.getTime() - now.getTime()) / (1000 * 60 * 60) : -1;
+  const isMoreThan3HoursAway = hoursUntilStart > 3;
   const isPendingOrConfirmed = booking?.booking_status === 'PENDING' || booking?.booking_status === 'CONFIRMED';
 
-  const isCancellable = isPendingOrConfirmed && isWithin3Hours;
+  const isCancellable = isPendingOrConfirmed && isMoreThan3HoursAway;
   const cafe = booking?.cafes;
 
   return (
@@ -362,7 +386,7 @@ export default function BookingDetailsPage() {
                   </span>
                 </div>
 
-                {isPendingOrConfirmed && !isWithin3Hours && (
+                {isPendingOrConfirmed && !isMoreThan3HoursAway && (
                   <div className="bg-gradient-to-r from-amber-500/10 via-amber-50/80 to-amber-500/5 border border-amber-300/80 rounded-2xl p-4 sm:p-4.5 flex items-start sm:items-center gap-3.5 shadow-2xs">
                     <div className="p-2 bg-amber-500/15 text-amber-800 rounded-xl shrink-0 mt-0.5 sm:mt-0">
                       <AlertTriangle className="w-4 h-4 text-amber-700" />
@@ -370,7 +394,7 @@ export default function BookingDetailsPage() {
                     <div className="space-y-0.5">
                       <p className="text-xs font-black text-amber-950 uppercase tracking-wider">Cancellation Policy Notice</p>
                       <p className="text-xs font-semibold text-amber-900/90 leading-relaxed">
-                        Cancellation Window Expired: Bookings can only be cancelled within 3 hours of creation.
+                        Cancellation is unavailable within 3 hours of your booking. To protect venue schedules, customer cancellations must be made more than 3 hours prior to the scheduled start time.
                       </p>
                     </div>
                   </div>

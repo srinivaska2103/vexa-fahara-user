@@ -136,18 +136,35 @@ export default function EventPackageSection({ cafe }) {
                 
                 <p className="text-gray-500 text-sm mb-5 line-clamp-2 leading-snug">{pkg.description || `${sourceName} ${pkg.name}`}</p>
                 
-                <div className="flex items-center text-sm text-gray-500 mb-5 gap-6">
+                <div className="flex items-center text-xs text-gray-500 mb-3 gap-4 flex-wrap">
                   <div className="flex items-center">
-                    <Users size={16} className="mr-2 text-gray-400" />
-                    <span>{pkg.min_guests || 10} - {pkg.max_guests} guests</span>
+                    <Users size={14} className="mr-1.5 text-stone-400" />
+                    <span>Up to {pkg.max_guests} guests</span>
                   </div>
                   <div className="flex items-center">
-                    <Clock size={16} className="mr-2 text-gray-400" />
-                    <span>{pkg.duration_hours} hrs</span>
+                    <Clock size={14} className="mr-1.5 text-[#6F4E37]" />
+                    <span className="font-bold text-[#6F4E37]">Event Duration: {pkg.duration_hours} {Number(pkg.duration_hours) === 1 ? 'Hour' : 'Hours'}</span>
                   </div>
                 </div>
-                
-                {/* Price hidden per user requirement */}
+
+                {/* Price Display */}
+                {pkg.price > 0 && (
+                  <div className="mb-3 text-sm font-black text-[#6F4E37]">
+                    ₹{Number(pkg.price).toLocaleString('en-IN')}
+                    <span className="text-[10px] font-semibold text-stone-400 ml-1">/ package</span>
+                  </div>
+                )}
+
+                {/* Included features preview */}
+                {Array.isArray(pkg.inclusions) && pkg.inclusions.length > 0 && (
+                  <div className="flex flex-wrap gap-1 mb-4">
+                    {pkg.inclusions.slice(0, 4).map((inc, i) => (
+                      <span key={i} className="text-[10px] font-bold bg-stone-100 text-stone-600 px-2 py-0.5 rounded-md flex items-center gap-1">
+                        <CheckCircle2 size={10} className="text-emerald-600" /> {typeof inc === 'string' ? inc : (inc.name || inc.title)}
+                      </span>
+                    ))}
+                  </div>
+                )}
                 
                 <button 
                   onClick={(e) => {
@@ -160,11 +177,11 @@ export default function EventPackageSection({ cafe }) {
                   }}
                   className={`mt-auto w-full py-3 rounded-xl font-bold transition-all ${
                     selectedPackage?.id === pkg.id 
-                      ? 'bg-rose-600 hover:bg-rose-700 text-white shadow-sm' 
+                      ? 'bg-emerald-700 hover:bg-emerald-800 text-white shadow-sm' 
                       : 'bg-[#FFF8F0] text-[#6F4E37] hover:bg-[#F2E8DF]'
                   }`}
                 >
-                  {selectedPackage?.id === pkg.id ? 'Cancel Selection' : 'Select Package'}
+                  {selectedPackage?.id === pkg.id ? 'Selected' : 'Select This Package'}
                 </button>
               </div>
             </div>

@@ -8,7 +8,7 @@ import WriteReviewModal from '@/app/components/bookings/WriteReviewModal';
 import { reviewService } from '@/services/review.service';
 import toast from 'react-hot-toast';
 
-export default function ReviewList({ reviews = [], cafe }) {
+export default function ReviewList({ reviews = [], cafe, isMobileView = false }) {
   const [filterRating, setFilterRating] = useState('ALL');
   const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -45,11 +45,14 @@ export default function ReviewList({ reviews = [], cafe }) {
   };
 
   return (
-    <div className="mb-8">
-      <div className="bg-white/90 backdrop-blur-xl rounded-3xl p-6 sm:p-8 border border-stone-200/90 shadow-[0_8px_30px_rgba(0,0,0,0.04)] font-sans">
+    <div className={isMobileView ? "w-full" : "mb-4 w-full"}>
+      <div className={isMobileView 
+        ? "bg-transparent p-0 border-0 shadow-none font-sans w-full" 
+        : "bg-white/90 backdrop-blur-xl rounded-2xl sm:rounded-3xl p-3.5 xs:p-4 sm:p-8 border border-stone-200/90 shadow-[0_4px_20px_rgba(0,0,0,0.04)] font-sans w-full"
+      }>
         
         {/* Header & Write Review CTA */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-5 border-b border-stone-100">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5 pb-4 border-b border-stone-100">
           <div>
             <h2 className="text-xl sm:text-2xl font-black text-[#2C1810] tracking-tight flex items-center gap-2.5">
               <Star size={24} className="fill-amber-500 text-amber-500 shrink-0" />

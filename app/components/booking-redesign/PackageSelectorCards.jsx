@@ -113,6 +113,26 @@ export default function PackageSelectorCards({
         )}
       </div>
 
+      {/* Empty State when no package supports current guest count */}
+      {filteredPackages.length > 0 && filteredPackages.every(p => {
+        const maxP = p.maximum_persons || p.max_guests;
+        return maxP && guestCount > maxP;
+      }) && (
+        <div className="p-4 sm:p-5 rounded-2xl bg-amber-50/80 border border-amber-200 text-amber-900 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-2xs">
+          <div className="flex items-start gap-3">
+            <AlertCircle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
+            <div>
+              <p className="text-xs sm:text-sm font-extrabold text-amber-950">
+                No packages match your current party size ({guestCount} guests)
+              </p>
+              <p className="text-[11px] sm:text-xs text-amber-800 font-medium mt-0.5">
+                The packages listed below accommodate smaller groups. You can decrease the guest count in Step 2 to select one of these packages, or proceed without a package.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Package Selection Cards Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {filteredPackages.map((pkg) => {
@@ -121,6 +141,8 @@ export default function PackageSelectorCards({
           const pkgMaxGuests = pkg.maximum_persons || pkg.max_guests;
           const durationVal = pkg.duration_value || pkg.duration_hours;
           const durationUnit = pkg.duration_unit || 'Hours';
+
+          const isCompatible = !pkgMaxGuests || guestCount <= pkgMaxGuests;
 
           let pkgInc = pkg.inclusions;
           if (typeof pkgInc === 'string') {
@@ -133,24 +155,45 @@ export default function PackageSelectorCards({
           return (
             <motion.div
               key={pkg.id}
-              whileHover={{ y: -2 }}
-              onClick={() => onSelectPackage(pkg.id)}
-              className={`relative rounded-3xl p-5 border transition-all cursor-pointer flex flex-col justify-between overflow-hidden ${
+              whileHover={isCompatible ? { y: -2 } : {}}
+              onClick={() => {
+                if (isCompatible) {
+                  onSelectPackage(pkg.id);
+                }
+              }}
+              className={`relative rounded-3xl p-5 border transition-all flex flex-col justify-between overflow-hidden ${
                 isSelected
                   ? 'bg-[#FFF8F0] text-[#2C1810] border-[#6F4E37] shadow-md ring-2 ring-[#6F4E37]/30'
-                  : 'bg-white text-[#2C1810] border-[#E8DED5] hover:border-[#6F4E37] shadow-2xs hover:shadow-sm'
+                  : isCompatible
+                  ? 'bg-white text-[#2C1810] border-[#E8DED5] hover:border-[#6F4E37] shadow-2xs hover:shadow-sm cursor-pointer'
+                  : 'bg-stone-50/90 text-stone-400 border-stone-200 opacity-75 cursor-not-allowed'
               }`}
             >
               <div>
-                {/* Event Type Badge */}
-                <div className="flex items-center justify-between gap-2 mb-2">
-                  <span className={`inline-block px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider ${
-                    isSelected
-                      ? 'bg-[#6F4E37] text-white'
-                      : 'bg-[#6F4E37]/10 text-[#6F4E37] border border-[#6F4E37]/20'
-                  }`}>
-                    {pkg.event_type || pkg.category || 'Package'}
-                  </span>
+                {/* Event Type & Compatibility Badges */}
+                <div className="flex items-center justify-between gap-2 mb-2 flex-wrap">
+                  <div className="flex items-center gap-1.5">
+                    <span className={`inline-block px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider ${
+                      isSelected
+                        ? 'bg-[#6F4E37] text-white'
+                        : isCompatible
+                        ? 'bg-[#6F4E37]/10 text-[#6F4E37] border border-[#6F4E37]/20'
+                        : 'bg-stone-200 text-stone-500'
+                    }`}>
+                      {pkg.event_type || pkg.category || 'Package'}
+                    </span>
+
+                    {/* Compatibility Pill */}
+                    {isCompatible ? (
+                      <span className="text-[9px] font-black px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+                        Compatible
+                      </span>
+                    ) : (
+                      <span className="text-[9px] font-black px-2 py-0.5 rounded-full bg-rose-50 text-rose-700 border border-rose-200">
+                        Incompatible ({pkgMaxGuests} max)
+                      </span>
+                    )}
+                  </div>
 
                   {isSelected && (
                     <span className="flex items-center gap-1 text-[10px] font-black text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-full border border-emerald-300">
@@ -160,13 +203,17 @@ export default function PackageSelectorCards({
                 </div>
 
                 {/* Package Name */}
-                <h4 className="text-base sm:text-lg font-black tracking-tight text-[#2C1810] mb-2 leading-snug">
+                <h4 className={`text-base sm:text-lg font-black tracking-tight mb-2 leading-snug ${
+                  isCompatible ? 'text-[#2C1810]' : 'text-stone-500'
+                }`}>
                   {pkg.package_name}
                 </h4>
 
                 {/* Package Price */}
                 <div className="my-2 flex items-baseline gap-1">
-                  <span className="text-2xl sm:text-3xl font-black text-[#6F4E37]">
+                  <span className={`text-2xl sm:text-3xl font-black ${
+                    isCompatible ? 'text-[#6F4E37]' : 'text-stone-400'
+                  }`}>
                     ₹{price.toLocaleString()}
                   </span>
                   <span className="text-xs font-bold text-stone-500">
@@ -177,8 +224,12 @@ export default function PackageSelectorCards({
                 {/* Capacity & Duration Badges */}
                 <div className="flex flex-wrap items-center gap-2 my-3">
                   {pkgMaxGuests && (
-                    <span className="inline-flex items-center gap-1 bg-[#FFF8F0] border border-[#DDB892]/60 px-2.5 py-1 rounded-xl text-[11px] font-extrabold text-[#2C1810]">
-                      <Users className="w-3.5 h-3.5 text-[#6F4E37]" />
+                    <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-xl text-[11px] font-extrabold border ${
+                      isCompatible
+                        ? 'bg-[#FFF8F0] border-[#DDB892]/60 text-[#2C1810]'
+                        : 'bg-rose-50/80 border-rose-200 text-rose-800'
+                    }`}>
+                      <Users className={`w-3.5 h-3.5 ${isCompatible ? 'text-[#6F4E37]' : 'text-rose-600'}`} />
                       Up to {pkgMaxGuests} Guests
                     </span>
                   )}
@@ -189,6 +240,14 @@ export default function PackageSelectorCards({
                     </span>
                   )}
                 </div>
+
+                {/* Incompatibility Explanation */}
+                {!isCompatible && (
+                  <div className="mb-3 p-2.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-[11px] font-bold flex items-start gap-1.5">
+                    <AlertCircle className="w-3.5 h-3.5 text-rose-600 shrink-0 mt-0.5" />
+                    <span>Selected guest count ({guestCount}) exceeds package limit of {pkgMaxGuests} guests.</span>
+                  </div>
+                )}
 
                 {/* Description */}
                 <p className="text-xs line-clamp-2 text-stone-600 font-medium mb-3">
@@ -208,14 +267,17 @@ export default function PackageSelectorCards({
               <div className="pt-4 mt-2">
                 <button
                   type="button"
+                  disabled={!isCompatible}
                   onClick={(e) => {
                     e.stopPropagation();
-                    onSelectPackage(pkg.id);
+                    if (isCompatible) onSelectPackage(pkg.id);
                   }}
-                  className={`w-full py-2.5 px-4 rounded-xl text-xs font-black transition-all flex items-center justify-center gap-2 cursor-pointer ${
-                    isSelected
-                      ? 'bg-[#6F4E37] text-white shadow-xs hover:bg-[#5C402E]'
-                      : 'bg-stone-100 text-[#2C1810] hover:bg-[#6F4E37] hover:text-white border border-stone-200'
+                  className={`w-full py-2.5 px-4 rounded-xl text-xs font-black transition-all flex items-center justify-center gap-2 ${
+                    !isCompatible
+                      ? 'bg-stone-200 text-stone-400 border border-stone-300 cursor-not-allowed shadow-none'
+                      : isSelected
+                      ? 'bg-[#6F4E37] text-white shadow-xs hover:bg-[#5C402E] cursor-pointer'
+                      : 'bg-stone-100 text-[#2C1810] hover:bg-[#6F4E37] hover:text-white border border-stone-200 cursor-pointer'
                   }`}
                 >
                   {isSelected ? (
@@ -223,6 +285,8 @@ export default function PackageSelectorCards({
                       <Check className="w-4 h-4 stroke-[3]" />
                       <span>Selected ✓</span>
                     </>
+                  ) : !isCompatible ? (
+                    <span>Exceeds {pkgMaxGuests} Guests</span>
                   ) : (
                     <span>Select Package</span>
                   )}
@@ -232,6 +296,7 @@ export default function PackageSelectorCards({
           );
         })}
       </div>
+
 
       {/* SELECTED PACKAGE DETAILS & WHAT'S INCLUDED DISPLAY */}
       {selectedPackage && (
@@ -277,11 +342,12 @@ export default function PackageSelectorCards({
 
           {/* Guest Exceeded Warning */}
           {isGuestCountExceeded && (
-            <div className="p-3.5 rounded-2xl bg-amber-50 border border-amber-300 text-amber-900 text-xs font-bold flex items-center gap-2.5">
-              <AlertCircle className="w-4 h-4 text-amber-600 shrink-0" />
-              <span>This package supports up to {maxGuests} guests. (Selected: {guestCount} Guests)</span>
+            <div className="p-3.5 rounded-2xl bg-rose-50 border border-rose-300 text-rose-900 text-xs font-bold flex items-center gap-2.5">
+              <AlertCircle className="w-4 h-4 text-rose-600 shrink-0" />
+              <span>Your selected guest count ({guestCount}) exceeds this package limit of {maxGuests} guests. Please reduce the guest count or choose a compatible package.</span>
             </div>
           )}
+
 
           {/* Description */}
           {selectedPackage.description && (

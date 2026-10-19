@@ -574,7 +574,10 @@ export default function AdvancedCafeDiscoveryPage() {
     : dynamicMindCategories;
 
   return (
-    <div className="min-h-screen bg-[#FFF8F0] flex flex-col font-sans antialiased selection:bg-[#6F4E37] selection:text-white pb-20 lg:pb-8">
+    <div 
+      style={{ paddingBottom: 'calc(6rem + env(safe-area-inset-bottom, 0px))' }}
+      className="min-h-screen bg-[#FFF8F0] customer-cafe-doodle-bg flex flex-col font-sans antialiased selection:bg-[#6F4E37] selection:text-white lg:pb-8"
+    >
       {/* ── MOBILE-ONLY HEADER (320px - 767px): Reference 2 Style ── */}
       <MobileCafeHeader onFilterClick={() => setIsMobileFilterOpen(true)} />
 

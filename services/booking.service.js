@@ -6,6 +6,12 @@ export const bookingService = {
     return response.data;
   },
 
+  checkCapacity: async (params) => {
+    const response = await api.post('/bookings/capacity-check', params);
+    return response.data;
+  },
+
+
   getBookingById: async (id) => {
     const response = await api.get(`/bookings/${id}`);
     return response.data;

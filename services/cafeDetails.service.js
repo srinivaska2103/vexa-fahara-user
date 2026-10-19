@@ -40,5 +40,24 @@ export const cafeDetailsService = {
 
     const response = await api.get(`/cafes/${id}/tables/availability?${params.toString()}`);
     return response.data;
+  },
+
+  getCafeAvailability: async (id, from, to) => {
+    const params = new URLSearchParams();
+    if (from) params.append('from', from);
+    if (to) params.append('to', to);
+
+    const response = await api.get(`/cafes/${id}/availability?${params.toString()}`);
+    return response.data;
+  },
+
+  getEventManagerAvailability: async (eventManagerId, from, to) => {
+    const params = new URLSearchParams();
+    if (eventManagerId) params.append('eventManagerId', eventManagerId);
+    if (from) params.append('from', from);
+    if (to) params.append('to', to);
+
+    const response = await api.get(`/event-managers/availability?${params.toString()}`);
+    return response.data;
   }
 };

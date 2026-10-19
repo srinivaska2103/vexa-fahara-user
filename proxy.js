@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 
-export function middleware(request) {
+export function proxy(request) {
   const token = request.cookies.get('accessToken')?.value;
   const { pathname } = request.nextUrl;
 
@@ -46,7 +46,7 @@ export function middleware(request) {
   return NextResponse.next();
 }
 
-export default middleware;
+export default proxy;
 
 export const config = {
   matcher: [
