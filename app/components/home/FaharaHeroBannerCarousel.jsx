@@ -9,73 +9,73 @@ const BANNERS = [
     id: 1,
     badge: "Discover What's New",
     icon: Sparkles,
-    badgeBg: 'bg-gradient-to-r from-amber-500 via-amber-600 to-orange-500 text-white shadow-md shadow-amber-500/20',
-    title: '✨ Fahara Just Got More Exciting',
+    badgeBg: 'bg-[#B71C1C] text-white shadow-md shadow-red-900/30',
+    title: '✨ Grab2GO Just Got More Exciting',
     subtitle: 'Explore new venues, smarter discovery, and a smoother way to plan your moments.',
     ctaText: 'Explore Now',
     ctaLink: '/customer/cafe',
-    bgColor: 'bg-gradient-to-br from-[#2C1810] via-[#4A2C11] to-[#784421]',
-    glowColor: 'bg-amber-400/25',
+    bgColor: 'bg-[#E50914]',
+    glowColor: 'bg-red-400/25',
   },
   {
     id: 2,
     badge: 'Table Reservations',
     icon: Utensils,
-    badgeBg: 'bg-gradient-to-r from-amber-500 to-orange-600 text-white shadow-md shadow-amber-500/20',
+    badgeBg: 'bg-[#B71C1C] text-white shadow-md shadow-red-900/30',
     title: '🍽️ Choose Your Restaurant',
     subtitle: 'Reserve tables at top-rated restaurants and enjoy seamless table bookings with instant confirmation.',
     ctaText: 'Explore Restaurants',
     ctaLink: '/customer/cafe?type=RESTAURANT',
-    bgColor: 'bg-gradient-to-br from-[#331800] via-[#5C2B00] to-[#874100]',
-    glowColor: 'bg-amber-500/25',
+    bgColor: 'bg-[#E50914]',
+    glowColor: 'bg-red-400/25',
   },
   {
     id: 3,
-    badge: 'Fahara Rewards',
+    badge: 'Grab2GO Rewards',
     icon: Coins,
-    badgeBg: 'bg-gradient-to-r from-amber-400 via-yellow-500 to-amber-600 text-white shadow-md shadow-amber-400/20',
+    badgeBg: 'bg-[#B71C1C] text-white shadow-md shadow-red-900/30',
     title: '🎁 Claim Your Credit Points on Every Booking',
-    subtitle: 'Earn Fahara credit points for every completed venue reservation and redeem them on future bookings.',
+    subtitle: 'Earn Grab2GO credit points for every completed venue reservation and redeem them on future bookings.',
     ctaText: 'View Bookings & Points',
     ctaLink: '/customer/bookings',
-    bgColor: 'bg-gradient-to-br from-[#2A1800] via-[#4D2B02] to-[#734305]',
-    glowColor: 'bg-yellow-400/25',
+    bgColor: 'bg-[#E50914]',
+    glowColor: 'bg-red-400/25',
   },
   {
     id: 4,
     badge: 'Upcoming Discounts & Special Offers',
     icon: Tag,
-    badgeBg: 'bg-gradient-to-r from-rose-500 to-pink-600 text-white shadow-md shadow-rose-500/20',
+    badgeBg: 'bg-[#B71C1C] text-white shadow-md shadow-red-900/30',
     title: '🔥 Upcoming Discounts & Exclusive Deals',
-    subtitle: 'Stay tuned for exciting discounts and special offers from top Fahara venues coming soon.',
+    subtitle: 'Stay tuned for exciting discounts and special offers from top Grab2GO venues coming soon.',
     ctaText: 'Browse Offers',
     ctaLink: '/customer/cafe?tab=deals',
-    bgColor: 'bg-gradient-to-br from-[#3B091B] via-[#63142F] to-[#991B41]',
-    glowColor: 'bg-rose-400/25',
+    bgColor: 'bg-[#E50914]',
+    glowColor: 'bg-red-400/25',
   },
   {
     id: 5,
     badge: 'Cafe Partner',
     icon: Store,
-    badgeBg: 'bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-md shadow-emerald-500/20',
-    title: 'Grow Your Venue Business with Fahara',
+    badgeBg: 'bg-[#B71C1C] text-white shadow-md shadow-red-900/30',
+    title: 'Grow Your Venue Business with Grab2GO',
     subtitle: 'List your cafe or space, receive instant party reservations & maximize revenue.',
     ctaText: 'Become a Cafe Partner',
     ctaLink: FAHARA_LINKS.cafeSignup,
-    bgColor: 'bg-gradient-to-br from-[#06241D] via-[#0E473B] to-[#1A6E5C]',
-    glowColor: 'bg-emerald-400/25',
+    bgColor: 'bg-[#E50914]',
+    glowColor: 'bg-red-400/25',
   },
   {
     id: 6,
     badge: 'Event Partner',
     icon: CalendarCheck,
-    badgeBg: 'bg-gradient-to-r from-purple-500 to-indigo-600 text-white shadow-md shadow-purple-500/20',
-    title: 'Partner with Fahara as an Event Specialist',
+    badgeBg: 'bg-[#B71C1C] text-white shadow-md shadow-red-900/30',
+    title: 'Partner with Grab2GO as an Event Specialist',
     subtitle: 'Offer your decor, photography, catering, or entertainment services for events.',
     ctaText: 'Become an Event Partner',
     ctaLink: FAHARA_LINKS.eventManagerSignup,
-    bgColor: 'bg-gradient-to-br from-[#1B0B33] via-[#35165E] to-[#5D289B]',
-    glowColor: 'bg-purple-400/25',
+    bgColor: 'bg-[#E50914]',
+    glowColor: 'bg-red-400/25',
   },
 ];
 
@@ -157,7 +157,7 @@ export default function FaharaHeroBannerCarousel() {
 
   if (!mounted) {
     return (
-      <div className="relative w-full mb-3 min-h-[135px] sm:min-h-[155px] md:min-h-[170px] overflow-hidden rounded-2xl border border-stone-200/80 bg-[#2C1810] animate-pulse" />
+      <div className="relative w-full mb-3 min-h-[135px] sm:min-h-[155px] md:min-h-[170px] overflow-hidden rounded-2xl border border-stone-200/80 bg-[#252525] animate-pulse" />
     );
   }
 
@@ -166,7 +166,7 @@ export default function FaharaHeroBannerCarousel() {
   return (
     <div 
       suppressHydrationWarning
-      className="relative w-full mb-3 overflow-hidden rounded-2xl border border-stone-200/80 shadow-md bg-[#2C1810] select-none"
+      className="relative w-full mb-3 overflow-hidden rounded-2xl border border-stone-200/80 shadow-md bg-[#252525] select-none"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
       onTouchStart={onTouchStart}
@@ -184,7 +184,7 @@ export default function FaharaHeroBannerCarousel() {
             animate={prefersReducedMotion ? { opacity: 1 } : { opacity: 1, x: 0 }}
             exit={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, x: -12 }}
             transition={{ duration: 0.3, ease: 'easeOut' }}
-            className={`absolute inset-0 w-full h-full ${currentBanner.bgColor || 'bg-[#2C1810]'}`}
+            className={`absolute inset-0 w-full h-full ${currentBanner.bgColor || 'bg-[#252525]'}`}
           >
             {/* Ambient Decorative Color Layer & Glowing Orbs */}
             <div className="absolute inset-0 w-full h-full overflow-hidden pointer-events-none">

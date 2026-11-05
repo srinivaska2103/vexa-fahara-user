@@ -115,15 +115,15 @@ function ManagerCard({ company, isSelected, onClick, cafe, selectedTable, guestC
       className={cn(
         'relative p-4 rounded-2xl border-2 transition-all',
         isSelected
-          ? 'border-[#6F4E37] bg-[#FFF8F0] shadow-md ring-2 ring-[#6F4E37]/20 cursor-pointer'
+          ? 'border-[#E50914] bg-[#FFF5F5] shadow-md ring-2 ring-[#E50914]/20 cursor-pointer'
           : isCompatible
-          ? 'border-[#E8DED5] hover:border-[#A67B5B] bg-white hover:shadow-sm cursor-pointer'
+          ? 'border-[#FEE2E2] hover:border-[#B71C1C] bg-white hover:shadow-sm cursor-pointer'
           : 'border-stone-200 bg-stone-50/90 opacity-75 cursor-not-allowed'
       )}
     >
       <div className="flex items-start gap-3.5">
         {/* Logo / Thumbnail / Badge */}
-        <div className="w-14 h-14 rounded-2xl overflow-hidden flex-shrink-0 bg-[#6F4E37] text-white flex items-center justify-center font-black text-lg border border-amber-200/40 shadow-inner">
+        <div className="w-14 h-14 rounded-2xl overflow-hidden flex-shrink-0 bg-[#E50914] text-white flex items-center justify-center font-black text-lg border border-amber-200/40 shadow-inner">
           {company.logo && !company.logo.includes('ui-avatars.com') ? (
             <img src={company.logo} alt={company.name} className="w-full h-full object-cover" />
           ) : (
@@ -136,7 +136,7 @@ function ManagerCard({ company, isSelected, onClick, cafe, selectedTable, guestC
           <div className="flex flex-col xs:flex-row xs:items-start justify-between gap-1 xs:gap-2">
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-2 flex-wrap">
-                <h3 className="font-extrabold text-[#2C1810] text-xs sm:text-sm leading-tight truncate">{company.name}</h3>
+                <h3 className="font-extrabold text-[#252525] text-xs sm:text-sm leading-tight truncate">{company.name}</h3>
                 {isCompatible ? (
                   <span className="text-[9px] font-black px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
                     Compatible
@@ -153,7 +153,7 @@ function ManagerCard({ company, isSelected, onClick, cafe, selectedTable, guestC
             {/* Price Badge */}
             {company.starting_price > 0 && (
               <div className="text-left xs:text-right shrink-0 mt-0.5 xs:mt-0">
-                <span className="text-xs sm:text-sm font-black text-[#6F4E37]">
+                <span className="text-xs sm:text-sm font-black text-[#E50914]">
                   ₹{company.starting_price.toLocaleString('en-IN')}
                 </span>
                 <span className="text-[9px] font-semibold text-stone-400 ml-1 xs:ml-0 xs:block xs:-mt-0.5">
@@ -172,7 +172,7 @@ function ManagerCard({ company, isSelected, onClick, cafe, selectedTable, guestC
             </span>
 
             {/* Category Pill */}
-            <span className="text-[10px] px-2 py-0.5 bg-[#FFF8F0] border border-[#DDB892]/50 text-[#6F4E37] rounded-md font-bold">
+            <span className="text-[10px] px-2 py-0.5 bg-[#FFF5F5] border border-[#EF5350]/50 text-[#E50914] rounded-md font-bold">
               {category}
             </span>
 
@@ -225,7 +225,7 @@ function ManagerCard({ company, isSelected, onClick, cafe, selectedTable, guestC
         {/* Expand / Select Action Button */}
         <div className={cn(
           'w-8 h-8 rounded-xl flex items-center justify-center shrink-0 transition-all self-center ml-1',
-          isSelected ? 'bg-[#6F4E37] text-[#FFFFFF] shadow-sm' : 'bg-stone-100 text-stone-400 border border-stone-200 hover:bg-stone-200 hover:text-stone-700'
+          isSelected ? 'bg-[#E50914] text-[#FFFFFF] shadow-sm' : 'bg-stone-100 text-stone-400 border border-stone-200 hover:bg-stone-200 hover:text-stone-700'
         )}>
           {isSelected ? <CheckCircle2 size={16} /> : <ChevronRight size={15} />}
         </div>
@@ -344,7 +344,7 @@ function ManagerDetailPanel({ company, onBack, onConfirm, guestCount, cafe, sele
           <ArrowLeft size={15} />
         </button>
         <div className="flex items-center gap-3 flex-1 min-w-0">
-          <div className="w-11 h-11 rounded-2xl overflow-hidden bg-[#6F4E37] text-white flex items-center justify-center font-black text-base border border-amber-200/40 shrink-0">
+          <div className="w-11 h-11 rounded-2xl overflow-hidden bg-[#E50914] text-white flex items-center justify-center font-black text-base border border-amber-200/40 shrink-0">
             {company.logo && !company.logo.includes('ui-avatars.com') ? (
               <img src={company.logo} alt={company.name} className="w-full h-full object-cover" />
             ) : (
@@ -352,7 +352,7 @@ function ManagerDetailPanel({ company, onBack, onConfirm, guestCount, cafe, sele
             )}
           </div>
           <div className="min-w-0">
-            <h3 className="font-extrabold text-[#2C1810] text-base truncate">{company.name}</h3>
+            <h3 className="font-extrabold text-[#252525] text-base truncate">{company.name}</h3>
             <div className="flex items-center gap-2 mt-0.5">
               <span className="flex items-center gap-1 text-[11px] font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded-md border border-amber-200/60">
                 <Star size={11} className="text-amber-400 fill-amber-400" />
@@ -365,7 +365,7 @@ function ManagerDetailPanel({ company, onBack, onConfirm, guestCount, cafe, sele
           </div>
         </div>
         {company.services?.[0] && (
-          <span className="text-xs px-2.5 py-1 bg-[#FFF8F0] border border-[#DDB892]/50 text-[#6F4E37] rounded-lg font-bold shrink-0 hidden sm:inline">
+          <span className="text-xs px-2.5 py-1 bg-[#FFF5F5] border border-[#EF5350]/50 text-[#E50914] rounded-lg font-bold shrink-0 hidden sm:inline">
             {company.services[0]}
           </span>
         )}
@@ -375,7 +375,7 @@ function ManagerDetailPanel({ company, onBack, onConfirm, guestCount, cafe, sele
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
         <div className="bg-stone-50 border border-stone-200/80 rounded-xl p-3">
           <p className="text-[10px] font-bold uppercase text-stone-400 tracking-wider">Pricing Rate</p>
-          <p className="text-sm font-black text-[#6F4E37] mt-0.5">
+          <p className="text-sm font-black text-[#E50914] mt-0.5">
             ₹{startingPrice.toLocaleString('en-IN')}
             <span className="text-[10px] font-medium text-stone-500 ml-1">
               {pricingType === 'PER_GUEST' ? '/ guest' : '/ package'}
@@ -386,7 +386,7 @@ function ManagerDetailPanel({ company, onBack, onConfirm, guestCount, cafe, sele
         {rawEvent.duration_hours > 0 && (
           <div className="bg-stone-50 border border-stone-200/80 rounded-xl p-3">
             <p className="text-[10px] font-bold uppercase text-stone-400 tracking-wider">Event Duration</p>
-            <p className="text-sm font-black text-[#2C1810] mt-0.5">
+            <p className="text-sm font-black text-[#252525] mt-0.5">
               {rawEvent.duration_hours} {Number(rawEvent.duration_hours) === 1 ? 'Hour' : 'Hours'}
             </p>
           </div>
@@ -396,7 +396,7 @@ function ManagerDetailPanel({ company, onBack, onConfirm, guestCount, cafe, sele
           <div className="bg-stone-50 border border-stone-200/80 rounded-xl p-3 col-span-2 sm:col-span-1">
             <p className="text-[10px] font-bold uppercase text-stone-400 tracking-wider">Guest Capacity</p>
             <p className="text-sm font-bold text-stone-700 mt-0.5 flex items-center gap-1.5">
-              <Users size={14} className="text-[#6F4E37]" />
+              <Users size={14} className="text-[#E50914]" />
               Up to {rawEvent.max_guests} Guests
             </p>
           </div>
@@ -405,13 +405,13 @@ function ManagerDetailPanel({ company, onBack, onConfirm, guestCount, cafe, sele
 
       {/* Calculated Event Time Banner */}
       {calculatedEventTime && (
-        <div className="bg-[#FFF8F0] border border-[#DDB892]/60 rounded-xl p-3 flex items-center justify-between text-xs">
+        <div className="bg-[#FFF5F5] border border-[#EF5350]/60 rounded-xl p-3 flex items-center justify-between text-xs">
           <div className="flex items-center gap-2">
-            <div className="w-2 h-2 rounded-full bg-[#6F4E37]" />
+            <div className="w-2 h-2 rounded-full bg-[#E50914]" />
             <span className="font-bold text-stone-600">Calculated Event Time:</span>
-            <span className="font-black text-[#6F4E37]">{calculatedEventTime}</span>
+            <span className="font-black text-[#E50914]">{calculatedEventTime}</span>
           </div>
-          <span className="text-[10px] font-extrabold uppercase bg-white px-2 py-0.5 rounded-full border border-[#DDB892]/50 text-[#6F4E37]">
+          <span className="text-[10px] font-extrabold uppercase bg-white px-2 py-0.5 rounded-full border border-[#EF5350]/50 text-[#E50914]">
             {rawEvent.duration_hours} {Number(rawEvent.duration_hours) === 1 ? 'Hour' : 'Hours'}
           </span>
         </div>
@@ -419,8 +419,8 @@ function ManagerDetailPanel({ company, onBack, onConfirm, guestCount, cafe, sele
 
       {/* Description if any */}
       {rawEvent?.description && (
-        <div className="bg-[#FFF8F0]/60 border border-[#DDB892]/40 rounded-xl p-3">
-          <p className="text-[10px] font-extrabold uppercase text-[#6F4E37] mb-1">About Package</p>
+        <div className="bg-[#FFF5F5]/60 border border-[#EF5350]/40 rounded-xl p-3">
+          <p className="text-[10px] font-extrabold uppercase text-[#E50914] mb-1">About Package</p>
           <p className="text-xs text-stone-600 font-medium leading-relaxed">
             {rawEvent.description}
           </p>
@@ -431,7 +431,7 @@ function ManagerDetailPanel({ company, onBack, onConfirm, guestCount, cafe, sele
       {isLoading ? (
         <div className="flex justify-center py-10">
           <div className="flex flex-col items-center gap-2">
-            <Loader2 className="animate-spin text-[#6F4E37]" size={28} />
+            <Loader2 className="animate-spin text-[#E50914]" size={28} />
             <p className="text-xs text-stone-400 font-medium">Loading package details...</p>
           </div>
         </div>
@@ -448,7 +448,7 @@ function ManagerDetailPanel({ company, onBack, onConfirm, guestCount, cafe, sele
       ) : (
         <div className="space-y-2.5">
           <div className="flex items-center justify-between">
-            <p className="text-xs font-extrabold uppercase tracking-wider text-[#6F4E37]">
+            <p className="text-xs font-extrabold uppercase tracking-wider text-[#E50914]">
               Included Features & Services
             </p>
             <span className="text-[10px] font-bold text-stone-500">
@@ -469,7 +469,7 @@ function ManagerDetailPanel({ company, onBack, onConfirm, guestCount, cafe, sele
                     <CheckCircle2 size={13} />
                   </div>
                   <div className="min-w-0 flex-1">
-                    <p className="font-extrabold text-xs text-[#2C1810] flex items-center justify-between gap-1">
+                    <p className="font-extrabold text-xs text-[#252525] flex items-center justify-between gap-1">
                       <span>{itemName}</span>
                       {itemQty && (
                         <span className="text-[10px] font-semibold text-stone-400 shrink-0">
@@ -494,7 +494,7 @@ function ManagerDetailPanel({ company, onBack, onConfirm, guestCount, cafe, sele
       <div className="sticky bottom-0 bg-white/95 backdrop-blur border-t border-stone-100 pt-3 flex items-center justify-between gap-3 z-20">
         <div>
           <p className="text-[10px] text-stone-400 font-medium uppercase tracking-wider">Total Package Amount</p>
-          <p className="text-lg font-black text-[#2C1810]">
+          <p className="text-lg font-black text-[#252525]">
             ₹{totalPrice.toLocaleString('en-IN')}
             {pricingType === 'PER_GUEST' && guestCount > 1 && (
               <span className="text-xs font-medium text-stone-400 ml-1">for {guestCount} guests</span>
@@ -510,7 +510,7 @@ function ManagerDetailPanel({ company, onBack, onConfirm, guestCount, cafe, sele
               ? 'bg-stone-300 text-stone-500 cursor-not-allowed shadow-none'
               : isCurrentlySelected
               ? 'bg-emerald-700 hover:bg-emerald-800 text-white shadow-emerald-900/20 cursor-pointer'
-              : 'bg-gradient-to-r from-[#4A2C11] to-[#6F4E37] hover:from-[#3D2509] hover:to-[#5C402E] text-white shadow-[#4A2C11]/20 cursor-pointer'
+              : 'bg-gradient-to-r from-[#B71C1C] to-[#E50914] hover:from-[#3D2509] hover:to-[#5C402E] text-white shadow-[#B71C1C]/20 cursor-pointer'
           }`}
         >
           <CheckCircle2 size={16} />
@@ -643,18 +643,18 @@ export default function EventArrangementSection({ cafe }) {
 
   if (isLoading) {
     return (
-      <div className="bg-white border border-[#E8DED5] rounded-2xl p-6 flex justify-center py-10">
-        <Loader2 className="animate-spin text-[#6F4E37]" size={28} />
+      <div className="bg-white border border-[#FEE2E2] rounded-2xl p-6 flex justify-center py-10">
+        <Loader2 className="animate-spin text-[#E50914]" size={28} />
       </div>
     );
   }
 
   return (
-    <div className="bg-white border border-[#E8DED5] rounded-2xl overflow-hidden">
+    <div className="bg-white border border-[#FEE2E2] rounded-2xl overflow-hidden">
       {/* ── Header ── */}
       <div className="flex items-center justify-between px-4 py-3.5 border-b border-stone-100 bg-stone-50/60">
         <div className="min-w-0">
-          <h2 className="text-sm sm:text-base font-black text-[#2C1810] leading-tight">
+          <h2 className="text-sm sm:text-base font-black text-[#252525] leading-tight">
             Event Arrangement
             <span className="ml-1.5 text-[11px] font-medium text-stone-400">(Optional)</span>
           </h2>
@@ -682,7 +682,7 @@ export default function EventArrangementSection({ cafe }) {
             onClick={handleSkip}
             className={cn(
               'px-3 py-1.5 font-semibold text-[11px] rounded-xl transition-all cursor-pointer',
-              isSkipped ? 'bg-stone-100 text-stone-700 border border-stone-300' : 'text-[#A67B5B] hover:bg-[#FFF8F0] border border-transparent'
+              isSkipped ? 'bg-stone-100 text-stone-700 border border-stone-300' : 'text-[#B71C1C] hover:bg-[#FFF5F5] border border-transparent'
             )}
           >
             {isSkipped ? 'Skipped' : 'Skip This'}
@@ -724,8 +724,8 @@ export default function EventArrangementSection({ cafe }) {
                       className={cn(
                         'whitespace-nowrap px-3 py-1.5 rounded-full text-[11px] font-bold transition-colors shrink-0 cursor-pointer',
                         sortBy === sort
-                          ? 'bg-[#6F4E37] text-white shadow-sm'
-                          : 'bg-[#FFF8F0] text-[#6F4E37] border border-[#E8DED5] hover:bg-[#F2E8DF]'
+                          ? 'bg-[#E50914] text-white shadow-sm'
+                          : 'bg-[#FFF5F5] text-[#E50914] border border-[#FEE2E2] hover:bg-[#F2E8DF]'
                       )}
                     >
                       {sort}

@@ -10,13 +10,13 @@ export default function RecentlyViewedPage() {
 
   return (
     <div className="min-h-screen bg-[var(--color-background)] pb-12">
-      <div className="bg-white border-b border-[#E8DED5] sticky top-0 z-40">
+      <div className="bg-white border-b border-[#FEE2E2] sticky top-0 z-40">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Link href="/customer/discover" className="p-2 hover:bg-gray-100 rounded-full transition-colors text-gray-600">
               <ArrowLeft size={20} />
             </Link>
-            <h1 className="text-xl font-bold text-[#2C1810]">Recently Viewed</h1>
+            <h1 className="text-xl font-bold text-[#252525]">Recently Viewed</h1>
           </div>
         </div>
       </div>
@@ -38,17 +38,17 @@ export default function RecentlyViewedPage() {
             ))}
           </div>
         ) : (
-          <div className="bg-white border border-[#E8DED5] rounded-2xl p-16 flex flex-col items-center justify-center text-center max-w-2xl mx-auto">
-            <div className="w-20 h-20 bg-[#FFF8F0] rounded-full flex items-center justify-center text-[#6F4E37] mb-6">
+          <div className="bg-white border border-[#FEE2E2] rounded-2xl p-16 flex flex-col items-center justify-center text-center max-w-2xl mx-auto">
+            <div className="w-20 h-20 bg-[#FFF5F5] rounded-full flex items-center justify-center text-[#E50914] mb-6">
               <Clock size={40} />
             </div>
-            <h3 className="text-2xl font-bold text-[#2C1810] mb-3">No recent views</h3>
+            <h3 className="text-2xl font-bold text-[#252525] mb-3">No recent views</h3>
             <p className="text-gray-500 mb-8 max-w-md mx-auto text-lg">
               You haven't viewed any cafes or event companies recently. 
             </p>
             <Link 
               href="/customer/cafe"
-              className="px-8 py-4 bg-[#6F4E37] text-white rounded-xl font-bold hover:bg-[#5A3E2B] transition-colors"
+              className="px-8 py-4 bg-[#E50914] text-white rounded-xl font-bold hover:bg-[#5A3E2B] transition-colors"
             >
               Start Exploring
             </Link>

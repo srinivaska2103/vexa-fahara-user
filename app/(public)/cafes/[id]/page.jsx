@@ -5,7 +5,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { useCafeDetails, useCafeReviews } from '@/hooks/useCafeDetails';
 import { 
   Loader2, ArrowLeft, ArrowRight, ShieldCheck, ChevronLeft, ChevronRight, Sparkles, Layers,
-  Camera, Building2, Flame, Clock, PartyPopper, MapPin, Star
+  Camera, Building2, Flame, Clock, UtensilsCrossed, PartyPopper, MapPin, Star
 } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -19,6 +19,7 @@ import CafeHero from '@/app/components/cafe-details/CafeHero';
 import CafeGallery from '@/app/components/cafe-details/CafeGallery';
 import GalleryLightbox from '@/app/components/cafe-details/GalleryLightbox';
 import CafeInfo from '@/app/components/cafe-details/CafeInfo';
+import RestaurantMenuSection from '@/app/components/cafe-details/RestaurantMenuSection';
 import DiscountsSection from '@/app/components/cafe-details/DiscountsSection';
 import AmenitiesSection from '@/app/components/cafe-details/AmenitiesSection';
 import BusinessHours from '@/app/components/cafe-details/BusinessHours';
@@ -29,7 +30,6 @@ import StickyBookingCard from '@/app/components/cafe-details/StickyBookingCard';
 import FilterSidebar from '@/app/components/cafes/FilterSidebar';
 import SimilarCafes from '@/app/components/cafe-details/SimilarCafes';
 import FaharaInteractiveLoader from '@/app/components/common/FaharaInteractiveLoader';
-import MobileCafeDetailsLoader from '@/app/components/common/MobileCafeDetailsLoader';
 import MobileCafeDetailsView from '@/app/components/cafe-details/MobileCafeDetailsView';
 
 export default function CafeDetailsPage() {
@@ -69,18 +69,18 @@ export default function CafeDetailsPage() {
 
   if (isLoading || isPending) {
     return (
-      <MobileCafeDetailsLoader message="Finding your perfect cafe..." fullScreen={true} />
+      <FaharaInteractiveLoader message="Finding your perfect cafe..." fullScreen={true} />
     );
   }
 
   if (error || !cafe) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-[#FFF8F0] p-4 text-center">
-        <h2 className="text-2xl font-black text-[#2C1810] mb-2">Cafe Not Found</h2>
+      <div className="min-h-screen flex flex-col items-center justify-center bg-[#FFF5F5] p-4 text-center">
+        <h2 className="text-2xl font-black text-[#252525] mb-2">Cafe Not Found</h2>
         <p className="text-stone-500 text-sm mb-6 max-w-md">We couldn&apos;t load the requested cafe details. It may have been moved or removed.</p>
         <button 
           onClick={() => router.push('/customer/cafe')} 
-          className="px-6 py-3 bg-[#6F4E37] text-white font-bold rounded-2xl shadow-md hover:bg-[#4A2C11] transition-all"
+          className="px-6 py-3 bg-[#E50914] text-white font-bold rounded-2xl shadow-md hover:bg-[#B71C1C] transition-all"
         >
           Return to Discovery
         </button>
@@ -118,7 +118,7 @@ export default function CafeDetailsPage() {
     { id: 'amenities', label: 'Amenities', icon: Sparkles, activeBg: 'from-emerald-600 to-teal-600', badgeBg: 'bg-emerald-600 text-white', iconColor: 'text-emerald-600' },
     { id: 'hours', label: 'Business Hours', icon: Clock, activeBg: 'from-purple-600 to-violet-600', badgeBg: 'bg-purple-600 text-white', iconColor: 'text-purple-600' },
     ...(!isWalkingCafe && !isRestaurant && (cafe?.event_booking !== false || (Array.isArray(cafe?.cafe_packages) && cafe.cafe_packages.length > 0)) ? [{ id: 'packages', label: 'Event Packages', icon: PartyPopper, activeBg: 'from-pink-600 to-rose-500', badgeBg: 'bg-pink-600 text-white', iconColor: 'text-pink-600' }] : []),
-    { id: 'location', label: 'Location & Map', icon: MapPin, activeBg: 'from-cyan-600 to-blue-600', badgeBg: 'bg-[#6F4E37] text-white', iconColor: 'text-[#6F4E37]' },
+    { id: 'location', label: 'Location & Map', icon: MapPin, activeBg: 'from-cyan-600 to-blue-600', badgeBg: 'bg-[#E50914] text-white', iconColor: 'text-[#E50914]' },
     { id: 'reviews', label: 'Reviews & Ratings', icon: Star, activeBg: 'from-amber-500 to-yellow-600', badgeBg: 'bg-amber-500 text-white', iconColor: 'text-amber-500' }
   ];
 
@@ -144,7 +144,7 @@ export default function CafeDetailsPage() {
   };
 
   return (
-    <div suppressHydrationWarning className="min-h-screen bg-[#FFF8F0] font-sans antialiased selection:bg-[#6F4E37] selection:text-white">
+    <div suppressHydrationWarning className="min-h-screen bg-white font-sans antialiased selection:bg-[#E50914] selection:text-white">
       
       {/* Lightbox Modal */}
       <GalleryLightbox images={lightboxImages} />
@@ -167,15 +167,15 @@ export default function CafeDetailsPage() {
         {/* Back Button Navigation Row */}
         <div className="mb-4 flex items-center justify-between gap-3">
           <Link href="/customer/cafe">
-            <button className="inline-flex items-center gap-2 text-xs font-black bg-white hover:bg-[#6F4E37] text-[#2C1810] hover:text-white px-4 py-2.5 rounded-full border border-stone-200/90 transition-all duration-300 shadow-2xs hover:shadow-md active:scale-95 cursor-pointer group">
+            <button className="inline-flex items-center gap-2 text-xs font-black bg-white hover:bg-[#E50914] text-[#252525] hover:text-white px-4 py-2.5 rounded-full border border-stone-200/90 transition-all duration-300 shadow-2xs hover:shadow-md active:scale-95 cursor-pointer group">
               <ArrowLeft size={14} className="group-hover:-translate-x-1 transition-transform" />
               <span>Back to Cafes</span>
             </button>
           </Link>
 
-          <div className="flex items-center gap-2 bg-gradient-to-r from-stone-50 to-amber-50/50 border border-[#DDB892]/50 px-3.5 py-1.5 rounded-full shadow-2xs">
-            <span className="w-2 h-2 rounded-full bg-[#6F4E37] animate-pulse" />
-            <span className="text-xs font-black text-[#2C1810] tracking-tight">
+          <div className="flex items-center gap-2 bg-gradient-to-r from-stone-50 to-amber-50/50 border border-[#EF5350]/50 px-3.5 py-1.5 rounded-full shadow-2xs">
+            <span className="w-2 h-2 rounded-full bg-[#E50914] animate-pulse" />
+            <span className="text-xs font-black text-[#252525] tracking-tight">
               Step {currentStepIndex + 1} <span className="text-stone-400 font-bold">/ {stepsList.length}</span>
             </span>
           </div>
@@ -202,7 +202,7 @@ export default function CafeDetailsPage() {
                   }`}
                 >
                   <span className={`w-5 h-5 sm:w-5.5 sm:h-5.5 rounded-full flex items-center justify-center font-black text-[9px] sm:text-[10px] shadow-2xs transition-colors ${
-                    isActive ? 'bg-white text-[#2C1810]' : item.badgeBg
+                    isActive ? 'bg-white text-[#252525]' : item.badgeBg
                   }`}>
                     {item.step}
                   </span>
@@ -236,6 +236,19 @@ export default function CafeDetailsPage() {
                   className="space-y-4"
                 >
                   <CafeGallery cafe={cafe} />
+                </motion.div>
+              )}
+
+                            {/* STEP: DINING & FOOD MENU */}
+              {activeStepTab === 'menu' && (
+                <motion.div
+                  key="step-menu"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  className="space-y-4"
+                >
+                  <RestaurantMenuSection cafeId={id} cafeName={cafe?.name} />
                 </motion.div>
               )}
 
@@ -340,7 +353,7 @@ export default function CafeDetailsPage() {
                 className={`px-4 py-2.5 rounded-xl text-xs font-black flex items-center gap-1.5 transition-all cursor-pointer ${
                   currentStepIndex <= 0
                     ? 'bg-stone-100 text-stone-300 border border-stone-200/40 cursor-not-allowed'
-                    : 'bg-white border border-stone-200 text-stone-700 hover:bg-[#FFF8F0] hover:text-[#6F4E37] shadow-2xs'
+                    : 'bg-white border border-stone-200 text-stone-700 hover:bg-[#FFF5F5] hover:text-[#E50914] shadow-2xs'
                 }`}
               >
                 <ChevronLeft size={16} />
@@ -349,7 +362,7 @@ export default function CafeDetailsPage() {
 
               <div className="text-center hidden xs:block">
                 <span className="text-[10px] font-black text-stone-400 uppercase tracking-widest block">ACTIVE STEP</span>
-                <span className="text-xs font-black text-[#6F4E37]">{stepsList[currentStepIndex]?.label}</span>
+                <span className="text-xs font-black text-[#E50914]">{stepsList[currentStepIndex]?.label}</span>
               </div>
 
               <button
@@ -358,7 +371,7 @@ export default function CafeDetailsPage() {
                 className={`px-4 py-2.5 rounded-xl text-xs font-black flex items-center gap-1.5 transition-all cursor-pointer ${
                   currentStepIndex >= stepsList.length - 1
                     ? 'bg-stone-100 text-stone-300 border border-stone-200/40 cursor-not-allowed'
-                    : 'bg-gradient-to-r from-[#4A2C11] to-[#6F4E37] text-white shadow-md hover:shadow-lg'
+                    : 'bg-gradient-to-r from-[#B71C1C] to-[#E50914] text-white shadow-md hover:shadow-lg'
                 }`}
               >
                 <span>Next Step</span>
@@ -403,7 +416,7 @@ export default function CafeDetailsPage() {
                     const addressQuery = encodeURIComponent(`${cafe?.name || 'Cafe'} ${cafe?.address || ''} ${cafe?.city || ''}`);
                     window.open(`https://www.google.com/maps/search/?api=1&query=${addressQuery}`, '_blank');
                   }}
-                  className="bg-gradient-to-r from-[#4A2C11] to-[#6F4E37] text-white px-4 py-2.5 rounded-xl font-black text-xs shadow-md flex items-center gap-1.5 cursor-pointer shrink-0"
+                  className="bg-gradient-to-r from-[#B71C1C] to-[#E50914] text-white px-4 py-2.5 rounded-xl font-black text-xs shadow-md flex items-center gap-1.5 cursor-pointer shrink-0"
                 >
                   <MapPin size={14} />
                   <span>Directions</span>
@@ -418,7 +431,7 @@ export default function CafeDetailsPage() {
                 if (isRestaurant) {
                   return (
                     <div>
-                      <div className="text-sm font-black text-[#2C1810] leading-none">
+                      <div className="text-sm font-black text-[#252525] leading-none">
                         Restaurant Table
                       </div>
                       <span className="text-[9px] font-black text-emerald-700 uppercase tracking-wider flex items-center gap-1 mt-1">
@@ -431,7 +444,7 @@ export default function CafeDetailsPage() {
                 if (cafe?.provides_event_services || !cafe?.price_per_hour) {
                   return (
                     <div>
-                      <div className="text-lg sm:text-xl font-black text-[#2C1810] leading-none">
+                      <div className="text-lg sm:text-xl font-black text-[#252525] leading-none">
                         Event Packages Available
                       </div>
                       <span className="text-[9px] font-black text-emerald-700 uppercase tracking-wider flex items-center gap-1 mt-1">
@@ -443,7 +456,7 @@ export default function CafeDetailsPage() {
                 }
                 return (
                   <div>
-                    <div className="text-lg sm:text-xl font-black text-[#2C1810] leading-none">
+                    <div className="text-lg sm:text-xl font-black text-[#252525] leading-none">
                       ₹{cafe.price_per_hour} <span className="font-bold text-xs text-stone-400">/ hour</span>
                     </div>
                     <span className="text-[9px] font-black text-emerald-700 uppercase tracking-wider flex items-center gap-1 mt-1">
@@ -458,7 +471,7 @@ export default function CafeDetailsPage() {
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => router.push(`/booking/${cafe?.id || 1}`)}
-                className="bg-gradient-to-r from-[#4A2C11] to-[#6F4E37] text-white px-5 py-2.5 rounded-xl font-black text-xs shadow-md hover:shadow-lg flex items-center gap-1.5 cursor-pointer shrink-0"
+                className="bg-gradient-to-r from-[#B71C1C] to-[#E50914] text-white px-5 py-2.5 rounded-xl font-black text-xs shadow-md hover:shadow-lg flex items-center gap-1.5 cursor-pointer shrink-0"
               >
                 <span>Book Now</span>
                 <ArrowRight size={15} />

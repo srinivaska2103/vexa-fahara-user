@@ -19,7 +19,7 @@ export default function OfferCard({ offer }) {
       className={`relative overflow-hidden rounded-2xl p-6 ${
         isBirthday 
           ? 'bg-gradient-to-br from-pink-500 to-rose-500 text-white' 
-          : 'bg-gradient-to-br from-[#6F4E37] to-[#8C6246] text-white'
+          : 'bg-gradient-to-br from-[#E50914] to-[#8C6246] text-white'
       } shadow-lg`}
     >
       <div className="absolute top-0 right-0 p-4 opacity-10">

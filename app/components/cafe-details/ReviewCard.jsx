@@ -22,7 +22,7 @@ export default function ReviewCard({ review }) {
   const { rating, review: comment, created_at, users } = review || {};
   
   const date = created_at ? new Date(created_at).toLocaleDateString('en-US', { month: 'short', year: 'numeric' }) : 'Recently';
-  const name = users?.name || 'Fahara Guest';
+  const name = users?.name || 'Grab2GO Guest';
   const initial = name.charAt(0).toUpperCase();
 
   const handleHelpfulClick = () => {
@@ -52,11 +52,11 @@ export default function ReviewCard({ review }) {
       <div>
         <div className="flex items-center justify-between gap-3 mb-3">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#4A2C11] to-[#6F4E37] text-white font-extrabold flex items-center justify-center text-sm shadow-xs">
+            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#B71C1C] to-[#E50914] text-white font-extrabold flex items-center justify-center text-sm shadow-xs">
               {initial}
             </div>
             <div>
-              <h4 className="font-bold text-xs sm:text-sm text-[#2C1810] flex items-center gap-1">
+              <h4 className="font-bold text-xs sm:text-sm text-[#252525] flex items-center gap-1">
                 <span>{name}</span>
                 <ShieldCheck size={14} className="text-emerald-600" title="Verified Guest" />
               </h4>

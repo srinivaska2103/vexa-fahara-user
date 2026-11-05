@@ -27,7 +27,7 @@ import { calculateAllowedGuestCount } from '@/lib/capacityUtils';
 
 export default function RedesignedBookingPage() {
   return (
-    <Suspense fallback={<FaharaInteractiveLoader message="Preparing reservation setup..." badgeTag="FAHARA RESERVATION" fullScreen={true} />}>
+    <Suspense fallback={<FaharaInteractiveLoader message="Preparing reservation setup..." badgeTag="Grab2GO RESERVATION" fullScreen={true} />}>
       <BookingContent />
     </Suspense>
   );
@@ -638,7 +638,7 @@ function BookingContent() {
     return (
       <FaharaInteractiveLoader 
         message="Preparing your booking experience..." 
-        badgeTag="FAHARA RESERVATION" 
+        badgeTag="Grab2GO RESERVATION" 
         fullScreen={true} 
       />
     );
@@ -646,10 +646,10 @@ function BookingContent() {
 
   if (error || !cafe) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-[#FFF8F0] p-4 text-center">
-        <h2 className="text-2xl font-black text-[#2C1810] mb-2">Cafe Not Found</h2>
+      <div className="min-h-screen flex flex-col items-center justify-center bg-[#FFF5F5] p-4 text-center">
+        <h2 className="text-2xl font-black text-[#252525] mb-2">Cafe Not Found</h2>
         <p className="text-stone-500 text-sm mb-6 max-w-md">The cafe you are trying to book might have been removed or is temporarily unavailable.</p>
-        <Link href="/customer/cafe" className="px-6 py-3 bg-gradient-to-r from-[#4A2C11] to-[#6F4E37] text-white font-bold rounded-2xl shadow-md hover:shadow-lg transition-all">
+        <Link href="/customer/cafe" className="px-6 py-3 bg-gradient-to-r from-[#B71C1C] to-[#E50914] text-white font-bold rounded-2xl shadow-md hover:shadow-lg transition-all">
           Back to Discovery
         </Link>
       </div>
@@ -657,10 +657,10 @@ function BookingContent() {
   }
 
   return (
-    <div className="min-h-screen bg-[#FFF8F0] font-sans antialiased selection:bg-[#6F4E37] selection:text-white pb-24 lg:pb-12">
+    <div className="min-h-screen bg-[#FFF5F5] font-sans antialiased selection:bg-[#E50914] selection:text-white pb-24 lg:pb-12">
       
       {/* ── MOBILE-ONLY STICKY BOOKING TICKET HEADER (Reference Image 1) ── */}
-      <header className="md:hidden sticky top-0 z-40 bg-[#FFF8F0] border-b border-[#E8DED5] px-4 pt-3 pb-3.5 shadow-2xs">
+      <header className="md:hidden sticky top-0 z-40 bg-[#FFF5F5] border-b border-[#FEE2E2] px-4 pt-3 pb-3.5 shadow-2xs">
         {/* Top Bar: Back Arrow, Centered Title, Info Icon */}
         <div className="flex items-center justify-between relative mb-3.5">
           <button
@@ -673,12 +673,12 @@ function BookingContent() {
               }
             }}
             aria-label="Back"
-            className="w-9 h-9 rounded-full bg-white/80 hover:bg-white active:scale-90 border border-[#E8DED5] flex items-center justify-center text-[#2C1810] shadow-2xs transition-all cursor-pointer"
+            className="w-9 h-9 rounded-full bg-white/80 hover:bg-white active:scale-90 border border-[#FEE2E2] flex items-center justify-center text-[#252525] shadow-2xs transition-all cursor-pointer"
           >
             <ArrowLeft size={18} strokeWidth={2.2} />
           </button>
 
-          <h1 className="text-base font-extrabold text-[#2C1810] tracking-tight text-center">
+          <h1 className="text-base font-extrabold text-[#252525] tracking-tight text-center">
             Booking Ticket
           </h1>
 
@@ -686,7 +686,7 @@ function BookingContent() {
             type="button"
             onClick={() => setMobileSummaryOpen(!mobileSummaryOpen)}
             aria-label="Booking Details"
-            className="w-9 h-9 rounded-full bg-white/80 hover:bg-white active:scale-90 border border-[#E8DED5] flex items-center justify-center text-[#2C1810] shadow-2xs transition-all cursor-pointer"
+            className="w-9 h-9 rounded-full bg-white/80 hover:bg-white active:scale-90 border border-[#FEE2E2] flex items-center justify-center text-[#252525] shadow-2xs transition-all cursor-pointer"
           >
             <Info size={17} strokeWidth={2.2} />
           </button>
@@ -696,11 +696,11 @@ function BookingContent() {
         <div className="px-3">
           <div className="relative flex items-center justify-between">
             {/* Background Base Track Line */}
-            <div className="absolute top-[9px] left-3 right-3 h-[2px] bg-[#E8DED5] -z-0" />
+            <div className="absolute top-[9px] left-3 right-3 h-[2px] bg-[#FEE2E2] -z-0" />
             
             {/* Active Progress Fill Line */}
             <div 
-              className="absolute top-[9px] left-3 h-[2px] bg-[#6F4E37] transition-all duration-300 -z-0"
+              className="absolute top-[9px] left-3 h-[2px] bg-[#E50914] transition-all duration-300 -z-0"
               style={{
                 width: activeStepTab === 'info' ? '50%' : '0%'
               }}
@@ -711,10 +711,10 @@ function BookingContent() {
               onClick={() => setActiveStepTab('packages')}
               className="flex flex-col items-center relative z-10 cursor-pointer group"
             >
-              <div className="w-5 h-5 rounded-full bg-[#FFF8F0] border-2 border-[#6F4E37] flex items-center justify-center shadow-xs">
-                <div className="w-2 h-2 rounded-full bg-[#6F4E37]" />
+              <div className="w-5 h-5 rounded-full bg-[#FFF5F5] border-2 border-[#E50914] flex items-center justify-center shadow-xs">
+                <div className="w-2 h-2 rounded-full bg-[#E50914]" />
               </div>
-              <span className="text-[11px] font-black text-[#2C1810] mt-1.5 leading-none">
+              <span className="text-[11px] font-black text-[#252525] mt-1.5 leading-none">
                 Booking
               </span>
             </div>
@@ -726,19 +726,19 @@ function BookingContent() {
               }}
               className="flex flex-col items-center relative z-10 cursor-pointer group"
             >
-              <div className={`w-5 h-5 rounded-full bg-[#FFF8F0] border-2 transition-colors flex items-center justify-center ${
+              <div className={`w-5 h-5 rounded-full bg-[#FFF5F5] border-2 transition-colors flex items-center justify-center ${
                 activeStepTab === 'info' 
-                  ? 'border-[#6F4E37]' 
-                  : 'border-[#E8DED5]'
+                  ? 'border-[#E50914]' 
+                  : 'border-[#FEE2E2]'
               }`}>
                 {activeStepTab === 'info' ? (
-                  <div className="w-2 h-2 rounded-full bg-[#6F4E37]" />
+                  <div className="w-2 h-2 rounded-full bg-[#E50914]" />
                 ) : (
-                  <div className="w-2 h-2 rounded-full bg-[#E8DED5]" />
+                  <div className="w-2 h-2 rounded-full bg-[#FEE2E2]" />
                 )}
               </div>
               <span className={`text-[11px] font-bold mt-1.5 leading-none transition-colors ${
-                activeStepTab === 'info' ? 'text-[#2C1810]' : 'text-stone-400'
+                activeStepTab === 'info' ? 'text-[#252525]' : 'text-stone-400'
               }`}>
                 Payment
               </span>
@@ -746,8 +746,8 @@ function BookingContent() {
 
             {/* Step 3: Finish */}
             <div className="flex flex-col items-center relative z-10 select-none">
-              <div className="w-5 h-5 rounded-full bg-[#FFF8F0] border-2 border-[#E8DED5] flex items-center justify-center">
-                <div className="w-2 h-2 rounded-full bg-[#E8DED5]" />
+              <div className="w-5 h-5 rounded-full bg-[#FFF5F5] border-2 border-[#FEE2E2] flex items-center justify-center">
+                <div className="w-2 h-2 rounded-full bg-[#FEE2E2]" />
               </div>
               <span className="text-[11px] font-bold text-stone-400 mt-1.5 leading-none">
                 Finish
@@ -767,19 +767,19 @@ function BookingContent() {
         
         {/* Navigation Breadcrumb Row (DESKTOP ONLY) */}
         <div className="hidden md:flex mb-3 sm:mb-4 items-center justify-between gap-2 flex-wrap">
-          <Link href={`/cafes/${cafeId}`} className="inline-flex items-center text-xs sm:text-sm font-extrabold bg-white hover:bg-[#FFF8F0] hover:text-[#6F4E37] text-stone-700 px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-2xl border border-stone-200/80 transition-all shadow-2xs max-w-[70%]">
+          <Link href={`/cafes/${cafeId}`} className="inline-flex items-center text-xs sm:text-sm font-extrabold bg-white hover:bg-[#FFF5F5] hover:text-[#E50914] text-stone-700 px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-2xl border border-stone-200/80 transition-all shadow-2xs max-w-[70%]">
             <ArrowLeft size={14} className="mr-1.5 shrink-0" />
             <span className="truncate">Back to {cafe.name || 'Venue'}</span>
           </Link>
 
-          <span className="text-[10px] sm:text-xs font-black text-[#6F4E37] bg-white border border-[#DDB892]/60 px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-full shadow-2xs flex items-center gap-1.5 shrink-0">
-            <Sparkles size={12} className="text-amber-500" />
+          <span className="text-[10px] sm:text-xs font-black text-[#ED0014] bg-white border border-red-200 px-3 py-1.5 rounded-full shadow-2xs flex items-center gap-1.5 shrink-0">
+            <Sparkles size={13} className="text-[#ED0014]" />
             <span>Instant Reservation</span>
           </span>
         </div>
 
         {/* STEP-BY-STEP SECTION NAVIGATION BAR (DESKTOP ONLY) */}
-        <div className="hidden md:block bg-stone-100/80 p-1.5 mb-5 rounded-2xl border border-stone-200/80 shadow-2xs">
+        <div className="hidden md:block bg-white p-1.5 mb-5 rounded-2xl border border-red-100 shadow-xs">
           <div className="flex items-center gap-2 w-full">
             {stepsList.map((item) => {
               const isActive = activeStepTab === item.id;
@@ -795,16 +795,16 @@ function BookingContent() {
                   }}
                   className={`flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs font-black transition-all duration-200 cursor-pointer flex-1 min-w-0 ${
                     isActive 
-                      ? 'bg-white text-[#2C1810] shadow-sm border border-stone-200/80 ring-1 ring-black/5' 
-                      : 'text-stone-500 hover:text-stone-800 hover:bg-stone-200/50'
+                      ? 'bg-gradient-to-r from-red-50 to-rose-50 text-[#ED0014] shadow-xs border-2 border-[#ED0014]' 
+                      : 'text-stone-600 hover:text-[#ED0014] hover:bg-stone-50 border-2 border-transparent'
                   }`}
                 >
                   <span className={`w-5 h-5 rounded-lg flex items-center justify-center font-black text-[10px] shrink-0 transition-all ${
-                    isActive ? 'bg-[#6F4E37] text-white shadow-2xs' : 'bg-stone-200 text-stone-500'
+                    isActive ? 'bg-[#ED0014] text-white shadow-xs' : 'bg-stone-200 text-stone-600'
                   }`}>
                     {item.step}
                   </span>
-                  <span className="tracking-tight truncate text-xs">{item.label}</span>
+                  <span className="tracking-tight truncate text-xs font-black">{item.label}</span>
                 </button>
               );
             })}
@@ -826,7 +826,7 @@ function BookingContent() {
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-stone-100 gap-2.5">
                     <div>
                       <div className="flex items-center gap-1.5 flex-wrap">
-                        <h2 className="text-base sm:text-xl font-black text-[#2C1810]">Select Your Table</h2>
+                        <h2 className="text-base sm:text-xl font-black text-[#252525]">Select Your Table</h2>
                         <span className="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-[9px] sm:text-[10px] font-black uppercase">Live Layout</span>
                       </div>
                       <p className="text-[11px] sm:text-xs text-stone-500 font-medium mt-0.5">Tables are matched based on your guest count ({guestCount} {guestCount === 1 ? 'Guest' : 'Guests'})</p>
@@ -834,17 +834,17 @@ function BookingContent() {
 
                     <div className="flex items-center justify-between sm:justify-end gap-2 flex-wrap">
                       {/* Guest Count Quick Adjuster */}
-                      <div className="flex items-center gap-1.5 bg-[#FFF8F0] border border-[#DDB892]/60 px-2.5 py-1 rounded-xl">
-                        <Users size={12} className="text-[#6F4E37] shrink-0" />
-                        <span className="text-[10px] sm:text-[11px] font-extrabold text-stone-600">Guests:</span>
+                      <div className="flex items-center gap-1.5 bg-[#FFF5F5] border border-red-200 px-3 py-1.5 rounded-xl">
+                        <Users size={14} className="text-[#ED0014] shrink-0" />
+                        <span className="text-xs font-black text-stone-700">Guests:</span>
                         <button
                           type="button"
                           onClick={() => setGuestCount(Math.max(1, guestCount - 1))}
-                          className="w-5 h-5 bg-white border border-stone-300 rounded-md text-[#2C1810] font-black hover:bg-stone-100 flex items-center justify-center text-xs active:scale-95 transition-all cursor-pointer"
+                          className="w-6 h-6 bg-white border border-stone-300 rounded-lg text-[#1E1E1E] font-black hover:bg-red-50 hover:text-[#ED0014] hover:border-[#ED0014] flex items-center justify-center text-xs active:scale-95 transition-all cursor-pointer shadow-2xs"
                         >
                           -
                         </button>
-                        <span className="text-xs font-black text-[#6F4E37] px-0.5">{guestCount}</span>
+                        <span className="text-sm font-black text-[#ED0014] px-1">{guestCount}</span>
                         <button
                           type="button"
                           disabled={maxAllowedGuests && guestCount >= maxAllowedGuests}
@@ -853,10 +853,10 @@ function BookingContent() {
                               setGuestCount(guestCount + 1);
                             }
                           }}
-                          className={`w-5 h-5 rounded-md flex items-center justify-center text-xs transition-all ${
+                          className={`w-6 h-6 rounded-lg flex items-center justify-center text-xs transition-all shadow-2xs ${
                             maxAllowedGuests && guestCount >= maxAllowedGuests
                               ? 'bg-stone-100 text-stone-300 border border-stone-200 cursor-not-allowed'
-                              : 'bg-white border border-stone-300 text-[#2C1810] font-black hover:bg-stone-100 active:scale-95 cursor-pointer'
+                              : 'bg-white border border-stone-300 text-[#1E1E1E] font-black hover:bg-red-50 hover:text-[#ED0014] hover:border-[#ED0014] active:scale-95 cursor-pointer'
                           }`}
                         >
                           +
@@ -900,7 +900,7 @@ function BookingContent() {
                             >
                               <div className="flex items-center justify-between mb-1.5">
                                 <div className="flex items-center gap-1.5">
-                                  <span className="font-black text-sm text-[#2C1810]">Table {tbl.table_number || tbl.name}</span>
+                                  <span className="font-black text-sm text-[#252525]">Table {tbl.table_number || tbl.name}</span>
                                   {fitsGuests ? (
                                     <span className={`text-[9px] font-black px-1.5 py-0.5 rounded-md ${
                                       isExactCapacity 
@@ -923,7 +923,7 @@ function BookingContent() {
                               </div>
 
                               <div className="flex items-center justify-between text-xs text-stone-500 font-extrabold pt-2 border-t border-stone-100 mt-2">
-                                <span className={`flex items-center gap-1 ${fitsGuests ? 'text-[#6F4E37]' : 'text-amber-800'}`}>
+                                <span className={`flex items-center gap-1 ${fitsGuests ? 'text-[#E50914]' : 'text-amber-800'}`}>
                                   <Users size={13} />
                                   <span>{tbl.capacity} Seats</span>
                                 </span>
@@ -963,7 +963,7 @@ function BookingContent() {
                 {/* 2. EVENT ARRANGEMENT SECTION (Shown only when cafe does not provide own event packages) */}
                 <EventArrangementSection cafe={cafe} />
 
-                {/* 3. FAHARA EVENT PACKAGES SELECTION */}
+                {/* 3. Grab2GO EVENT PACKAGES SELECTION */}
                 {!isRestaurant && !selectedEventCompany && cafePackages.length > 0 && (
                   <PackageSelectorCards
                     packages={cafePackages}
@@ -996,7 +996,7 @@ function BookingContent() {
             )}
 
             {/* Interactive Step Navigation Controls */}
-            <div className="flex items-center justify-between gap-2 p-3 sm:p-4 rounded-2xl bg-white border border-[#E8DED5] shadow-xs">
+            <div className="flex items-center justify-between gap-2 p-3 sm:p-4 rounded-2xl bg-white border border-[#FEE2E2] shadow-xs">
               <button
                 type="button"
                 onClick={() => {
@@ -1007,13 +1007,13 @@ function BookingContent() {
                 className={`flex-1 sm:flex-initial py-2.5 px-3 sm:px-4 rounded-xl font-bold text-xs border transition-all cursor-pointer text-center ${
                   activeStepTab === 'packages'
                     ? 'opacity-40 bg-stone-100 text-stone-400 border-stone-200 cursor-not-allowed'
-                    : 'bg-white text-[#2C1810] border-stone-300 hover:bg-stone-50 active:scale-95'
+                    : 'bg-white text-[#252525] border-stone-300 hover:bg-stone-50 active:scale-95'
                 }`}
               >
                 &larr; Prev
               </button>
 
-              <div className="text-[11px] sm:text-xs font-black text-[#6F4E37] shrink-0 px-1 text-center">
+              <div className="text-[11px] sm:text-xs font-black text-[#E50914] shrink-0 px-1 text-center">
                 {activeStepTab === 'packages' ? '1 of 2' : '2 of 2'}
               </div>
 
@@ -1028,7 +1028,7 @@ function BookingContent() {
                 className={`flex-1 sm:flex-initial py-2.5 px-3 sm:px-5 rounded-xl font-black text-xs transition-all cursor-pointer text-center shadow-xs ${
                   activeStepTab === 'info'
                     ? 'opacity-40 bg-stone-100 text-stone-400 border border-stone-200 cursor-not-allowed shadow-none'
-                    : 'bg-[#6F4E37] hover:bg-[#5C3F2B] active:bg-[#4A2C11] text-white'
+                    : 'bg-[#E50914] hover:bg-[#B71C1C] active:bg-[#990000] text-white'
                 }`}
               >
                 Next &rarr;
@@ -1054,9 +1054,9 @@ function BookingContent() {
           >
             <div className="flex items-center text-[10px] font-black uppercase text-stone-400">
               <span>{isRestaurant ? 'Reservation' : 'Grand Total'}</span>
-              <ChevronUp size={14} className={`ml-1 text-[#6F4E37] transition-transform ${mobileSummaryOpen ? 'rotate-180' : ''}`} />
+              <ChevronUp size={14} className={`ml-1 text-[#E50914] transition-transform ${mobileSummaryOpen ? 'rotate-180' : ''}`} />
             </div>
-            <span className="text-lg font-black text-[#2C1810]">
+            <span className="text-lg font-black text-[#252525]">
               {isRestaurant ? 'Table Free' : `₹${Number((pricing?.total || 0).toFixed(2)).toLocaleString()}`}
             </span>
           </button>
@@ -1067,8 +1067,8 @@ function BookingContent() {
             disabled={isTimeSlotUnavailable || isCapacityExceeded}
             className={`px-6 py-3 font-black text-xs rounded-2xl shadow-md transition-all flex items-center gap-1.5 ${
               isTimeSlotUnavailable || isCapacityExceeded
-                ? 'opacity-40 bg-[#6F4E37] text-white cursor-not-allowed pointer-events-none'
-                : 'bg-[#6F4E37] hover:bg-[#5C3F2B] active:bg-[#4A2C11] text-white cursor-pointer'
+                ? 'opacity-40 bg-[#E50914] text-white cursor-not-allowed pointer-events-none'
+                : 'bg-[#E50914] hover:bg-[#B71C1C] active:bg-[#990000] text-white cursor-pointer'
             }`}
           >
             <span>{mobileSummaryOpen ? 'Hide Details' : (isRestaurant ? 'Reserve Table' : 'Book Now & Pay')}</span>

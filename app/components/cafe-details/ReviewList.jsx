@@ -54,18 +54,18 @@ export default function ReviewList({ reviews = [], cafe, isMobileView = false })
         {/* Header & Write Review CTA */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5 pb-4 border-b border-stone-100">
           <div>
-            <h2 className="text-xl sm:text-2xl font-black text-[#2C1810] tracking-tight flex items-center gap-2.5">
+            <h2 className="text-xl sm:text-2xl font-black text-[#252525] tracking-tight flex items-center gap-2.5">
               <Star size={24} className="fill-amber-500 text-amber-500 shrink-0" />
               <span>Customer Reviews ({reviews.length})</span>
             </h2>
-            <p className="text-xs sm:text-sm text-stone-500 font-medium mt-1">Authentic ratings from verified Fahara guests.</p>
+            <p className="text-xs sm:text-sm text-stone-500 font-medium mt-1">Authentic ratings from verified Grab2GO guests.</p>
           </div>
 
           <motion.button 
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => setIsReviewModalOpen(true)}
-            className="self-start sm:self-auto px-4.5 py-2.5 bg-gradient-to-r from-[#4A2C11] to-[#6F4E37] text-white font-black text-xs sm:text-sm rounded-2xl flex items-center gap-2 transition-all shadow-md hover:shadow-lg hover:shadow-[#4A2C11]/20 cursor-pointer"
+            className="self-start sm:self-auto px-4.5 py-2.5 bg-gradient-to-r from-[#B71C1C] to-[#E50914] text-white font-black text-xs sm:text-sm rounded-2xl flex items-center gap-2 transition-all shadow-md hover:shadow-lg hover:shadow-[#B71C1C]/20 cursor-pointer"
           >
             <MessageSquarePlus size={16} />
             <span>Write a Review</span>
@@ -73,12 +73,12 @@ export default function ReviewList({ reviews = [], cafe, isMobileView = false })
         </div>
 
         {reviews.length === 0 ? (
-          <div className="py-10 px-4 text-center bg-[#FFF8F0]/60 rounded-3xl border border-[#DDB892]/40 flex flex-col items-center justify-center space-y-3">
+          <div className="py-10 px-4 text-center bg-[#FFF5F5]/60 rounded-3xl border border-[#EF5350]/40 flex flex-col items-center justify-center space-y-3">
             <div className="w-12 h-12 rounded-2xl bg-white flex items-center justify-center text-amber-500 shadow-2xs border border-stone-200/60">
               <Star size={24} className="fill-amber-400 text-amber-400" />
             </div>
             <div className="space-y-1 max-w-sm">
-              <h4 className="text-sm font-black text-[#2C1810]">No reviews yet for this venue</h4>
+              <h4 className="text-sm font-black text-[#252525]">No reviews yet for this venue</h4>
               <p className="text-xs text-stone-500 font-medium leading-relaxed">Be the first guest to share your experience after completing a booking at this cafe.</p>
             </div>
           </div>

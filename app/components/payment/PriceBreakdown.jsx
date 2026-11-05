@@ -50,12 +50,12 @@ export default function PriceBreakdown({ data }) {
           <span className="truncate">
             ✓ {name}
             {formattedTier && (
-              <span className="ml-1 text-[10px] font-black text-[#6F4E37] bg-[#FFF8F0] px-1.5 py-0.5 rounded-md border border-[#DDB892]/40 inline-block">
+              <span className="ml-1 text-[10px] font-black text-[#E50914] bg-[#FFF5F5] px-1.5 py-0.5 rounded-md border border-[#EF5350]/40 inline-block">
                 {formattedTier}
               </span>
             )}
           </span>
-          <span className="font-black text-[#2C1810] shrink-0 ml-2">{formatCurrency(amount)}</span>
+          <span className="font-black text-[#252525] shrink-0 ml-2">{formatCurrency(amount)}</span>
         </div>
         {calc && (
           <div className="text-[10px] text-stone-400 font-medium pl-3">{calc}</div>
@@ -65,20 +65,20 @@ export default function PriceBreakdown({ data }) {
   };
 
   return (
-    <div className="bg-[#FFF8F0] p-5 sm:p-6 rounded-2xl border border-[#E8DED5] font-sans">
-      <h3 className="text-lg font-bold text-[#2C1810] mb-4">Price Breakdown</h3>
+    <div className="bg-[#FFF5F5] p-5 sm:p-6 rounded-2xl border border-red-200 font-sans">
+      <h3 className="text-lg font-black text-[#1E1E1E] mb-4">Price Breakdown</h3>
 
       <div className="space-y-3.5 text-sm">
 
         {/* Cafe Charges (hours-based) — always first if > 0 */}
         {cafeChargeAmount > 0 && (
           <div className="space-y-0.5">
-            <div className="flex justify-between font-bold text-[#2C1810]">
+            <div className="flex justify-between font-bold text-[#1E1E1E]">
               <span>Cafe Charges</span>
-              <span className="font-black">{formatCurrency(cafeChargeAmount)}</span>
+              <span className="font-black text-[#1E1E1E]">{formatCurrency(cafeChargeAmount)}</span>
             </div>
             {cafeChargeItem?.calculation && (
-              <div className="text-[10px] text-stone-400 font-medium pl-1">{cafeChargeItem.calculation}</div>
+              <div className="text-[10px] text-[#6B7280] font-medium pl-1">{cafeChargeItem.calculation}</div>
             )}
           </div>
         )}
@@ -86,21 +86,21 @@ export default function PriceBreakdown({ data }) {
         {/* Cafe Package */}
         {cafePackage && (
           <div className="space-y-2 pt-1 pb-1">
-            <div className="flex justify-between font-bold text-[#2C1810]">
+            <div className="flex justify-between font-bold text-[#1E1E1E]">
               <span className="truncate mr-2">🎁 {cafePackage.name || 'Cafe Package'}</span>
-              <span className="font-black text-[#2C1810] shrink-0">{formatCurrency(cafePackage.baseAmount || cafePackage.amount || cafePackage.price || 0)}</span>
+              <span className="font-black text-[#1E1E1E] shrink-0">{formatCurrency(cafePackage.baseAmount || cafePackage.amount || cafePackage.price || 0)}</span>
             </div>
           </div>
         )}
 
         {/* Event Package */}
         {(eventPackage || (data.event?.package) || Number(data.eventCharges || data.event_service_amount || 0) > 0) && (
-          <div className="space-y-2 pt-1 pb-1 border-t border-[#E8DED5]/60">
-            <div className="flex justify-between font-bold text-[#2C1810]">
+          <div className="space-y-2 pt-1 pb-1 border-t border-red-100">
+            <div className="flex justify-between font-bold text-[#1E1E1E]">
               <span className="truncate mr-2">
                 🎉 Event Arrangement ({eventPackage?.name || data.event?.package?.name || data.eventPackageName || 'Event Package'})
               </span>
-              <span className="font-bold text-[#2C1810] shrink-0">
+              <span className="font-bold text-[#1E1E1E] shrink-0">
                 {formatCurrency(eventPackage?.baseAmount || data.event?.package?.baseAmount || data.eventCharges || data.event_service_amount || 0)}
               </span>
             </div>
@@ -109,17 +109,17 @@ export default function PriceBreakdown({ data }) {
 
         {/* Optional Add-Ons */}
         {addOns.length > 0 && (
-          <div className="space-y-2 pt-1 pb-1 border-t border-[#E8DED5]/60">
-            <span className="font-bold text-xs text-[#6F4E37] uppercase tracking-wider block">Selected Add-Ons</span>
-            <div className="pl-3 space-y-2 border-l-2 border-[#DDB892]/80 ml-1.5 text-xs">
+          <div className="space-y-2 pt-1 pb-1 border-t border-red-100">
+            <span className="font-black text-xs text-[#ED0014] uppercase tracking-wider block">Selected Add-Ons</span>
+            <div className="pl-3 space-y-2 border-l-2 border-[#ED0014] ml-1.5 text-xs">
               {addOns.map((addon, i) => (
                 <div key={i} className="space-y-0.5">
-                  <div className="flex justify-between items-center text-stone-700 font-bold">
+                  <div className="flex justify-between items-center text-[#1E1E1E] font-bold">
                     <span className="truncate">✓ {addon.name}</span>
-                    <span className="font-black text-[#2C1810] shrink-0">{formatCurrency(addon.calculatedAmount)}</span>
+                    <span className="font-black text-[#1E1E1E] shrink-0">{formatCurrency(addon.calculatedAmount)}</span>
                   </div>
                   {addon.calculation && (
-                    <div className="text-[10px] text-stone-400 font-medium pl-3">{addon.calculation}</div>
+                    <div className="text-[10px] text-[#6B7280] font-medium pl-3">{addon.calculation}</div>
                   )}
                 </div>
               ))}
@@ -136,29 +136,29 @@ export default function PriceBreakdown({ data }) {
         )}
 
         {/* Subtotal */}
-        <div className="border-t border-[#E8DED5] my-3 pt-3 flex justify-between font-extrabold text-[#2C1810]">
+        <div className="border-t border-red-200 my-3 pt-3 flex justify-between font-black text-[#1E1E1E]">
           <span>Subtotal</span>
           <span>{formatCurrency(subtotal)}</span>
         </div>
 
         {/* Fees */}
-        <div className="flex justify-between text-[#A67B5B] text-xs font-medium">
+        <div className="flex justify-between text-[#B80012] text-xs font-bold">
           <span>Platform Fee (3%)</span>
-          <span className="font-semibold text-stone-700">{formatCurrency(pFeeAmount)}</span>
+          <span className="font-black text-[#1E1E1E]">{formatCurrency(pFeeAmount)}</span>
         </div>
 
-        <div className="flex justify-between text-[#A67B5B] text-xs font-medium">
+        <div className="flex justify-between text-[#B80012] text-xs font-bold">
           <span>Transaction Fee (3%)</span>
-          <span className="font-semibold text-stone-700">{formatCurrency(tFeeAmount)}</span>
+          <span className="font-black text-[#1E1E1E]">{formatCurrency(tFeeAmount)}</span>
         </div>
 
-        <div className="flex justify-between text-[#A67B5B] text-xs font-medium">
+        <div className="flex justify-between text-[#B80012] text-xs font-bold">
           <span>GST (18% on Transaction Fee)</span>
-          <span className="font-semibold text-stone-700">{formatCurrency(gstAmount)}</span>
+          <span className="font-black text-[#1E1E1E]">{formatCurrency(gstAmount)}</span>
         </div>
 
         {/* Grand Total */}
-        <div className="border-t border-[#E8DED5] my-3 pt-3 flex justify-between font-black text-lg text-[#6F4E37]">
+        <div className="border-t border-red-200 my-3 pt-3 flex justify-between font-black text-xl text-[#ED0014]">
           <span>Grand Total</span>
           <span>{formatCurrency(grandTotal)}</span>
         </div>

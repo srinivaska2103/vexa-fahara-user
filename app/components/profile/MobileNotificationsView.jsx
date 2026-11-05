@@ -13,7 +13,7 @@ import toast from 'react-hot-toast';
 import { notificationService } from '@/services/notification.service';
 import { cn } from '@/lib/utils';
 
-// Icon and color category mapping aligned with user specifications & Fahara theme
+// Icon and color category mapping aligned with user specifications & Grab2GO theme
 const getNotificationVisuals = (notif) => {
   const type = String(notif?.notification_type || notif?.type || '').toUpperCase();
   const title = String(notif?.title || '').toLowerCase();
@@ -42,9 +42,9 @@ const getNotificationVisuals = (notif) => {
   if (type.includes('CONFIRMED') || title.includes('confirmed')) {
     return {
       icon: CalendarCheck,
-      iconColor: 'text-[#6F4E37]', // Fahara Primary Brown
-      bgGradient: 'bg-[#FFF8F0] border-[#DDB892]/60',
-      badgeColor: 'bg-[#F5EBE1] text-[#6F4E37]'
+      iconColor: 'text-[#E50914]', // Grab2GO Primary Brown
+      bgGradient: 'bg-[#FFF5F5] border-[#EF5350]/60',
+      badgeColor: 'bg-[#F5EBE1] text-[#E50914]'
     };
   }
 
@@ -72,9 +72,9 @@ const getNotificationVisuals = (notif) => {
   if (type.includes('REMINDER') || title.includes('reminder')) {
     return {
       icon: BellRing,
-      iconColor: 'text-[#A67B5B]', // Fahara Secondary Brown
-      bgGradient: 'bg-[#FFF8F0] border-[#DDB892]/60',
-      badgeColor: 'bg-[#F5EBE1] text-[#A67B5B]'
+      iconColor: 'text-[#B71C1C]', // Grab2GO Secondary Brown
+      bgGradient: 'bg-[#FFF5F5] border-[#EF5350]/60',
+      badgeColor: 'bg-[#F5EBE1] text-[#B71C1C]'
     };
   }
 
@@ -132,9 +132,9 @@ const getNotificationVisuals = (notif) => {
   if (type.includes('CAFE') || title.includes('cafe') || title.includes('table')) {
     return {
       icon: Coffee,
-      iconColor: 'text-[#6F4E37]',
-      bgGradient: 'bg-[#FFF8F0] border-[#DDB892]/60',
-      badgeColor: 'bg-[#F5EBE1] text-[#6F4E37]'
+      iconColor: 'text-[#E50914]',
+      bgGradient: 'bg-[#FFF5F5] border-[#EF5350]/60',
+      badgeColor: 'bg-[#F5EBE1] text-[#E50914]'
     };
   }
 
@@ -142,7 +142,7 @@ const getNotificationVisuals = (notif) => {
   if (type.includes('SECURITY') || type.includes('ACCOUNT') || title.includes('password') || title.includes('security')) {
     return {
       icon: ShieldCheck,
-      iconColor: 'text-[#2C1810]',
+      iconColor: 'text-[#252525]',
       bgGradient: 'bg-stone-100 border-stone-200',
       badgeColor: 'bg-stone-200 text-stone-800'
     };
@@ -151,9 +151,9 @@ const getNotificationVisuals = (notif) => {
   // Default General Notification
   return {
     icon: Bell,
-    iconColor: 'text-[#6F4E37]',
-    bgGradient: 'bg-[#FFF8F0] border-[#DDB892]/60',
-    badgeColor: 'bg-[#F5EBE1] text-[#6F4E37]'
+    iconColor: 'text-[#E50914]',
+    bgGradient: 'bg-[#FFF5F5] border-[#EF5350]/60',
+    badgeColor: 'bg-[#F5EBE1] text-[#E50914]'
   };
 };
 
@@ -331,23 +331,23 @@ export default function MobileNotificationsView({ onBack }) {
   };
 
   return (
-    <div className="w-full min-h-[calc(100vh-80px)] bg-[#FAF8F5] text-[#2C1810] font-sans selection:bg-[#6F4E37] selection:text-white pb-32">
+    <div className="w-full min-h-[calc(100vh-80px)] bg-[#FAF8F5] text-[#252525] font-sans selection:bg-[#E50914] selection:text-white pb-32">
       
-      {/* ── TOP COMPACT HEADER (Reference Image 1 style with Fahara theme) ── */}
-      <div className="sticky top-0 z-30 bg-[#FAF8F5]/95 backdrop-blur-md border-b border-[#E8DED5] px-4 py-3.5 flex items-center justify-between">
+      {/* ── TOP COMPACT HEADER (Reference Image 1 style with Grab2GO theme) ── */}
+      <div className="sticky top-0 z-30 bg-[#FAF8F5]/95 backdrop-blur-md border-b border-[#FEE2E2] px-4 py-3.5 flex items-center justify-between">
         <div className="flex items-center gap-3">
           {onBack && (
             <button
               type="button"
               onClick={onBack}
-              className="w-9 h-9 rounded-full bg-white border border-[#E8DED5] flex items-center justify-center text-[#6F4E37] active:scale-95 transition-transform shadow-xs cursor-pointer"
+              className="w-9 h-9 rounded-full bg-white border border-[#FEE2E2] flex items-center justify-center text-[#E50914] active:scale-95 transition-transform shadow-xs cursor-pointer"
               aria-label="Back"
             >
               <ArrowLeft size={18} />
             </button>
           )}
           <div className="flex items-center gap-2">
-            <h1 className="text-lg font-black tracking-tight text-[#2C1810]">Notifications</h1>
+            <h1 className="text-lg font-black tracking-tight text-[#252525]">Notifications</h1>
             {unreadCount > 0 && (
               <span className="w-2.5 h-2.5 rounded-full bg-[#E63946] ring-2 ring-[#FAF8F5] animate-pulse" />
             )}
@@ -359,12 +359,12 @@ export default function MobileNotificationsView({ onBack }) {
             type="button"
             onClick={handleMarkAllAsRead}
             disabled={isMarkingAll}
-            className="text-xs font-bold text-[#6F4E37] hover:text-[#523A28] active:scale-95 transition-all flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#FFF8F0] border border-[#DDB892]/50 cursor-pointer disabled:opacity-50"
+            className="text-xs font-bold text-[#E50914] hover:text-[#523A28] active:scale-95 transition-all flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#FFF5F5] border border-[#EF5350]/50 cursor-pointer disabled:opacity-50"
           >
             {isMarkingAll ? (
-              <RefreshCw size={13} className="animate-spin text-[#6F4E37]" />
+              <RefreshCw size={13} className="animate-spin text-[#E50914]" />
             ) : (
-              <CheckCheck size={14} className="text-[#6F4E37]" />
+              <CheckCheck size={14} className="text-[#E50914]" />
             )}
             <span>Mark all as read</span>
           </button>
@@ -382,7 +382,7 @@ export default function MobileNotificationsView({ onBack }) {
         {isLoading && (
           <div className="space-y-4 animate-pulse">
             <div className="h-4 w-20 bg-stone-200/80 rounded ml-1" />
-            <div className="bg-white rounded-2xl border border-[#E8DED5] divide-y divide-[#E8DED5]/60 overflow-hidden shadow-xs">
+            <div className="bg-white rounded-2xl border border-[#FEE2E2] divide-y divide-[#FEE2E2]/60 overflow-hidden shadow-xs">
               {[1, 2, 3, 4, 5].map((i) => (
                 <div key={i} className="p-3.5 flex items-center gap-3">
                   <div className="w-10 h-10 rounded-xl bg-stone-200 shrink-0" />
@@ -404,13 +404,13 @@ export default function MobileNotificationsView({ onBack }) {
               <AlertCircle size={24} />
             </div>
             <div>
-              <h3 className="font-bold text-sm text-[#2C1810]">Unable to load notifications</h3>
+              <h3 className="font-bold text-sm text-[#252525]">Unable to load notifications</h3>
               <p className="text-xs text-stone-500 mt-1">{errorMessage}</p>
             </div>
             <button
               type="button"
               onClick={loadNotifications}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#6F4E37] text-white text-xs font-bold active:scale-95 transition-transform cursor-pointer shadow-xs"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#E50914] text-white text-xs font-bold active:scale-95 transition-transform cursor-pointer shadow-xs"
             >
               <RefreshCw size={14} />
               <span>Retry</span>
@@ -421,11 +421,11 @@ export default function MobileNotificationsView({ onBack }) {
         {/* EMPTY STATE */}
         {!isLoading && !isError && notifications.length === 0 && (
           <div className="py-20 px-4 text-center space-y-3">
-            <div className="w-16 h-16 rounded-2xl bg-[#FFF8F0] border border-[#DDB892]/60 mx-auto flex items-center justify-center text-[#6F4E37] shadow-xs">
+            <div className="w-16 h-16 rounded-2xl bg-[#FFF5F5] border border-[#EF5350]/60 mx-auto flex items-center justify-center text-[#E50914] shadow-xs">
               <Bell size={28} strokeWidth={1.75} />
             </div>
             <div>
-              <h2 className="text-base font-extrabold text-[#2C1810]">You're all caught up!</h2>
+              <h2 className="text-base font-extrabold text-[#252525]">You're all caught up!</h2>
               <p className="text-xs text-stone-500 mt-1 max-w-xs mx-auto">
                 No notifications right now. Any booking updates, payment receipts, or alerts will appear here.
               </p>
@@ -444,7 +444,7 @@ export default function MobileNotificationsView({ onBack }) {
                 </h3>
 
                 {/* Compact List Container with subtle separators (Reference Image 1) */}
-                <div className="bg-white rounded-2xl border border-[#E8DED5] overflow-hidden shadow-xs divide-y divide-[#E8DED5]">
+                <div className="bg-white rounded-2xl border border-[#FEE2E2] overflow-hidden shadow-xs divide-y divide-[#FEE2E2]">
                   {group.items.map((item) => {
                     const id = item.id || item._id;
                     const isUnread = !item.is_read && item.status !== 'READ';
@@ -461,7 +461,7 @@ export default function MobileNotificationsView({ onBack }) {
                         className={cn(
                           "flex items-center gap-3.5 p-3.5 transition-colors cursor-pointer select-none",
                           isUnread
-                            ? "bg-[#FFF8F0]/70 hover:bg-[#FFF8F0]"
+                            ? "bg-[#FFF5F5]/70 hover:bg-[#FFF5F5]"
                             : "bg-white hover:bg-stone-50/70"
                         )}
                       >
@@ -481,7 +481,7 @@ export default function MobileNotificationsView({ onBack }) {
                             <h4
                               className={cn(
                                 "text-xs font-bold leading-snug line-clamp-1",
-                                isUnread ? "text-[#2C1810] font-black" : "text-[#4A2C11]"
+                                isUnread ? "text-[#252525] font-black" : "text-[#B71C1C]"
                               )}
                             >
                               {item.title || 'Notification'}

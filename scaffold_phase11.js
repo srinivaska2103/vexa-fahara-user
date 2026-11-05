@@ -37,7 +37,7 @@ components.forEach(comp => {
 // Create pages
 pages.forEach(p => {
   const componentName = p.split('/').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join('') + 'Page';
-  const fileContent = `import React from 'react';\n\nexport default function ${componentName}() {\n  return (\n    <div className="min-h-screen bg-[#FFF8F0] p-8">\n      <h1 className="text-3xl font-bold text-[#2C1810] mb-8">${componentName}</h1>\n      <p>Placeholder content for ${p}</p>\n    </div>\n  );\n}\n`;
+  const fileContent = `import React from 'react';\n\nexport default function ${componentName}() {\n  return (\n    <div className="min-h-screen bg-[#FFF5F5] p-8">\n      <h1 className="text-3xl font-bold text-[#252525] mb-8">${componentName}</h1>\n      <p>Placeholder content for ${p}</p>\n    </div>\n  );\n}\n`;
   fs.writeFileSync(path.join(pagesDir, p, 'page.jsx'), fileContent);
 });
 

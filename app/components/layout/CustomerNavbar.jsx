@@ -4,13 +4,14 @@ import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  Map, List, LayoutGrid, SlidersHorizontal, Bell, Heart, User, 
-  Settings, LogOut, CalendarCheck, Moon, Sun, ChevronDown, Sparkles, Compass 
+  Map, List, LayoutGrid, SlidersHorizontal, Bell, Heart, User, ShoppingBag, 
+  Settings, LogOut, CalendarCheck, Moon, Sun, ChevronDown, Sparkles, Compass, Utensils 
 } from 'lucide-react';
 import SearchBar from '@/app/components/cafes/SearchBar';
 import { useSearchStore } from '@/stores/search.store';
 import { useAuthStore } from '@/stores/auth.store';
 import { useFavoritesStore } from '@/stores/favorites.store';
+import { useCartStore } from '@/stores/cart.store';
 import { useLanguage } from '@/context/LanguageContext';
 import { authService } from '@/services/auth.service';
 import toast from 'react-hot-toast';
@@ -32,6 +33,13 @@ export default function CustomerNavbar({
   const [mounted, setMounted] = useState(false);
 
   const user = useAuthStore((state) => state.user);
+  const { itemCount, fetchCart } = useCartStore();
+
+  useEffect(() => {
+    if (user) {
+      fetchCart();
+    }
+  }, [user]);
   const logout = useAuthStore((state) => state.logout);
 
   const [profileImage, setProfileImage] = useState(user?.avatar || user?.profile_image || null);
@@ -153,20 +161,41 @@ export default function CustomerNavbar({
           
           {/* Left: Logo & Brand Name */}
           <div className="flex items-center flex-shrink-0">
-            <Link href="/customer/cafe" className="flex items-center gap-2 sm:gap-2.5 hover:scale-105 active:scale-95 transition-transform duration-300">
+            <Link href="/" className="flex items-center gap-2.5 sm:gap-3 hover:scale-105 active:scale-95 transition-transform duration-300">
               <Image 
-                src="/Fahara%20Logo.jpeg" 
-                alt="Fahara Logo" 
-                width={36} 
-                height={36} 
-                className="object-contain drop-shadow-xs rounded-xl border border-[#DDB892]/40" 
+                src="/grab-it-logo.png" 
+                alt="Grab2GO Logo" 
+                width={46} 
+                height={46} 
+                className="object-contain drop-shadow-xs rounded-2xl border border-red-200 bg-white w-10 h-10 sm:w-11 sm:h-11 md:w-12 md:h-12" 
                 priority 
               />
               <div className="flex flex-col">
-                <span className="text-base sm:text-xl font-black text-[#4A2C11] leading-none tracking-wide">FAHARA</span>
-                <span className="text-[8px] sm:text-[10px] font-extrabold text-stone-400 mt-0.5 tracking-wider uppercase hidden sm:block">Cafe & Event Booking</span>
+                <span className="text-lg sm:text-2xl font-black leading-none tracking-tight">
+                  <span className="text-[#1E1E1E]">Grab</span>
+                  <span className="text-[#ED0014]">2GO</span>
+                </span>
+                <span className="text-[9px] sm:text-[10px] font-black text-[#ED0014] mt-0.5 tracking-widest uppercase hidden sm:block">
+                  CAFE &amp; EVENT BOOKING
+                </span>
               </div>
             </Link>
+
+            {/* Main Navigation Links */}
+            <nav className="hidden lg:flex items-center gap-1 ml-6 bg-stone-50 p-1 rounded-2xl border border-stone-200/80">
+              <Link 
+                href="/customer/food" 
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black transition-all ${pathname.startsWith('/customer/food') ? 'bg-[#E50914] text-white shadow-2xs' : 'text-[#E50914] hover:bg-white'}`}
+              >
+                <Utensils size={13} /> Food
+              </Link>
+              <Link 
+                href="/customer/cafe" 
+                className={`px-3 py-1.5 rounded-xl text-xs font-black transition-all ${(pathname.startsWith('/customer/cafe') || pathname.startsWith('/customer/discover')) ? 'bg-[#E50914] text-white shadow-2xs' : 'text-stone-600 hover:text-[#E50914] hover:bg-white'}`}
+              >
+                Discover Cafe
+              </Link>
+            </nav>
           </div>
 
           {/* Center: Search Bar (Desktop) */}
@@ -179,14 +208,30 @@ export default function CustomerNavbar({
           {/* Right: Notifications & Profile */}
           <div className="flex items-center gap-1.5 sm:gap-3 flex-shrink-0 ml-auto" suppressHydrationWarning>
 
-            {/* Fahara Loyalty Credit Badge */}
+            {/* Grab2GO Loyalty Credit Badge */}
             {user && (
-              <Link href="/customer/profile?tab=loyalty" title="View Fahara Loyalty Credits">
-                <div className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 bg-gradient-to-r from-amber-50 via-[#FFF8F0] to-orange-50 border border-amber-200/90 rounded-xl text-[#2C1810] font-black text-xs shadow-2xs hover:shadow-md hover:scale-105 active:scale-95 transition-all duration-300 cursor-pointer">
+              <Link href="/customer/profile?tab=loyalty" title="View Grab2GO Loyalty Credits">
+                <div className="flex items-center gap-1.5 px-3 py-1.5 bg-[#FFF5F5] hover:bg-red-50 border border-[#ED0014]/30 hover:border-[#ED0014] rounded-full text-[#1E1E1E] font-black text-xs shadow-2xs hover:shadow-md hover:scale-105 active:scale-95 transition-all duration-300 cursor-pointer">
                   <span className="text-amber-500 text-sm leading-none drop-shadow-2xs">⭐</span>
-                  <span className="font-extrabold text-[#4A2C11]">{loyaltyCredits}</span>
-                  <span className="text-[10px] text-[#6F4E37] font-bold hidden sm:inline uppercase tracking-wider">Credits</span>
+                  <span className="font-black text-[#ED0014]">{loyaltyCredits}</span>
+                  <span className="text-[10px] text-[#ED0014] font-black uppercase tracking-wider">Credits</span>
                 </div>
+              </Link>
+            )}
+
+            {/* Cart Button (hidden in cafe discovery tab) */}
+            {!(pathname.startsWith('/customer/cafe') || pathname.startsWith('/customer/discover')) && (
+              <Link 
+                href="/customer/cart" 
+                className="p-2 sm:p-2.5 bg-stone-50 border border-stone-200/80 rounded-xl text-stone-600 hover:bg-white hover:text-[#E50914] hover:shadow-md hover:scale-105 active:scale-95 transition-all duration-300 relative cursor-pointer"
+                title="Shopping Cart"
+              >
+                <ShoppingBag size={18} />
+                {itemCount > 0 && (
+                  <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 bg-[#E50914] text-white text-[10px] font-black rounded-full flex items-center justify-center border-2 border-white shadow-xs">
+                    {itemCount}
+                  </span>
+                )}
               </Link>
             )}
 
@@ -194,7 +239,7 @@ export default function CustomerNavbar({
             <div className="relative" ref={notifRef} suppressHydrationWarning>
               <button 
                 onClick={() => { setIsNotifMenuOpen(!isNotifMenuOpen); setIsProfileMenuOpen(false); }}
-                className="p-2 sm:p-2.5 bg-stone-50 border border-stone-200/80 rounded-xl text-stone-600 hover:bg-white hover:text-[#6F4E37] hover:shadow-md hover:scale-105 active:scale-95 transition-all duration-300 relative cursor-pointer" 
+                className="p-2 sm:p-2.5 bg-stone-50 border border-stone-200/80 rounded-xl text-stone-600 hover:bg-white hover:text-[#E50914] hover:shadow-md hover:scale-105 active:scale-95 transition-all duration-300 relative cursor-pointer" 
                 title={t('notifications', 'Notifications')}
                 suppressHydrationWarning
               >
@@ -215,10 +260,10 @@ export default function CustomerNavbar({
                     className="absolute right-0 mt-2 w-72 sm:w-80 bg-white rounded-2xl border border-stone-200 shadow-xl p-3 z-50 space-y-2"
                   >
                     <div className="flex items-center justify-between pb-2 border-b border-stone-100">
-                      <span className="font-black text-xs text-[#2C1810]">Notifications</span>
+                      <span className="font-black text-xs text-[#252525]">Notifications</span>
                       <div className="flex items-center gap-2">
                         {unreadNotifCount > 0 && (
-                          <span className="text-[10px] font-extrabold text-[#6F4E37] bg-[#FFF8F0] border border-[#DDB892]/40 px-2 py-0.5 rounded-md">
+                          <span className="text-[10px] font-extrabold text-[#E50914] bg-[#FFF5F5] border border-[#EF5350]/40 px-2 py-0.5 rounded-md">
                             {unreadNotifCount} New
                           </span>
                         )}
@@ -228,7 +273,7 @@ export default function CustomerNavbar({
                               await api.patch('/notifications/read-all').catch(() => null);
                               setNotifications(prev => prev.map(n => ({ ...n, is_read: true })));
                             }}
-                            className="text-[9px] font-bold text-stone-400 hover:text-[#6F4E37] transition-colors cursor-pointer"
+                            className="text-[9px] font-bold text-stone-400 hover:text-[#E50914] transition-colors cursor-pointer"
                           >
                             Mark Read
                           </button>
@@ -244,14 +289,14 @@ export default function CustomerNavbar({
                             className={`p-2.5 rounded-xl border flex items-start gap-2.5 transition-all ${
                               n.is_read 
                                 ? 'bg-stone-50/80 border-stone-100 text-stone-600' 
-                                : 'bg-[#FFF8F0]/70 border-[#DDB892]/40 text-[#2C1810]'
+                                : 'bg-[#FFF5F5]/70 border-[#EF5350]/40 text-[#252525]'
                             }`}
                           >
-                            <div className="p-1.5 bg-[#6F4E37] text-white rounded-lg shrink-0 mt-0.5">
+                            <div className="p-1.5 bg-[#E50914] text-white rounded-lg shrink-0 mt-0.5">
                               <Sparkles size={12} />
                             </div>
                             <div className="flex-1 min-w-0">
-                              <p className="text-xs font-bold text-[#2C1810] line-clamp-1">{n.title || n.subject || 'Notification'}</p>
+                              <p className="text-xs font-bold text-[#252525] line-clamp-1">{n.title || n.subject || 'Notification'}</p>
                               <p className="text-[10px] text-stone-500 mt-0.5 leading-relaxed line-clamp-2">{n.message || n.body || n.content}</p>
                               <span className="text-[9px] text-stone-400 font-semibold block mt-1">
                                 {n.created_at ? (typeof n.created_at === 'string' && n.created_at.includes('ago') ? n.created_at : new Date(n.created_at).toLocaleDateString()) : 'Recently'}
@@ -274,10 +319,10 @@ export default function CustomerNavbar({
             <div className="relative" ref={profileRef} suppressHydrationWarning>
               <button 
                 onClick={() => { setIsProfileMenuOpen(!isProfileMenuOpen); setIsNotifMenuOpen(false); }}
-                className="flex items-center gap-1.5 p-1 sm:p-1.5 bg-stone-50 hover:bg-[#FFF8F0] border border-stone-200/80 rounded-xl transition-all cursor-pointer active:scale-95"
+                className="flex items-center gap-1.5 p-1 sm:p-1.5 bg-stone-50 hover:bg-[#FFF5F5] border border-stone-200/80 rounded-xl transition-all cursor-pointer active:scale-95"
                 suppressHydrationWarning
               >
-                <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-tr from-[#4A2C11] to-[#6F4E37] text-white flex items-center justify-center font-black text-xs shadow-2xs border border-white overflow-hidden relative shrink-0">
+                <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-tr from-[#B71C1C] to-[#E50914] text-white flex items-center justify-center font-black text-xs shadow-2xs border border-white overflow-hidden relative shrink-0">
                   {profileImage && !imageError ? (
                     <img 
                       src={profileImage} 
@@ -303,8 +348,8 @@ export default function CustomerNavbar({
                     className="absolute right-0 mt-2 w-64 bg-white rounded-2xl border border-stone-200 shadow-xl p-2.5 z-50 space-y-1.5"
                   >
                     {/* User Summary Header */}
-                    <div className="p-2.5 rounded-xl bg-gradient-to-br from-[#FFF8F0] to-[#F5EBE0] border border-[#DDB892]/40 mb-1 flex items-center gap-2.5">
-                      <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-[#4A2C11] to-[#6F4E37] text-white flex items-center justify-center font-black text-xs shrink-0 overflow-hidden border border-white shadow-2xs">
+                    <div className="p-2.5 rounded-xl bg-gradient-to-br from-[#FFF5F5] to-[#F5EBE0] border border-[#EF5350]/40 mb-1 flex items-center gap-2.5">
+                      <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-[#B71C1C] to-[#E50914] text-white flex items-center justify-center font-black text-xs shrink-0 overflow-hidden border border-white shadow-2xs">
                         {profileImage && !imageError ? (
                           <img 
                             src={profileImage} 
@@ -316,8 +361,8 @@ export default function CustomerNavbar({
                         )}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="font-black text-xs text-[#2C1810] truncate">{userName}</p>
-                        <p className="text-[10px] font-bold text-[#6F4E37] truncate">{user?.email || 'Customer Account'}</p>
+                        <p className="font-black text-xs text-[#252525] truncate">{userName}</p>
+                        <p className="text-[10px] font-bold text-[#E50914] truncate">{user?.email || 'Customer Account'}</p>
                       </div>
                     </div>
 
@@ -327,21 +372,29 @@ export default function CustomerNavbar({
                       onClick={() => setIsProfileMenuOpen(false)}
                       className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-amber-900 bg-amber-50/70 border border-amber-200/60 hover:bg-amber-100/80 transition-colors"
                     >
-                      <span className="text-amber-500 text-sm">⭐</span> Fahara Credits ({loyaltyCredits})
+                      <span className="text-amber-500 text-sm">⭐</span> Grab2GO Credits ({loyaltyCredits})
                     </Link>
 
                     <Link 
                       href="/customer/profile" 
                       onClick={() => setIsProfileMenuOpen(false)}
-                      className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-stone-700 hover:bg-[#FFF8F0] hover:text-[#6F4E37] transition-colors"
+                      className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-stone-700 hover:bg-[#FFF5F5] hover:text-[#E50914] transition-colors"
                     >
                       <User size={14} /> Profile Dashboard
                     </Link>
 
                     <Link 
+                      href="/customer/orders" 
+                      onClick={() => setIsProfileMenuOpen(false)}
+                      className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-stone-700 hover:bg-[#FFF5F5] hover:text-[#E50914] transition-colors"
+                    >
+                      <ShoppingBag size={14} /> My Food Orders
+                    </Link>
+
+                    <Link 
                       href="/customer/bookings" 
                       onClick={() => setIsProfileMenuOpen(false)}
-                      className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-stone-700 hover:bg-[#FFF8F0] hover:text-[#6F4E37] transition-colors"
+                      className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-stone-700 hover:bg-[#FFF5F5] hover:text-[#E50914] transition-colors"
                     >
                       <CalendarCheck size={14} /> My Bookings
                     </Link>
@@ -349,7 +402,7 @@ export default function CustomerNavbar({
                     <Link 
                       href="/customer/favorites" 
                       onClick={() => setIsProfileMenuOpen(false)}
-                      className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-stone-700 hover:bg-[#FFF8F0] hover:text-[#6F4E37] transition-colors"
+                      className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-stone-700 hover:bg-[#FFF5F5] hover:text-[#E50914] transition-colors"
                     >
                       <Heart size={14} /> Saved Favorites
                     </Link>

@@ -17,10 +17,10 @@ export default function HomePopularPlaces() {
       {/* SECTION HEADER */}
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8 sm:mb-12">
         <div>
-          <span className="text-[11px] font-black uppercase tracking-widest text-[#6F4E37] bg-[#FFF8F0] px-3.5 py-1.5 rounded-full border border-[#DDB892]/50 inline-block mb-3 shadow-2xs">
+          <span className="text-[11px] font-black uppercase tracking-widest text-[#E50914] bg-[#FFF5F5] px-3.5 py-1.5 rounded-full border border-[#EF5350]/50 inline-block mb-3 shadow-2xs">
             POPULAR PLACES
           </span>
-          <h2 className="text-2xl sm:text-4xl font-black text-[#2C1810] tracking-tight">
+          <h2 className="text-2xl sm:text-4xl font-black text-[#252525] tracking-tight">
             Popular Places
           </h2>
           <p className="text-stone-600 font-medium text-xs sm:text-sm mt-1.5">
@@ -30,7 +30,7 @@ export default function HomePopularPlaces() {
 
         <Link
           href="/customer/cafe"
-          className="inline-flex items-center gap-1.5 text-xs font-black text-[#6F4E37] hover:text-[#4A2C11] transition-colors self-start sm:self-auto"
+          className="inline-flex items-center gap-1.5 text-xs font-black text-[#E50914] hover:text-[#B71C1C] transition-colors self-start sm:self-auto"
         >
           <span>View All Places</span>
           <ArrowRight size={14} />
@@ -49,18 +49,18 @@ export default function HomePopularPlaces() {
           ))}
         </div>
       ) : isError || cafesList.length === 0 ? (
-        <div className="bg-white rounded-3xl border border-[#E8DED5] p-8 sm:p-12 text-center max-w-xl mx-auto space-y-3">
-          <div className="w-12 h-12 rounded-2xl bg-[#FFF8F0] text-[#6F4E37] flex items-center justify-center mx-auto">
+        <div className="bg-white rounded-3xl border border-[#FEE2E2] p-8 sm:p-12 text-center max-w-xl mx-auto space-y-3">
+          <div className="w-12 h-12 rounded-2xl bg-[#FFF5F5] text-[#E50914] flex items-center justify-center mx-auto">
             <Store size={24} />
           </div>
-          <h3 className="font-black text-lg text-[#2C1810]">No Popular Places Found</h3>
+          <h3 className="font-black text-lg text-[#252525]">No Popular Places Found</h3>
           <p className="text-xs font-medium text-stone-500">
-            Check back soon as new verified partner cafes and venues join Fahara in your city.
+            Check back soon as new verified partner cafes and venues join Grab2GO in your city.
           </p>
           <div className="pt-2">
             <Link
               href="/customer/cafe"
-              className="inline-flex items-center gap-1.5 px-5 py-2.5 bg-[#6F4E37] text-white rounded-xl text-xs font-black hover:bg-[#4A2C11] transition-colors"
+              className="inline-flex items-center gap-1.5 px-5 py-2.5 bg-[#E50914] text-white rounded-xl text-xs font-black hover:bg-[#B71C1C] transition-colors"
             >
               <span>Explore All Cafes</span>
             </Link>
@@ -78,7 +78,7 @@ export default function HomePopularPlaces() {
               <motion.div
                 key={cafe.id}
                 whileHover={{ y: -6 }}
-                className="bg-white rounded-3xl border border-[#E8DED5] shadow-2xs hover:shadow-lg transition-all flex flex-col justify-between overflow-hidden group"
+                className="bg-white rounded-3xl border border-[#FEE2E2] shadow-2xs hover:shadow-lg transition-all flex flex-col justify-between overflow-hidden group"
               >
                 <div>
                   <div className="relative aspect-[4/3] w-full overflow-hidden bg-stone-900">
@@ -89,7 +89,7 @@ export default function HomePopularPlaces() {
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
                     
-                    <div className="absolute top-3 left-3 bg-white/95 backdrop-blur-md px-2.5 py-1 rounded-xl shadow-xs border border-stone-200 text-[#2C1810] flex items-center gap-1">
+                    <div className="absolute top-3 left-3 bg-white/95 backdrop-blur-md px-2.5 py-1 rounded-xl shadow-xs border border-stone-200 text-[#252525] flex items-center gap-1">
                       <Star size={12} className="fill-amber-500 text-amber-500" />
                       <span className="text-[11px] font-black">{rating}</span>
                       {reviewsCount > 0 && (
@@ -97,20 +97,20 @@ export default function HomePopularPlaces() {
                       )}
                     </div>
 
-                    <div className="absolute bottom-3 right-3 bg-white/95 backdrop-blur-md px-2.5 py-1 rounded-xl text-xs font-black text-[#6F4E37]">
+                    <div className="absolute bottom-3 right-3 bg-white/95 backdrop-blur-md px-2.5 py-1 rounded-xl text-xs font-black text-[#E50914]">
                       {price}
                     </div>
                   </div>
 
                   <div className="p-4 space-y-1.5 text-left">
-                    <span className="text-[10px] font-black uppercase text-[#6F4E37] bg-[#FFF8F0] px-2 py-0.5 rounded-md border border-[#DDB892]/40 inline-block">
+                    <span className="text-[10px] font-black uppercase text-[#E50914] bg-[#FFF5F5] px-2 py-0.5 rounded-md border border-[#EF5350]/40 inline-block">
                       {cafe.category || 'Cafe & Venue'}
                     </span>
-                    <h3 className="font-black text-base text-[#2C1810] line-clamp-1 group-hover:text-[#6F4E37] transition-colors">
+                    <h3 className="font-black text-base text-[#252525] line-clamp-1 group-hover:text-[#E50914] transition-colors">
                       {cafe.name}
                     </h3>
                     <p className="text-xs font-medium text-stone-500 flex items-center gap-1 line-clamp-1">
-                      <MapPin size={13} className="text-[#6F4E37] shrink-0" />
+                      <MapPin size={13} className="text-[#E50914] shrink-0" />
                       <span>{cafe.city || cafe.address || 'India'}</span>
                     </p>
                   </div>
@@ -119,7 +119,7 @@ export default function HomePopularPlaces() {
                 <div className="p-4 pt-0">
                   <Link
                     href={`/customer/cafe?search=${encodeURIComponent(cafe.name)}`}
-                    className="w-full py-2.5 px-4 bg-[#FFF8F0] hover:bg-[#6F4E37] text-[#6F4E37] hover:text-white rounded-2xl text-xs font-black transition-all flex items-center justify-center gap-1.5 border border-[#DDB892]/40"
+                    className="w-full py-2.5 px-4 bg-[#FFF5F5] hover:bg-[#E50914] text-[#E50914] hover:text-white rounded-2xl text-xs font-black transition-all flex items-center justify-center gap-1.5 border border-[#EF5350]/40"
                   >
                     <span>View Details</span>
                     <ArrowRight size={13} />

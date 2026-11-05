@@ -35,12 +35,12 @@ export default function DiscountsSection({ cafe, isMobileView = false }) {
   return (
     <div className={isMobileView ? "space-y-4" : "bg-white/95 backdrop-blur-xl border border-stone-200/90 rounded-3xl p-6 sm:p-8 space-y-6 shadow-2xs"}>
       <div className="flex items-center gap-3 pb-3 border-b border-stone-200/60">
-        <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-gradient-to-br from-[#6F4E37] to-[#A67B5B] text-white flex items-center justify-center font-extrabold shadow-md shrink-0">
+        <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-gradient-to-br from-[#E50914] to-[#B71C1C] text-white flex items-center justify-center font-extrabold shadow-md shrink-0">
           <Gift className="w-5 h-5 sm:w-6 sm:h-6" />
         </div>
         <div className="min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
-            <h3 className="text-sm sm:text-lg font-extrabold text-[#2C1810]">Active Deals & Promotional Offers</h3>
+            <h3 className="text-sm sm:text-lg font-extrabold text-[#252525]">Active Deals & Promotional Offers</h3>
             <span className="px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-900 text-[9px] sm:text-[10px] font-black uppercase border border-amber-300/40">
               {discountsList.length} Active Deals
             </span>
@@ -50,9 +50,9 @@ export default function DiscountsSection({ cafe, isMobileView = false }) {
       </div>
 
       {discountsList.length === 0 ? (
-        <div className="text-center py-10 space-y-3 bg-[#FFF8F0]/60 rounded-2xl border border-dashed border-[#DDB892]/60">
+        <div className="text-center py-10 space-y-3 bg-[#FFF5F5]/60 rounded-2xl border border-dashed border-[#EF5350]/60">
           <Gift className="w-10 h-10 text-stone-300 mx-auto" />
-          <p className="text-xs sm:text-sm font-black text-[#2C1810]">The venue is not providing discounts</p>
+          <p className="text-xs sm:text-sm font-black text-[#252525]">The venue is not providing discounts</p>
           <p className="text-[11px] text-stone-500 max-w-sm mx-auto">
             This venue currently has no active promotional deals or discount offers.
           </p>
@@ -74,15 +74,15 @@ export default function DiscountsSection({ cafe, isMobileView = false }) {
                   <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase ${theme.badgeBg}`}>
                     Special Deal #{idx + 1}
                   </span>
-                  <Icon className="w-4 h-4 text-[#6F4E37]" />
+                  <Icon className="w-4 h-4 text-[#E50914]" />
                 </div>
 
                 <div>
-                  <h4 className="text-sm font-extrabold text-[#2C1810] line-clamp-1">
+                  <h4 className="text-sm font-extrabold text-[#252525] line-clamp-1">
                     {offer.title || offer.name || 'Venue Booking Offer'}
                   </h4>
                   <div className="mt-2 flex items-baseline gap-1.5">
-                    <span className="text-2xl font-black text-[#6F4E37]">
+                    <span className="text-2xl font-black text-[#E50914]">
                       {isPercent ? `${offer.amount || 0}% OFF` : `₹${offer.amount || 0} OFF`}
                     </span>
                     <span className="text-[11px] font-bold text-stone-500 uppercase">
@@ -93,7 +93,7 @@ export default function DiscountsSection({ cafe, isMobileView = false }) {
 
                 <div className="pt-2 border-t border-stone-200/50 flex items-center justify-between text-[11px] text-stone-500 font-medium">
                   <span>Applied at Checkout</span>
-                  <ArrowRight className="w-3.5 h-3.5 text-[#6F4E37]" />
+                  <ArrowRight className="w-3.5 h-3.5 text-[#E50914]" />
                 </div>
               </motion.div>
             );

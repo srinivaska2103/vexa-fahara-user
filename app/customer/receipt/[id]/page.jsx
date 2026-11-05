@@ -19,15 +19,15 @@ export default function ReceiptPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-[#FFF8F0] flex items-center justify-center">
-        <Loader2 className="animate-spin text-[#6F4E37]" size={40} />
+      <div className="min-h-screen bg-[#FFF5F5] flex items-center justify-center">
+        <Loader2 className="animate-spin text-[#E50914]" size={40} />
       </div>
     );
   }
 
   if (error || !response?.data) {
     return (
-      <div className="min-h-screen bg-[#FFF8F0] flex items-center justify-center p-4">
+      <div className="min-h-screen bg-[#FFF5F5] flex items-center justify-center p-4">
         <div className="bg-white/95 backdrop-blur-xl rounded-3xl p-8 border border-rose-100 shadow-md text-center max-w-md w-full">
           <p className="text-xl font-black text-rose-600 mb-2">Failed to Load Receipt</p>
           <p className="text-xs text-stone-500 font-medium">The requested receipt could not be found or an error occurred.</p>
@@ -162,7 +162,7 @@ export default function ReceiptPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#FFF8F0] font-sans antialiased selection:bg-[#6F4E37] selection:text-white pb-24 lg:pb-16">
+    <div className="min-h-screen bg-[#FFF5F5] font-sans antialiased selection:bg-[#E50914] selection:text-white pb-24 lg:pb-16">
       <CustomerNavbar showSearch={true} showViewToggles={false} />
       <main className="container mx-auto px-2 sm:px-6 lg:px-8 py-4 sm:py-6 max-w-full overflow-x-hidden print:p-0 print:m-0 print:max-w-full print:overflow-visible">
         <ReceiptCard receiptData={receiptData} />

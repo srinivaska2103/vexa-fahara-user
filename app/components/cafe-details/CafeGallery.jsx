@@ -118,11 +118,11 @@ export default function CafeGallery({ cafe }) {
   // NO IMAGES STATE
   if (allImages.length === 0) {
     return (
-      <div className="w-full h-[260px] sm:h-[360px] md:h-[420px] bg-[#FFF8F0] border border-[#DDB892]/40 rounded-3xl flex flex-col items-center justify-center text-[#2C1810]/60 mb-6 shadow-xs relative overflow-hidden">
-        <div className="w-16 h-16 rounded-full bg-[#6F4E37]/10 flex items-center justify-center mb-3">
-          <ImageIcon size={32} className="text-[#6F4E37] opacity-60" />
+      <div className="w-full h-[260px] sm:h-[360px] md:h-[420px] bg-[#FFF5F5] border border-[#EF5350]/40 rounded-3xl flex flex-col items-center justify-center text-[#252525]/60 mb-6 shadow-xs relative overflow-hidden">
+        <div className="w-16 h-16 rounded-full bg-[#E50914]/10 flex items-center justify-center mb-3">
+          <ImageIcon size={32} className="text-[#E50914] opacity-60" />
         </div>
-        <span className="font-extrabold text-[#2C1810] text-sm tracking-tight">Cafe photo unavailable</span>
+        <span className="font-extrabold text-[#252525] text-sm tracking-tight">Cafe photo unavailable</span>
         <p className="text-xs text-text/50 mt-1">Check back later for gallery updates</p>
 
         {/* Floating Wishlist Button */}
@@ -136,7 +136,7 @@ export default function CafeGallery({ cafe }) {
             size={20} 
             className={cn(
               "transition-colors",
-              isFav ? "fill-[#6F4E37] text-[#6F4E37]" : "text-[#2C1810] stroke-[2]"
+              isFav ? "fill-[#E50914] text-[#E50914]" : "text-[#252525] stroke-[2]"
             )} 
           />
         </button>
@@ -203,9 +203,9 @@ export default function CafeGallery({ cafe }) {
             className="w-full h-full cursor-pointer relative"
           >
             {hasError ? (
-              <div className="w-full h-full bg-[#FFF8F0] flex flex-col items-center justify-center text-[#2C1810]/60 p-4">
-                <ImageIcon className="w-12 h-12 text-[#6F4E37] opacity-40 mb-2" />
-                <span className="text-xs font-bold text-[#2C1810]">Image failed to load</span>
+              <div className="w-full h-full bg-[#FFF5F5] flex flex-col items-center justify-center text-[#252525]/60 p-4">
+                <ImageIcon className="w-12 h-12 text-[#E50914] opacity-40 mb-2" />
+                <span className="text-xs font-bold text-[#252525]">Image failed to load</span>
               </div>
             ) : (
               <img
@@ -239,7 +239,7 @@ export default function CafeGallery({ cafe }) {
             size={20} 
             className={cn(
               "transition-colors",
-              isFav ? "fill-[#6F4E37] text-[#6F4E37]" : "text-[#2C1810] stroke-[2.2]"
+              isFav ? "fill-[#E50914] text-[#E50914]" : "text-[#252525] stroke-[2.2]"
             )} 
           />
         </button>
@@ -258,9 +258,9 @@ export default function CafeGallery({ cafe }) {
           type="button"
           onClick={() => openLightbox(currentIndex)}
           aria-label="Open cafe photo gallery fullscreen"
-          className="absolute bottom-3.5 right-3.5 sm:bottom-4 sm:right-4 bg-white/95 backdrop-blur-md px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl shadow-md border border-stone-200/80 flex items-center gap-1.5 text-xs font-black text-[#2C1810] hover:text-[#6F4E37] transition-all z-20 cursor-pointer active:scale-95"
+          className="absolute bottom-3.5 right-3.5 sm:bottom-4 sm:right-4 bg-white/95 backdrop-blur-md px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl shadow-md border border-stone-200/80 flex items-center gap-1.5 text-xs font-black text-[#252525] hover:text-[#E50914] transition-all z-20 cursor-pointer active:scale-95"
         >
-          <Maximize2 size={13} className="text-[#6F4E37]" />
+          <Maximize2 size={13} className="text-[#E50914]" />
           <span className="hidden sm:inline">Fullscreen</span>
         </button>
 
@@ -274,7 +274,7 @@ export default function CafeGallery({ cafe }) {
                 prevImage();
               }}
               aria-label="Previous cafe photo"
-              className="hidden md:flex absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/80 hover:bg-white text-[#2C1810] shadow-md backdrop-blur-md items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-20 cursor-pointer"
+              className="hidden md:flex absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/80 hover:bg-white text-[#252525] shadow-md backdrop-blur-md items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-20 cursor-pointer"
             >
               <ChevronLeft size={22} />
             </button>
@@ -286,7 +286,7 @@ export default function CafeGallery({ cafe }) {
                 nextImage();
               }}
               aria-label="Next cafe photo"
-              className="hidden md:flex absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/80 hover:bg-white text-[#2C1810] shadow-md backdrop-blur-md items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-20 cursor-pointer"
+              className="hidden md:flex absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/80 hover:bg-white text-[#252525] shadow-md backdrop-blur-md items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-20 cursor-pointer"
             >
               <ChevronRight size={22} />
             </button>
@@ -308,8 +308,8 @@ export default function CafeGallery({ cafe }) {
                 className={cn(
                   "transition-all cursor-pointer rounded-full",
                   isActive 
-                    ? "w-2.5 h-2.5 bg-[#6F4E37] scale-125 shadow-2xs" 
-                    : "w-2 h-2 bg-[#6F4E37]/30 hover:bg-[#6F4E37]/60"
+                    ? "w-2.5 h-2.5 bg-[#E50914] scale-125 shadow-2xs" 
+                    : "w-2 h-2 bg-[#E50914]/30 hover:bg-[#E50914]/60"
                 )}
               />
             );

@@ -2,7 +2,8 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { useSearchStore } from '@/stores/search.store';
 import { useAuthStore } from '@/stores/auth.store';
 import { 
@@ -102,11 +103,16 @@ export default function FilterSidebar({ showNavigation = true, showHeader = true
   const pathname = usePathname();
   const { language, setLanguage, t } = useLanguage();
   const [showSupportModal, setShowSupportModal] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
   const favoriteCafes = useFavoritesStore((state) => state.favoriteCafes || []);
   const favoriteEvents = useFavoritesStore((state) => state.favoriteEvents || []);
 
   const user = useAuthStore((state) => state.user);
-  const userName = user?.name || user?.full_name || user?.username || (user?.email ? user.email.split('@')[0] : 'Fahara Customer');
+  const userName = user?.name || user?.full_name || user?.username || (user?.email ? user.email.split('@')[0] : 'Grab2GO Customer');
   const userRoleOrEmail = user?.email || 'Customer Account';
   const userInitials = userName ? userName.substring(0, 2).toUpperCase() : 'FC';
 
@@ -180,17 +186,17 @@ export default function FilterSidebar({ showNavigation = true, showHeader = true
   ];
 
   return (
-    <div className={`bg-white/95 backdrop-blur-xl rounded-3xl p-4 sm:p-5 shadow-[0_8px_30px_rgba(0,0,0,0.04)] border border-stone-200/90 flex flex-col ${isNonScrollable || isBookingsPage ? 'overflow-hidden sticky top-24 self-start' : showHeader ? 'max-h-[calc(100vh-7rem)] overflow-y-auto sticky top-24 self-start' : 'h-full overflow-y-auto'} space-y-4 font-sans selection:bg-[#6F4E37] selection:text-white transition-all`}>
+    <div className={`bg-white rounded-3xl p-4 sm:p-5 shadow-[0_8px_30px_rgba(229,9,20,0.03)] border border-red-100 flex flex-col ${isNonScrollable || isBookingsPage ? 'overflow-hidden sticky top-24 self-start' : showHeader ? 'max-h-[calc(100vh-7rem)] overflow-y-auto sticky top-24 self-start' : 'h-full overflow-y-auto'} space-y-4 font-sans selection:bg-[#E50914] selection:text-white transition-all`}>
       
       {/* 🔹 HEADER TITLE / FILTERS SECTION HEADER */}
       {showHeader && (
         <div id="filters-section" className="flex items-center justify-between px-1 shrink-0 pt-1 border-b border-stone-100 pb-3">
           <div className="flex items-center gap-2.5">
-            <div className="p-2 bg-[#FFF8F0] border border-[#DDB892]/60 rounded-xl text-[#6F4E37] shadow-2xs">
+            <div className="p-2 bg-[#FFF5F5] border border-[#EF5350]/60 rounded-xl text-[#E50914] shadow-2xs">
               {isProfilePage ? <User size={16} /> : isBookingsPage ? <CalendarCheck size={16} /> : isFavoritesPage ? <Heart size={16} /> : <SlidersHorizontal size={16} />}
             </div>
             <div>
-              <h3 className="font-black text-[#2C1810] text-sm tracking-tight">
+              <h3 className="font-black text-[#252525] text-sm tracking-tight">
                 {isProfilePage ? 'User Profile' : isBookingsPage ? 'My Dashboard' : isFavoritesPage ? 'Your Favorites' : 'Filter Spaces'}
               </h3>
               <p className="text-[10px] text-stone-400 font-medium">Refine your search options</p>
@@ -219,17 +225,17 @@ export default function FilterSidebar({ showNavigation = true, showHeader = true
             {/* USER QUICK CARD */}
             <motion.div 
               whileHover={{ y: -2 }}
-              className="bg-gradient-to-br from-[#FFF8F0] via-[#F5EBE0] to-[#E6D5C3] p-3.5 rounded-2xl border border-[#DDB892]/50 shadow-2xs space-y-2.5 transition-all"
+              className="bg-gradient-to-br from-white via-[#FFF5F5] to-[#FEE2E2] p-3.5 rounded-2xl border border-[#FEE2E2] shadow-2xs space-y-2.5 transition-all"
             >
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-[#4A2C11] to-[#6F4E37] text-white flex items-center justify-center font-black text-xs shadow-md tracking-wider flex-shrink-0 border-2 border-white">
+                <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-[#B71C1C] to-[#E50914] text-white flex items-center justify-center font-black text-xs shadow-md tracking-wider flex-shrink-0 border-2 border-white">
                   {userInitials}
                 </div>
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-1">
-                    <span className="font-black text-xs text-[#2C1810] truncate">{userName}</span>
+                    <span className="font-black text-xs text-[#252525] truncate">{userName}</span>
                   </div>
-                  <span className="text-[10px] font-bold text-[#6F4E37] block truncate">{userRoleOrEmail}</span>
+                  <span className="text-[10px] font-bold text-[#E50914] block truncate">{userRoleOrEmail}</span>
                 </div>
               </div>
             </motion.div>
@@ -240,7 +246,7 @@ export default function FilterSidebar({ showNavigation = true, showHeader = true
                 <h4 className="font-black text-stone-400 text-[9px] uppercase tracking-widest px-1 mb-1">PROFILE NAVIGATION</h4>
                 {[
                   { id: 'personal', label: 'Personal Information', icon: User },
-                  { id: 'loyalty', label: 'Fahara Credits', icon: Award },
+                  { id: 'loyalty', label: 'Grab2GO Credits', icon: Award },
                   { id: 'addresses', label: 'Addresses', icon: MapPin },
                   { id: 'security', label: 'Security', icon: Shield },
                   { id: 'notifications', label: 'Notifications', icon: Bell },
@@ -255,12 +261,12 @@ export default function FilterSidebar({ showNavigation = true, showHeader = true
                       onClick={() => onTabChange && onTabChange(item.id)}
                       className={`w-full relative flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-xs font-bold transition-all cursor-pointer ${
                         isActive
-                          ? 'bg-[#6F4E37] text-white shadow-md font-extrabold'
+                          ? 'bg-[#E50914] text-white shadow-md font-extrabold'
                           : 'text-stone-700 hover:bg-stone-100/80 hover:text-stone-900 bg-stone-50/50 border border-stone-200/50'
                       }`}
                     >
                       <div className="flex items-center gap-2.5 z-10">
-                        <Icon size={15} className={isActive ? 'text-white' : 'text-[#6F4E37]'} />
+                        <Icon size={15} className={isActive ? 'text-white' : 'text-[#E50914]'} />
                         <span>{item.label}</span>
                       </div>
                       <ChevronRight size={14} className={`z-10 transition-transform ${isActive ? 'text-white translate-x-0.5' : 'text-stone-400'}`} />
@@ -277,13 +283,13 @@ export default function FilterSidebar({ showNavigation = true, showHeader = true
                   <div 
                     onClick={() => onTabChange && onTabChange('cafes')}
                     className={`border p-3 rounded-2xl flex flex-col items-start shadow-2xs cursor-pointer transition-all ${
-                      activeTab === 'cafes' ? 'bg-[#FFF8F0] border-[#6F4E37] ring-1 ring-[#6F4E37]' : 'bg-[#FFF8F0]/60 border-[#DDB892]/60 hover:border-[#6F4E37]'
+                      activeTab === 'cafes' ? 'bg-[#FFF5F5] border-[#E50914] ring-1 ring-[#E50914]' : 'bg-[#FFF5F5]/60 border-[#EF5350]/60 hover:border-[#E50914]'
                     }`}
                   >
-                    <span className="text-[9px] font-extrabold text-[#6F4E37] uppercase tracking-wider flex items-center gap-1">
+                    <span className="text-[9px] font-extrabold text-[#E50914] uppercase tracking-wider flex items-center gap-1">
                       <Coffee size={10} /> Saved Cafes
                     </span>
-                    <span className="text-lg font-black text-[#2C1810] mt-0.5">{favoriteCafes.length}</span>
+                    <span className="text-lg font-black text-[#252525] mt-0.5">{favoriteCafes.length}</span>
                   </div>
 
                   <div 
@@ -304,7 +310,7 @@ export default function FilterSidebar({ showNavigation = true, showHeader = true
                   <motion.div 
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.96 }}
-                    className="p-3.5 rounded-2xl bg-gradient-to-r from-[#4A2C11] to-[#6F4E37] text-white font-extrabold text-xs shadow-md flex items-center justify-between cursor-pointer"
+                    className="p-3.5 rounded-2xl bg-gradient-to-r from-[#B71C1C] to-[#E50914] text-white font-extrabold text-xs shadow-md flex items-center justify-between cursor-pointer"
                   >
                     <div className="flex items-center gap-2">
                       <PlusCircle size={15} />
@@ -318,21 +324,21 @@ export default function FilterSidebar({ showNavigation = true, showHeader = true
               <div>
                 <h4 className="font-black text-stone-400 mb-2 text-[9px] uppercase tracking-widest px-1">BOOKING METRICS</h4>
                 <div className="grid grid-cols-2 gap-2">
-                  <div className="bg-stone-50 border border-stone-200/60 p-2.5 rounded-2xl flex flex-col items-start">
+                  <div className="bg-white border border-[#FEE2E2] p-2.5 rounded-2xl flex flex-col items-start shadow-2xs">
                     <span className="text-[9px] font-extrabold text-stone-400 uppercase tracking-wider">Total</span>
-                    <span className="text-base font-black text-[#2C1810] mt-0.5">{bookingStats?.total || 0}</span>
+                    <span className="text-base font-black text-[#252525] mt-0.5">{bookingStats?.total || 0}</span>
                   </div>
-                  <div className="bg-emerald-50/80 border border-emerald-200/60 p-2.5 rounded-2xl flex flex-col items-start">
-                    <span className="text-[9px] font-extrabold text-emerald-700 uppercase tracking-wider">Upcoming</span>
-                    <span className="text-base font-black text-emerald-800 mt-0.5">{bookingStats?.upcoming || 0}</span>
+                  <div className="bg-[#FFF5F5] border border-[#FEE2E2] p-2.5 rounded-2xl flex flex-col items-start shadow-2xs">
+                    <span className="text-[9px] font-extrabold text-[#E50914] uppercase tracking-wider">Upcoming</span>
+                    <span className="text-base font-black text-[#E50914] mt-0.5">{bookingStats?.upcoming || 0}</span>
                   </div>
-                  <div className="bg-blue-50/80 border border-blue-200/60 p-2.5 rounded-2xl flex flex-col items-start">
-                    <span className="text-[9px] font-extrabold text-blue-700 uppercase tracking-wider">Completed</span>
-                    <span className="text-base font-black text-blue-800 mt-0.5">{bookingStats?.completed || 0}</span>
+                  <div className="bg-white border border-[#FEE2E2] p-2.5 rounded-2xl flex flex-col items-start shadow-2xs">
+                    <span className="text-[9px] font-extrabold text-stone-600 uppercase tracking-wider">Completed</span>
+                    <span className="text-base font-black text-[#252525] mt-0.5">{bookingStats?.completed || 0}</span>
                   </div>
-                  <div className="bg-rose-50/80 border border-rose-200/60 p-2.5 rounded-2xl flex flex-col items-start">
-                    <span className="text-[9px] font-extrabold text-rose-700 uppercase tracking-wider">Cancelled</span>
-                    <span className="text-base font-black text-rose-800 mt-0.5">{bookingStats?.cancelled || 0}</span>
+                  <div className="bg-[#FFF5F5] border border-[#FEE2E2] p-2.5 rounded-2xl flex flex-col items-start shadow-2xs">
+                    <span className="text-[9px] font-extrabold text-stone-500 uppercase tracking-wider">Cancelled</span>
+                    <span className="text-base font-black text-[#252525] mt-0.5">{bookingStats?.cancelled || 0}</span>
                   </div>
                 </div>
               </div>
@@ -343,10 +349,10 @@ export default function FilterSidebar({ showNavigation = true, showHeader = true
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.96 }}
               onClick={() => setShowSupportModal(true)}
-              className="p-3 rounded-2xl bg-amber-50/80 border border-amber-200/60 flex items-center justify-between text-stone-700 cursor-pointer shadow-2xs hover:bg-amber-100/80 transition-all"
+              className="p-3 rounded-2xl bg-white border border-[#FEE2E2] flex items-center justify-between text-stone-700 cursor-pointer shadow-2xs hover:bg-[#FFF5F5] transition-all"
             >
               <div className="flex items-center gap-2.5">
-                <Headphones size={18} className="text-[#6F4E37] flex-shrink-0" />
+                <Headphones size={18} className="text-[#E50914] flex-shrink-0" />
                 <div>
                   <span className="text-xs font-black block text-stone-900 leading-tight">Need Help?</span>
                   <span className="text-[10px] text-stone-500 font-medium">Click for 24/7 Support</span>
@@ -392,7 +398,7 @@ export default function FilterSidebar({ showNavigation = true, showHeader = true
                 >
                   <span className="text-[10px] font-black text-stone-800 tracking-tight">Today</span>
                   <div className={`w-8 h-4.5 rounded-full p-0.5 transition-colors duration-300 relative flex items-center ${
-                    availableToday ? 'bg-[#6F4E37]' : 'bg-stone-200'
+                    availableToday ? 'bg-[#E50914]' : 'bg-stone-200'
                   }`}>
                     <motion.div 
                       layout
@@ -410,7 +416,7 @@ export default function FilterSidebar({ showNavigation = true, showHeader = true
               <div className="flex items-center justify-between px-0.5">
                 <h4 className="font-extrabold text-stone-400 text-[10px] uppercase tracking-widest">Amenities</h4>
                 {amenities.length > 0 && (
-                  <span className="text-[10px] font-black text-[#6F4E37] bg-[#FFF8F0] border border-[#DDB892]/60 px-2 py-0.5 rounded-full">
+                  <span className="text-[10px] font-black text-[#E50914] bg-[#FFF5F5] border border-[#EF5350]/60 px-2 py-0.5 rounded-full">
                     {amenities.length} Selected
                   </span>
                 )}
@@ -451,21 +457,21 @@ export default function FilterSidebar({ showNavigation = true, showHeader = true
             </div>
 
             {/* INTERACTIVE HELP & SUPPORT MODAL TRIGGER */}
-            <div className="pt-2 border-t border-stone-200/80">
+            <div className="pt-2 border-t border-red-100">
               <motion.div 
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.96 }}
                 onClick={() => setShowSupportModal(true)}
-                className="p-3 rounded-2xl bg-amber-50/80 border border-amber-200/60 flex items-center justify-between text-stone-700 cursor-pointer shadow-2xs hover:bg-amber-100/80 transition-all"
+                className="p-3 rounded-2xl bg-[#FFF5F5] border border-red-100 flex items-center justify-between text-stone-700 cursor-pointer shadow-2xs hover:bg-red-50 transition-all"
               >
                 <div className="flex items-center gap-2.5">
-                  <Headphones size={18} className="text-[#6F4E37] flex-shrink-0" />
+                  <Headphones size={18} className="text-[#E50914] flex-shrink-0" />
                   <div>
-                    <span className="text-xs font-black block text-[#2C1810] leading-tight">Need Help?</span>
-                    <span className="text-[10px] text-stone-500 font-medium">Click for 24/7 Support</span>
+                    <span className="text-xs font-black block text-[#252525] leading-tight">Need Help?</span>
+                    <span className="text-[10px] text-[#E50914] font-medium">Click for 24/7 Support</span>
                   </div>
                 </div>
-                <ChevronDown size={14} className="text-stone-400 -rotate-90" />
+                <ChevronDown size={14} className="text-red-400 -rotate-90" />
               </motion.div>
             </div>
           </>
@@ -474,7 +480,7 @@ export default function FilterSidebar({ showNavigation = true, showHeader = true
       </div>
 
       {/* 🔹 BOTTOM PLATFORM NAVIGATION TABS (MOVED TO BOTTOM OF ASIDE NAV) */}
-      <div className="hidden lg:grid bg-[#FFF8F0] p-1.5 rounded-2xl border border-[#DDB892]/40 grid-cols-2 gap-1.5 w-full shrink-0 shadow-2xs pt-2 mt-auto">
+      <div className="hidden lg:grid bg-white p-1.5 rounded-2xl border border-red-100 grid-cols-2 gap-1.5 w-full shrink-0 shadow-2xs pt-2 mt-auto">
         {[
           { id: 'discover', label: 'Discover', href: '/customer/cafe', icon: Compass, isActive: isDiscoverActive },
           { id: 'bookings', label: 'Bookings', href: '/customer/bookings', icon: CalendarCheck, isActive: isBookingsActive },
@@ -489,11 +495,11 @@ export default function FilterSidebar({ showNavigation = true, showHeader = true
                 whileTap={{ scale: 0.95 }}
                 className={`flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-xs font-black transition-all cursor-pointer w-full ${
                   item.isActive
-                    ? 'bg-[#5C3D28] text-white shadow-xs'
-                    : 'text-[#4A3222] hover:bg-white hover:text-[#5C3D28]'
+                    ? 'bg-[#E50914] text-white shadow-xs'
+                    : 'text-stone-700 hover:bg-[#FFF5F5] hover:text-[#E50914]'
                 }`}
               >
-                <Icon size={14} className={`shrink-0 ${item.isActive ? 'text-white' : 'text-[#6F4E37]'}`} />
+                <Icon size={14} className={`shrink-0 ${item.isActive ? 'text-white' : 'text-[#E50914]'}`} />
                 <span className="text-xs font-black tracking-tight">{item.label}</span>
               </motion.div>
             </Link>
@@ -503,53 +509,66 @@ export default function FilterSidebar({ showNavigation = true, showHeader = true
 
       {/* Bottom navigation is now cleanly elevated to top aside navigation */}
 
-      {/* 🔹 INTERACTIVE 24/7 SUPPORT MODAL */}
-      <AnimatePresence>
-        {showSupportModal && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-xs p-4">
-            <motion.div 
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              className="bg-white rounded-3xl p-5 sm:p-6 max-w-sm w-full max-w-[calc(100vw-32px)] shadow-2xl border border-stone-200 space-y-4 relative overflow-hidden"
+      {/* 🔹 INTERACTIVE 24/7 SUPPORT MODAL (PORTALED TO BODY TO AVOID OVERFLOW/STACKING BUGS) */}
+      {mounted && typeof document !== 'undefined' && createPortal(
+        <AnimatePresence>
+          {showSupportModal && (
+            <div 
+              className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4"
+              onClick={() => setShowSupportModal(false)}
             >
-              <button 
-                onClick={() => setShowSupportModal(false)}
-                className="absolute top-4 right-4 text-stone-400 hover:text-stone-700 bg-stone-100 p-1.5 rounded-full cursor-pointer transition-colors"
+              <motion.div 
+                initial={{ scale: 0.9, opacity: 0, y: 15 }}
+                animate={{ scale: 1, opacity: 1, y: 0 }}
+                exit={{ scale: 0.9, opacity: 0, y: 15 }}
+                transition={{ type: 'spring', damping: 25, stiffness: 350 }}
+                onClick={(e) => e.stopPropagation()}
+                className="bg-white rounded-[28px] p-6 sm:p-7 max-w-sm w-full max-w-[calc(100vw-32px)] shadow-[0_25px_60px_-15px_rgba(0,0,0,0.35)] border border-stone-200 space-y-4 relative overflow-hidden z-[10000]"
               >
-                <X size={16} />
-              </button>
+                <button 
+                  type="button"
+                  onClick={() => setShowSupportModal(false)}
+                  className="absolute top-4 right-4 text-stone-400 hover:text-stone-700 bg-stone-100 hover:bg-stone-200 p-2 rounded-full cursor-pointer transition-colors"
+                  aria-label="Close"
+                >
+                  <X size={16} />
+                </button>
 
-              <div className="w-12 h-12 rounded-2xl bg-[#FFF8F0] border border-[#DDB892]/50 flex items-center justify-center text-[#6F4E37] shadow-inner">
-                <Headphones size={24} />
-              </div>
+                <div className="w-12 h-12 rounded-2xl bg-[#FFF5F5] border border-red-100 flex items-center justify-center text-[#ED0014] shadow-xs">
+                  <Headphones size={24} />
+                </div>
 
-              <div>
-                <h3 className="text-lg font-black text-[#2C1810]">Fahara Support Team</h3>
-                <p className="text-xs text-stone-500 font-medium mt-0.5 leading-relaxed">We are available 24/7 to assist with your bookings and reservations.</p>
-              </div>
+                <div>
+                  <h3 className="text-xl font-black text-[#1E1E1E]">Grab2GO Support Team</h3>
+                  <p className="text-xs text-stone-500 font-semibold mt-1 leading-relaxed">
+                    We are available 24/7 to assist with your bookings and reservations.
+                  </p>
+                </div>
 
-              <div className="space-y-2 pt-1 min-w-0">
-                <a href="tel:+918946029205" className="flex items-center gap-3 p-3 rounded-2xl bg-stone-50 hover:bg-[#FFF8F0] border border-stone-200/80 text-xs font-bold text-stone-800 transition-colors min-w-0">
-                  <PhoneCall size={16} className="text-[#6F4E37] shrink-0" />
-                  <span className="truncate">+91 89460-29205</span>
-                </a>
-                <a href="mailto:vexatech.connect@gmail.com" className="flex items-center gap-3 p-3 rounded-2xl bg-stone-50 hover:bg-[#FFF8F0] border border-stone-200/80 text-xs font-bold text-stone-800 transition-colors min-w-0">
-                  <Mail size={16} className="text-[#6F4E37] shrink-0" />
-                  <span className="truncate text-[11px] sm:text-xs">vexatech.connect@gmail.com</span>
-                </a>
-              </div>
+                <div className="space-y-2.5 pt-1 min-w-0">
+                  <a href="tel:+918946029205" className="flex items-center gap-3 p-3.5 rounded-2xl bg-stone-50 hover:bg-[#FFF5F5] border border-stone-200 text-xs font-bold text-stone-800 transition-colors min-w-0">
+                    <PhoneCall size={16} className="text-[#ED0014] shrink-0" />
+                    <span className="truncate">+91 89460-29205</span>
+                  </a>
+                  <a href="mailto:vexatech.connect@gmail.com" className="flex items-center gap-3 p-3.5 rounded-2xl bg-stone-50 hover:bg-[#FFF5F5] border border-stone-200 text-xs font-bold text-stone-800 transition-colors min-w-0">
+                    <Mail size={16} className="text-[#ED0014] shrink-0" />
+                    <span className="truncate text-[11px] sm:text-xs">vexatech.connect@gmail.com</span>
+                  </a>
+                </div>
 
-              <button 
-                onClick={() => setShowSupportModal(false)}
-                className="w-full py-3 bg-gradient-to-r from-[#4A2C11] to-[#6F4E37] text-white rounded-2xl font-black text-xs shadow-md hover:shadow-lg transition-all cursor-pointer active:scale-95"
-              >
-                Close Support
-              </button>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
+                <button 
+                  type="button"
+                  onClick={() => setShowSupportModal(false)}
+                  className="w-full py-3.5 bg-gradient-to-r from-[#B80012] via-[#ED0014] to-[#B80012] hover:from-[#9E0010] hover:to-[#9E0010] text-white rounded-2xl font-black text-xs sm:text-sm shadow-md hover:shadow-lg transition-all cursor-pointer active:scale-95"
+                >
+                  Close Support
+                </button>
+              </motion.div>
+            </div>
+          )}
+        </AnimatePresence>,
+        document.body
+      )}
 
     </div>
   );

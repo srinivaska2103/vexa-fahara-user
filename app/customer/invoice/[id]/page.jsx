@@ -22,7 +22,7 @@ export default function InvoicePage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-[#FFF8F0]">
+      <div className="min-h-screen bg-[#FFF5F5]">
         <CustomerNavbar showSearch={true} showViewToggles={false} />
         <div className="py-20">
           <FaharaInteractiveLoader message="Generating Official Invoice Document..." fullScreen={false} />
@@ -33,7 +33,7 @@ export default function InvoicePage() {
 
   if (error || !response?.data) {
     return (
-      <div className="min-h-screen bg-[#FFF8F0]">
+      <div className="min-h-screen bg-[#FFF5F5]">
         <CustomerNavbar showSearch={true} showViewToggles={false} />
         <div className="flex items-center justify-center py-20 px-4">
           <div className="bg-white/95 backdrop-blur-xl rounded-3xl p-8 border border-rose-200 shadow-lg text-center max-w-md w-full">
@@ -41,7 +41,7 @@ export default function InvoicePage() {
             <p className="text-xs text-stone-500 font-medium mb-6">The requested invoice document could not be found or an error occurred.</p>
             <button 
               onClick={() => router.push('/customer/bookings')}
-              className="px-6 py-3 bg-[#6F4E37] text-white font-bold rounded-2xl text-xs hover:bg-[#4A2C11] transition-all"
+              className="px-6 py-3 bg-[#E50914] text-white font-bold rounded-2xl text-xs hover:bg-[#B71C1C] transition-all"
             >
               Back to Bookings
             </button>
@@ -83,7 +83,7 @@ export default function InvoicePage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#FFF8F0] font-sans antialiased selection:bg-[#6F4E37] selection:text-white pb-24 lg:pb-16">
+    <div className="min-h-screen bg-[#FFF5F5] font-sans antialiased selection:bg-[#E50914] selection:text-white pb-24 lg:pb-16">
       {/* Navbar */}
       <CustomerNavbar showSearch={true} showViewToggles={false} />
 
@@ -96,15 +96,15 @@ export default function InvoicePage() {
           <div className="flex items-center gap-3">
             <button 
               onClick={() => router.push(`/customer/bookings/${id}`)}
-              className="p-2.5 bg-stone-100 hover:bg-[#FFF8F0] border border-stone-200/80 rounded-2xl transition-all active:scale-95 text-[#6F4E37] cursor-pointer"
+              className="p-2.5 bg-stone-100 hover:bg-[#FFF5F5] border border-stone-200/80 rounded-2xl transition-all active:scale-95 text-[#E50914] cursor-pointer"
               title="Back to Booking Details"
             >
               <ArrowLeft className="w-5 h-5" />
             </button>
 
             <div>
-              <h1 className="text-xl sm:text-2xl font-black text-[#2C1810] tracking-tight">Official Invoice</h1>
-              <p className="text-[10px] sm:text-xs font-black text-[#6F4E37] uppercase tracking-wider mt-0.5">
+              <h1 className="text-xl sm:text-2xl font-black text-[#252525] tracking-tight">Official Invoice</h1>
+              <p className="text-[10px] sm:text-xs font-black text-[#E50914] uppercase tracking-wider mt-0.5">
                 {invoiceData.invoiceNumber}
               </p>
             </div>
@@ -133,9 +133,9 @@ export default function InvoicePage() {
 
             <button 
               onClick={() => window.print()}
-              className="px-4 py-2.5 bg-stone-100 hover:bg-[#FFF8F0] border border-stone-200/80 text-[#2C1810] font-black text-xs rounded-2xl transition-all flex items-center gap-2 cursor-pointer shadow-2xs"
+              className="px-4 py-2.5 bg-stone-100 hover:bg-[#FFF5F5] border border-stone-200/80 text-[#252525] font-black text-xs rounded-2xl transition-all flex items-center gap-2 cursor-pointer shadow-2xs"
             >
-              <Printer size={15} className="text-[#6F4E37]" />
+              <Printer size={15} className="text-[#E50914]" />
               <span>Print</span>
             </button>
           </div>

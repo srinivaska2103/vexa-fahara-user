@@ -1,70 +1,130 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { ShieldCheck, Star, Lock, Zap, Users2, Bell, Sparkles, BadgePercent, CheckCircle } from 'lucide-react';
+import { Utensils, CalendarHeart, Tag, ShieldCheck } from 'lucide-react';
 
-const whyFeatures = [
-  { title: '100% Verified Venues', desc: 'Every listed cafe is manually inspected for hygiene, seating capacity, and safety.', icon: ShieldCheck, badgeColor: 'bg-[#FFF8F0] text-[#6F4E37] border-[#DDB892]/50' },
-  { title: 'Verified Guest Reviews', desc: 'Make confident decisions backed by genuine ratings from past event hosts.', icon: Star, badgeColor: 'bg-amber-50 text-amber-700 border-amber-200' },
-  { title: 'Transparent Pricing', desc: 'Clear upfront hourly rates with no hidden charges. Pay strictly for reserved hours.', icon: Lock, badgeColor: 'bg-[#FFF8F0] text-[#6F4E37] border-[#DDB892]/50' },
-  { title: 'Easy Instant Booking', desc: 'Immediate slot confirmation without long phone calls.', icon: Zap, badgeColor: 'bg-amber-50 text-amber-700 border-amber-200' },
-  { title: 'Flexible Event Options', desc: 'Book small tables for 2 or reserve full cafe halls for 100+ guests.', icon: Users2, badgeColor: 'bg-[#FFF8F0] text-[#6F4E37] border-[#DDB892]/50' },
-  { title: 'Secure Booking Experience', desc: 'Encrypted online payments with instant booking confirmation.', icon: Sparkles, badgeColor: 'bg-amber-50 text-amber-700 border-amber-200' },
-  { title: 'Offers & Deals', desc: 'Explore active discounts and promotional packages from top venues.', icon: BadgePercent, badgeColor: 'bg-[#FFF8F0] text-[#6F4E37] border-[#DDB892]/50' },
-  { title: '24/7 Concierge Assistance', desc: 'Our team assists with venue coordination and seating setups.', icon: Bell, badgeColor: 'bg-amber-50 text-amber-700 border-amber-200' },
+const whyChooseCards = [
+  {
+    id: 'wide-choices',
+    title: 'Wide Choices',
+    desc: 'Top restaurants and cuisines.',
+    icon: Utensils,
+  },
+  {
+    id: 'every-occasion',
+    title: 'Perfect for Every Occasion',
+    desc: 'Meetups, parties, birthdays and more.',
+    icon: CalendarHeart,
+  },
+  {
+    id: 'exciting-offers',
+    title: 'Exciting Offers',
+    desc: 'Deals, discounts & rewards.',
+    icon: Tag,
+  },
+  {
+    id: 'safe-secure',
+    title: 'Safe & Secure',
+    desc: 'Trusted partners and secure bookings.',
+    icon: ShieldCheck,
+  },
 ];
 
 export default function HomeWhyFahara() {
   return (
-    <section id="why-fahara" className="py-16 sm:py-24 bg-[#FFFDF9] border-y border-[#E8DED5]">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section id="why-choose" className="py-10 sm:py-14 bg-gradient-to-b from-[#FFF5F1] via-[#FFF8F6] to-white relative overflow-hidden">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
-        {/* SECTION HEADER */}
-        <div className="text-center max-w-3xl mx-auto mb-12 sm:mb-16">
-          <span className="text-[11px] font-black uppercase tracking-widest text-[#6F4E37] bg-[#FFF8F0] px-4 py-1.5 rounded-full border border-[#DDB892]/50 inline-flex items-center gap-1.5 mb-3 shadow-2xs">
-            <CheckCircle size={14} />
-            <span>WHY FAHARA</span>
-          </span>
-          <h2 className="text-3xl sm:text-5xl font-black text-[#2C1810] tracking-tight">
-            Everything You Need to Plan Your Perfect Moment
-          </h2>
-          <p className="text-stone-600 font-medium text-xs sm:text-base mt-2">
-            Fahara brings venue discovery, transparent pricing and instant booking together.
-          </p>
-        </div>
+        {/* UNIFIED WHY CHOOSE BANNER CONTAINER MATCHING REFERENCE IMAGE */}
+        <motion.div 
+          initial={{ opacity: 0, y: 35 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-50px' }}
+          transition={{ duration: 0.65, ease: 'easeOut' }}
+          className="relative bg-white rounded-[32px] sm:rounded-[38px] p-6 sm:p-8 lg:p-10 shadow-[0_15px_50px_-15px_rgba(237,0,20,0.12)] border border-red-100/80 overflow-hidden"
+        >
+          
+          {/* Left Decorative Organic Red Wave Curve Accent */}
+          <div className="absolute top-0 left-0 w-24 sm:w-32 h-full pointer-events-none -z-0">
+            <svg 
+              className="w-full h-full" 
+              viewBox="0 0 120 400" 
+              fill="none" 
+              preserveAspectRatio="none"
+            >
+              <defs>
+                <linearGradient id="whyRedCurve" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stopColor="#9E0010" />
+                  <stop offset="50%" stopColor="#ED0014" />
+                  <stop offset="100%" stopColor="#FF2E44" />
+                </linearGradient>
+              </defs>
+              <path 
+                d="M 0 0 C 60 70, 70 140, 20 220 C -20 290, 45 350, 0 400 Z" 
+                fill="url(#whyRedCurve)" 
+              />
+            </svg>
+          </div>
 
-        {/* 8 FEATURE CARDS GRID */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {whyFeatures.map((feat, idx) => {
-            const Icon = feat.icon;
-            return (
-              <motion.div
-                key={idx}
-                initial={{ opacity: 0, y: 15 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.4, delay: idx * 0.05 }}
-                whileHover={{ y: -6 }}
-                className="bg-white p-6 sm:p-7 rounded-3xl border border-[#E8DED5] hover:border-[#DDB892] shadow-2xs hover:shadow-xl transition-all duration-300 flex flex-col justify-between group text-left"
-              >
-                <div>
-                  <div className="flex items-center justify-between mb-4">
-                    <div className={`w-12 h-12 rounded-2xl flex items-center justify-center border shadow-2xs ${feat.badgeColor} group-hover:scale-110 transition-transform`}>
-                      <Icon size={22} className="stroke-[2]" />
-                    </div>
-                  </div>
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-6 items-center relative z-10 pl-3 sm:pl-6 lg:pl-10">
+            
+            {/* LEFT COLUMN: TITLE & SUBTITLE */}
+            <motion.div 
+              initial={{ opacity: 0, x: -25 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.55, delay: 0.15 }}
+              className="lg:col-span-4 text-left space-y-2"
+            >
+              <h2 className="text-3xl sm:text-4xl lg:text-[40px] font-black text-[#1E1E1E] tracking-tight leading-[1.12]">
+                Why Choose <br />
+                <span className="text-[#ED0014]">Grab2GO?</span>
+              </h2>
+              <p className="text-sm sm:text-base font-semibold text-stone-600 max-w-xs leading-relaxed">
+                A smarter way to enjoy food, cafes and events.
+              </p>
+            </motion.div>
 
-                  <h3 className="font-extrabold text-base sm:text-lg text-[#2C1810] mb-2 group-hover:text-[#6F4E37] transition-colors">
-                    {feat.title}
-                  </h3>
-                  <p className="text-xs sm:text-sm font-medium text-stone-500 leading-relaxed">
-                    {feat.desc}
-                  </p>
-                </div>
-              </motion.div>
-            );
-          })}
-        </div>
+            {/* RIGHT COLUMN: 4 CLEAN WHITE PILL CARDS */}
+            <div className="lg:col-span-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-4">
+              {whyChooseCards.map((item, idx) => {
+                const Icon = item.icon;
+                return (
+                  <motion.div
+                    key={item.id}
+                    initial={{ opacity: 0, y: 25, scale: 0.96 }}
+                    whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.45, delay: 0.15 + idx * 0.1, ease: 'easeOut' }}
+                    whileHover={{ y: -8, scale: 1.02 }}
+                    className="bg-[#FAFAFA] hover:bg-white rounded-2xl sm:rounded-3xl p-5 sm:p-6 border border-stone-200/80 hover:border-red-200 hover:shadow-xl transition-all duration-300 flex flex-col items-center text-center group cursor-pointer"
+                  >
+                    {/* Red Outline Icon */}
+                    <motion.div 
+                      whileHover={{ scale: 1.15, rotate: 5 }}
+                      transition={{ duration: 0.25 }}
+                      className="w-12 h-12 rounded-2xl flex items-center justify-center text-[#ED0014] mb-3 group-hover:scale-110 transition-transform"
+                    >
+                      <Icon className="w-8 h-8 stroke-[2]" />
+                    </motion.div>
+
+                    {/* Card Title */}
+                    <h3 className="text-sm sm:text-[15px] font-black text-[#1E1E1E] leading-snug group-hover:text-[#ED0014] transition-colors">
+                      {item.title}
+                    </h3>
+
+                    {/* Card Description */}
+                    <p className="text-xs font-semibold text-stone-500 mt-1 leading-snug">
+                      {item.desc}
+                    </p>
+                  </motion.div>
+                );
+              })}
+            </div>
+
+          </div>
+
+        </motion.div>
 
       </div>
     </section>

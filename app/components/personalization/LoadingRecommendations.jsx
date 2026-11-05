@@ -6,7 +6,7 @@ export default function LoadingRecommendations({ count = 4, type = 'card' }) {
       {[...Array(count)].map((_, i) => (
         <div 
           key={i} 
-          className="w-[280px] md:w-[320px] flex-shrink-0 bg-white rounded-2xl border border-[#E8DED5] overflow-hidden"
+          className="w-[280px] md:w-[320px] flex-shrink-0 bg-white rounded-2xl border border-[#FEE2E2] overflow-hidden"
         >
           {/* Image skeleton */}
           <motion.div 

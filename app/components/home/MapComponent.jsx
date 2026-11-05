@@ -72,7 +72,7 @@ export default function MapComponent({ center = [12.9716, 77.5946], markers = []
           <Marker position={center}>
             <Popup>
               <div className="p-1 font-sans">
-                <strong className="text-xs font-black text-[#2C1810]">Fahara Location Center</strong>
+                <strong className="text-xs font-black text-[#252525]">Grab2GO Location Center</strong>
               </div>
             </Popup>
           </Marker>
@@ -90,10 +90,10 @@ export default function MapComponent({ center = [12.9716, 77.5946], markers = []
             <Marker key={marker.id || marker._id || index} position={[lat, lng]}>
               <Popup>
                 <div className="p-1 font-sans text-stone-800 space-y-1">
-                  <strong className="text-xs font-black text-[#2C1810] block">{marker.name || 'Cafe Venue'}</strong>
+                  <strong className="text-xs font-black text-[#252525] block">{marker.name || 'Cafe Venue'}</strong>
                   <p className="text-[10px] text-stone-500 font-medium">{marker.city || marker.address || 'Explore venue details'}</p>
                   {marker.price_per_hour && (
-                    <span className="text-[10px] font-black text-[#6F4E37] block">₹{marker.price_per_hour}/HR</span>
+                    <span className="text-[10px] font-black text-[#E50914] block">₹{marker.price_per_hour}/HR</span>
                   )}
                 </div>
               </Popup>

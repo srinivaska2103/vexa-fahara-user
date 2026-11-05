@@ -39,7 +39,7 @@ export default function MobileProfileView({
     .map((w) => w[0].toUpperCase())
     .join('') || 'FC';
 
-  // Menu Groups aligned strictly with Reference 1 layout and existing Fahara features
+  // Menu Groups aligned strictly with Reference 1 layout and existing Grab2GO features
   const menuGroups = [
     {
       group: 'Personal',
@@ -89,11 +89,11 @@ export default function MobileProfileView({
       ],
     },
     {
-      group: 'Fahara Rewards & Updates',
+      group: 'Grab2GO Rewards & Updates',
       items: [
         {
           id: 'fahara-credits',
-          title: 'Fahara Credits',
+          title: 'Grab2GO Credits',
           subtitle: loyaltyCredits > 0 ? `${loyaltyCredits} credit points available` : 'Earn & redeem reward points',
           icon: Award,
           action: () => onSelectTab && onSelectTab('loyalty'),
@@ -130,7 +130,7 @@ export default function MobileProfileView({
         {
           id: 'logout',
           title: 'Log Out',
-          subtitle: 'Sign out of your Fahara account',
+          subtitle: 'Sign out of your Grab2GO account',
           icon: LogOut,
           isDestructive: true,
           action: () => setShowLogoutConfirm(true),
@@ -140,32 +140,29 @@ export default function MobileProfileView({
   ];
 
   return (
-    <div className="md:hidden flex flex-col w-full pb-28 font-sans selection:bg-[#6F4E37] selection:text-white">
-      {/* ── TOP THEMED PROFILE HEADER (Inspired by Reference Image 1, Fahara theme colors) ── */}
-      <div className="relative w-full bg-gradient-to-b from-[#2C1810] via-[#3D2317] to-[#4A2C11] text-white pt-4 pb-14 px-4 overflow-hidden rounded-b-[40px] shadow-[0_14px_35px_rgba(44,24,16,0.22)]">
-        {/* Curved warm circular overlay inspired by the top-right orange circle in Reference Image 1, in Fahara Secondary Brown/Gold */}
-        <div className="absolute -top-10 -right-10 w-52 h-52 rounded-full bg-gradient-to-br from-[#A67B5B] to-[#6F4E37] opacity-60 pointer-events-none" />
-        <div className="absolute top-1/2 -left-10 w-36 h-36 rounded-full bg-[#DDB892]/15 blur-xl pointer-events-none" />
+    <div className="md:hidden flex flex-col w-full min-h-screen bg-[#FDFBF7] pb-28 font-sans selection:bg-[#E50914] selection:text-white">
+      {/* ── TOP THEMED PROFILE HEADER (Inspired by Reference Image 1, Grab2GO theme colors) ── */}
+      <div className="relative w-full bg-white text-[#252525] pt-4 pb-8 px-4 overflow-hidden border-b border-stone-200/80 shadow-xs">
 
         {/* Header Top Bar: Back Button + Title */}
         <div className="relative z-10 flex items-center justify-between mb-2">
           <button
             type="button"
             onClick={() => router.back()}
-            className="w-10 h-10 rounded-2xl bg-white/10 hover:bg-white/20 active:scale-90 transition-all backdrop-blur-md flex items-center justify-center text-[#FFF8F0] border border-white/15 cursor-pointer shadow-sm"
+            className="w-10 h-10 rounded-2xl bg-stone-100 hover:bg-stone-200 active:scale-90 transition-all flex items-center justify-center text-[#252525] border border-stone-200 cursor-pointer shadow-xs"
             aria-label="Go Back"
           >
             <ArrowLeft size={18} />
           </button>
 
-          <span className="text-xs font-black uppercase tracking-wider text-white">
+          <span className="text-xs font-black uppercase tracking-wider text-[#252525]">
             Customer Profile
           </span>
 
           <button
             type="button"
             onClick={() => (onOpenEdit ? onOpenEdit() : router.push('/customer/profile/edit'))}
-            className="w-10 h-10 rounded-2xl bg-white/10 hover:bg-white/20 active:scale-90 transition-all backdrop-blur-md flex items-center justify-center text-[#FFF8F0] border border-white/15 cursor-pointer shadow-sm"
+            className="w-10 h-10 rounded-2xl bg-stone-100 hover:bg-stone-200 active:scale-90 transition-all flex items-center justify-center text-[#252525] border border-stone-200 cursor-pointer shadow-xs"
             aria-label="Edit Profile"
             title="Edit Profile"
           >
@@ -177,8 +174,8 @@ export default function MobileProfileView({
         <div className="relative z-10 flex flex-col items-center text-center pt-2">
           {/* Avatar Container with Edit Camera Button */}
           <div className="relative mb-3 group">
-            <div className="relative w-24 h-24 rounded-full p-1 bg-gradient-to-tr from-[#DDB892] via-[#A67B5B] to-white shadow-xl">
-              <div className="w-full h-full rounded-full overflow-hidden bg-[#2C1810] flex items-center justify-center ring-2 ring-white/40">
+            <div className="relative w-24 h-24 rounded-full p-1 bg-white shadow-md ring-4 ring-rose-50 border border-rose-200">
+              <div className="w-full h-full rounded-full overflow-hidden bg-[#E50914] flex items-center justify-center">
                 {profile.avatar ? (
                   <img
                     src={profile.avatar}
@@ -186,7 +183,7 @@ export default function MobileProfileView({
                     className="w-full h-full object-cover"
                   />
                 ) : (
-                  <span className="text-2xl font-black text-[#DDB892] tracking-wider">
+                  <span className="text-2xl font-black text-white tracking-wider">
                     {userInitials}
                   </span>
                 )}
@@ -207,7 +204,7 @@ export default function MobileProfileView({
               type="button"
               disabled={isUploadingAvatar}
               onClick={() => fileInputRef.current?.click()}
-              className="absolute bottom-0 right-0 w-8 h-8 rounded-full bg-[#6F4E37] hover:bg-[#5A3E2B] active:scale-90 text-white flex items-center justify-center shadow-md border-2 border-white transition-all cursor-pointer disabled:opacity-60"
+              className="absolute bottom-0 right-0 w-8 h-8 rounded-full bg-[#E50914] active:scale-90 text-white flex items-center justify-center shadow-md border-2 border-white transition-all cursor-pointer disabled:opacity-60"
               aria-label="Upload photo (under 2MB)"
               title="Upload photo (under 2MB)"
             >
@@ -220,18 +217,18 @@ export default function MobileProfileView({
           </div>
 
           {/* User Name & Details */}
-          <h1 className="text-xl font-black text-[#FFF8F0] tracking-tight leading-snug">
+          <h1 className="text-xl font-black text-[#252525] tracking-tight leading-snug">
             {displayName}
           </h1>
 
           {displayEmail && (
-            <p className="text-xs text-[#DDB892] font-semibold tracking-wide mt-0.5 truncate max-w-[280px]">
+            <p className="text-xs text-stone-500 font-medium tracking-wide mt-0.5 truncate max-w-[280px]">
               {displayEmail}
             </p>
           )}
 
           {displayPhone && (
-            <p className="text-[11px] text-stone-300 font-medium mt-0.5">
+            <p className="text-[11px] text-stone-600 font-bold mt-0.5">
               {displayPhone}
             </p>
           )}
@@ -239,14 +236,14 @@ export default function MobileProfileView({
       </div>
 
       {/* ── VERTICAL PROFILE MENU LIST (Clean, modern stacked rows from Reference 1) ── */}
-      <div className="px-4 -mt-3 relative z-20 space-y-4">
+      <div className="px-4 mt-4 relative z-20 space-y-4">
         {menuGroups.map((section, sIdx) => (
           <div
             key={section.group || sIdx}
-            className="bg-white rounded-3xl p-3 border border-[#E8DED5] shadow-[0_4px_20px_rgba(44,24,16,0.04)] overflow-hidden"
+            className="bg-white rounded-3xl p-3 border border-[#FEE2E2] shadow-[0_4px_20px_rgba(44,24,16,0.04)] overflow-hidden"
           >
             <div className="px-3 pt-2 pb-1.5 flex items-center justify-between">
-              <span className="text-[10px] font-black uppercase tracking-wider text-[#A67B5B]">
+              <span className="text-[10px] font-black uppercase tracking-wider text-[#B71C1C]">
                 {section.group}
               </span>
             </div>
@@ -261,7 +258,7 @@ export default function MobileProfileView({
                     key={item.id}
                     type="button"
                     onClick={item.action}
-                    className="w-full py-3 px-3 flex items-center justify-between gap-3 text-left hover:bg-[#FFF8F0]/70 active:bg-[#FFF8F0] active:scale-[0.99] rounded-2xl transition-all cursor-pointer group"
+                    className="w-full py-3 px-3 flex items-center justify-between gap-3 text-left hover:bg-[#FFF5F5]/70 active:bg-[#FFF5F5] active:scale-[0.99] rounded-2xl transition-all cursor-pointer group"
                   >
                     {/* Left Icon + Text */}
                     <div className="flex items-center gap-3.5 min-w-0">
@@ -269,7 +266,7 @@ export default function MobileProfileView({
                         className={`w-9 h-9 rounded-2xl flex items-center justify-center shrink-0 transition-colors ${
                           isDestructive
                             ? 'bg-rose-50 text-rose-600 group-hover:bg-rose-100'
-                            : 'bg-[#FFF8F0] text-[#6F4E37] border border-[#DDB892]/40 group-hover:bg-[#FDF3E7]'
+                            : 'bg-[#FFF5F5] text-[#E50914] border border-[#EF5350]/40 group-hover:bg-[#FDF3E7]'
                         }`}
                       >
                         <Icon size={17} strokeWidth={2.2} />
@@ -280,7 +277,7 @@ export default function MobileProfileView({
                           className={`text-xs font-black block leading-tight truncate ${
                             isDestructive
                               ? 'text-rose-600'
-                              : 'text-[#2C1810] group-hover:text-[#6F4E37]'
+                              : 'text-[#252525] group-hover:text-[#E50914]'
                           }`}
                         >
                           {item.title}
@@ -296,7 +293,7 @@ export default function MobileProfileView({
                     {/* Right Badge / Chevron */}
                     <div className="flex items-center gap-2 shrink-0">
                       {item.badge && (
-                        <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-[#FFF8F0] text-[#6F4E37] border border-[#DDB892]">
+                        <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-[#FFF5F5] text-[#E50914] border border-[#EF5350]">
                           {item.badge}
                         </span>
                       )}
@@ -317,7 +314,7 @@ export default function MobileProfileView({
         {/* Member Footprint & App Version */}
         <div className="pt-2 text-center">
           <p className="text-[10px] font-bold text-stone-400">
-            Fahara Customer App • Member since {profile.memberSince || '2026'}
+            Grab2GO Customer App • Member since {profile.memberSince || '2026'}
           </p>
         </div>
       </div>
@@ -325,14 +322,14 @@ export default function MobileProfileView({
       {/* ── LOGOUT CONFIRMATION MODAL ── */}
       {showLogoutConfirm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
-          <div className="w-full max-w-xs bg-white rounded-3xl p-5 shadow-2xl border border-[#E8DED5] text-center space-y-4">
+          <div className="w-full max-w-xs bg-white rounded-3xl p-5 shadow-2xl border border-[#FEE2E2] text-center space-y-4">
             <div className="w-12 h-12 rounded-2xl bg-rose-50 text-rose-600 flex items-center justify-center mx-auto">
               <LogOut size={22} />
             </div>
             <div>
-              <h3 className="text-base font-black text-[#2C1810]">Log Out?</h3>
+              <h3 className="text-base font-black text-[#252525]">Log Out?</h3>
               <p className="text-xs text-stone-500 mt-1">
-                Are you sure you want to log out of your Fahara account?
+                Are you sure you want to log out of your Grab2GO account?
               </p>
             </div>
             <div className="flex gap-2.5 pt-2">

@@ -80,37 +80,37 @@ export default function DealsAndOffersSection({ cafes = [], isLoading = false, o
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35 }}
-      className="mb-8 p-4 sm:p-6 bg-gradient-to-b from-[#FFFDF9] via-[#FFF9F2] to-[#FFF4E8] rounded-[24px] border border-[#E8DED5] shadow-[0_4px_24px_rgba(44,24,16,0.04)] relative overflow-hidden group/deals"
+      className="mb-8 p-4 sm:p-6 bg-white rounded-[24px] border border-red-100 shadow-[0_4px_24px_rgba(229,9,20,0.04)] relative overflow-hidden group/deals"
     >
       {/* MODERN SECTION HEADER */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5 relative z-10">
         
         {/* Left: Flame/Offer Tag Icon + Title + Subtitle */}
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-gradient-to-tr from-[#FF758C] via-[#FF7E5F] to-[#FEB47B] text-white flex items-center justify-center shrink-0 shadow-[0_4px_12px_rgba(255,117,140,0.35)] border border-white/40">
+          <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-[#E50914] text-white flex items-center justify-center shrink-0 shadow-[0_4px_12px_rgba(229,9,20,0.35)] border border-white/40">
             <Tag size={20} className="stroke-[2.5]" />
           </div>
           <div>
             <div className="flex items-center gap-2 flex-wrap">
-              <h2 className="text-xl sm:text-2xl font-black text-[#2C1810] tracking-tight leading-none">
+              <h2 className="text-xl sm:text-2xl font-black text-[#252525] tracking-tight leading-none">
                 DEALS & OFFERS
               </h2>
-              <span className="text-[10px] font-black px-2.5 py-0.5 rounded-full bg-rose-50 text-rose-600 border border-rose-200/80 tracking-wide uppercase animate-pulse">
+              <span className="text-[10px] font-black px-2.5 py-0.5 rounded-full bg-red-50 text-[#E50914] border border-red-200 tracking-wide uppercase animate-pulse">
                 LIMITED DEALS
               </span>
             </div>
-            <p className="text-xs sm:text-[13px] text-[#7D6B60] font-medium mt-1">
+            <p className="text-xs sm:text-[13px] text-[#757575] font-medium mt-1">
               Exclusive offers & instant savings from cafes near you
             </p>
           </div>
         </div>
 
         {/* Right: View All Button & Nav Controls */}
-        <div className="flex items-center justify-between sm:justify-end gap-2 w-full sm:w-auto pt-2 sm:pt-0 border-t border-[#E8DED5]/60 sm:border-t-0">
+        <div className="flex items-center justify-between sm:justify-end gap-2 w-full sm:w-auto pt-2 sm:pt-0 border-t border-red-100/60 sm:border-t-0">
           <button
             suppressHydrationWarning
             onClick={() => onViewAll && onViewAll('discounts')}
-            className="px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-full bg-[#5A3215] hover:bg-[#3C200A] text-white font-extrabold text-xs transition-all duration-200 flex items-center gap-1.5 shadow-md active:scale-95 cursor-pointer"
+            className="px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-full bg-[#E50914] hover:bg-[#c90812] text-white font-extrabold text-xs transition-all duration-200 flex items-center gap-1.5 shadow-md active:scale-95 cursor-pointer"
           >
             <span>View All</span>
             <ArrowRight size={14} className="stroke-[2.5]" />
@@ -124,7 +124,7 @@ export default function DealsAndOffersSection({ cafes = [], isLoading = false, o
               aria-label="Scroll deals left"
               className={`w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center transition-all duration-200 border shadow-2xs ${
                 canScrollLeft 
-                  ? 'bg-white hover:bg-[#5A3215] text-[#2C1810] hover:text-white border-[#E8DED5] cursor-pointer active:scale-95' 
+                  ? 'bg-white hover:bg-[#E50914] text-[#252525] hover:text-white border-red-100 cursor-pointer active:scale-95' 
                   : 'bg-stone-100/60 text-stone-300 border-stone-200/60 cursor-not-allowed opacity-40'
               }`}
             >
@@ -137,7 +137,7 @@ export default function DealsAndOffersSection({ cafes = [], isLoading = false, o
               aria-label="Scroll deals right"
               className={`w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center transition-all duration-200 border shadow-2xs ${
                 canScrollRight 
-                  ? 'bg-white hover:bg-[#5A3215] text-[#2C1810] hover:text-white border-[#E8DED5] cursor-pointer active:scale-95' 
+                  ? 'bg-white hover:bg-[#E50914] text-[#252525] hover:text-white border-red-100 cursor-pointer active:scale-95' 
                   : 'bg-stone-100/60 text-stone-300 border-stone-200/60 cursor-not-allowed opacity-40'
               }`}
             >

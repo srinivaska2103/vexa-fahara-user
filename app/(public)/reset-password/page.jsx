@@ -38,24 +38,24 @@ function ResetPasswordForm() {
         <input type="hidden" {...register('email')} />
       ) : (
         <div>
-          <label className="block text-sm font-semibold text-[#2C1810] mb-1.5">Email or User ID</label>
+          <label className="block text-sm font-semibold text-[#252525] mb-1.5">Email or User ID</label>
           <div className="relative group">
-            <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[#6F4E37] group-focus-within:text-[#4A2614] transition-colors z-10">
+            <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[#E50914] group-focus-within:text-[#4A2614] transition-colors z-10">
               <Mail size={20} strokeWidth={2.2} />
             </div>
             <input
               {...register('email')}
               type="text"
-              className="w-full pl-11 pr-4 py-3 rounded-xl border border-gray-200 bg-white/80 text-[#2C1810] font-medium focus:outline-none focus:ring-2 focus:ring-[#DDB892]"
+              className="w-full pl-11 pr-4 py-3 rounded-xl border border-gray-200 bg-white/80 text-[#252525] font-medium focus:outline-none focus:ring-2 focus:ring-[#EF5350]"
             />
           </div>
         </div>
       )}
 
       <div>
-        <label className="block text-sm font-semibold text-[#2C1810] mb-1.5">6-Digit OTP</label>
+        <label className="block text-sm font-semibold text-[#252525] mb-1.5">6-Digit OTP</label>
         <div className="relative group">
-          <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[#6F4E37] group-focus-within:text-[#4A2614] transition-colors z-10">
+          <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[#E50914] group-focus-within:text-[#4A2614] transition-colors z-10">
             <KeyRound size={20} strokeWidth={2.2} />
           </div>
           <input
@@ -64,7 +64,7 @@ function ResetPasswordForm() {
             maxLength={6}
             placeholder="••••••"
             className={cn(
-              "w-full pl-11 pr-4 py-3 rounded-xl border bg-white/80 focus:outline-none focus:ring-2 focus:ring-[#DDB892] transition-all text-center tracking-widest font-mono text-lg font-bold text-[#2C1810]",
+              "w-full pl-11 pr-4 py-3 rounded-xl border bg-white/80 focus:outline-none focus:ring-2 focus:ring-[#EF5350] transition-all text-center tracking-widest font-mono text-lg font-bold text-[#252525]",
               errors.otp ? "border-red-400 ring-red-400" : "border-gray-200 hover:border-gray-300"
             )}
           />
@@ -73,9 +73,9 @@ function ResetPasswordForm() {
       </div>
 
       <div>
-        <label className="block text-sm font-semibold text-[#2C1810] mb-1.5">New Password</label>
+        <label className="block text-sm font-semibold text-[#252525] mb-1.5">New Password</label>
         <div className="relative group">
-          <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[#6F4E37] group-focus-within:text-[#4A2614] transition-colors z-10">
+          <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[#E50914] group-focus-within:text-[#4A2614] transition-colors z-10">
             <Lock size={20} strokeWidth={2.2} />
           </div>
           <input
@@ -83,14 +83,14 @@ function ResetPasswordForm() {
             type={showNewPassword ? 'text' : 'password'}
             placeholder="Create new password"
             className={cn(
-              "w-full pl-11 pr-12 py-3 rounded-xl border bg-white/80 focus:outline-none focus:ring-2 focus:ring-[#DDB892] transition-all font-medium text-[#2C1810]",
+              "w-full pl-11 pr-12 py-3 rounded-xl border bg-white/80 focus:outline-none focus:ring-2 focus:ring-[#EF5350] transition-all font-medium text-[#252525]",
               errors.newPassword ? "border-red-400 ring-red-400" : "border-gray-200 hover:border-gray-300"
             )}
           />
           <button
             type="button"
             onClick={() => setShowNewPassword(!showNewPassword)}
-            className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-[#6F4E37] hover:text-[#4A2614] transition-colors focus:outline-none z-10"
+            className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-[#E50914] hover:text-[#4A2614] transition-colors focus:outline-none z-10"
             tabIndex={-1}
             title={showNewPassword ? "Hide password" : "Show password"}
           >
@@ -101,9 +101,9 @@ function ResetPasswordForm() {
       </div>
 
       <div>
-        <label className="block text-sm font-semibold text-[#2C1810] mb-1.5">Confirm New Password</label>
+        <label className="block text-sm font-semibold text-[#252525] mb-1.5">Confirm New Password</label>
         <div className="relative group">
-          <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[#6F4E37] group-focus-within:text-[#4A2614] transition-colors z-10">
+          <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[#E50914] group-focus-within:text-[#4A2614] transition-colors z-10">
             <Lock size={20} strokeWidth={2.2} />
           </div>
           <input
@@ -111,14 +111,14 @@ function ResetPasswordForm() {
             type={showConfirmPassword ? 'text' : 'password'}
             placeholder="Confirm new password"
             className={cn(
-              "w-full pl-11 pr-12 py-3 rounded-xl border bg-white/80 focus:outline-none focus:ring-2 focus:ring-[#DDB892] transition-all font-medium text-[#2C1810]",
+              "w-full pl-11 pr-12 py-3 rounded-xl border bg-white/80 focus:outline-none focus:ring-2 focus:ring-[#EF5350] transition-all font-medium text-[#252525]",
               errors.confirmPassword ? "border-red-400 ring-red-400" : "border-gray-200 hover:border-gray-300"
             )}
           />
           <button
             type="button"
             onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-            className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-[#6F4E37] hover:text-[#4A2614] transition-colors focus:outline-none z-10"
+            className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-[#E50914] hover:text-[#4A2614] transition-colors focus:outline-none z-10"
             tabIndex={-1}
             title={showConfirmPassword ? "Hide password" : "Show password"}
           >

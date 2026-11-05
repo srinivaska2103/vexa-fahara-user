@@ -65,7 +65,7 @@ export default function MobileFeaturedCafeCard({ cafe }) {
       whileHover={{ y: -2, scale: 1.01 }}
       whileTap={{ scale: 0.98 }}
       onClick={() => router.push(`/customer/cafe/${cafeId}`)}
-      className="shrink-0 w-[158px] xs:w-[168px] sm:w-[178px] bg-white rounded-[18px] p-2 border border-[#E8DED5] shadow-[0_4px_16px_rgba(44,24,16,0.06)] hover:shadow-[0_8px_24px_rgba(111,78,55,0.12)] transition-all duration-300 cursor-pointer flex flex-col select-none relative group"
+      className="shrink-0 w-[158px] xs:w-[168px] sm:w-[178px] bg-white rounded-[18px] p-2 border border-[#FEE2E2] shadow-[0_4px_16px_rgba(44,24,16,0.06)] hover:shadow-[0_8px_24px_rgba(111,78,55,0.12)] transition-all duration-300 cursor-pointer flex flex-col select-none relative group"
     >
       {/* 🖼️ Landscape Image (approx 16:9) with Overlays */}
       <div 
@@ -109,7 +109,7 @@ export default function MobileFeaturedCafeCard({ cafe }) {
 
         {/* Top-Left Cafe Brand Pill Overlay */}
         <div className="absolute top-1.5 left-1.5 z-10 max-w-[65%]">
-          <span className="px-2 py-0.5 rounded-full bg-white/95 backdrop-blur-xs text-[#2C1810] text-[8.5px] font-black tracking-tight truncate block shadow-2xs border border-white/60">
+          <span className="px-2 py-0.5 rounded-full bg-white/95 backdrop-blur-xs text-[#252525] text-[8.5px] font-black tracking-tight truncate block shadow-2xs border border-white/60">
             {name}
           </span>
         </div>
@@ -145,14 +145,14 @@ export default function MobileFeaturedCafeCard({ cafe }) {
       {/* 📋 Cafe Information - Compact layout matching Reference 1 */}
       <div className="pt-2 px-0.5 flex flex-col gap-0.5">
         {/* Bold Uppercase Cafe Name */}
-        <h3 className="text-[11.5px] font-black text-[#2C1810] uppercase tracking-wide truncate group-hover:text-[#6F4E37] transition-colors leading-tight">
+        <h3 className="text-[11.5px] font-black text-[#252525] uppercase tracking-wide truncate group-hover:text-[#E50914] transition-colors leading-tight">
           {name}
         </h3>
 
         {/* Star Rating & Review Count */}
         <div className="flex items-center gap-1 mt-0.5">
           <Star size={11} className="fill-amber-400 text-amber-400 shrink-0" />
-          <span className="text-[11px] font-black text-[#2C1810]">{rating}</span>
+          <span className="text-[11px] font-black text-[#252525]">{rating}</span>
           <span className="text-[10px] font-medium text-stone-400">
             ({reviewsCount > 0 ? reviewsCount : 1})
           </span>

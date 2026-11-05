@@ -46,7 +46,7 @@ export default function ConfirmModal({
       case 'warning':
         return 'bg-amber-600 hover:bg-amber-700 text-white shadow-amber-600/25 focus:ring-amber-500';
       default:
-        return 'bg-[#6F4E37] hover:bg-[#5a3f2d] text-white shadow-[#6F4E37]/25 focus:ring-[#6F4E37]';
+        return 'bg-[#E50914] hover:bg-[#5a3f2d] text-white shadow-[#E50914]/25 focus:ring-[#E50914]';
     }
   };
 
@@ -69,7 +69,7 @@ export default function ConfirmModal({
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.92, y: 16 }}
           transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-          className="relative w-full max-w-md bg-white rounded-3xl shadow-2xl border border-[#E8DED5] overflow-hidden z-10 p-6 sm:p-7 text-left"
+          className="relative w-full max-w-md bg-white rounded-3xl shadow-2xl border border-[#FEE2E2] overflow-hidden z-10 p-6 sm:p-7 text-left"
         >
           {/* Close Button */}
           <button
@@ -87,7 +87,7 @@ export default function ConfirmModal({
               {getIcon()}
             </div>
             <div className="pr-6">
-              <h3 className="text-xl font-bold text-[#2C1810] tracking-tight leading-snug">
+              <h3 className="text-xl font-bold text-[#252525] tracking-tight leading-snug">
                 {title}
               </h3>
               <p className="text-sm text-stone-500 font-medium mt-1 leading-relaxed">

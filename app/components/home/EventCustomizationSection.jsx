@@ -64,15 +64,15 @@ const flowSteps = [
 
 export default function EventCustomizationSection() {
   return (
-    <section className="py-16 lg:py-24 bg-gradient-to-b from-[#FFF8F0] via-white to-[#FFF8F0] border-y border-stone-200/60">
+    <section className="py-16 lg:py-24 bg-gradient-to-b from-[#FFF5F5] via-white to-[#FFF5F5] border-y border-stone-200/60">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-16">
-          <span className="text-xs font-black text-[#6F4E37] uppercase tracking-widest bg-[#DDB892]/25 px-4 py-1.5 rounded-full border border-[#DDB892]/40 inline-flex items-center gap-1.5 mb-3">
-            <Sparkles size={14} className="text-[#6F4E37]" /> The Fahara Advantage
+          <span className="text-xs font-black text-[#E50914] uppercase tracking-widest bg-[#EF5350]/25 px-4 py-1.5 rounded-full border border-[#EF5350]/40 inline-flex items-center gap-1.5 mb-3">
+            <Sparkles size={14} className="text-[#E50914]" /> The Grab2GO Advantage
           </span>
-          <h2 className="text-3xl sm:text-5xl font-black text-[#2C1810] tracking-tight">
+          <h2 className="text-3xl sm:text-5xl font-black text-[#252525] tracking-tight">
             Make Your Cafe Event Complete
           </h2>
           <p className="text-stone-600 text-base sm:text-lg font-medium mt-3">
@@ -91,10 +91,10 @@ export default function EventCustomizationSection() {
               transition={{ delay: idx * 0.1 }}
               className="bg-white p-6 rounded-3xl border border-stone-200/80 shadow-xs hover:shadow-md transition-all relative overflow-hidden group"
             >
-              <div className="text-4xl font-black text-[#DDB892]/40 group-hover:text-[#6F4E37]/30 transition-colors mb-3">
+              <div className="text-4xl font-black text-[#EF5350]/40 group-hover:text-[#E50914]/30 transition-colors mb-3">
                 {item.step}
               </div>
-              <h3 className="text-lg font-black text-[#2C1810] mb-1">{item.title}</h3>
+              <h3 className="text-lg font-black text-[#252525] mb-1">{item.title}</h3>
               <p className="text-xs font-bold text-stone-500 leading-relaxed">{item.desc}</p>
             </motion.div>
           ))}
@@ -103,10 +103,10 @@ export default function EventCustomizationSection() {
         {/* Featured Event Services Grid */}
         <div className="mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-end">
           <div>
-            <h3 className="text-2xl font-black text-[#2C1810]">Add-on Event Services</h3>
+            <h3 className="text-2xl font-black text-[#252525]">Add-on Event Services</h3>
             <p className="text-xs sm:text-sm font-bold text-stone-500">Handpicked event arrangements delivered right at your cafe venue</p>
           </div>
-          <Link href="/customer/cafe" className="mt-3 sm:mt-0 text-xs font-black text-[#6F4E37] hover:text-[#4A2C11] flex items-center gap-1">
+          <Link href="/customer/cafe" className="mt-3 sm:mt-0 text-xs font-black text-[#E50914] hover:text-[#B71C1C] flex items-center gap-1">
             <span>Explore All Services</span>
             <ArrowRight size={14} />
           </Link>
@@ -132,18 +132,18 @@ export default function EventCustomizationSection() {
 
               <div className="p-5 flex flex-col flex-1 justify-between">
                 <div>
-                  <h4 className="text-base font-black text-[#2C1810] group-hover:text-[#6F4E37] transition-colors">{service.title}</h4>
+                  <h4 className="text-base font-black text-[#252525] group-hover:text-[#E50914] transition-colors">{service.title}</h4>
                   <p className="text-xs text-stone-500 font-medium mt-1 leading-relaxed">{service.desc}</p>
                 </div>
 
                 <div className="pt-4 mt-4 border-t border-stone-100 flex items-center justify-between">
                   <div>
                     <span className="text-xs text-stone-400 font-extrabold uppercase tracking-wider block">Starting at</span>
-                    <span className="text-lg font-black text-[#2C1810]">{service.price}</span>
+                    <span className="text-lg font-black text-[#252525]">{service.price}</span>
                   </div>
 
                   <Link href={service.id ? `/events/${service.id}` : "/customer/cafe"}>
-                    <button className="px-4 py-2 bg-[#FFF8F0] hover:bg-[#6F4E37] text-[#6F4E37] hover:text-white border border-[#DDB892]/60 rounded-xl text-xs font-black transition-all active:scale-95 cursor-pointer">
+                    <button className="px-4 py-2 bg-[#FFF5F5] hover:bg-[#E50914] text-[#E50914] hover:text-white border border-[#EF5350]/60 rounded-xl text-xs font-black transition-all active:scale-95 cursor-pointer">
                       View Service
                     </button>
                   </Link>

@@ -25,20 +25,20 @@ export default function RecommendationCarousel({ title, subtitle, items, type = 
     <section className="py-6 relative">
       <div className="flex items-end justify-between mb-6 px-4 md:px-0">
         <div>
-          <h2 className="text-xl md:text-2xl font-black text-[#2C1810] tracking-tight">{title}</h2>
+          <h2 className="text-xl md:text-2xl font-black text-[#252525] tracking-tight">{title}</h2>
           {subtitle && <p className="text-sm text-gray-500 mt-1">{subtitle}</p>}
         </div>
         
         <div className="hidden md:flex items-center gap-2">
           <button 
             onClick={scrollLeft}
-            className="p-2 rounded-full border border-[#E8DED5] bg-white text-gray-600 hover:text-[#6F4E37] hover:border-[#6F4E37] transition-colors"
+            className="p-2 rounded-full border border-[#FEE2E2] bg-white text-gray-600 hover:text-[#E50914] hover:border-[#E50914] transition-colors"
           >
             <ChevronLeft size={20} />
           </button>
           <button 
             onClick={scrollRight}
-            className="p-2 rounded-full border border-[#E8DED5] bg-white text-gray-600 hover:text-[#6F4E37] hover:border-[#6F4E37] transition-colors"
+            className="p-2 rounded-full border border-[#FEE2E2] bg-white text-gray-600 hover:text-[#E50914] hover:border-[#E50914] transition-colors"
           >
             <ChevronRight size={20} />
           </button>

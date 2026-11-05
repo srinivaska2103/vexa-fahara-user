@@ -44,7 +44,7 @@ export default function DeleteReviewModal({ isOpen, onClose, reviewId, onSuccess
               <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mb-4">
                 <AlertTriangle className="w-6 h-6 text-red-600" />
               </div>
-              <h3 className="text-xl font-bold text-[#2C1810] mb-2">Delete Review</h3>
+              <h3 className="text-xl font-bold text-[#252525] mb-2">Delete Review</h3>
               <p className="text-gray-600 mb-6 text-sm">
                 Are you sure you want to delete this review? This action cannot be undone.
               </p>

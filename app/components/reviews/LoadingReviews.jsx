@@ -6,7 +6,7 @@ export default function LoadingReviews() {
   return (
     <div className="space-y-6">
       {[1, 2, 3].map((i) => (
-        <div key={i} className="bg-white p-6 rounded-2xl border border-[#E8DED5] animate-pulse">
+        <div key={i} className="bg-white p-6 rounded-2xl border border-[#FEE2E2] animate-pulse">
           <div className="flex items-start gap-4 mb-4">
             <div className="w-12 h-12 bg-gray-200 rounded-full shrink-0" />
             <div className="space-y-2 flex-1">

@@ -9,7 +9,8 @@ import {
   Utensils, GlassWater, ArrowRight, Sun, Umbrella, Building2, Layers, Check,
   Flame, Percent, Tag, Zap, UtensilsCrossed, Footprints, ChevronLeft, ChevronRight, Compass
 } from 'lucide-react';
-import React, { useState, useRef, useMemo } from 'react';
+import React, { useState, useRef, useMemo, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import toast from 'react-hot-toast';
 import dynamic from 'next/dynamic';
 import SortDropdown from '@/app/components/cafes/SortDropdown';
@@ -32,7 +33,7 @@ import MobileCafeHomeView from '@/app/components/home/MobileCafeHomeView';
 
 const MapComponent = dynamic(
   () => import('@/app/components/home/MapComponent'),
-  { ssr: false, loading: () => <div className="h-full w-full bg-stone-100 flex items-center justify-center rounded-2xl min-h-[400px]"><Loader2 className="animate-spin text-[#6F4E37]" size={28} /></div> }
+  { ssr: false, loading: () => <div className="h-full w-full bg-stone-100 flex items-center justify-center rounded-2xl min-h-[400px]"><Loader2 className="animate-spin text-[#E50914]" size={28} /></div> }
 );
 
 // UNIFIED DISCOVERY CATEGORIES (Merged into ONE "WHAT'S ON YOUR MIND?" section)
@@ -41,7 +42,7 @@ const UNIFIED_MIND_CATEGORIES = [
     id: 'Coffee Shop', 
     title: 'Cafes', 
     icon: Coffee, 
-    bg: 'from-amber-100/90 to-amber-50 text-[#6F4E37] border-amber-300/70', 
+    bg: 'from-amber-100/90 to-amber-50 text-[#E50914] border-amber-300/70', 
     type: 'category',
     badgeText: 'POPULAR CAFES',
     countLabel: 'Cafes Available'
@@ -128,7 +129,7 @@ const UNIFIED_MIND_CATEGORIES = [
   { id: 'Baby Shower', title: 'Baby Shower', icon: Sparkles, bg: 'from-blue-100/90 to-sky-50 text-blue-800 border-blue-300/70', keywords: ['baby', 'shower', 'maternity'], type: 'event', badgeText: 'POPULAR BABY SHOWER SPACES', countLabel: 'Venues Available' },
   { id: 'Engagement', title: 'Engagement', icon: Heart, bg: 'from-orange-100/90 to-amber-50 text-orange-800 border-orange-300/70', keywords: ['engagement', 'ring', 'ceremony'], type: 'event', badgeText: 'POPULAR ENGAGEMENT VENUES', countLabel: 'Venues Available' },
 
-  { id: 'All Spaces', title: 'All Spaces', icon: Building2, bg: 'from-amber-100/90 to-amber-50 text-[#6F4E37] border-amber-300/70', type: 'space', badgeText: 'ALL VERIFIED SPACES', countLabel: 'Venues Available' },
+  { id: 'All Spaces', title: 'All Spaces', icon: Building2, bg: 'from-amber-100/90 to-amber-50 text-[#E50914] border-amber-300/70', type: 'space', badgeText: 'ALL VERIFIED SPACES', countLabel: 'Venues Available' },
   { id: 'Discounts & Offers', title: 'Discounts & Offers', icon: Flame, bg: 'from-rose-100/90 to-red-50 text-rose-800 border-rose-300/70', type: 'space', badgeText: 'HOT OFFERS & DEALS', countLabel: 'Venues Available' },
   { id: 'Walking Cafe', title: 'Walking Cafes', icon: Footprints, bg: 'from-emerald-100/90 to-teal-50 text-emerald-800 border-emerald-300/70', type: 'space', badgeText: 'POPULAR WALKING CAFES', countLabel: 'Cafes Available' },
   { id: 'Coffee Shop Space', title: 'Coffee Shops', icon: Coffee, bg: 'from-amber-100/90 to-amber-50 text-amber-900 border-amber-300/70', type: 'space', badgeText: 'POPULAR COFFEE SHOPS', countLabel: 'Cafes Available' },
@@ -144,6 +145,27 @@ export default function AdvancedCafeDiscoveryPage() {
     openNow, availableToday, distance, amenities, sortBy, userLocation,
     isMobileFilterOpen, setIsMobileFilterOpen
   } = useSearchStore();
+  const searchParams = useSearchParams();
+
+  // Sync view mode and category from URL query parameters (e.g. ?view=map vs default grid)
+  useEffect(() => {
+    const viewParam = searchParams?.get('view');
+    if (viewParam === 'map') {
+      if (viewMode !== 'map') {
+        setViewMode('map');
+      }
+    } else {
+      // If ?view is not 'map' (e.g. absent or ?view=grid), revert to grid
+      if (viewMode === 'map') {
+        setViewMode('grid');
+      }
+    }
+    const catParam = searchParams?.get('category');
+    if (catParam && catParam !== category) {
+      setCategory(catParam);
+    }
+  }, [searchParams, viewMode, setViewMode, category, setCategory]);
+
   const [selectedEventPackage, setSelectedEventPackage] = useState('');
   const { t } = useLanguage();
 
@@ -339,7 +361,7 @@ export default function AdvancedCafeDiscoveryPage() {
 
   // Canonical filter generator for "WHAT'S ON YOUR MIND?" items
   const dynamicMindCategories = useMemo(() => {
-    // Configured Fahara categories matching backend category discovery endpoint
+    // Configured Grab2GO categories matching backend category discovery endpoint
     const canonicalItems = [
       { id: 'Coffee Shop', title: 'Cafes', slug: 'coffee-shop', type: 'category', icon: Coffee, defaultImage: '/cat_cafes.jpg' },
       { id: 'Restaurant', title: 'Restaurants', slug: 'restaurant', type: 'category', icon: UtensilsCrossed, defaultImage: '/cat_restaurants.jpg' },
@@ -576,7 +598,7 @@ export default function AdvancedCafeDiscoveryPage() {
   return (
     <div 
       style={{ paddingBottom: 'calc(6rem + env(safe-area-inset-bottom, 0px))' }}
-      className="min-h-screen bg-[#FFF8F0] customer-cafe-doodle-bg flex flex-col font-sans antialiased selection:bg-[#6F4E37] selection:text-white lg:pb-8"
+      className="min-h-screen bg-white flex flex-col font-sans antialiased selection:bg-[#E50914] selection:text-white lg:pb-8"
     >
       {/* ── MOBILE-ONLY HEADER (320px - 767px): Reference 2 Style ── */}
       <MobileCafeHeader onFilterClick={() => setIsMobileFilterOpen(true)} />
@@ -638,7 +660,7 @@ export default function AdvancedCafeDiscoveryPage() {
 
           {/* UNIFIED DISCOVERY SECTION: WHAT'S ON YOUR MIND? */}
           <DiscoveryCategorySection
-            title="EXPLORE FAHARA"
+            title="EXPLORE Grab2GO"
             subtitle="Find cafes, spaces & occasions"
             headerIcon={Compass}
             items={dynamicMindCategories}
@@ -659,11 +681,11 @@ export default function AdvancedCafeDiscoveryPage() {
               );
 
               if (targetItem && targetItem.count === 0) {
-                toast(`${targetItem.title} venues are coming soon to Fahara!`, {
+                toast(`${targetItem.title} venues are coming soon to Grab2GO!`, {
                   icon: '✨',
                   style: {
                     borderRadius: '16px',
-                    background: '#2C1810',
+                    background: '#252525',
                     color: '#FFF',
                     fontSize: '13px',
                     fontWeight: '800'
@@ -693,7 +715,7 @@ export default function AdvancedCafeDiscoveryPage() {
           {/* Page Sub-Header Banner with Filters & View Switcher */}
           <div className="relative z-30 mb-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white/60 backdrop-blur-md p-4 sm:p-6 rounded-3xl border border-stone-200/80 shadow-2xs">
             <div>
-              <h1 className="text-xl sm:text-3xl font-black text-[#2C1810] tracking-tight">
+              <h1 className="text-xl sm:text-3xl font-black text-[#252525] tracking-tight">
                 Find the perfect venue for your event
               </h1>
               <p className="text-xs sm:text-sm text-stone-500 font-medium mt-1">
@@ -706,7 +728,7 @@ export default function AdvancedCafeDiscoveryPage() {
               <button
                 suppressHydrationWarning
                 onClick={() => setIsMobileFilterOpen(true)}
-                className="lg:hidden flex items-center gap-1.5 px-3.5 py-2 bg-[#FFF8F0] border border-[#DDB892]/60 rounded-xl text-[#6F4E37] font-black text-xs hover:bg-[#6F4E37] hover:text-white transition-all shadow-2xs cursor-pointer"
+                className="lg:hidden flex items-center gap-1.5 px-3.5 py-2 bg-[#FFF5F5] border border-[#EF5350]/60 rounded-xl text-[#E50914] font-black text-xs hover:bg-[#E50914] hover:text-white transition-all shadow-2xs cursor-pointer"
               >
                 <SlidersHorizontal size={14} />
                 <span>Filters</span>
@@ -725,7 +747,7 @@ export default function AdvancedCafeDiscoveryPage() {
                       suppressHydrationWarning
                       onClick={() => setViewMode(mode)}
                       aria-label={`Switch to ${mode} view`}
-                      className={`relative px-3 py-1.5 rounded-lg flex items-center gap-1.5 text-xs font-extrabold transition-all cursor-pointer ${isActive ? 'text-[#6F4E37] font-black' : 'text-stone-500 hover:text-stone-800'
+                      className={`relative px-3 py-1.5 rounded-lg flex items-center gap-1.5 text-xs font-extrabold transition-all cursor-pointer ${isActive ? 'text-[#E50914] font-black' : 'text-stone-500 hover:text-stone-800'
                         }`}
                     >
                       {isActive && (
@@ -754,8 +776,8 @@ export default function AdvancedCafeDiscoveryPage() {
               <div className="space-y-6">
                 <div className="flex items-center justify-between pb-2">
                   <div className="flex items-center gap-2">
-                    <span className="w-2.5 h-2.5 rounded-full bg-[#6F4E37] animate-pulse" />
-                    <span className="text-xs font-black uppercase tracking-wider text-[#6F4E37]">
+                    <span className="w-2.5 h-2.5 rounded-full bg-[#E50914] animate-pulse" />
+                    <span className="text-xs font-black uppercase tracking-wider text-[#E50914]">
                       Curating top venues & spaces...
                     </span>
                   </div>

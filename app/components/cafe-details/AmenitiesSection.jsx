@@ -34,18 +34,18 @@ export default function AmenitiesSection({ cafe, isMobileView = false }) {
     return null;
   }
 
-  // Cohesive Fahara theme-based amenity dictionary (#6F4E37, #A67B5B, #DDB892, #FFF8F0, #2C1810)
+  // Cohesive Grab2GO theme-based amenity dictionary (#E50914, #B71C1C, #EF5350, #FFF5F5, #252525)
   const amenityMap = {
     'wifi': { 
       label: 'High-Speed Wi-Fi', 
       icon: Wifi,
       category: 'tech',
       badge: '500 Mbps Fiber',
-      gradient: 'from-[#4A2C11] to-[#6F4E37]',
-      bgLight: 'bg-[#FFF8F0] hover:bg-[#FDF4E7] border-[#DDB892]/60',
-      textAccent: 'text-[#2C1810]',
-      badgeBg: 'bg-white text-[#6F4E37] border-[#DDB892]/80',
-      glow: 'shadow-[#6F4E37]/15',
+      gradient: 'from-[#B71C1C] to-[#E50914]',
+      bgLight: 'bg-[#FFF5F5] hover:bg-[#FDF4E7] border-[#EF5350]/60',
+      textAccent: 'text-[#252525]',
+      badgeBg: 'bg-white text-[#E50914] border-[#EF5350]/80',
+      glow: 'shadow-[#E50914]/15',
       description: 'Ultra-fast, low-latency fiber internet available throughout the venue. Perfect for streaming, video conferencing, and team work sessions.'
     },
     'ac': { 
@@ -53,11 +53,11 @@ export default function AmenitiesSection({ cafe, isMobileView = false }) {
       icon: Wind,
       category: 'comfort',
       badge: 'Climate Control',
-      gradient: 'from-[#6F4E37] to-[#8C6246]',
-      bgLight: 'bg-[#FFF8F0] hover:bg-[#FDF4E7] border-[#DDB892]/60',
-      textAccent: 'text-[#2C1810]',
-      badgeBg: 'bg-white text-[#6F4E37] border-[#DDB892]/80',
-      glow: 'shadow-[#6F4E37]/15',
+      gradient: 'from-[#E50914] to-[#8C6246]',
+      bgLight: 'bg-[#FFF5F5] hover:bg-[#FDF4E7] border-[#EF5350]/60',
+      textAccent: 'text-[#252525]',
+      badgeBg: 'bg-white text-[#E50914] border-[#EF5350]/80',
+      glow: 'shadow-[#E50914]/15',
       description: 'Dual-zone central air conditioning keeping the environment fresh, cool, and comfortable no matter the weather outside.'
     },
     'parking': { 
@@ -65,10 +65,10 @@ export default function AmenitiesSection({ cafe, isMobileView = false }) {
       icon: Car,
       category: 'services',
       badge: 'Valet / On-Site',
-      gradient: 'from-[#8C6246] to-[#A67B5B]',
-      bgLight: 'bg-[#FFF8F0] hover:bg-[#FDF4E7] border-[#DDB892]/60',
-      textAccent: 'text-[#2C1810]',
-      badgeBg: 'bg-white text-[#6F4E37] border-[#DDB892]/80',
+      gradient: 'from-[#8C6246] to-[#B71C1C]',
+      bgLight: 'bg-[#FFF5F5] hover:bg-[#FDF4E7] border-[#EF5350]/60',
+      textAccent: 'text-[#252525]',
+      badgeBg: 'bg-white text-[#E50914] border-[#EF5350]/80',
       glow: 'shadow-[#8C6246]/15',
       description: 'Hassle-free parking space for guests right at the venue. Secure and easy access for both cars and two-wheelers.'
     },
@@ -77,11 +77,11 @@ export default function AmenitiesSection({ cafe, isMobileView = false }) {
       icon: Users,
       category: 'space',
       badge: 'Exclusive Access',
-      gradient: 'from-[#4A2C11] to-[#6F4E37]',
-      bgLight: 'bg-[#FFF8F0] hover:bg-[#FDF4E7] border-[#DDB892]/60',
-      textAccent: 'text-[#2C1810]',
-      badgeBg: 'bg-white text-[#6F4E37] border-[#DDB892]/80',
-      glow: 'shadow-[#6F4E37]/15',
+      gradient: 'from-[#B71C1C] to-[#E50914]',
+      bgLight: 'bg-[#FFF5F5] hover:bg-[#FDF4E7] border-[#EF5350]/60',
+      textAccent: 'text-[#252525]',
+      badgeBg: 'bg-white text-[#E50914] border-[#EF5350]/80',
+      glow: 'shadow-[#E50914]/15',
       description: 'Dedicated enclosed private section equipped for private dining, birthday celebrations, workshops, or confidential business meetings.'
     },
     'outdoor': { 
@@ -89,11 +89,11 @@ export default function AmenitiesSection({ cafe, isMobileView = false }) {
       icon: Sun,
       category: 'space',
       badge: 'Garden & Patio',
-      gradient: 'from-[#6F4E37] to-[#A67B5B]',
-      bgLight: 'bg-[#FFF8F0] hover:bg-[#FDF4E7] border-[#DDB892]/60',
-      textAccent: 'text-[#2C1810]',
-      badgeBg: 'bg-white text-[#6F4E37] border-[#DDB892]/80',
-      glow: 'shadow-[#6F4E37]/15',
+      gradient: 'from-[#E50914] to-[#B71C1C]',
+      bgLight: 'bg-[#FFF5F5] hover:bg-[#FDF4E7] border-[#EF5350]/60',
+      textAccent: 'text-[#252525]',
+      badgeBg: 'bg-white text-[#E50914] border-[#EF5350]/80',
+      glow: 'shadow-[#E50914]/15',
       description: 'Open-air al-fresco seating area surrounded by lush greenery, perfect for evening gatherings, coffee breaks, and photos.'
     },
     'indoor': { 
@@ -102,9 +102,9 @@ export default function AmenitiesSection({ cafe, isMobileView = false }) {
       category: 'space',
       badge: 'Cozy Ambience',
       gradient: 'from-[#5C3D28] to-[#8C6246]',
-      bgLight: 'bg-[#FFF8F0] hover:bg-[#FDF4E7] border-[#DDB892]/60',
-      textAccent: 'text-[#2C1810]',
-      badgeBg: 'bg-white text-[#6F4E37] border-[#DDB892]/80',
+      bgLight: 'bg-[#FFF5F5] hover:bg-[#FDF4E7] border-[#EF5350]/60',
+      textAccent: 'text-[#252525]',
+      badgeBg: 'bg-white text-[#E50914] border-[#EF5350]/80',
       glow: 'shadow-[#5C3D28]/15',
       description: 'Warmly lit interior aesthetic with comfortable seating arrangements, power outlets, and acoustic wall panels.'
     },
@@ -113,11 +113,11 @@ export default function AmenitiesSection({ cafe, isMobileView = false }) {
       icon: Speaker,
       category: 'tech',
       badge: 'Available',
-      gradient: 'from-[#6F4E37] to-[#A67B5B]',
-      bgLight: 'bg-[#FFF8F0] hover:bg-[#FDF4E7] border-[#DDB892]/60',
-      textAccent: 'text-[#2C1810]',
-      badgeBg: 'bg-white text-[#6F4E37] border-[#DDB892]/80',
-      glow: 'shadow-[#6F4E37]/15',
+      gradient: 'from-[#E50914] to-[#B71C1C]',
+      bgLight: 'bg-[#FFF5F5] hover:bg-[#FDF4E7] border-[#EF5350]/60',
+      textAccent: 'text-[#252525]',
+      badgeBg: 'bg-white text-[#E50914] border-[#EF5350]/80',
+      glow: 'shadow-[#E50914]/15',
       description: 'Professional high-fidelity sound speakers ready for background music or private celebrations.'
     },
     'music': { 
@@ -125,11 +125,11 @@ export default function AmenitiesSection({ cafe, isMobileView = false }) {
       icon: Speaker,
       category: 'tech',
       badge: 'Hi-Fi Audio',
-      gradient: 'from-[#6F4E37] to-[#A67B5B]',
-      bgLight: 'bg-[#FFF8F0] hover:bg-[#FDF4E7] border-[#DDB892]/60',
-      textAccent: 'text-[#2C1810]',
-      badgeBg: 'bg-white text-[#6F4E37] border-[#DDB892]/80',
-      glow: 'shadow-[#6F4E37]/15',
+      gradient: 'from-[#E50914] to-[#B71C1C]',
+      bgLight: 'bg-[#FFF5F5] hover:bg-[#FDF4E7] border-[#EF5350]/60',
+      textAccent: 'text-[#252525]',
+      badgeBg: 'bg-white text-[#E50914] border-[#EF5350]/80',
+      glow: 'shadow-[#E50914]/15',
       description: 'Premium surround sound speakers ready to pair with your playlist for customized background music.'
     },
     'projector': { 
@@ -137,11 +137,11 @@ export default function AmenitiesSection({ cafe, isMobileView = false }) {
       icon: Tv,
       category: 'tech',
       badge: 'Available',
-      gradient: 'from-[#4A2C11] to-[#6F4E37]',
-      bgLight: 'bg-[#FFF8F0] hover:bg-[#FDF4E7] border-[#DDB892]/60',
-      textAccent: 'text-[#2C1810]',
-      badgeBg: 'bg-white text-[#6F4E37] border-[#DDB892]/80',
-      glow: 'shadow-[#4A2C11]/15',
+      gradient: 'from-[#B71C1C] to-[#E50914]',
+      bgLight: 'bg-[#FFF5F5] hover:bg-[#FDF4E7] border-[#EF5350]/60',
+      textAccent: 'text-[#252525]',
+      badgeBg: 'bg-white text-[#E50914] border-[#EF5350]/80',
+      glow: 'shadow-[#B71C1C]/15',
       description: 'HD display projector and drop-down screen ideal for presentations, photo montages, or video screenings.'
     },
     'kids': { 
@@ -149,10 +149,10 @@ export default function AmenitiesSection({ cafe, isMobileView = false }) {
       icon: Users,
       category: 'services',
       badge: 'Available',
-      gradient: 'from-[#8C6246] to-[#A67B5B]',
-      bgLight: 'bg-[#FFF8F0] hover:bg-[#FDF4E7] border-[#DDB892]/60',
-      textAccent: 'text-[#2C1810]',
-      badgeBg: 'bg-white text-[#6F4E37] border-[#DDB892]/80',
+      gradient: 'from-[#8C6246] to-[#B71C1C]',
+      bgLight: 'bg-[#FFF5F5] hover:bg-[#FDF4E7] border-[#EF5350]/60',
+      textAccent: 'text-[#252525]',
+      badgeBg: 'bg-white text-[#E50914] border-[#EF5350]/80',
       glow: 'shadow-[#8C6246]/15',
       description: 'Safe and family-friendly environment with seating accommodations suitable for children and families.'
     },
@@ -161,11 +161,11 @@ export default function AmenitiesSection({ cafe, isMobileView = false }) {
       icon: Music,
       category: 'tech',
       badge: 'Stage Ready',
-      gradient: 'from-[#4A2C11] to-[#8C6246]',
-      bgLight: 'bg-[#FFF8F0] hover:bg-[#FDF4E7] border-[#DDB892]/60',
-      textAccent: 'text-[#2C1810]',
-      badgeBg: 'bg-white text-[#6F4E37] border-[#DDB892]/80',
-      glow: 'shadow-[#4A2C11]/15',
+      gradient: 'from-[#B71C1C] to-[#8C6246]',
+      bgLight: 'bg-[#FFF5F5] hover:bg-[#FDF4E7] border-[#EF5350]/60',
+      textAccent: 'text-[#252525]',
+      badgeBg: 'bg-white text-[#E50914] border-[#EF5350]/80',
+      glow: 'shadow-[#B71C1C]/15',
       description: 'Acoustic stage setup with mic support available for live acoustic performances, open mics, or live bands.'
     },
     'security': { 
@@ -173,11 +173,11 @@ export default function AmenitiesSection({ cafe, isMobileView = false }) {
       icon: Shield,
       category: 'services',
       badge: '24/7 Verified',
-      gradient: 'from-[#2C1810] to-[#5C3D28]',
-      bgLight: 'bg-[#FFF8F0] hover:bg-[#FDF4E7] border-[#DDB892]/60',
-      textAccent: 'text-[#2C1810]',
-      badgeBg: 'bg-white text-[#6F4E37] border-[#DDB892]/80',
-      glow: 'shadow-[#2C1810]/15',
+      gradient: 'from-[#252525] to-[#5C3D28]',
+      bgLight: 'bg-[#FFF5F5] hover:bg-[#FDF4E7] border-[#EF5350]/60',
+      textAccent: 'text-[#252525]',
+      badgeBg: 'bg-white text-[#E50914] border-[#EF5350]/80',
+      glow: 'shadow-[#252525]/15',
       description: 'Round-the-clock CCTV monitoring and professional staff ensuring safety and security for all event attendees.'
     },
   };
@@ -186,17 +186,17 @@ export default function AmenitiesSection({ cafe, isMobileView = false }) {
     const normalized = key.toLowerCase().trim();
     if (amenityMap[normalized]) return amenityMap[normalized];
     
-    // Cohesive Fahara theme default for custom amenities
+    // Cohesive Grab2GO theme default for custom amenities
     return {
       label: key.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase()),
       icon: CheckCircle2,
       category: 'general',
       badge: 'Available',
-      gradient: 'from-[#6F4E37] to-[#A67B5B]',
-      bgLight: 'bg-[#FFF8F0] hover:bg-[#FDF4E7] border-[#DDB892]/60',
-      textAccent: 'text-[#2C1810]',
-      badgeBg: 'bg-white text-[#6F4E37] border-[#DDB892]/80',
-      glow: 'shadow-[#6F4E37]/15',
+      gradient: 'from-[#E50914] to-[#B71C1C]',
+      bgLight: 'bg-[#FFF5F5] hover:bg-[#FDF4E7] border-[#EF5350]/60',
+      textAccent: 'text-[#252525]',
+      badgeBg: 'bg-white text-[#E50914] border-[#EF5350]/80',
+      glow: 'shadow-[#E50914]/15',
       description: `${key.replace(/_/g, ' ')} facility provided on-site for your reservation.`
     };
   };
@@ -221,7 +221,7 @@ export default function AmenitiesSection({ cafe, isMobileView = false }) {
         
         {/* Decorative Top Accent Bar */}
         {!isMobileView && (
-          <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-amber-500 via-emerald-500 via-cyan-500 to-[#6F4E37]" />
+          <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-amber-500 via-emerald-500 via-cyan-500 to-[#E50914]" />
         )}
 
         {/* Section Header */}
@@ -231,7 +231,7 @@ export default function AmenitiesSection({ cafe, isMobileView = false }) {
               <div className="p-1.5 rounded-lg bg-gradient-to-br from-amber-500 to-orange-600 text-white shadow-xs">
                 <Sparkles size={15} />
               </div>
-              <h2 className={isMobileView ? "text-base font-black text-[#2C1810] tracking-tight" : "text-xl sm:text-2xl font-black text-[#2C1810] tracking-tight"}>
+              <h2 className={isMobileView ? "text-base font-black text-[#252525] tracking-tight" : "text-xl sm:text-2xl font-black text-[#252525] tracking-tight"}>
                 What this place offers
               </h2>
             </div>
@@ -243,7 +243,7 @@ export default function AmenitiesSection({ cafe, isMobileView = false }) {
           </div>
 
           <div className="flex items-center gap-2">
-            <span className="text-[11px] font-black text-white bg-gradient-to-r from-[#6F4E37] to-[#A67B5B] px-3 py-1 rounded-full shadow-xs flex items-center gap-1.5">
+            <span className="text-[11px] font-black text-white bg-gradient-to-r from-[#E50914] to-[#B71C1C] px-3 py-1 rounded-full shadow-xs flex items-center gap-1.5">
               <Zap size={12} className="animate-pulse text-amber-300" />
               {amenitiesList.length} Verified Facilities
             </span>
@@ -259,7 +259,7 @@ export default function AmenitiesSection({ cafe, isMobileView = false }) {
                 onClick={() => setActiveCategory(cat.id)}
                 className={`px-3.5 py-1.5 rounded-xl text-xs font-black transition-all whitespace-nowrap cursor-pointer ${
                   activeCategory === cat.id
-                    ? 'bg-[#2C1810] text-white shadow-md shadow-[#2C1810]/20 scale-105'
+                    ? 'bg-[#252525] text-white shadow-md shadow-[#252525]/20 scale-105'
                     : 'bg-stone-100 text-stone-600 hover:bg-stone-200/80 hover:text-stone-900'
                 }`}
               >
@@ -315,7 +315,7 @@ export default function AmenitiesSection({ cafe, isMobileView = false }) {
                 </div>
 
                 <div className="shrink-0 pl-2">
-                  <div className="w-8 h-8 rounded-xl bg-white/80 border border-stone-200/60 text-stone-400 group-hover:text-[#6F4E37] group-hover:bg-white group-hover:border-[#DDB892] flex items-center justify-center transition-colors shadow-2xs">
+                  <div className="w-8 h-8 rounded-xl bg-white/80 border border-stone-200/60 text-stone-400 group-hover:text-[#E50914] group-hover:bg-white group-hover:border-[#EF5350] flex items-center justify-center transition-colors shadow-2xs">
                     <Info size={16} />
                   </div>
                 </div>
@@ -332,7 +332,7 @@ export default function AmenitiesSection({ cafe, isMobileView = false }) {
                 initial={{ opacity: 0, scale: 0.9, y: 20 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                className="bg-white rounded-3xl p-6 max-w-md w-full shadow-2xl border border-stone-200 relative overflow-hidden text-[#2C1810]"
+                className="bg-white rounded-3xl p-6 max-w-md w-full shadow-2xl border border-stone-200 relative overflow-hidden text-[#252525]"
               >
                 {/* Modal Header Decorative Gradient */}
                 <div className={`h-2 -mx-6 -mt-6 mb-6 bg-gradient-to-r ${selectedAmenity.gradient}`} />
@@ -349,7 +349,7 @@ export default function AmenitiesSection({ cafe, isMobileView = false }) {
                     <selectedAmenity.icon size={28} />
                   </div>
                   <div>
-                    <h3 className="text-lg font-black text-[#2C1810]">{selectedAmenity.label}</h3>
+                    <h3 className="text-lg font-black text-[#252525]">{selectedAmenity.label}</h3>
                     <span className={`inline-block px-2.5 py-0.5 rounded-full text-xs font-black border ${selectedAmenity.badgeBg}`}>
                       {selectedAmenity.badge}
                     </span>
@@ -368,7 +368,7 @@ export default function AmenitiesSection({ cafe, isMobileView = false }) {
                   </span>
                   <button
                     onClick={() => setSelectedAmenity(null)}
-                    className="px-4 py-2 rounded-xl bg-[#6F4E37] text-white text-xs font-bold hover:bg-[#5C3D28] transition-colors shadow-md shadow-[#6F4E37]/20"
+                    className="px-4 py-2 rounded-xl bg-[#E50914] text-white text-xs font-bold hover:bg-[#5C3D28] transition-colors shadow-md shadow-[#E50914]/20"
                   >
                     Close
                   </button>

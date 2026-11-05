@@ -52,7 +52,7 @@ export default function EventDetailsPage() {
         description: item.description || item.basic_desc || item.standard_desc || '',
         quantity: item.quantity ? `${item.quantity} ${item.unit || ''}`.trim() : null
       })),
-      theme: 'from-[#6F4E37]/10 via-amber-500/5 to-[#6F4E37]/10 border-[#DDB892]/60 text-[#6F4E37] bg-[#6F4E37]/10'
+      theme: 'from-[#E50914]/10 via-amber-500/5 to-[#E50914]/10 border-[#EF5350]/60 text-[#E50914] bg-[#E50914]/10'
     }];
   }, [event]);
 
@@ -80,7 +80,7 @@ export default function EventDetailsPage() {
     return (
       <FaharaInteractiveLoader 
         message="Loading Event Details & Special Offers..." 
-        badgeTag="FAHARA EVENTS" 
+        badgeTag="Grab2GO EVENTS" 
         fullScreen={true} 
       />
     );
@@ -88,12 +88,12 @@ export default function EventDetailsPage() {
 
   if (error || !event || !cafe) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-[#FFF8F0] p-4 text-center">
-        <h2 className="text-2xl font-black text-[#2C1810] mb-2">Event Package Not Found</h2>
+      <div className="min-h-screen flex flex-col items-center justify-center bg-[#FFF5F5] p-4 text-center">
+        <h2 className="text-2xl font-black text-[#252525] mb-2">Event Package Not Found</h2>
         <p className="text-stone-500 text-sm mb-6 max-w-md">We couldn&apos;t load the requested event details.</p>
         <button 
           onClick={() => router.back()} 
-          className="px-6 py-3 bg-gradient-to-r from-[#4A2C11] to-[#6F4E37] text-white font-bold rounded-2xl shadow-md hover:shadow-lg transition-all cursor-pointer"
+          className="px-6 py-3 bg-gradient-to-r from-[#B71C1C] to-[#E50914] text-white font-bold rounded-2xl shadow-md hover:shadow-lg transition-all cursor-pointer"
         >
           Go Back
         </button>
@@ -102,7 +102,7 @@ export default function EventDetailsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#FFF8F0] font-sans antialiased selection:bg-[#6F4E37] selection:text-white pb-24 lg:pb-12">
+    <div className="min-h-screen bg-[#FFF5F5] font-sans antialiased selection:bg-[#E50914] selection:text-white pb-24 lg:pb-12">
       
       {/* Top Navbar */}
       <CustomerNavbar showSearch={true} showViewToggles={false} />
@@ -111,15 +111,15 @@ export default function EventDetailsPage() {
         
         {/* Navigation Breadcrumb Row */}
         <div className="mb-4 flex items-center justify-between">
-          <Link href={`/cafes/${cafe.id}`} className="inline-flex items-center text-xs sm:text-sm font-extrabold bg-white hover:bg-[#FFF8F0] hover:text-[#6F4E37] text-stone-700 px-4 py-2.5 rounded-2xl border border-stone-200/80 transition-all shadow-2xs">
+          <Link href={`/cafes/${cafe.id}`} className="inline-flex items-center text-xs sm:text-sm font-extrabold bg-white hover:bg-[#FFF5F5] hover:text-[#E50914] text-stone-700 px-4 py-2.5 rounded-2xl border border-stone-200/80 transition-all shadow-2xs">
             <ArrowLeft size={15} className="mr-2" /> Back to {cafe.name}
           </Link>
 
           <button
             onClick={handleShareClick}
-            className="inline-flex items-center gap-1.5 text-xs font-black bg-white hover:bg-[#FFF8F0] text-[#2C1810] px-4 py-2.5 rounded-2xl border border-stone-200/80 transition-all shadow-2xs cursor-pointer"
+            className="inline-flex items-center gap-1.5 text-xs font-black bg-white hover:bg-[#FFF5F5] text-[#252525] px-4 py-2.5 rounded-2xl border border-stone-200/80 transition-all shadow-2xs cursor-pointer"
           >
-            {copied ? <Check size={15} className="text-emerald-600" /> : <Share2 size={15} className="text-[#6F4E37]" />}
+            {copied ? <Check size={15} className="text-emerald-600" /> : <Share2 size={15} className="text-[#E50914]" />}
             <span>{copied ? 'Copied!' : 'Share'}</span>
           </button>
         </div>
@@ -127,18 +127,18 @@ export default function EventDetailsPage() {
         {/* Title Header Glass Card */}
         <div className="bg-white/90 backdrop-blur-xl border border-stone-200/90 rounded-3xl p-4 sm:p-8 shadow-[0_8px_30px_rgba(0,0,0,0.04)] mb-6 sm:mb-8 overflow-hidden">
           <div className="flex flex-wrap items-center justify-between gap-3 mb-2">
-            <h1 className="text-xl sm:text-4xl md:text-5xl font-black text-[#2C1810] tracking-tight leading-tight min-w-0">
+            <h1 className="text-xl sm:text-4xl md:text-5xl font-black text-[#252525] tracking-tight leading-tight min-w-0">
               {event.package_name || 'Special Event Package'}
             </h1>
-            <span className="inline-flex items-center gap-1.5 bg-[#FFF8F0] text-[#6F4E37] border border-[#DDB892]/60 px-3 py-1 rounded-full text-xs font-black shadow-2xs shrink-0">
-              <Sparkles size={14} className="text-[#6F4E37]" />
+            <span className="inline-flex items-center gap-1.5 bg-[#FFF5F5] text-[#E50914] border border-[#EF5350]/60 px-3 py-1 rounded-full text-xs font-black shadow-2xs shrink-0">
+              <Sparkles size={14} className="text-[#E50914]" />
               <span>Event Package</span>
             </span>
           </div>
 
           <div className="flex items-center gap-2 text-xs sm:text-sm font-bold text-stone-600 flex-wrap">
             <span>Hosted at</span>
-            <Link href={`/cafes/${cafe.id}`} className="text-[#6F4E37] underline decoration-stone-300 hover:decoration-[#6F4E37] transition-colors font-black">
+            <Link href={`/cafes/${cafe.id}`} className="text-[#E50914] underline decoration-stone-300 hover:decoration-[#E50914] transition-colors font-black">
               {cafe.name}
             </Link>
             {cafe.status === 'ACTIVE' && <ShieldCheck size={16} className="text-emerald-600 shrink-0" />}
@@ -159,16 +159,16 @@ export default function EventDetailsPage() {
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out" 
                 />
               ) : (
-                <div className="w-full h-full bg-gradient-to-br from-[#FFF8F0] via-stone-50 to-[#FFF3E4] flex flex-col items-center justify-center text-stone-400">
-                  <Sparkles size={48} className="text-[#6F4E37] opacity-40 mb-2" />
-                  <span className="font-extrabold text-stone-500 text-sm">Fahara Event Package</span>
+                <div className="w-full h-full bg-gradient-to-br from-[#FFF5F5] via-stone-50 to-[#FFF3E4] flex flex-col items-center justify-center text-stone-400">
+                  <Sparkles size={48} className="text-[#E50914] opacity-40 mb-2" />
+                  <span className="font-extrabold text-stone-500 text-sm">Grab2GO Event Package</span>
                 </div>
               )}
             </div>
 
             {/* About Package Card */}
             <div className="bg-white/90 backdrop-blur-xl rounded-3xl p-6 sm:p-8 border border-stone-200/90 shadow-[0_8px_30px_rgba(0,0,0,0.04)]">
-              <h2 className="text-xl sm:text-2xl font-black text-[#2C1810] mb-4 tracking-tight">About this package</h2>
+              <h2 className="text-xl sm:text-2xl font-black text-[#252525] mb-4 tracking-tight">About this package</h2>
               <p className="text-stone-700 leading-relaxed text-sm sm:text-base font-medium">
                 {event.description || 'Enjoy a meticulously curated event package tailored for your special moments.'}
               </p>
@@ -176,25 +176,25 @@ export default function EventDetailsPage() {
             
             {/* Highlights Grid */}
             <div className="bg-white/90 backdrop-blur-xl rounded-3xl p-6 sm:p-8 border border-stone-200/90 shadow-[0_8px_30px_rgba(0,0,0,0.04)]">
-              <h2 className="text-xl sm:text-2xl font-black text-[#2C1810] mb-6 tracking-tight">Package Highlights</h2>
+              <h2 className="text-xl sm:text-2xl font-black text-[#252525] mb-6 tracking-tight">Package Highlights</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="flex items-center text-stone-800 bg-stone-50/90 p-4 rounded-2xl border border-stone-200/80 shadow-2xs">
-                  <div className="w-10 h-10 rounded-2xl bg-white flex items-center justify-center text-[#6F4E37] mr-3.5 shadow-2xs border border-stone-200/60 shrink-0">
+                  <div className="w-10 h-10 rounded-2xl bg-white flex items-center justify-center text-[#E50914] mr-3.5 shadow-2xs border border-stone-200/60 shrink-0">
                     <Clock size={20} />
                   </div>
                   <div>
                     <div className="font-black text-xs uppercase tracking-wider text-stone-400">Duration</div>
-                    <div className="text-sm font-black text-[#2C1810]">{event.duration_hours || 4} Hours</div>
+                    <div className="text-sm font-black text-[#252525]">{event.duration_hours || 4} Hours</div>
                   </div>
                 </div>
 
                 <div className="flex items-center text-stone-800 bg-stone-50/90 p-4 rounded-2xl border border-stone-200/80 shadow-2xs">
-                  <div className="w-10 h-10 rounded-2xl bg-white flex items-center justify-center text-[#6F4E37] mr-3.5 shadow-2xs border border-stone-200/60 shrink-0">
+                  <div className="w-10 h-10 rounded-2xl bg-white flex items-center justify-center text-[#E50914] mr-3.5 shadow-2xs border border-stone-200/60 shrink-0">
                     <Users size={20} />
                   </div>
                   <div>
                     <div className="font-black text-xs uppercase tracking-wider text-stone-400">Capacity</div>
-                    <div className="text-sm font-black text-[#2C1810]">Up to {event.maximum_persons || 20} Guests</div>
+                    <div className="text-sm font-black text-[#252525]">Up to {event.maximum_persons || 20} Guests</div>
                   </div>
                 </div>
               </div>
@@ -205,7 +205,7 @@ export default function EventDetailsPage() {
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-stone-100">
                 <div>
                   <div className="flex items-center gap-2">
-                    <h2 className="text-lg sm:text-2xl font-black text-[#2C1810] tracking-tight">Package Inclusions & Provided Services</h2>
+                    <h2 className="text-lg sm:text-2xl font-black text-[#252525] tracking-tight">Package Inclusions & Provided Services</h2>
                   </div>
                   <p className="text-xs sm:text-sm text-stone-500 font-medium mt-1">Everything included in this package provided directly by the venue</p>
                 </div>
@@ -227,7 +227,7 @@ export default function EventDetailsPage() {
                           <CatIcon size={19} />
                         </div>
                         <div>
-                          <h3 className="font-extrabold text-sm sm:text-base text-[#2C1810]">{cat.title}</h3>
+                          <h3 className="font-extrabold text-sm sm:text-base text-[#252525]">{cat.title}</h3>
                           <p className="text-[11px] text-stone-400 font-bold">
                             {cat.items && cat.items.length > 0 ? `${cat.items.length} Provided Items` : 'Included with Package'}
                           </p>
@@ -248,14 +248,14 @@ export default function EventDetailsPage() {
                           return (
                             <div 
                               key={`${cat.key}-${idx}-${item.name}`}
-                              className="p-3.5 rounded-2xl border bg-gradient-to-r from-[#FFF8F0] to-white border-stone-200 flex items-start justify-between shadow-2xs gap-3"
+                              className="p-3.5 rounded-2xl border bg-gradient-to-r from-[#FFF5F5] to-white border-stone-200 flex items-start justify-between shadow-2xs gap-3"
                             >
                               <div className="flex items-start gap-3 min-w-0 flex-1">
-                                <div className="w-6 h-6 rounded-lg bg-[#6F4E37] text-white flex items-center justify-center text-xs font-black shrink-0 shadow-2xs mt-0.5">
+                                <div className="w-6 h-6 rounded-lg bg-[#E50914] text-white flex items-center justify-center text-xs font-black shrink-0 shadow-2xs mt-0.5">
                                   <Check size={14} className="stroke-[3]" />
                                 </div>
                                 <div className="flex flex-col min-w-0">
-                                  <span className="text-xs font-black text-[#2C1810] truncate">
+                                  <span className="text-xs font-black text-[#252525] truncate">
                                     {formattedName}
                                   </span>
                                   {itemDesc && (
@@ -268,11 +268,11 @@ export default function EventDetailsPage() {
                               
                               <div className="flex items-center gap-2 shrink-0">
                                 {itemPrice > 0 && (
-                                  <span className="text-xs font-black text-[#6F4E37] bg-[#FFF8F0] px-2.5 py-0.5 rounded-lg border border-[#DDB892]/40">
+                                  <span className="text-xs font-black text-[#E50914] bg-[#FFF5F5] px-2.5 py-0.5 rounded-lg border border-[#EF5350]/40">
                                     ₹{itemPrice}
                                   </span>
                                 )}
-                                <span className="text-xs font-black px-2.5 py-1 rounded-xl bg-[#6F4E37]/10 text-[#6F4E37] border border-[#6F4E37]/20">
+                                <span className="text-xs font-black px-2.5 py-1 rounded-xl bg-[#E50914]/10 text-[#E50914] border border-[#E50914]/20">
                                   Included
                                 </span>
                               </div>
@@ -291,7 +291,7 @@ export default function EventDetailsPage() {
             {/* Photo Gallery Card */}
             {galleryList.length > 0 && (
               <div className="bg-white/90 backdrop-blur-xl rounded-3xl p-6 sm:p-8 border border-stone-200/90 shadow-[0_8px_30px_rgba(0,0,0,0.04)] space-y-4">
-                <h2 className="text-xl sm:text-2xl font-black text-[#2C1810] tracking-tight">Package Photo Gallery</h2>
+                <h2 className="text-xl sm:text-2xl font-black text-[#252525] tracking-tight">Package Photo Gallery</h2>
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-3.5">
                   {galleryList.map((img, idx) => {
                     const imgUrl = typeof img === 'string' ? img : img?.url;
@@ -319,7 +319,7 @@ export default function EventDetailsPage() {
               {/* Price Header */}
               <div className="flex items-baseline justify-between pb-4 border-b border-stone-100">
                 <div>
-                  <span className="text-3xl sm:text-4xl font-black text-[#2C1810] tracking-tight">₹{packagePrice}</span>
+                  <span className="text-3xl sm:text-4xl font-black text-[#252525] tracking-tight">₹{packagePrice}</span>
                   <span className="text-xs font-bold text-stone-400 uppercase tracking-wider ml-1.5">Package Price</span>
                 </div>
                 <div className="flex items-center gap-1.5 bg-emerald-50 text-emerald-700 px-3 py-1 rounded-full text-xs font-black border border-emerald-200 shadow-2xs">
@@ -329,16 +329,16 @@ export default function EventDetailsPage() {
               </div>
               
               {/* Capacity & Price Breakdown Box */}
-              <div className="space-y-3 p-4 rounded-2xl bg-[#FFF8F0]/80 border border-[#DDB892]/50 text-xs font-bold text-stone-700">
+              <div className="space-y-3 p-4 rounded-2xl bg-[#FFF5F5]/80 border border-[#EF5350]/50 text-xs font-bold text-stone-700">
                 <div className="flex items-center justify-between">
                   <span className="text-stone-500 font-semibold">Minimum Guests</span>
-                  <span className="font-black text-[#2C1810]">{event.minimum_persons || 1} Guests</span>
+                  <span className="font-black text-[#252525]">{event.minimum_persons || 1} Guests</span>
                 </div>
-                <div className="flex items-center justify-between border-t border-[#DDB892]/30 pt-2.5">
+                <div className="flex items-center justify-between border-t border-[#EF5350]/30 pt-2.5">
                   <span className="text-stone-500 font-semibold">Maximum Guests</span>
-                  <span className="font-black text-[#2C1810]">{event.maximum_persons || 50} Guests</span>
+                  <span className="font-black text-[#252525]">{event.maximum_persons || 50} Guests</span>
                 </div>
-                <div className="flex items-center justify-between border-t border-[#DDB892]/30 pt-2.5 text-[#6F4E37]">
+                <div className="flex items-center justify-between border-t border-[#EF5350]/30 pt-2.5 text-[#E50914]">
                   <span className="font-extrabold">Total Package Price</span>
                   <span className="font-black text-sm">₹{packagePrice}</span>
                 </div>
@@ -349,7 +349,7 @@ export default function EventDetailsPage() {
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.96 }}
                 onClick={() => router.push(`/booking/${cafe.id}`)}
-                className="w-full bg-gradient-to-r from-[#4A2C11] to-[#6F4E37] hover:from-[#3A220D] hover:to-[#5E422E] text-white py-4 rounded-2xl font-black text-sm tracking-wide shadow-lg shadow-[#4A2C11]/20 hover:shadow-xl transition-all cursor-pointer flex items-center justify-center gap-2"
+                className="w-full bg-gradient-to-r from-[#B71C1C] to-[#E50914] hover:from-[#3A220D] hover:to-[#5E422E] text-white py-4 rounded-2xl font-black text-sm tracking-wide shadow-lg shadow-[#B71C1C]/20 hover:shadow-xl transition-all cursor-pointer flex items-center justify-center gap-2"
               >
                 <span>Reserve Package</span>
                 <span className="px-2.5 py-0.5 rounded-lg bg-white/20 text-white text-xs font-black">₹{packagePrice}</span>

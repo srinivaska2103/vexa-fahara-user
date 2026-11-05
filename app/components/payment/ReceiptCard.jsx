@@ -36,11 +36,11 @@ export default function ReceiptCard({ receiptData }) {
         doc.setTextColor(0, 0, 0);
         doc.text(receiptData.paymentDate || '', marginX + 10, currentY);
 
-        // Fahara Info (Right Side)
+        // Grab2GO Info (Right Side)
         const rightX = 140;
         doc.setFont('helvetica', 'bold');
         doc.setFontSize(18);
-        doc.text('Fahara', rightX, 22);
+        doc.text('Grab2GO', rightX, 22);
         
         doc.setFont('helvetica', 'normal');
         doc.setFontSize(10);
@@ -179,14 +179,14 @@ export default function ReceiptCard({ receiptData }) {
       id="receipt-content" 
       className="bg-white/95 backdrop-blur-xl rounded-3xl border border-stone-200/90 overflow-hidden shadow-[0_16px_50px_rgba(0,0,0,0.06)] max-w-2xl mx-auto font-sans w-full print:shadow-none print:border-none print:rounded-none print:max-w-full print:bg-white print:m-0 print:p-0"
     >
-      <div className="p-5 sm:p-8 border-b border-stone-200/80 flex flex-wrap gap-4 justify-between items-start bg-[#FFF8F0]">
+      <div className="p-5 sm:p-8 border-b border-stone-200/80 flex flex-wrap gap-4 justify-between items-start bg-[#FFF5F5]">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-black text-[#6F4E37] tracking-tight mb-1.5">RECEIPT</h1>
-          <p className="text-xs text-stone-500 font-extrabold flex flex-wrap gap-1">Receipt No: <span className="font-black text-[#2C1810] font-mono break-all">{receiptData.receiptNumber}</span></p>
-          <p className="text-xs text-stone-500 font-extrabold mt-0.5">Date: <span className="font-black text-[#2C1810]">{receiptData.paymentDate}</span></p>
+          <h1 className="text-2xl sm:text-3xl font-black text-[#E50914] tracking-tight mb-1.5">RECEIPT</h1>
+          <p className="text-xs text-stone-500 font-extrabold flex flex-wrap gap-1">Receipt No: <span className="font-black text-[#252525] font-mono break-all">{receiptData.receiptNumber}</span></p>
+          <p className="text-xs text-stone-500 font-extrabold mt-0.5">Date: <span className="font-black text-[#252525]">{receiptData.paymentDate}</span></p>
         </div>
         <div className="text-left sm:text-right">
-          <h2 className="text-xl sm:text-2xl font-black text-[#2C1810] tracking-wide">Fahara</h2>
+          <h2 className="text-xl sm:text-2xl font-black text-[#252525] tracking-wide">Grab2GO</h2>
           <p className="text-xs text-stone-500 font-bold truncate max-w-[200px] sm:max-w-full">vexatech.connect@gmail.com</p>
         </div>
       </div>
@@ -196,11 +196,11 @@ export default function ReceiptCard({ receiptData }) {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pb-6 border-b border-stone-100">
           <div>
             <p className="text-[10px] font-black uppercase tracking-wider text-stone-400 mb-1">Billed To:</p>
-            <p className="font-black text-sm sm:text-base text-[#2C1810]">{receiptData.customerName}</p>
+            <p className="font-black text-sm sm:text-base text-[#252525]">{receiptData.customerName}</p>
           </div>
           <div className="text-left sm:text-right">
             <p className="text-[10px] font-black uppercase tracking-wider text-stone-400 mb-1">Booking Info:</p>
-            <p className="font-black text-xs sm:text-sm text-[#2C1810]">{receiptData.cafeName}</p>
+            <p className="font-black text-xs sm:text-sm text-[#252525]">{receiptData.cafeName}</p>
             <p className="text-xs text-stone-500 font-mono font-bold">ID: {receiptData.bookingId}</p>
             <p className="text-xs text-stone-500 font-semibold">{receiptData.bookingDate}</p>
           </div>
@@ -209,20 +209,20 @@ export default function ReceiptCard({ receiptData }) {
         {/* Table Seating & Guests Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 p-4 rounded-2xl bg-stone-50/90 border border-stone-200/80">
           <div>
-            <span className="text-[10px] font-black uppercase tracking-wider text-[#6F4E37] block mb-0.5">Guest Count</span>
-            <p className="font-black text-xs sm:text-sm text-[#2C1810]">{receiptData.guestCount || 1} Guests</p>
+            <span className="text-[10px] font-black uppercase tracking-wider text-[#E50914] block mb-0.5">Guest Count</span>
+            <p className="font-black text-xs sm:text-sm text-[#252525]">{receiptData.guestCount || 1} Guests</p>
           </div>
           <div>
-            <span className="text-[10px] font-black uppercase tracking-wider text-[#6F4E37] block mb-0.5">Reserved Table</span>
-            <p className="font-black text-xs sm:text-sm text-[#2C1810]">{receiptData.tableDetails || 'Standard Open Seating'}</p>
+            <span className="text-[10px] font-black uppercase tracking-wider text-[#E50914] block mb-0.5">Reserved Table</span>
+            <p className="font-black text-xs sm:text-sm text-[#252525]">{receiptData.tableDetails || 'Standard Open Seating'}</p>
           </div>
         </div>
 
         {/* Provided Package Inclusions */}
         {(receiptData.eventPackage || (receiptData.packageInclusions && receiptData.packageInclusions.length > 0)) && (
-          <div className="p-4 bg-[#FFF8F0] border border-[#DDB892]/50 rounded-2xl space-y-2">
+          <div className="p-4 bg-[#FFF5F5] border border-[#EF5350]/50 rounded-2xl space-y-2">
             <div className="flex items-center justify-between">
-              <span className="text-[10px] font-black uppercase tracking-wider text-[#6F4E37]">
+              <span className="text-[10px] font-black uppercase tracking-wider text-[#E50914]">
                 Package Inclusions ({receiptData.eventPackage || 'Cafe Package'})
               </span>
               <span className="text-[10px] font-black text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
@@ -233,7 +233,7 @@ export default function ReceiptCard({ receiptData }) {
             {receiptData.packageInclusions && receiptData.packageInclusions.length > 0 ? (
               <div className="flex flex-wrap gap-1.5 pt-1">
                 {receiptData.packageInclusions.map((item, idx) => (
-                  <span key={idx} className="text-xs font-black text-[#2C1810] bg-white px-2.5 py-1 rounded-xl border border-stone-200 shadow-2xs">
+                  <span key={idx} className="text-xs font-black text-[#252525] bg-white px-2.5 py-1 rounded-xl border border-stone-200 shadow-2xs">
                     ✓ {item.name}{item.desc ? ` (${item.desc})` : ''}
                   </span>
                 ))}
@@ -245,9 +245,9 @@ export default function ReceiptCard({ receiptData }) {
         )}
 
         {receiptData.eventCompany && (
-          <div className="p-3.5 bg-[#FFF8F0] border border-[#DDB892]/40 rounded-2xl">
-            <p className="text-[10px] font-black uppercase tracking-wider text-[#6F4E37] mb-1">Event Arrangements:</p>
-            <p className="font-black text-xs sm:text-sm text-[#2C1810]">{receiptData.eventCompany} - {receiptData.eventPackage}</p>
+          <div className="p-3.5 bg-[#FFF5F5] border border-[#EF5350]/40 rounded-2xl">
+            <p className="text-[10px] font-black uppercase tracking-wider text-[#E50914] mb-1">Event Arrangements:</p>
+            <p className="font-black text-xs sm:text-sm text-[#252525]">{receiptData.eventCompany} - {receiptData.eventPackage}</p>
           </div>
         )}
 
@@ -275,7 +275,7 @@ export default function ReceiptCard({ receiptData }) {
           whileHover={{ scale: 1.03 }}
           whileTap={{ scale: 0.95 }}
           onClick={handleDownloadPDF} 
-          className="flex items-center justify-center gap-2 px-5 sm:px-6 py-2.5 rounded-2xl bg-gradient-to-r from-[#4A2C11] to-[#6F4E37] text-white transition-all font-black text-xs shadow-md hover:shadow-lg cursor-pointer flex-1 sm:flex-initial"
+          className="flex items-center justify-center gap-2 px-5 sm:px-6 py-2.5 rounded-2xl bg-gradient-to-r from-[#B71C1C] to-[#E50914] text-white transition-all font-black text-xs shadow-md hover:shadow-lg cursor-pointer flex-1 sm:flex-initial"
         >
           <Download size={15} />
           <span>Download PDF</span>

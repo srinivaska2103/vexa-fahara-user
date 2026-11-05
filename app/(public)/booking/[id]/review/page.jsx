@@ -116,7 +116,7 @@ export default function ReviewBookingPage() {
                <AlertCircle className="shrink-0 mt-0.5" />
                <div className="text-sm">
                  <h4 className="font-bold mb-1">House Rules</h4>
-                 <p>By selecting the button below, I agree to the House Rules, Ground Rules for Guests, and Fahara's Rebooking and Refund Policy.</p>
+                 <p>By selecting the button below, I agree to the House Rules, Ground Rules for Guests, and Grab2GO's Rebooking and Refund Policy.</p>
                </div>
             </div>
 

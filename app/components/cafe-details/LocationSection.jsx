@@ -29,9 +29,9 @@ export default function LocationSection({ cafe }) {
         
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-5 border-b border-stone-100">
           <div className="space-y-1">
-            <h2 className="text-xl sm:text-2xl font-black text-[#2C1810] tracking-tight">Where you&apos;ll be</h2>
+            <h2 className="text-xl sm:text-2xl font-black text-[#252525] tracking-tight">Where you&apos;ll be</h2>
             <div className="flex items-center gap-2 text-xs sm:text-sm text-stone-700 font-bold">
-              <MapPin size={16} className="text-[#6F4E37] flex-shrink-0" />
+              <MapPin size={16} className="text-[#E50914] flex-shrink-0" />
               <span>{fullAddress}</span>
             </div>
           </div>
@@ -45,7 +45,7 @@ export default function LocationSection({ cafe }) {
             <motion.button 
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.95 }}
-              className="px-4.5 py-2.5 bg-gradient-to-r from-[#4A2C11] to-[#6F4E37] text-white font-black text-xs sm:text-sm rounded-2xl flex items-center gap-2 transition-all shadow-md hover:shadow-lg hover:shadow-[#4A2C11]/20 cursor-pointer"
+              className="px-4.5 py-2.5 bg-gradient-to-r from-[#B71C1C] to-[#E50914] text-white font-black text-xs sm:text-sm rounded-2xl flex items-center gap-2 transition-all shadow-md hover:shadow-lg hover:shadow-[#B71C1C]/20 cursor-pointer"
             >
               <Navigation size={15} />
               <span>Get Directions</span>
@@ -58,15 +58,15 @@ export default function LocationSection({ cafe }) {
             <MapPreview lat={parsedLat} lng={parsedLng} cafeName={name} />
           ) : (
             <div className="h-[250px] sm:h-[300px] w-full bg-amber-50/50 flex flex-col items-center justify-center p-6 text-center border border-amber-200/60 rounded-3xl">
-              <MapPin size={32} className="text-[#6F4E37] mb-2 opacity-60 animate-bounce" />
-              <p className="text-sm font-bold text-[#2C1810]">Location coordinates are unavailable</p>
+              <MapPin size={32} className="text-[#E50914] mb-2 opacity-60 animate-bounce" />
+              <p className="text-sm font-bold text-[#252525]">Location coordinates are unavailable</p>
               <p className="text-xs text-stone-500 mt-1 max-w-sm">Address: {fullAddress}</p>
             </div>
           )}
         </div>
         
-        <div className="mt-4 flex items-center gap-2 text-xs text-stone-500 font-medium bg-[#FFF8F0]/70 p-3 rounded-2xl border border-[#DDB892]/40">
-          <Compass size={16} className="text-[#6F4E37] shrink-0" />
+        <div className="mt-4 flex items-center gap-2 text-xs text-stone-500 font-medium bg-[#FFF5F5]/70 p-3 rounded-2xl border border-[#EF5350]/40">
+          <Compass size={16} className="text-[#E50914] shrink-0" />
           <span>Exact venue coordinates ({hasValidCoords ? `${parsedLat.toFixed(4)}, ${parsedLng.toFixed(4)}` : 'saved'}) and entrance access instructions will be sent with your booking confirmation.</span>
         </div>
       </div>

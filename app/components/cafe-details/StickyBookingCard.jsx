@@ -62,18 +62,18 @@ export default function StickyBookingCard({ cafe }) {
   if (isWalkingCafe || (!tableReservationAllowed && !eventBookingAllowed)) {
     return (
       <div className="bg-white/95 backdrop-blur-xl border border-amber-200/90 rounded-3xl shadow-[0_16px_50px_rgba(0,0,0,0.08)] p-5 sm:p-6 sticky top-[11.5rem] z-20 font-sans w-full space-y-4">
-        <div className="p-3.5 rounded-2xl bg-gradient-to-r from-[#FFF8F0] to-[#FFF5EA] border border-[#DDB892]/60 text-center space-y-1">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#6F4E37] text-white text-[10px] font-black uppercase tracking-wider">
+        <div className="p-3.5 rounded-2xl bg-gradient-to-r from-[#FFF5F5] to-[#FFF5F5] border border-[#EF5350]/60 text-center space-y-1">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#E50914] text-white text-[10px] font-black uppercase tracking-wider">
             <Coffee className="w-3 h-3" /> Walk-in Cafe
           </div>
-          <p className="text-xs font-bold text-[#2C1810]">Walk-in Customers Welcome</p>
+          <p className="text-xs font-bold text-[#252525]">Walk-in Customers Welcome</p>
           <p className="text-[11px] text-stone-500">No table reservation required. Visit during open hours!</p>
         </div>
 
         {/* Directions CTA */}
         <button
           onClick={handleDirectionsClick}
-          className="w-full py-3.5 rounded-2xl font-extrabold text-xs bg-gradient-to-r from-[#4A2C11] to-[#6F4E37] text-white shadow-md flex items-center justify-center gap-2 hover:opacity-95 transition-all cursor-pointer"
+          className="w-full py-3.5 rounded-2xl font-extrabold text-xs bg-gradient-to-r from-[#B71C1C] to-[#E50914] text-white shadow-md flex items-center justify-center gap-2 hover:opacity-95 transition-all cursor-pointer"
         >
           <MapPin className="w-4 h-4" />
           <span>Get Directions</span>
@@ -81,20 +81,20 @@ export default function StickyBookingCard({ cafe }) {
 
         {/* Contact Info Card (In-App Display without OS handler dialogs) */}
         {phoneNum ? (
-          <div className="p-3.5 rounded-2xl bg-[#FFF8F0] border border-[#DDB892]/60 shadow-2xs space-y-1.5">
+          <div className="p-3.5 rounded-2xl bg-[#FFF5F5] border border-[#EF5350]/60 shadow-2xs space-y-1.5">
             <div className="flex items-center justify-between">
-              <span className="text-[10px] font-black text-[#6F4E37] uppercase tracking-wider flex items-center gap-1">
-                <PhoneCall className="w-3 h-3 text-[#6F4E37]" /> Contact Phone
+              <span className="text-[10px] font-black text-[#E50914] uppercase tracking-wider flex items-center gap-1">
+                <PhoneCall className="w-3 h-3 text-[#E50914]" /> Contact Phone
               </span>
               <button
                 type="button"
                 onClick={handleCopyContact}
-                className="text-[10px] font-black text-white bg-[#6F4E37] hover:bg-[#4A2C11] px-2.5 py-1 rounded-lg transition-colors cursor-pointer shadow-2xs"
+                className="text-[10px] font-black text-white bg-[#E50914] hover:bg-[#B71C1C] px-2.5 py-1 rounded-lg transition-colors cursor-pointer shadow-2xs"
               >
                 Copy Number
               </button>
             </div>
-            <p className="text-sm font-black text-[#2C1810] tracking-wide select-all">
+            <p className="text-sm font-black text-[#252525] tracking-wide select-all">
               {phoneNum}
             </p>
           </div>
@@ -116,7 +116,7 @@ export default function StickyBookingCard({ cafe }) {
         <div className="flex items-center gap-2 text-xs text-amber-900 bg-gradient-to-r from-amber-500/15 via-orange-500/10 to-amber-100/60 p-3 rounded-2xl border border-amber-300/60 mb-4 font-extrabold shadow-2xs">
           <Sparkles className="w-4 h-4 text-amber-600 shrink-0" />
           <p className="truncate text-[11px]">
-            <span className="font-black text-[#6F4E37]">{activeDeal.discountType === 'PERCENT' ? `${activeDeal.amount}% OFF` : `₹${activeDeal.amount} OFF`}</span>: {activeDeal.title || 'Special Deal'}
+            <span className="font-black text-[#E50914]">{activeDeal.discountType === 'PERCENT' ? `${activeDeal.amount}% OFF` : `₹${activeDeal.amount} OFF`}</span>: {activeDeal.title || 'Special Deal'}
           </p>
         </div>
       )}
@@ -129,7 +129,7 @@ export default function StickyBookingCard({ cafe }) {
         disabled={!isOpen}
         className={`w-full py-4 rounded-2xl font-black text-sm tracking-wide transition-all shadow-md flex items-center justify-center gap-2 ${
           isOpen 
-            ? "bg-gradient-to-r from-[#4A2C11] to-[#6F4E37] text-white shadow-lg shadow-[#4A2C11]/20 cursor-pointer" 
+            ? "bg-gradient-to-r from-[#B71C1C] to-[#E50914] text-white shadow-lg shadow-[#B71C1C]/20 cursor-pointer" 
             : "bg-stone-200 text-stone-400 cursor-not-allowed"
         }`}
       >

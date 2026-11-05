@@ -92,7 +92,7 @@ const translations = {
     tryAdjustingFilters: 'Try adjusting your search filters or clear them to see all cafes.',
     heroTitle: 'Book Your Ideal Cafe & Event Experience',
     heroSubtitle: 'Discover top-rated cafes, reserve co-working spaces and plan memorable events effortlessly.',
-    copyright: '© 2026 Fahara Inc. All rights reserved.',
+    copyright: '© 2026 Grab2GO Inc. All rights reserved.',
   },
   Hindi: {
     home: 'होम',
@@ -359,7 +359,7 @@ const translations = {
     tryAdjustingFilters: 'Intenta ajustar tus filtros de búsqueda.',
     heroTitle: 'Reserva tu Experiencia Ideal en Cafeterías y Eventos',
     heroSubtitle: 'Descubre las mejores cafeterías, reserva espacios de trabajo y planifica eventos sin esfuerzo.',
-    copyright: '© 2026 Fahara Inc. Todos los derechos reservados.',
+    copyright: '© 2026 Grab2GO Inc. Todos los derechos reservados.',
   },
   French: {
     home: 'Accueil',
@@ -448,7 +448,7 @@ const translations = {
     tryAdjustingFilters: 'Essayez d\'ajuster vos filtres de recherche.',
     heroTitle: 'Réservez Votre Expérience Café & Événement Idéale',
     heroSubtitle: 'Découvrez les meilleurs cafés, réservez des espaces de travail et planifiez des événements sans effort.',
-    copyright: '© 2026 Fahara Inc. Tous droits réservés.',
+    copyright: '© 2026 Grab2GO Inc. Tous droits réservés.',
   }
 };
 

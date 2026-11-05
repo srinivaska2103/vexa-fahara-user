@@ -27,7 +27,7 @@ function CreateReviewContent() {
   if (isLoading) {
     return (
       <div className="flex justify-center items-center py-20">
-        <div className="animate-spin rounded-full h-12 w-12 border-4 border-[#E8DED5] border-t-[#6F4E37]" />
+        <div className="animate-spin rounded-full h-12 w-12 border-4 border-[#FEE2E2] border-t-[#E50914]" />
       </div>
     );
   }
@@ -36,11 +36,11 @@ function CreateReviewContent() {
   const targetId = booking?.event_service_id || booking?.cafe_id;
 
   return (
-    <div className="min-h-screen bg-[#FFF8F0] py-12">
+    <div className="min-h-screen bg-[#FFF5F5] py-12">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-[#2C1810]">Write a Review</h1>
+          <h1 className="text-3xl font-bold text-[#252525]">Write a Review</h1>
           {booking && (
             <p className="text-gray-600 mt-2">
               Share your experience at <span className="font-semibold">{booking.cafes?.name || booking.event_service_id}</span>
@@ -62,8 +62,8 @@ function CreateReviewContent() {
 export default function CreateReviewPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen bg-[#FFF8F0] py-12 flex justify-center items-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-4 border-[#E8DED5] border-t-[#6F4E37]" />
+      <div className="min-h-screen bg-[#FFF5F5] py-12 flex justify-center items-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-4 border-[#FEE2E2] border-t-[#E50914]" />
       </div>
     }>
       <CreateReviewContent />

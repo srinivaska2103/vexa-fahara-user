@@ -37,7 +37,7 @@ for (const relPath of filesToFix) {
                      .replace(/There's/g, "There&apos;s")
                      .replace(/"Perfect for /g, "&quot;Perfect for ")
                      .replace(/your vision"/g, "your vision&quot;")
-                     .replace(/"Fahara makes it/g, "&quot;Fahara makes it")
+                     .replace(/"Grab2GO makes it/g, "&quot;Grab2GO makes it")
                      .replace(/easy."/g, "easy.&quot;");
                      
     fs.writeFileSync(fullPath, content);

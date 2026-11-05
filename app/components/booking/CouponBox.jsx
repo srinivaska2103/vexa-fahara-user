@@ -56,7 +56,7 @@ export default function CouponBox() {
               type="text" 
               value={inputCode}
               onChange={(e) => setInputCode(e.target.value.toUpperCase())}
-              placeholder="e.g. FAHARA10"
+              placeholder="e.g. Grab2GO10"
               className="flex-1 border border-gray-200 rounded-xl px-4 py-3 outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20 transition-all font-mono uppercase"
             />
             <button 
@@ -67,7 +67,7 @@ export default function CouponBox() {
               {couponMutation.isPending ? <Loader2 size={20} className="animate-spin" /> : 'Apply'}
             </button>
           </div>
-          <p className="text-xs text-gray-400 mt-3">Hint: Use FAHARA10 for 10% discount</p>
+          <p className="text-xs text-gray-400 mt-3">Hint: Use Grab2GO10 for 10% discount</p>
         </div>
       )}
     </div>

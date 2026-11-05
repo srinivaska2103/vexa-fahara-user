@@ -33,7 +33,7 @@ export default function PaymentFailedCard({ reason, onRetry }) {
         <span className="inline-flex items-center gap-1.5 bg-rose-50 text-rose-700 border border-rose-200/80 px-3 py-1 rounded-full text-[10px] sm:text-xs font-black uppercase tracking-wider mb-2.5">
           Payment Unsuccessful
         </span>
-        <h2 className="text-2xl sm:text-3xl font-black text-[#2C1810] tracking-tight">Payment Failed</h2>
+        <h2 className="text-2xl sm:text-3xl font-black text-[#252525] tracking-tight">Payment Failed</h2>
         <p className="text-stone-500 text-xs sm:text-sm font-medium mt-2 max-w-md mx-auto leading-relaxed">
           {reason || 'Your bank or payment gateway encountered a processing issue. No funds were debited.'}
         </p>
@@ -44,7 +44,7 @@ export default function PaymentFailedCard({ reason, onRetry }) {
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.96 }}
           onClick={onRetry}
-          className="w-full py-3.5 bg-gradient-to-r from-[#4A2C11] to-[#6F4E37] text-white rounded-2xl font-black text-xs shadow-md hover:shadow-lg flex items-center justify-center gap-2 cursor-pointer"
+          className="w-full py-3.5 bg-gradient-to-r from-[#B71C1C] to-[#E50914] text-white rounded-2xl font-black text-xs shadow-md hover:shadow-lg flex items-center justify-center gap-2 cursor-pointer"
         >
           <RefreshCcw size={16} />
           <span>Retry Payment</span>
@@ -55,7 +55,7 @@ export default function PaymentFailedCard({ reason, onRetry }) {
             <motion.button 
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.96 }}
-              className="w-full bg-[#FFF8F0] text-[#6F4E37] border border-[#DDB892]/60 hover:border-[#6F4E37] py-3 rounded-2xl font-black text-xs flex items-center justify-center gap-2 transition-all cursor-pointer shadow-2xs"
+              className="w-full bg-[#FFF5F5] text-[#E50914] border border-[#EF5350]/60 hover:border-[#E50914] py-3 rounded-2xl font-black text-xs flex items-center justify-center gap-2 transition-all cursor-pointer shadow-2xs"
             >
               <ArrowLeft size={16} />
               <span>Back To Cafes</span>
@@ -68,7 +68,7 @@ export default function PaymentFailedCard({ reason, onRetry }) {
             onClick={() => window.location.href = 'mailto:vexatech.connect@gmail.com'}
             className="w-full bg-stone-50 text-stone-700 border border-stone-200/80 hover:bg-white py-3 rounded-2xl font-black text-xs flex items-center justify-center gap-2 transition-all cursor-pointer shadow-2xs"
           >
-            <Headset size={16} className="text-[#6F4E37]" />
+            <Headset size={16} className="text-[#E50914]" />
             <span>Contact Support</span>
           </motion.button>
         </div>

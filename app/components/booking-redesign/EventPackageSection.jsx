@@ -67,12 +67,12 @@ export default function EventPackageSection({ cafe }) {
       initial={{ opacity: 0, height: 0 }}
       animate={{ opacity: 1, height: 'auto' }}
       transition={{ duration: 0.4 }}
-      className="bg-[#FFFFFF] border border-[#E8DED5] rounded-3xl p-6 mb-8 shadow-sm overflow-hidden"
+      className="bg-[#FFFFFF] border border-[#FEE2E2] rounded-3xl p-6 mb-8 shadow-sm overflow-hidden"
     >
       <div className="mb-6 flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-black text-[#2C1810] mb-1 tracking-tight">Select a Package</h2>
-          <p className="text-stone-500 font-medium text-xs sm:text-sm">Packages offered by <span className="font-bold text-[#6F4E37]">{sourceName}</span></p>
+          <h2 className="text-2xl font-black text-[#252525] mb-1 tracking-tight">Select a Package</h2>
+          <p className="text-stone-500 font-medium text-xs sm:text-sm">Packages offered by <span className="font-bold text-[#E50914]">{sourceName}</span></p>
         </div>
 
         {selectedPackage && (
@@ -92,7 +92,7 @@ export default function EventPackageSection({ cafe }) {
             if (n.includes('birthday')) return { bg: 'bg-pink-100/50', text: 'text-pink-500', icon: Cake, label: 'BIRTHDAY' };
             if (n.includes('date') || n.includes('couple') || n.includes('anniversary')) return { bg: 'bg-red-50', text: 'text-red-500', icon: Heart, label: 'ROMANTIC' };
             if (n.includes('corporate') || n.includes('meeting')) return { bg: 'bg-blue-50', text: 'text-blue-600', icon: Briefcase, label: 'CORPORATE' };
-            return { bg: 'bg-[#FFF8F0]', text: 'text-[#DDB892]', icon: Star, label: name.toUpperCase() };
+            return { bg: 'bg-[#FFF5F5]', text: 'text-[#EF5350]', icon: Star, label: name.toUpperCase() };
           };
           const theme = getTheme(pkg.name);
           const Icon = theme.icon;
@@ -109,8 +109,8 @@ export default function EventPackageSection({ cafe }) {
               }}
               className={`flex flex-col border rounded-2xl overflow-hidden cursor-pointer transition-all bg-white ${
                 selectedPackage?.id === pkg.id 
-                  ? 'border-[#6F4E37] ring-2 ring-[#6F4E37]/20 shadow-xl scale-[1.02]' 
-                  : 'border-[#E8DED5] hover:border-[#A67B5B] hover:shadow-md'
+                  ? 'border-[#E50914] ring-2 ring-[#E50914]/20 shadow-xl scale-[1.02]' 
+                  : 'border-[#FEE2E2] hover:border-[#B71C1C] hover:shadow-md'
               }`}
             >
               {/* Banner Area */}
@@ -131,7 +131,7 @@ export default function EventPackageSection({ cafe }) {
               
               {/* Content Area */}
               <div className="p-5 flex flex-col flex-1">
-                <h3 className="font-bold text-xl text-[#2C1810] leading-tight mb-1">{pkg.name}</h3>
+                <h3 className="font-bold text-xl text-[#252525] leading-tight mb-1">{pkg.name}</h3>
                 <p className="text-gray-400 text-sm mb-4">At {sourceName}</p>
                 
                 <p className="text-gray-500 text-sm mb-5 line-clamp-2 leading-snug">{pkg.description || `${sourceName} ${pkg.name}`}</p>
@@ -142,14 +142,14 @@ export default function EventPackageSection({ cafe }) {
                     <span>Up to {pkg.max_guests} guests</span>
                   </div>
                   <div className="flex items-center">
-                    <Clock size={14} className="mr-1.5 text-[#6F4E37]" />
-                    <span className="font-bold text-[#6F4E37]">Event Duration: {pkg.duration_hours} {Number(pkg.duration_hours) === 1 ? 'Hour' : 'Hours'}</span>
+                    <Clock size={14} className="mr-1.5 text-[#E50914]" />
+                    <span className="font-bold text-[#E50914]">Event Duration: {pkg.duration_hours} {Number(pkg.duration_hours) === 1 ? 'Hour' : 'Hours'}</span>
                   </div>
                 </div>
 
                 {/* Price Display */}
                 {pkg.price > 0 && (
-                  <div className="mb-3 text-sm font-black text-[#6F4E37]">
+                  <div className="mb-3 text-sm font-black text-[#E50914]">
                     ₹{Number(pkg.price).toLocaleString('en-IN')}
                     <span className="text-[10px] font-semibold text-stone-400 ml-1">/ package</span>
                   </div>
@@ -178,7 +178,7 @@ export default function EventPackageSection({ cafe }) {
                   className={`mt-auto w-full py-3 rounded-xl font-bold transition-all ${
                     selectedPackage?.id === pkg.id 
                       ? 'bg-emerald-700 hover:bg-emerald-800 text-white shadow-sm' 
-                      : 'bg-[#FFF8F0] text-[#6F4E37] hover:bg-[#F2E8DF]'
+                      : 'bg-[#FFF5F5] text-[#E50914] hover:bg-[#F2E8DF]'
                   }`}
                 >
                   {selectedPackage?.id === pkg.id ? 'Selected' : 'Select This Package'}

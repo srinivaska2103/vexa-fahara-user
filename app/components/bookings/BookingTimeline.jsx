@@ -90,7 +90,7 @@ export default function BookingTimeline({ booking }) {
 
   return (
     <div className="bg-white/95 backdrop-blur-xl rounded-3xl border border-stone-200/90 p-5 sm:p-6 shadow-[0_8px_30px_rgba(0,0,0,0.04)] font-sans">
-      <h3 className="text-xl font-black text-[#2C1810] mb-5 tracking-tight">Booking Timeline</h3>
+      <h3 className="text-xl font-black text-[#252525] mb-5 tracking-tight">Booking Timeline</h3>
       <div className="flow-root">
         <ul className="-mb-8">
           {steps.map((step, stepIdx) => (
@@ -100,7 +100,7 @@ export default function BookingTimeline({ booking }) {
                   <span
                     className={cn(
                       "absolute top-4 left-3.5 -ml-px h-full w-0.5 transition-colors",
-                      step.status === 'completed' ? "bg-[#6F4E37]" : "bg-stone-200"
+                      step.status === 'completed' ? "bg-[#E50914]" : "bg-stone-200"
                     )}
                     aria-hidden="true"
                   />
@@ -110,9 +110,9 @@ export default function BookingTimeline({ booking }) {
                     <span
                       className={cn(
                         "h-7 w-7 rounded-full flex items-center justify-center ring-4 ring-white shadow-2xs transition-all",
-                        step.status === 'completed' ? "bg-gradient-to-r from-[#4A2C11] to-[#6F4E37]" : 
+                        step.status === 'completed' ? "bg-gradient-to-r from-[#B71C1C] to-[#E50914]" : 
                         step.status === 'refunded' ? "bg-gradient-to-r from-emerald-600 to-teal-600" :
-                        step.status === 'current' ? "bg-[#6F4E37]" : 
+                        step.status === 'current' ? "bg-[#E50914]" : 
                         step.status === 'cancelled' ? "bg-rose-600" :
                         "bg-stone-200 text-stone-400"
                       )}
@@ -123,7 +123,7 @@ export default function BookingTimeline({ booking }) {
                   <div className="min-w-0 flex-1 pt-0.5">
                     <p className={cn(
                       "text-xs sm:text-sm font-black tracking-tight",
-                      (step.status === 'completed' || step.status === 'current' || step.status === 'refunded') ? "text-[#2C1810]" : "text-stone-400"
+                      (step.status === 'completed' || step.status === 'current' || step.status === 'refunded') ? "text-[#252525]" : "text-stone-400"
                     )}>
                       {step.title}
                     </p>

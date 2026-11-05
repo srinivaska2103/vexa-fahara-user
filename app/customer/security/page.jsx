@@ -11,7 +11,7 @@ export default function SecurityPage() {
   }, [router]);
 
   return (
-    <div className="min-h-screen bg-[#FAF6F0] p-8 flex items-center justify-center">
+    <div className="min-h-screen bg-[#FFF5F5] p-8 flex items-center justify-center">
       <div className="animate-pulse font-bold text-stone-500">Redirecting to Security Settings...</div>
     </div>
   );

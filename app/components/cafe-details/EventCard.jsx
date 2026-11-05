@@ -13,7 +13,7 @@ export default function EventCard({ event, cafeId }) {
     if (t.includes('party') || t.includes('celebrat') || t.includes('fest')) return { icon: PartyPopper, colors: 'from-purple-500/20 via-fuchsia-400/10 to-purple-500/5', text: 'text-purple-600', badgeBg: 'bg-purple-100 text-purple-700' };
     if (t.includes('work') || t.includes('corpor') || t.includes('meet') || t.includes('business')) return { icon: Briefcase, colors: 'from-blue-500/20 via-indigo-400/10 to-blue-500/5', text: 'text-blue-600', badgeBg: 'bg-blue-100 text-blue-700' };
     if (t.includes('music') || t.includes('concert') || t.includes('dj')) return { icon: Music, colors: 'from-emerald-500/20 via-teal-400/10 to-emerald-500/5', text: 'text-emerald-600', badgeBg: 'bg-emerald-100 text-emerald-700' };
-    return { icon: PartyPopper, colors: 'from-[#D2B48C]/20 via-[#D2B48C]/10 to-[#D2B48C]/5', text: 'text-[#6F4E37]', badgeBg: 'bg-[#6F4E37]/10 text-[#6F4E37]' }; 
+    return { icon: PartyPopper, colors: 'from-[#D2B48C]/20 via-[#D2B48C]/10 to-[#D2B48C]/5', text: 'text-[#E50914]', badgeBg: 'bg-[#E50914]/10 text-[#E50914]' }; 
   };
 
   const placeholder = getEventPlaceholder(event.event_type);
@@ -100,7 +100,7 @@ export default function EventCard({ event, cafeId }) {
 
         {/* Floating Price Tag */}
         {basePrice > 0 && (
-          <div className="absolute bottom-3 right-3 bg-[#2C1810]/95 text-amber-300 px-3.5 py-1.5 rounded-2xl backdrop-blur-md shadow-md flex items-center gap-0.5 border border-amber-400/30">
+          <div className="absolute bottom-3 right-3 bg-[#252525]/95 text-amber-300 px-3.5 py-1.5 rounded-2xl backdrop-blur-md shadow-md flex items-center gap-0.5 border border-amber-400/30">
             <IndianRupee className="w-3.5 h-3.5" />
             <span className="text-sm font-black tracking-tight">{basePrice.toLocaleString('en-IN')}</span>
           </div>
@@ -109,7 +109,7 @@ export default function EventCard({ event, cafeId }) {
 
       {/* Package Content & Full Inclusions */}
       <div className="p-5 flex flex-col flex-1 bg-white">
-        <h3 className="text-lg font-black text-[#2C1810] tracking-tight mb-1.5">{package_name}</h3>
+        <h3 className="text-lg font-black text-[#252525] tracking-tight mb-1.5">{package_name}</h3>
         
         {description && (
           <p className="text-xs text-stone-500 mb-4 font-medium leading-relaxed">
@@ -118,14 +118,14 @@ export default function EventCard({ event, cafeId }) {
         )}
 
         {/* Specs: Guests & Duration */}
-        <div className="flex items-center gap-4 text-xs font-extrabold text-[#6F4E37] py-2.5 px-3.5 bg-[#FFF8F0] rounded-2xl border border-[#DDB892]/40 mb-4">
+        <div className="flex items-center gap-4 text-xs font-extrabold text-[#E50914] py-2.5 px-3.5 bg-[#FFF5F5] rounded-2xl border border-[#EF5350]/40 mb-4">
           <div className="flex items-center gap-1.5">
-             <Users className="w-4 h-4 shrink-0 text-[#6F4E37]" />
+             <Users className="w-4 h-4 shrink-0 text-[#E50914]" />
              <span>{minimum_persons || 1} - {maximum_persons || 50} guests</span>
           </div>
-          <div className="w-1 h-1 rounded-full bg-[#6F4E37]/30" />
+          <div className="w-1 h-1 rounded-full bg-[#E50914]/30" />
           <div className="flex items-center gap-1.5">
-             <Clock className="w-4 h-4 shrink-0 text-[#6F4E37]" />
+             <Clock className="w-4 h-4 shrink-0 text-[#E50914]" />
              <span>{duration_hours ? `${duration_hours} hrs` : 'Flexible'}</span>
           </div>
         </div>
@@ -140,7 +140,7 @@ export default function EventCard({ event, cafeId }) {
                 <div key={idx} className="flex items-start gap-2 text-xs font-semibold text-stone-700 bg-stone-50 p-2.5 rounded-xl border border-stone-100">
                   <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
                   <div className="min-w-0 flex-1">
-                    <span className="font-bold text-[#2C1810]">{inc.name}</span>
+                    <span className="font-bold text-[#252525]">{inc.name}</span>
                     {inc.qty && <span className="text-[11px] text-stone-500 ml-1.5 font-normal">({inc.qty})</span>}
                     {inc.desc && <p className="text-[11px] text-stone-400 font-normal leading-tight mt-0.5">{inc.desc}</p>}
                   </div>

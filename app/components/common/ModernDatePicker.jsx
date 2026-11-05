@@ -177,9 +177,9 @@ export default function ModernDatePicker({
             setViewMode('days');
           }
         }}
-        className="relative w-full pl-10 pr-10 py-2.5 sm:py-3 rounded-2xl border border-stone-200 bg-white hover:border-[#6F4E37]/60 focus:border-[#6F4E37] focus:ring-2 focus:ring-[#6F4E37]/20 outline-none text-xs sm:text-sm font-medium text-stone-800 transition-all flex items-center justify-between cursor-pointer shadow-2xs group min-h-[44px]"
+        className="relative w-full pl-10 pr-10 py-2.5 sm:py-3 rounded-2xl border border-stone-200 bg-white hover:border-[#E50914]/60 focus:border-[#E50914] focus:ring-2 focus:ring-[#E50914]/20 outline-none text-xs sm:text-sm font-medium text-stone-800 transition-all flex items-center justify-between cursor-pointer shadow-2xs group min-h-[44px]"
       >
-        <CalendarIcon size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-stone-400 group-hover:text-[#6F4E37] transition-colors pointer-events-none" />
+        <CalendarIcon size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-stone-400 group-hover:text-[#E50914] transition-colors pointer-events-none" />
         
         <span className={`truncate ${displayDateText ? 'text-stone-900 font-bold' : 'text-stone-400 font-medium'}`}>
           {displayDateText || placeholder}
@@ -203,7 +203,7 @@ export default function ModernDatePicker({
               <X size={14} />
             </span>
           )}
-          <ChevronDown size={16} className={`text-stone-400 transition-transform ${isOpen ? 'rotate-180 text-[#6F4E37]' : ''}`} />
+          <ChevronDown size={16} className={`text-stone-400 transition-transform ${isOpen ? 'rotate-180 text-[#E50914]' : ''}`} />
         </div>
       </div>
 
@@ -215,7 +215,7 @@ export default function ModernDatePicker({
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 8, scale: 0.96 }}
             transition={{ type: 'spring', damping: 25, stiffness: 350 }}
-            className="absolute left-0 sm:left-auto top-full z-[100] mt-2 w-full min-w-[280px] sm:min-w-[320px] max-w-[340px] bg-white rounded-3xl border border-stone-200/90 shadow-2xl p-4 font-sans text-[#2C1810]"
+            className="absolute left-0 sm:left-auto top-full z-[100] mt-2 w-full min-w-[280px] sm:min-w-[320px] max-w-[340px] bg-white rounded-3xl border border-stone-200/90 shadow-2xl p-4 font-sans text-[#252525]"
           >
             {/* Header Controls */}
             <div className="flex items-center justify-between gap-1 pb-3 mb-3 border-b border-stone-100">
@@ -223,7 +223,7 @@ export default function ModernDatePicker({
                 type="button"
                 onClick={handlePrevMonth}
                 disabled={viewMode !== 'days'}
-                className="p-1.5 rounded-xl text-stone-600 hover:bg-[#FFF8F0] hover:text-[#6F4E37] transition-colors cursor-pointer disabled:opacity-30 disabled:pointer-events-none"
+                className="p-1.5 rounded-xl text-stone-600 hover:bg-[#FFF5F5] hover:text-[#E50914] transition-colors cursor-pointer disabled:opacity-30 disabled:pointer-events-none"
                 title="Previous Month"
               >
                 <ChevronLeft size={18} />
@@ -236,8 +236,8 @@ export default function ModernDatePicker({
                   onClick={() => setViewMode(viewMode === 'month' ? 'days' : 'month')}
                   className={`px-3 py-1.5 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center gap-1 ${
                     viewMode === 'month'
-                      ? 'bg-gradient-to-r from-[#4A2C11] to-[#6F4E37] text-white shadow-md'
-                      : 'bg-[#FFF8F0] text-[#6F4E37] border border-[#DDB892]/60 hover:bg-[#F5EBE1]'
+                      ? 'bg-gradient-to-r from-[#B71C1C] to-[#E50914] text-white shadow-md'
+                      : 'bg-[#FFF5F5] text-[#E50914] border border-[#EF5350]/60 hover:bg-[#F5EBE1]'
                   }`}
                 >
                   <span>{months[viewMonth]}</span>
@@ -250,8 +250,8 @@ export default function ModernDatePicker({
                   onClick={() => setViewMode(viewMode === 'year' ? 'days' : 'year')}
                   className={`px-3 py-1.5 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center gap-1 ${
                     viewMode === 'year'
-                      ? 'bg-gradient-to-r from-[#4A2C11] to-[#6F4E37] text-white shadow-md'
-                      : 'bg-[#FFF8F0] text-[#6F4E37] border border-[#DDB892]/60 hover:bg-[#F5EBE1]'
+                      ? 'bg-gradient-to-r from-[#B71C1C] to-[#E50914] text-white shadow-md'
+                      : 'bg-[#FFF5F5] text-[#E50914] border border-[#EF5350]/60 hover:bg-[#F5EBE1]'
                   }`}
                 >
                   <span>{viewYear}</span>
@@ -263,7 +263,7 @@ export default function ModernDatePicker({
                 type="button"
                 onClick={handleNextMonth}
                 disabled={viewMode !== 'days'}
-                className="p-1.5 rounded-xl text-stone-600 hover:bg-[#FFF8F0] hover:text-[#6F4E37] transition-colors cursor-pointer disabled:opacity-30 disabled:pointer-events-none"
+                className="p-1.5 rounded-xl text-stone-600 hover:bg-[#FFF5F5] hover:text-[#E50914] transition-colors cursor-pointer disabled:opacity-30 disabled:pointer-events-none"
                 title="Next Month"
               >
                 <ChevronRight size={18} />
@@ -289,8 +289,8 @@ export default function ModernDatePicker({
                       }}
                       className={`py-2.5 px-2 rounded-2xl text-xs font-bold transition-all cursor-pointer ${
                         isCurrentMonth
-                          ? 'bg-gradient-to-r from-[#4A2C11] to-[#6F4E37] text-white font-black shadow-md scale-105'
-                          : 'bg-[#FFF8F0]/70 border border-stone-200/80 text-stone-800 hover:bg-[#6F4E37] hover:text-white hover:border-[#6F4E37]'
+                          ? 'bg-gradient-to-r from-[#B71C1C] to-[#E50914] text-white font-black shadow-md scale-105'
+                          : 'bg-[#FFF5F5]/70 border border-stone-200/80 text-stone-800 hover:bg-[#E50914] hover:text-white hover:border-[#E50914]'
                       }`}
                     >
                       {m}
@@ -321,8 +321,8 @@ export default function ModernDatePicker({
                       }}
                       className={`py-2 px-2 rounded-2xl text-xs font-bold transition-all cursor-pointer ${
                         isCurrentYear
-                          ? 'bg-gradient-to-r from-[#4A2C11] to-[#6F4E37] text-white font-black shadow-md scale-105'
-                          : 'bg-[#FFF8F0]/70 border border-stone-200/80 text-stone-800 hover:bg-[#6F4E37] hover:text-white hover:border-[#6F4E37]'
+                          ? 'bg-gradient-to-r from-[#B71C1C] to-[#E50914] text-white font-black shadow-md scale-105'
+                          : 'bg-[#FFF5F5]/70 border border-stone-200/80 text-stone-800 hover:bg-[#E50914] hover:text-white hover:border-[#E50914]'
                       }`}
                     >
                       {y}
@@ -363,10 +363,10 @@ export default function ModernDatePicker({
                         onClick={() => handleSelectDay(d)}
                         className={`h-9 w-full rounded-xl text-xs font-bold transition-all relative cursor-pointer flex items-center justify-center ${
                           active
-                            ? 'bg-gradient-to-r from-[#4A2C11] to-[#6F4E37] text-white font-black shadow-md scale-105 z-10'
+                            ? 'bg-gradient-to-r from-[#B71C1C] to-[#E50914] text-white font-black shadow-md scale-105 z-10'
                             : today
-                            ? 'bg-[#FFF8F0] text-[#6F4E37] font-black border border-[#DDB892]/60'
-                            : 'text-stone-800 hover:bg-stone-100 hover:text-[#6F4E37]'
+                            ? 'bg-[#FFF5F5] text-[#E50914] font-black border border-[#EF5350]/60'
+                            : 'text-stone-800 hover:bg-stone-100 hover:text-[#E50914]'
                         }`}
                       >
                         {d}
@@ -388,7 +388,7 @@ export default function ModernDatePicker({
               <button
                 type="button"
                 onClick={handleSetToday}
-                className="font-bold text-[#6F4E37] hover:underline cursor-pointer"
+                className="font-bold text-[#E50914] hover:underline cursor-pointer"
               >
                 Today
               </button>
@@ -399,7 +399,7 @@ export default function ModernDatePicker({
                   setIsOpen(false);
                   setViewMode('days');
                 }}
-                className="px-3.5 py-1.5 bg-[#6F4E37] text-white font-black rounded-xl hover:bg-[#4A2C11] transition-colors cursor-pointer"
+                className="px-3.5 py-1.5 bg-[#E50914] text-white font-black rounded-xl hover:bg-[#B71C1C] transition-colors cursor-pointer"
               >
                 Done
               </button>

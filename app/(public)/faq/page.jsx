@@ -61,8 +61,8 @@ const faqList = [
   {
     id: '7',
     category: 'payments',
-    question: 'How are Fahara fees calculated?',
-    answer: 'Fahara charges a 3% Platform Fee on the subtotal, a 3% Transaction Fee on subtotal, and 18% GST strictly on the Transaction Fee.'
+    question: 'How are Grab2GO fees calculated?',
+    answer: 'Grab2GO charges a 3% Platform Fee on the subtotal, a 3% Transaction Fee on subtotal, and 18% GST strictly on the Transaction Fee.'
   },
   {
     id: '8',
@@ -125,7 +125,7 @@ export default function FAQPage() {
     navigator.clipboard.writeText(text);
     setCopiedText(label);
     toast.success(`Copied ${label} to clipboard!`, {
-      style: { borderRadius: '12px', background: '#2C1810', color: '#fff' }
+      style: { borderRadius: '12px', background: '#252525', color: '#fff' }
     });
     setTimeout(() => setCopiedText(''), 2000);
   };
@@ -135,9 +135,9 @@ export default function FAQPage() {
       <div className="space-y-8">
         
         {/* Top Hero Section */}
-        <div className="bg-gradient-to-r from-[#2C1810] via-[#4A2C11] to-[#6F4E37] text-white p-8 sm:p-12 rounded-3xl text-center space-y-4 relative overflow-hidden shadow-xl">
+        <div className="bg-gradient-to-r from-[#252525] via-[#B71C1C] to-[#E50914] text-white p-8 sm:p-12 rounded-3xl text-center space-y-4 relative overflow-hidden shadow-xl">
           <div className="relative z-10 max-w-2xl mx-auto space-y-3">
-            <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-white/10 text-[#DDB892] text-xs font-black uppercase tracking-wider backdrop-blur-md">
+            <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-white/10 text-[#EF5350] text-xs font-black uppercase tracking-wider backdrop-blur-md">
               <Sparkles size={14} className="text-amber-400" />
               <span>Help Center</span>
             </span>
@@ -147,7 +147,7 @@ export default function FAQPage() {
             {/* Real-time Search Input */}
             <div className="pt-2">
               <div className="flex items-center bg-white rounded-2xl px-4 py-3 text-stone-800 shadow-md">
-                <Search size={18} className="text-[#6F4E37] mr-3 shrink-0" />
+                <Search size={18} className="text-[#E50914] mr-3 shrink-0" />
                 <input 
                   type="text" 
                   value={searchQuery}
@@ -170,8 +170,8 @@ export default function FAQPage() {
                 onClick={() => setActiveCategory(cat.id)}
                 className={`px-4 py-2 rounded-2xl text-xs font-black shrink-0 transition-all cursor-pointer ${
                   isSelected 
-                    ? 'bg-[#6F4E37] text-white shadow-md' 
-                    : 'bg-white text-stone-700 hover:bg-[#FFF8F0] border border-stone-200'
+                    ? 'bg-[#E50914] text-white shadow-md' 
+                    : 'bg-white text-stone-700 hover:bg-[#FFF5F5] border border-stone-200'
                 }`}
               >
                 {cat.label}
@@ -185,7 +185,7 @@ export default function FAQPage() {
           {filteredFaqs.length === 0 ? (
             <div className="bg-white p-8 rounded-3xl border border-stone-200 text-center space-y-2">
               <HelpCircle size={36} className="mx-auto text-stone-400" />
-              <h3 className="font-black text-[#2C1810]">No matching questions found</h3>
+              <h3 className="font-black text-[#252525]">No matching questions found</h3>
               <p className="text-xs font-bold text-stone-500">Try searching for something else or contact customer support.</p>
             </div>
           ) : (
@@ -198,10 +198,10 @@ export default function FAQPage() {
                 >
                   <button 
                     onClick={() => setExpandedId(isOpen ? null : faq.id)}
-                    className="w-full p-5 text-left flex items-center justify-between gap-4 font-black text-sm text-[#2C1810] hover:text-[#6F4E37] transition-colors cursor-pointer"
+                    className="w-full p-5 text-left flex items-center justify-between gap-4 font-black text-sm text-[#252525] hover:text-[#E50914] transition-colors cursor-pointer"
                   >
                     <span>{faq.question}</span>
-                    <ChevronDown size={18} className={`shrink-0 transition-transform duration-300 ${isOpen ? 'rotate-180 text-[#6F4E37]' : 'text-stone-400'}`} />
+                    <ChevronDown size={18} className={`shrink-0 transition-transform duration-300 ${isOpen ? 'rotate-180 text-[#E50914]' : 'text-stone-400'}`} />
                   </button>
 
                   <AnimatePresence>
@@ -227,22 +227,22 @@ export default function FAQPage() {
         {/* Still Need Help Section */}
         <div className="bg-white p-6 sm:p-8 rounded-3xl border border-stone-200/80 shadow-xs space-y-6">
           <div className="text-center sm:text-left">
-            <h2 className="text-2xl font-black text-[#2C1810]">Still need help?</h2>
+            <h2 className="text-2xl font-black text-[#252525]">Still need help?</h2>
             <p className="text-xs font-bold text-stone-500 mt-1">Our support team is available 24/7 to assist with your bookings and inquiries.</p>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             
             {/* Phone Support */}
-            <div className="bg-[#FFF8F0] p-5 rounded-2xl border border-[#DDB892]/60 flex flex-col justify-between space-y-3">
-              <div className="flex items-center gap-2 text-[#6F4E37] font-black text-sm">
+            <div className="bg-[#FFF5F5] p-5 rounded-2xl border border-[#EF5350]/60 flex flex-col justify-between space-y-3">
+              <div className="flex items-center gap-2 text-[#E50914] font-black text-sm">
                 <PhoneCall size={18} />
                 <span>Call Support</span>
               </div>
               <p className="text-xs font-bold text-stone-800">+91 89460-29205</p>
               <button 
                 onClick={() => copyToClipboard('+91 89460-29205', 'Phone Number')}
-                className="w-full py-2 bg-white text-[#6F4E37] border border-[#DDB892]/60 rounded-xl text-xs font-black flex items-center justify-center gap-1.5 hover:bg-[#6F4E37] hover:text-white transition-all cursor-pointer"
+                className="w-full py-2 bg-white text-[#E50914] border border-[#EF5350]/60 rounded-xl text-xs font-black flex items-center justify-center gap-1.5 hover:bg-[#E50914] hover:text-white transition-all cursor-pointer"
               >
                 {copiedText === 'Phone Number' ? <Check size={14} /> : <Copy size={14} />}
                 <span>{copiedText === 'Phone Number' ? 'Copied' : 'Copy Phone'}</span>
@@ -250,15 +250,15 @@ export default function FAQPage() {
             </div>
 
             {/* Email Support */}
-            <div className="bg-[#FFF8F0] p-5 rounded-2xl border border-[#DDB892]/60 flex flex-col justify-between space-y-3">
-              <div className="flex items-center gap-2 text-[#6F4E37] font-black text-sm">
+            <div className="bg-[#FFF5F5] p-5 rounded-2xl border border-[#EF5350]/60 flex flex-col justify-between space-y-3">
+              <div className="flex items-center gap-2 text-[#E50914] font-black text-sm">
                 <Mail size={18} />
                 <span>Email Support</span>
               </div>
               <p className="text-xs font-bold text-stone-800 truncate">vexatech.connect@gmail.com</p>
               <button 
                 onClick={() => copyToClipboard('vexatech.connect@gmail.com', 'Email Address')}
-                className="w-full py-2 bg-white text-[#6F4E37] border border-[#DDB892]/60 rounded-xl text-xs font-black flex items-center justify-center gap-1.5 hover:bg-[#6F4E37] hover:text-white transition-all cursor-pointer"
+                className="w-full py-2 bg-white text-[#E50914] border border-[#EF5350]/60 rounded-xl text-xs font-black flex items-center justify-center gap-1.5 hover:bg-[#E50914] hover:text-white transition-all cursor-pointer"
               >
                 {copiedText === 'Email Address' ? <Check size={14} /> : <Copy size={14} />}
                 <span>{copiedText === 'Email Address' ? 'Copied' : 'Copy Email'}</span>
@@ -266,15 +266,15 @@ export default function FAQPage() {
             </div>
 
             {/* Report Issue */}
-            <div className="bg-[#FFF8F0] p-5 rounded-2xl border border-[#DDB892]/60 flex flex-col justify-between space-y-3">
-              <div className="flex items-center gap-2 text-[#6F4E37] font-black text-sm">
+            <div className="bg-[#FFF5F5] p-5 rounded-2xl border border-[#EF5350]/60 flex flex-col justify-between space-y-3">
+              <div className="flex items-center gap-2 text-[#E50914] font-black text-sm">
                 <AlertCircle size={18} />
                 <span>Report an Issue</span>
               </div>
               <p className="text-xs font-bold text-stone-800">Booking disputes or technical feedback.</p>
               <Link 
                 href="/contact"
-                className="w-full py-2 bg-[#6F4E37] text-white rounded-xl text-xs font-black flex items-center justify-center gap-1.5 hover:bg-[#4A2C11] transition-all cursor-pointer"
+                className="w-full py-2 bg-[#E50914] text-white rounded-xl text-xs font-black flex items-center justify-center gap-1.5 hover:bg-[#B71C1C] transition-all cursor-pointer"
               >
                 <MessageSquare size={14} />
                 <span>Submit Ticket</span>

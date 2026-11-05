@@ -45,16 +45,16 @@ export default function ReviewCard({
     <motion.div 
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      className="bg-white p-6 rounded-2xl border border-[#E8DED5] shadow-sm relative group"
+      className="bg-white p-6 rounded-2xl border border-[#FEE2E2] shadow-sm relative group"
     >
       <div className="flex justify-between items-start mb-4">
         <div className="flex items-center gap-3">
-          <div className="w-12 h-12 bg-[#FDECE0] rounded-full flex items-center justify-center text-[#6F4E37] font-bold text-lg">
+          <div className="w-12 h-12 bg-[#FDECE0] rounded-full flex items-center justify-center text-[#E50914] font-bold text-lg">
             {displayData.users?.name?.[0] || 'A'}
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <h4 className="font-bold text-[#2C1810]">
+              <h4 className="font-bold text-[#252525]">
                 {displayData.users?.name || 'Anonymous'}
               </h4>
               <ShieldCheck className="w-4 h-4 text-green-600" />
@@ -72,7 +72,7 @@ export default function ReviewCard({
             <div className="flex items-center gap-2">
               <button 
                 onClick={() => onEdit(review)}
-                className="p-2 text-gray-400 hover:text-[#6F4E37] hover:bg-[#FFF8F0] rounded-full transition-colors"
+                className="p-2 text-gray-400 hover:text-[#E50914] hover:bg-[#FFF5F5] rounded-full transition-colors"
                 title="Edit Review"
               >
                 <Edit className="w-4 h-4" />
@@ -102,7 +102,7 @@ export default function ReviewCard({
       </div>
 
       {displayData.title && (
-        <h5 className="font-bold text-[#2C1810] mb-2">{displayData.title}</h5>
+        <h5 className="font-bold text-[#252525] mb-2">{displayData.title}</h5>
       )}
       
       {displayData.review && (
@@ -115,7 +115,7 @@ export default function ReviewCard({
       {displayData.breakdown && Object.keys(displayData.breakdown).length > 0 && (
         <div className="mt-4 flex flex-wrap gap-x-4 gap-y-2">
           {Object.entries(displayData.breakdown).map(([key, val]) => (
-            <div key={key} className="text-xs flex items-center gap-1.5 bg-[#FFF8F0] px-2 py-1 rounded-md text-[#6F4E37]">
+            <div key={key} className="text-xs flex items-center gap-1.5 bg-[#FFF5F5] px-2 py-1 rounded-md text-[#E50914]">
               <span className="capitalize">{key.replace(/([A-Z])/g, ' $1').trim()}:</span>
               <span className="font-bold">{val}★</span>
             </div>
@@ -127,7 +127,7 @@ export default function ReviewCard({
         <ReviewGallery images={displayData.images} />
       )}
 
-      <div className="mt-6 flex items-center gap-2 pt-4 border-t border-[#E8DED5]">
+      <div className="mt-6 flex items-center gap-2 pt-4 border-t border-[#FEE2E2]">
         <button 
           type="button"
           onClick={() => {
@@ -146,7 +146,7 @@ export default function ReviewCard({
             }
           }}
           className={`flex items-center gap-1.5 text-xs font-medium transition-colors cursor-pointer ${
-            hasLiked ? 'text-emerald-700 font-bold' : 'text-gray-500 hover:text-[#6F4E37]'
+            hasLiked ? 'text-emerald-700 font-bold' : 'text-gray-500 hover:text-[#E50914]'
           }`}
         >
           <ThumbsUp className={`w-3.5 h-3.5 ${hasLiked ? 'fill-emerald-600 text-emerald-600' : ''}`} />

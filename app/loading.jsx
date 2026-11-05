@@ -1,11 +1,7 @@
-import FaharaInteractiveLoader from '@/app/components/common/FaharaInteractiveLoader';
+'use client';
 
-export default function GlobalLoading() {
-  return (
-    <FaharaInteractiveLoader 
-      message="Discovering Top Rated Venues & Cafes..." 
-      badgeTag="FAHARA DISCOVERY" 
-      fullScreen={true} 
-    />
-  );
+import FoodLoadingScreen from '@/app/components/common/FoodLoadingScreen';
+
+export default function Loading() {
+  return <FoodLoadingScreen message="Loading your food experience..." fullScreen={true} />;
 }

@@ -33,8 +33,8 @@ export default function FilterDrawer({ isOpen, onClose, mode, bookingStats, acti
           >
             {/* Header with Clear All & Close Button */}
             <div className="flex items-center justify-between px-4 py-3.5 border-b border-stone-100 bg-white">
-              <h2 className="text-base font-black text-[#2C1810] flex items-center gap-2">
-                <SlidersHorizontal size={16} className="text-[#6F4E37]" />
+              <h2 className="text-base font-black text-[#252525] flex items-center gap-2">
+                <SlidersHorizontal size={16} className="text-[#E50914]" />
                 <span>{mode === 'profile' ? 'Profile Navigation' : mode === 'bookings' ? 'My Bookings Navigation' : 'Filters'}</span>
               </h2>
 
@@ -78,7 +78,7 @@ export default function FilterDrawer({ isOpen, onClose, mode, bookingStats, acti
                 <button
                   type="button"
                   onClick={onClose}
-                  className="flex-[2] py-2.5 rounded-xl bg-[#6F4E37] hover:bg-[#5a3e2b] text-white text-xs font-black shadow-md shadow-[#6F4E37]/20 active:scale-95 transition-all"
+                  className="flex-[2] py-2.5 rounded-xl bg-[#E50914] hover:bg-[#5a3e2b] text-white text-xs font-black shadow-md shadow-[#E50914]/20 active:scale-95 transition-all"
                 >
                   Apply Filters
                 </button>

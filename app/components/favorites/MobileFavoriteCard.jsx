@@ -68,7 +68,7 @@ export default function MobileFavoriteCard({
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, scale: 0.94, y: -8 }}
       transition={{ type: 'spring', stiffness: 400, damping: 28 }}
-      className="bg-white rounded-[26px] p-3 border border-[#E8DED5]/80 shadow-[0_6px_24px_rgba(44,24,16,0.05)] relative flex items-center gap-3.5 select-none"
+      className="bg-white rounded-[26px] p-3 border border-[#FEE2E2]/80 shadow-[0_6px_24px_rgba(44,24,16,0.05)] relative flex items-center gap-3.5 select-none"
     >
       {/* ── LEFT: Prominent Rounded Image Area ── */}
       <div className="relative w-36 h-36 xs:w-40 xs:h-40 rounded-[22px] overflow-hidden bg-stone-100 flex-shrink-0">
@@ -94,7 +94,7 @@ export default function MobileFavoriteCard({
         {/* Top: Venue Name + Heart Button */}
         <div>
           <div className="flex items-start justify-between gap-2 pr-1">
-            <h3 className="text-sm xs:text-base font-black text-[#2C1810] tracking-tight leading-tight line-clamp-1">
+            <h3 className="text-sm xs:text-base font-black text-[#252525] tracking-tight leading-tight line-clamp-1">
               {name}
             </h3>
 
@@ -123,7 +123,7 @@ export default function MobileFavoriteCard({
           </div>
 
           {/* Rating & Reviews */}
-          <div className="flex items-center gap-1 text-[11px] font-black text-[#2C1810] mt-1">
+          <div className="flex items-center gap-1 text-[11px] font-black text-[#252525] mt-1">
             <Star size={13} className="fill-amber-400 text-amber-400 flex-shrink-0" />
             <span>{rating}</span>
             {reviewCount !== null && (
@@ -149,7 +149,7 @@ export default function MobileFavoriteCard({
           <motion.button
             whileTap={{ scale: 0.96 }}
             type="button"
-            className="w-full py-2 px-3 rounded-full bg-[#6F4E37] hover:bg-[#5A3E2B] text-white text-[11px] xs:text-xs font-bold tracking-tight flex items-center justify-center gap-1.5 shadow-sm active:shadow-none transition-all cursor-pointer"
+            className="w-full py-2 px-3 rounded-full bg-[#E50914] hover:bg-[#5A3E2B] text-white text-[11px] xs:text-xs font-bold tracking-tight flex items-center justify-center gap-1.5 shadow-sm active:shadow-none transition-all cursor-pointer"
           >
             <span>View Details</span>
             <ArrowRight size={13} />

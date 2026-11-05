@@ -65,14 +65,14 @@ const DrumWheelColumn = ({ items, selectedValue, onSelect, label, formatDisplay,
         tabIndex={0}
         onKeyDown={handleKeyDown}
         aria-label={`Select ${label}`}
-        className="relative h-[176px] w-full bg-white rounded-2xl border border-[#E8DED3] shadow-2xs overflow-hidden select-none outline-none focus:ring-2 focus:ring-[#6F4E37]/30"
+        className="relative h-[176px] w-full bg-white rounded-2xl border border-[#E8DED3] shadow-2xs overflow-hidden select-none outline-none focus:ring-2 focus:ring-[#E50914]/30"
       >
         {/* Top & Bottom 3D Gradient Fades */}
         <div className="absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-white via-white/80 to-transparent z-10 pointer-events-none" />
         <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-white via-white/80 to-transparent z-10 pointer-events-none" />
 
         {/* Center Active Selection Window Highlight */}
-        <div className="absolute inset-x-1.5 top-[66px] h-[44px] bg-[#E8DED3]/60 rounded-xl border border-[#DDB892]/70 pointer-events-none z-0 shadow-2xs" />
+        <div className="absolute inset-x-1.5 top-[66px] h-[44px] bg-[#E8DED3]/60 rounded-xl border border-[#EF5350]/70 pointer-events-none z-0 shadow-2xs" />
 
         {/* Wheel Container */}
         <div
@@ -222,7 +222,7 @@ export default function StartTimePicker({
     setValidationError('');
     setIsOpen(false);
     toast.success(`Start time confirmed: ${formattedDisplay}`, {
-      style: { borderRadius: '12px', background: '#6F4E37', color: '#fff' },
+      style: { borderRadius: '12px', background: '#E50914', color: '#fff' },
     });
     if (onClose) onClose();
   };
@@ -253,11 +253,11 @@ export default function StartTimePicker({
       {/* ------------------------------------------------------------------ */}
       {/* MOBILE COMPACT NATIVE 3-COLUMN TIME PICKER (Modern & Responsive)   */}
       {/* ------------------------------------------------------------------ */}
-      <div className="md:hidden w-full bg-gradient-to-b from-white to-[#FDFBF9] border border-[#E8DED5] rounded-[22px] p-3.5 shadow-[0_2px_10px_rgba(44,24,16,0.04)] transition-all">
+      <div className="md:hidden w-full bg-gradient-to-b from-white to-[#FDFBF9] border border-[#FEE2E2] rounded-[22px] p-3.5 shadow-[0_2px_10px_rgba(44,24,16,0.04)] transition-all">
         {/* Label and Current Value Header */}
         <div className="flex items-center justify-between text-[11px] font-bold text-stone-500 px-1 mb-2.5">
           <span className="uppercase tracking-wider font-extrabold text-stone-400">{label}</span>
-          <span className="text-[#6F4E37] font-black tracking-tight bg-[#FFF8F0] border border-[#DDB892]/60 px-2.5 py-0.5 rounded-full shadow-2xs">
+          <span className="text-[#E50914] font-black tracking-tight bg-[#FFF5F5] border border-[#EF5350]/60 px-2.5 py-0.5 rounded-full shadow-2xs">
             {formattedDisplay}
           </span>
         </div>
@@ -265,17 +265,17 @@ export default function StartTimePicker({
         {/* 3 Adjacent Interactive Columns */}
         <div className="flex items-center justify-between gap-1.5 xs:gap-2">
           {/* Column 1: Hours (08 h) */}
-          <div className="flex-1 min-w-0 bg-[#FAF7F2] hover:bg-[#FFF8F0] border border-[#E8DED5] focus-within:border-[#DDB892] rounded-2xl p-1.5 flex flex-col items-center justify-between h-[96px] shadow-2xs transition-colors">
+          <div className="flex-1 min-w-0 bg-[#FAF7F2] hover:bg-[#FFF5F5] border border-[#FEE2E2] focus-within:border-[#EF5350] rounded-2xl p-1.5 flex flex-col items-center justify-between h-[96px] shadow-2xs transition-colors">
             <motion.button
               whileTap={{ scale: 0.85 }}
               type="button"
               onClick={() => stepHour(1)}
               aria-label="Increase hour"
-              className="w-full py-1 text-stone-400 hover:text-[#6F4E37] active:text-[#6F4E37] flex items-center justify-center cursor-pointer transition-colors"
+              className="w-full py-1 text-stone-400 hover:text-[#E50914] active:text-[#E50914] flex items-center justify-center cursor-pointer transition-colors"
             >
               <ChevronUp size={18} strokeWidth={2.4} />
             </motion.button>
-            <span className="text-base sm:text-lg font-black text-[#2C1810] tracking-tight select-none">
+            <span className="text-base sm:text-lg font-black text-[#252525] tracking-tight select-none">
               {hour}<span className="text-xs font-semibold text-stone-400 ml-0.5">h</span>
             </span>
             <motion.button
@@ -283,7 +283,7 @@ export default function StartTimePicker({
               type="button"
               onClick={() => stepHour(-1)}
               aria-label="Decrease hour"
-              className="w-full py-1 text-stone-400 hover:text-[#6F4E37] active:text-[#6F4E37] flex items-center justify-center cursor-pointer transition-colors"
+              className="w-full py-1 text-stone-400 hover:text-[#E50914] active:text-[#E50914] flex items-center justify-center cursor-pointer transition-colors"
             >
               <ChevronDown size={18} strokeWidth={2.4} />
             </motion.button>
@@ -293,17 +293,17 @@ export default function StartTimePicker({
           <span className="text-base font-black text-stone-300 select-none pb-0.5 shrink-0">:</span>
 
           {/* Column 2: Minutes (10 m) */}
-          <div className="flex-1 min-w-0 bg-[#FAF7F2] hover:bg-[#FFF8F0] border border-[#E8DED5] focus-within:border-[#DDB892] rounded-2xl p-1.5 flex flex-col items-center justify-between h-[96px] shadow-2xs transition-colors">
+          <div className="flex-1 min-w-0 bg-[#FAF7F2] hover:bg-[#FFF5F5] border border-[#FEE2E2] focus-within:border-[#EF5350] rounded-2xl p-1.5 flex flex-col items-center justify-between h-[96px] shadow-2xs transition-colors">
             <motion.button
               whileTap={{ scale: 0.85 }}
               type="button"
               onClick={() => stepMin(1)}
               aria-label="Increase minute"
-              className="w-full py-1 text-stone-400 hover:text-[#6F4E37] active:text-[#6F4E37] flex items-center justify-center cursor-pointer transition-colors"
+              className="w-full py-1 text-stone-400 hover:text-[#E50914] active:text-[#E50914] flex items-center justify-center cursor-pointer transition-colors"
             >
               <ChevronUp size={18} strokeWidth={2.4} />
             </motion.button>
-            <span className="text-base sm:text-lg font-black text-[#2C1810] tracking-tight select-none">
+            <span className="text-base sm:text-lg font-black text-[#252525] tracking-tight select-none">
               {min}<span className="text-xs font-semibold text-stone-400 ml-0.5">m</span>
             </span>
             <motion.button
@@ -311,21 +311,21 @@ export default function StartTimePicker({
               type="button"
               onClick={() => stepMin(-1)}
               aria-label="Decrease minute"
-              className="w-full py-1 text-stone-400 hover:text-[#6F4E37] active:text-[#6F4E37] flex items-center justify-center cursor-pointer transition-colors"
+              className="w-full py-1 text-stone-400 hover:text-[#E50914] active:text-[#E50914] flex items-center justify-center cursor-pointer transition-colors"
             >
               <ChevronDown size={18} strokeWidth={2.4} />
             </motion.button>
           </div>
 
           {/* Column 3: AM / PM Period Selector */}
-          <div className="w-[68px] xs:w-[74px] shrink-0 bg-[#FAF7F2] border border-[#E8DED5] rounded-2xl p-1 flex flex-col items-center justify-center h-[96px] gap-1 shadow-2xs">
+          <div className="w-[68px] xs:w-[74px] shrink-0 bg-[#FAF7F2] border border-[#FEE2E2] rounded-2xl p-1 flex flex-col items-center justify-center h-[96px] gap-1 shadow-2xs">
             <motion.button
               whileTap={{ scale: 0.92 }}
               type="button"
               onClick={() => handleUpdate(hour, min, 'AM')}
               className={`w-full py-2 rounded-xl text-xs font-black transition-all cursor-pointer ${
                 ampm === 'AM'
-                  ? 'bg-white text-[#6F4E37] shadow-sm border border-[#DDB892]/70 font-black'
+                  ? 'bg-white text-[#E50914] shadow-sm border border-[#EF5350]/70 font-black'
                   : 'text-stone-400 hover:text-stone-600'
               }`}
             >
@@ -337,7 +337,7 @@ export default function StartTimePicker({
               onClick={() => handleUpdate(hour, min, 'PM')}
               className={`w-full py-2 rounded-xl text-xs font-black transition-all cursor-pointer ${
                 ampm === 'PM'
-                  ? 'bg-white text-[#6F4E37] shadow-sm border border-[#DDB892]/70 font-black'
+                  ? 'bg-white text-[#E50914] shadow-sm border border-[#EF5350]/70 font-black'
                   : 'text-stone-400 hover:text-stone-600'
               }`}
             >
@@ -350,13 +350,13 @@ export default function StartTimePicker({
       {/* ------------------------------------------------------------------ */}
       {/* DESKTOP SELECTED TIME DISPLAY BAR (Clean & Modern)                 */}
       {/* ------------------------------------------------------------------ */}
-      <div className="hidden md:flex w-full bg-stone-50/90 border border-stone-200/90 rounded-2xl px-4 py-2.5 items-center justify-between shadow-2xs transition-all hover:bg-white hover:border-[#6F4E37]/30">
+      <div className="hidden md:flex w-full bg-stone-50/90 border border-stone-200/90 rounded-2xl px-4 py-2.5 items-center justify-between shadow-2xs transition-all hover:bg-white hover:border-[#E50914]/30">
         {/* Selected Time Badge */}
         <div className="flex items-center gap-2.5">
-          <Clock size={16} className="text-[#6F4E37] shrink-0" />
+          <Clock size={16} className="text-[#E50914] shrink-0" />
           <div className="flex flex-col">
             <span className="text-[10px] font-bold text-stone-400 uppercase tracking-wider">{label}</span>
-            <span className="font-black text-sm sm:text-base text-[#2C1810] tracking-tight">{formattedDisplay}</span>
+            <span className="font-black text-sm sm:text-base text-[#252525] tracking-tight">{formattedDisplay}</span>
           </div>
         </div>
 
@@ -366,7 +366,7 @@ export default function StartTimePicker({
           onClick={() => setIsOpen(!isOpen)}
           aria-expanded={isOpen}
           aria-controls={`${pickerId}-panel`}
-          className="px-3.5 py-1.5 rounded-xl bg-white border border-stone-200/90 hover:bg-[#6F4E37] text-stone-700 hover:text-white font-extrabold text-xs transition-all cursor-pointer shadow-2xs active:scale-95"
+          className="px-3.5 py-1.5 rounded-xl bg-white border border-stone-200/90 hover:bg-[#E50914] text-stone-700 hover:text-white font-extrabold text-xs transition-all cursor-pointer shadow-2xs active:scale-95"
         >
           {isOpen ? 'Done' : 'Change'}
         </button>
@@ -388,7 +388,7 @@ export default function StartTimePicker({
             {/* Header */}
             <div className="flex items-center justify-between pb-3 border-b border-[#E8DED3]">
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-xl bg-[#6F4E37]/10 flex items-center justify-center text-[#6F4E37]">
+                <div className="w-8 h-8 rounded-xl bg-[#E50914]/10 flex items-center justify-center text-[#E50914]">
                   <Clock size={18} />
                 </div>
                 <h3 className="text-sm sm:text-base font-black text-[#2D2420] tracking-tight">
@@ -446,8 +446,8 @@ export default function StartTimePicker({
                             onClick={() => handleUpdate(slot.h, slot.m, slot.mode)}
                             className={`px-3.5 py-2 rounded-2xl text-xs font-black whitespace-nowrap transition-all cursor-pointer shrink-0 ${
                               isSelected
-                                ? 'bg-[#6F4E37] text-white shadow-xs scale-102'
-                                : 'bg-white text-[#2D2420] hover:bg-[#FFF8F0] hover:text-[#6F4E37] border border-[#E8DED3]'
+                                ? 'bg-[#E50914] text-white shadow-xs scale-102'
+                                : 'bg-white text-[#2D2420] hover:bg-[#FFF5F5] hover:text-[#E50914] border border-[#E8DED3]'
                             }`}
                           >
                             {slot.label}
@@ -472,7 +472,7 @@ export default function StartTimePicker({
                     />
 
                     {/* Colon Separator */}
-                    <div className="text-xl sm:text-2xl font-black text-[#6F4E37] self-center pb-2 select-none">
+                    <div className="text-xl sm:text-2xl font-black text-[#E50914] self-center pb-2 select-none">
                       :
                     </div>
 
@@ -509,7 +509,7 @@ export default function StartTimePicker({
                 <button
                   type="button"
                   onClick={handleConfirm}
-                  className="w-full py-3.5 px-4 bg-[#6F4E37] hover:bg-[#4A2C1A] active:scale-[0.99] text-white text-xs sm:text-sm font-black rounded-2xl shadow-xs flex items-center justify-center gap-2 transition-all cursor-pointer"
+                  className="w-full py-3.5 px-4 bg-[#E50914] hover:bg-[#4A2C1A] active:scale-[0.99] text-white text-xs sm:text-sm font-black rounded-2xl shadow-xs flex items-center justify-center gap-2 transition-all cursor-pointer"
                 >
                   <CheckCircle2 size={18} /> Confirm {label} ({formattedDisplay})
                 </button>

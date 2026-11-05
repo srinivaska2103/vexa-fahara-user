@@ -62,7 +62,7 @@ export default function ReportReviewModal({ isOpen, onClose, reviewId }) {
                   <Flag className="w-5 h-5 text-amber-600" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold text-[#2C1810]">Report Review</h3>
+                  <h3 className="text-xl font-bold text-[#252525]">Report Review</h3>
                   <p className="text-sm text-gray-500">Why are you reporting this?</p>
                 </div>
               </div>
@@ -76,7 +76,7 @@ export default function ReportReviewModal({ isOpen, onClose, reviewId }) {
                       value={reason}
                       checked={selectedReason === reason}
                       onChange={(e) => setSelectedReason(e.target.value)}
-                      className="w-4 h-4 text-[#6F4E37] focus:ring-[#6F4E37]"
+                      className="w-4 h-4 text-[#E50914] focus:ring-[#E50914]"
                     />
                     <span className="text-sm font-medium text-gray-700">{reason}</span>
                   </label>
@@ -94,7 +94,7 @@ export default function ReportReviewModal({ isOpen, onClose, reviewId }) {
                 <button
                   onClick={handleReport}
                   disabled={isReporting}
-                  className="flex-1 px-4 py-2 bg-[#6F4E37] text-white font-medium rounded-xl hover:bg-[#5A3E2B] transition-colors flex justify-center items-center gap-2 disabled:opacity-50"
+                  className="flex-1 px-4 py-2 bg-[#E50914] text-white font-medium rounded-xl hover:bg-[#5A3E2B] transition-colors flex justify-center items-center gap-2 disabled:opacity-50"
                 >
                   {isReporting ? (
                     <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />

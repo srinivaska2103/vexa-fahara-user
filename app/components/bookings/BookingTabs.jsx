@@ -23,7 +23,7 @@ export default function BookingTabs({ activeTab, onTabChange }) {
               onClick={() => onTabChange(tab.id)}
               className={`relative px-5 py-2.5 rounded-full font-black text-xs sm:text-sm transition-all flex-shrink-0 cursor-pointer ${
                 isActive
-                  ? 'text-white shadow-md shadow-[#4A2C11]/20 z-10'
+                  ? 'text-white shadow-md shadow-[#B71C1C]/20 z-10'
                   : 'bg-white text-stone-600 hover:bg-stone-100 border border-stone-200/80 font-bold'
               }`}
               aria-current={isActive ? 'page' : undefined}
@@ -31,7 +31,7 @@ export default function BookingTabs({ activeTab, onTabChange }) {
               {isActive && (
                 <motion.div
                   layoutId="activeBookingTabPill"
-                  className="absolute inset-0 bg-gradient-to-r from-[#4A2C11] to-[#6F4E37] rounded-full -z-10"
+                  className="absolute inset-0 bg-gradient-to-r from-[#B71C1C] to-[#E50914] rounded-full -z-10"
                   transition={{ type: 'spring', stiffness: 500, damping: 30 }}
                 />
               )}

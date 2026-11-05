@@ -4,8 +4,8 @@ import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 
 const CONFETTI_COLORS = [
-  '#6F4E37', // Coffee Brown
-  '#DDB892', // Gold Bronze
+  '#E50914', // Coffee Brown
+  '#EF5350', // Gold Bronze
   '#10B981', // Emerald Green
   '#F59E0B', // Amber Gold
   '#EC4899', // Celebration Pink

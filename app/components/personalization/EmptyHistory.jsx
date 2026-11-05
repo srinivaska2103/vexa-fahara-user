@@ -9,7 +9,7 @@ export default function EmptyHistory() {
       animate={{ opacity: 1, scale: 1 }}
       className="bg-white border-0 shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-3xl p-12 flex flex-col items-center justify-center text-center"
     >
-      <div className="w-20 h-20 bg-amber-50/80 rounded-full flex items-center justify-center text-[#A67B5B] mb-6 shadow-sm border border-amber-100">
+      <div className="w-20 h-20 bg-amber-50/80 rounded-full flex items-center justify-center text-[#B71C1C] mb-6 shadow-sm border border-amber-100">
         <Search size={32} />
       </div>
       <h3 className="text-2xl font-black text-gray-900 mb-3 tracking-tight">No Search History</h3>

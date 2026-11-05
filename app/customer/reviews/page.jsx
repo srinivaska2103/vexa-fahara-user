@@ -115,14 +115,14 @@ export default function MyReviewsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#FFF8F0] pb-24">
+    <div className="min-h-screen bg-[#FFF5F5] pb-24">
       {/* Header */}
-      <div className="bg-white border-b border-[#E8DED5] sticky top-0 z-40">
+      <div className="bg-white border-b border-[#FEE2E2] sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
             <div>
-              <h1 className="text-3xl font-bold text-[#2C1810] flex items-center gap-3">
-                <MessageSquareText className="w-8 h-8 text-[#A67B5B]" />
+              <h1 className="text-3xl font-bold text-[#252525] flex items-center gap-3">
+                <MessageSquareText className="w-8 h-8 text-[#B71C1C]" />
                 My Reviews
               </h1>
               <p className="text-gray-600 mt-1">Manage your ratings and reviews</p>
@@ -145,7 +145,7 @@ export default function MyReviewsPage() {
         {/* Write a Review Prompts */}
         {!isLoading && completedBookings.length > 0 && (
           <section>
-            <h2 className="text-xl font-bold text-[#2C1810] mb-4">Pending Reviews</h2>
+            <h2 className="text-xl font-bold text-[#252525] mb-4">Pending Reviews</h2>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {completedBookings.slice(0, 2).map(booking => (
                 <WriteReviewCard key={booking.id} booking={booking} />
@@ -157,14 +157,14 @@ export default function MyReviewsPage() {
         {/* Stats */}
         {!isLoading && reviews.length > 0 && (
           <section>
-            <h2 className="text-xl font-bold text-[#2C1810] mb-4">Your Impact</h2>
+            <h2 className="text-xl font-bold text-[#252525] mb-4">Your Impact</h2>
             <ReviewStats reviews={reviews} />
           </section>
         )}
 
         {/* Reviews List */}
         <section>
-          <h2 className="text-xl font-bold text-[#2C1810] mb-4">Past Reviews</h2>
+          <h2 className="text-xl font-bold text-[#252525] mb-4">Past Reviews</h2>
           {isLoading ? (
             <LoadingReviews />
           ) : (

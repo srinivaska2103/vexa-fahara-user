@@ -66,7 +66,7 @@ export function OfferBanner() {
                 SPECIAL OFFER
               </span>
               <h2 className="text-3xl md:text-4xl font-bold mb-4">Get 20% off your first Private Event booking!</h2>
-              <p className="text-gray-200 mb-6">Use code FAHARA20 at checkout. Valid until the end of the month.</p>
+              <p className="text-gray-200 mb-6">Use code Grab2GO20 at checkout. Valid until the end of the month.</p>
               <button className="px-6 py-3 bg-white text-[var(--color-primary)] font-bold rounded-lg hover:bg-[var(--color-background)] transition-colors">
                 Claim Offer
               </button>

@@ -23,6 +23,7 @@ import BusinessHours from './BusinessHours';
 import LocationSection from './LocationSection';
 import ReviewList from './ReviewList';
 import DiscountsSection from './DiscountsSection';
+import RestaurantMenuSection from './RestaurantMenuSection';
 
 export default function MobileCafeDetailsView({ 
   cafe, 
@@ -112,8 +113,8 @@ export default function MobileCafeDetailsView({
     if (navigator.share) {
       try {
         await navigator.share({
-          title: name || 'Fahara Cafe',
-          text: `Check out ${name || 'this cafe'} on Fahara!`,
+          title: name || 'Grab2GO Cafe',
+          text: `Check out ${name || 'this cafe'} on Grab2GO!`,
           url: window.location.href,
         });
       } catch (err) {}
@@ -232,7 +233,7 @@ export default function MobileCafeDetailsView({
     if (phoneNumber) {
       const cleanPhone = String(phoneNumber).replace(/[^0-9]/g, '');
       const phoneWithCountry = cleanPhone.startsWith('91') ? cleanPhone : `91${cleanPhone}`;
-      const msg = encodeURIComponent(`Hi, I'm inquiring about ${name || 'your cafe'} on Fahara.`);
+      const msg = encodeURIComponent(`Hi, I'm inquiring about ${name || 'your cafe'} on Grab2GO.`);
       window.open(`https://wa.me/${phoneWithCountry}?text=${msg}`, '_blank');
     } else {
       router.push('/contact');
@@ -269,7 +270,7 @@ export default function MobileCafeDetailsView({
   };
 
   return (
-    <div className="md:hidden flex flex-col w-full min-h-screen bg-[#FFF8F0] text-[#2C1810] select-none font-sans overflow-x-hidden relative">
+    <div className="md:hidden flex flex-col w-full min-h-screen bg-[#FFF5F5] text-[#252525] select-none font-sans overflow-x-hidden relative">
       
       {/* ── 0. COMPACT STICKY HEADER (Stable sticky header with appropriate top offset) ── */}
       <AnimatePresence>
@@ -279,7 +280,7 @@ export default function MobileCafeDetailsView({
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: -60, opacity: 0 }}
             transition={{ duration: 0.2, ease: 'easeOut' }}
-            className="fixed top-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-xl border-b border-[#E8DED5] pt-[max(0.625rem,env(safe-area-inset-top,0px))] pb-2 px-3 sm:px-4 shadow-[0_4px_20px_rgba(44,24,16,0.08)] flex items-center justify-between gap-2 pointer-events-auto"
+            className="fixed top-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-xl border-b border-[#FEE2E2] pt-[max(0.625rem,env(safe-area-inset-top,0px))] pb-2 px-3 sm:px-4 shadow-[0_4px_20px_rgba(44,24,16,0.08)] flex items-center justify-between gap-2 pointer-events-auto"
           >
             {/* Left: Back button + Cafe Title & Verification */}
             <div className="flex items-center gap-2 min-w-0 flex-1">
@@ -288,14 +289,14 @@ export default function MobileCafeDetailsView({
                 type="button"
                 onClick={() => router.back()}
                 aria-label="Back"
-                className="w-8 h-8 rounded-full bg-stone-100 hover:bg-stone-200 text-[#2C1810] flex items-center justify-center shrink-0 border border-stone-200/80 cursor-pointer shadow-2xs"
+                className="w-8 h-8 rounded-full bg-stone-100 hover:bg-stone-200 text-[#252525] flex items-center justify-center shrink-0 border border-stone-200/80 cursor-pointer shadow-2xs"
               >
                 <ArrowLeft size={16} strokeWidth={2.4} />
               </motion.button>
 
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-1.5 truncate">
-                  <span className="text-xs sm:text-sm font-black text-[#2C1810] truncate">
+                  <span className="text-xs sm:text-sm font-black text-[#252525] truncate">
                     {name || 'Taco Twist'}
                   </span>
                   {isVerified && (
@@ -304,8 +305,8 @@ export default function MobileCafeDetailsView({
                 </div>
                 <div className="flex items-center gap-1.5 text-[11px] font-bold text-stone-500">
                   <Star size={11} className="fill-amber-400 text-amber-500 shrink-0" />
-                  <span className="text-[#2C1810]">{rating}</span>
-                  <span className="text-[#6F4E37] font-black truncate">
+                  <span className="text-[#252525]">{rating}</span>
+                  <span className="text-[#E50914] font-black truncate">
                     • {priceDisplay.amount} {priceDisplay.subtitle}
                   </span>
                 </div>
@@ -319,7 +320,7 @@ export default function MobileCafeDetailsView({
                 type="button"
                 onClick={handleShareClick}
                 aria-label="Share cafe"
-                className="w-8 h-8 rounded-full bg-stone-100 hover:bg-[#FFF8F0] border border-[#E8DED5] text-[#6F4E37] flex items-center justify-center shrink-0 cursor-pointer shadow-2xs"
+                className="w-8 h-8 rounded-full bg-stone-100 hover:bg-[#FFF5F5] border border-[#FEE2E2] text-[#E50914] flex items-center justify-center shrink-0 cursor-pointer shadow-2xs"
               >
                 <Share2 size={14} />
               </motion.button>
@@ -329,14 +330,14 @@ export default function MobileCafeDetailsView({
                 type="button"
                 onClick={handleWishlistClick}
                 aria-label="Save to Wishlist"
-                className="w-8 h-8 rounded-full bg-stone-100 hover:bg-[#FFF8F0] border border-[#E8DED5] flex items-center justify-center shrink-0 cursor-pointer shadow-2xs"
+                className="w-8 h-8 rounded-full bg-stone-100 hover:bg-[#FFF5F5] border border-[#FEE2E2] flex items-center justify-center shrink-0 cursor-pointer shadow-2xs"
               >
                 <Heart
                   size={15}
                   strokeWidth={2.4}
                   className={cn(
                     "transition-colors",
-                    isFav ? "fill-rose-500 text-rose-500" : "text-[#2C1810]"
+                    isFav ? "fill-rose-500 text-rose-500" : "text-[#252525]"
                   )}
                 />
               </motion.button>
@@ -368,9 +369,9 @@ export default function MobileCafeDetailsView({
             <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-black/50 via-black/20 to-transparent pointer-events-none" />
           </div>
         ) : (
-          <div className="w-full h-full flex flex-col items-center justify-center p-6 text-center text-[#FFF8F0]/80 bg-[#3B1F13]">
-            <Coffee size={40} className="text-[#DDB892] mb-2 opacity-80" />
-            <span className="text-xs font-bold text-[#FFF8F0]">No cafe photos available</span>
+          <div className="w-full h-full flex flex-col items-center justify-center p-6 text-center text-[#FFF5F5]/80 bg-[#3B1F13]">
+            <Coffee size={40} className="text-[#EF5350] mb-2 opacity-80" />
+            <span className="text-xs font-bold text-[#FFF5F5]">No cafe photos available</span>
           </div>
         )}
 
@@ -382,7 +383,7 @@ export default function MobileCafeDetailsView({
             type="button"
             onClick={() => router.back()}
             aria-label="Go back"
-            className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white/90 hover:bg-white active:scale-90 backdrop-blur-md flex items-center justify-center text-[#2C1810] shadow-[0_4px_16px_rgba(0,0,0,0.18)] transition-all cursor-pointer border border-white/60"
+            className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white/90 hover:bg-white active:scale-90 backdrop-blur-md flex items-center justify-center text-[#252525] shadow-[0_4px_16px_rgba(0,0,0,0.18)] transition-all cursor-pointer border border-white/60"
           >
             <ArrowLeft size={18} strokeWidth={2.4} />
           </motion.button>
@@ -436,14 +437,14 @@ export default function MobileCafeDetailsView({
       </div>
 
       {/* ── 2. WHITE VENUE CARD PANEL (Rounded Top Corners) ── */}
-      <div className="relative -mt-5 bg-white rounded-t-[28px] sm:rounded-t-[32px] shadow-[0_-8px_30px_rgba(0,0,0,0.06)] border-t border-[#E8DED5]/70 z-20 pt-5 pb-28 px-3.5 sm:px-4 w-full max-w-full min-w-0 box-border">
+      <div className="relative -mt-5 bg-white rounded-t-[28px] sm:rounded-t-[32px] shadow-[0_-8px_30px_rgba(0,0,0,0.06)] border-t border-[#FEE2E2]/70 z-20 pt-5 pb-28 px-3.5 sm:px-4 w-full max-w-full min-w-0 box-border">
         
         {/* Row 1: Title & Verified Badge + Price ("₹499 for two") */}
         <div className="flex items-start justify-between gap-2.5">
           {/* Left: Name + Verified Pill */}
           <div className="flex-1 min-w-0 pr-1">
             <div className="flex items-center gap-1.5 flex-wrap">
-              <h1 className="text-xl sm:text-2xl font-black text-[#2C1810] tracking-tight leading-tight truncate max-w-full">
+              <h1 className="text-xl sm:text-2xl font-black text-[#252525] tracking-tight leading-tight truncate max-w-full">
                 {name || 'TACO TWIST'}
               </h1>
               {isVerified && (
@@ -457,7 +458,7 @@ export default function MobileCafeDetailsView({
             {/* Row 2: Star Rating & Total Reviews */}
             <div className="flex items-center gap-1.5 text-xs font-bold text-stone-700 mt-1">
               <Star size={13} className="fill-amber-400 text-amber-500 shrink-0" />
-              <span className="font-black text-[#2C1810]">{rating}</span>
+              <span className="font-black text-[#252525]">{rating}</span>
               <span className="text-stone-400 text-xs font-semibold">
                 ({reviewsCount} Reviews)
               </span>
@@ -466,9 +467,9 @@ export default function MobileCafeDetailsView({
 
           {/* Right: Prominent Price (e.g. ₹499 for two) */}
           <div className="text-right shrink-0">
-            <div className="text-base sm:text-lg font-black text-[#6F4E37] tracking-tight">
+            <div className="text-base sm:text-lg font-black text-[#E50914] tracking-tight">
               {priceDisplay.amount}{' '}
-              <span className="text-[11px] font-extrabold text-[#6F4E37]/90">{priceDisplay.subtitle}</span>
+              <span className="text-[11px] font-extrabold text-[#E50914]/90">{priceDisplay.subtitle}</span>
             </div>
           </div>
         </div>
@@ -476,7 +477,7 @@ export default function MobileCafeDetailsView({
         {/* Row 3: Address & Distance Pin */}
         <div className="flex items-center justify-between gap-2 text-stone-500 text-xs font-medium mt-2 pt-0.5 min-w-0">
           <div className="flex items-center gap-1.5 min-w-0 flex-1">
-            <MapPin size={13} className="text-[#6F4E37] shrink-0" />
+            <MapPin size={13} className="text-[#E50914] shrink-0" />
             <span className="truncate">{fullAddress}</span>
           </div>
           <div className="flex items-center gap-1 text-stone-400 font-semibold text-[11px] shrink-0">
@@ -512,7 +513,7 @@ export default function MobileCafeDetailsView({
             onClick={handleDirectionClick}
             className="flex flex-col items-center gap-1 group cursor-pointer"
           >
-            <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-[#FFF8F0] border border-[#DDB892]/40 flex items-center justify-center text-[#2C1810] group-hover:bg-[#6F4E37] group-hover:text-white transition-all shadow-2xs">
+            <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-[#FFF5F5] border border-[#EF5350]/40 flex items-center justify-center text-[#252525] group-hover:bg-[#E50914] group-hover:text-white transition-all shadow-2xs">
               <Navigation size={18} strokeWidth={2} />
             </div>
             <span className="text-[11px] sm:text-xs font-black text-stone-700">Direction</span>
@@ -525,7 +526,7 @@ export default function MobileCafeDetailsView({
             onClick={handleShareClick}
             className="flex flex-col items-center gap-1 group cursor-pointer"
           >
-            <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-[#FFF8F0] border border-[#DDB892]/40 flex items-center justify-center text-[#2C1810] group-hover:bg-[#6F4E37] group-hover:text-white transition-all shadow-2xs">
+            <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-[#FFF5F5] border border-[#EF5350]/40 flex items-center justify-center text-[#252525] group-hover:bg-[#E50914] group-hover:text-white transition-all shadow-2xs">
               <Share2 size={18} strokeWidth={2} />
             </div>
             <span className="text-[11px] sm:text-xs font-black text-stone-700">Share</span>
@@ -538,13 +539,13 @@ export default function MobileCafeDetailsView({
             onClick={handleWishlistClick}
             className="flex flex-col items-center gap-1 group cursor-pointer"
           >
-            <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-[#FFF8F0] border border-[#DDB892]/40 flex items-center justify-center text-[#2C1810] group-hover:bg-[#6F4E37] group-hover:text-white transition-all shadow-2xs">
+            <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-[#FFF5F5] border border-[#EF5350]/40 flex items-center justify-center text-[#252525] group-hover:bg-[#E50914] group-hover:text-white transition-all shadow-2xs">
               <Heart 
                 size={18} 
                 strokeWidth={2} 
                 className={cn(
                   "transition-colors",
-                  isFav ? "fill-rose-500 text-rose-500" : "text-[#2C1810]"
+                  isFav ? "fill-rose-500 text-rose-500" : "text-[#252525]"
                 )} 
               />
             </div>
@@ -581,11 +582,11 @@ export default function MobileCafeDetailsView({
 
         {/* Row 7: Real Popularity Information (rendered only when real data exists) */}
         {(cafe?.monthly_bookings_count || reviewsCount > 0) && (
-          <div className="mt-3 p-2.5 sm:p-3 rounded-2xl bg-[#FFF8F0]/90 border border-[#DDB892]/40 flex items-center gap-2.5 shadow-2xs">
-            <div className="w-6 h-6 rounded-full bg-[#6F4E37] flex items-center justify-center text-white text-[10px] font-black shrink-0">
+          <div className="mt-3 p-2.5 sm:p-3 rounded-2xl bg-[#FFF5F5]/90 border border-[#EF5350]/40 flex items-center gap-2.5 shadow-2xs">
+            <div className="w-6 h-6 rounded-full bg-[#E50914] flex items-center justify-center text-white text-[10px] font-black shrink-0">
               ★
             </div>
-            <span className="text-[11px] sm:text-xs font-black text-[#2C1810] tracking-tight">
+            <span className="text-[11px] sm:text-xs font-black text-[#252525] tracking-tight">
               {cafe?.monthly_bookings_count 
                 ? `Loved by ${cafe.monthly_bookings_count}+ customers this month` 
                 : `Rated ${rating} out of 5 by ${reviewsCount} verified visitors`}
@@ -607,7 +608,7 @@ export default function MobileCafeDetailsView({
                 >
                   <span className={cn(
                     "flex items-center justify-center gap-1",
-                    isActive ? "text-[#2C1810]" : "text-stone-400 hover:text-stone-600"
+                    isActive ? "text-[#252525]" : "text-stone-400 hover:text-stone-600"
                   )}>
                     <span>{tab.label}</span>
                     {tab.badge ? (
@@ -619,7 +620,7 @@ export default function MobileCafeDetailsView({
                   {isActive && (
                     <motion.div
                       layoutId="activeTabUnderline"
-                      className="absolute bottom-0 inset-x-2 sm:inset-x-4 h-0.5 bg-[#6F4E37] rounded-full"
+                      className="absolute bottom-0 inset-x-2 sm:inset-x-4 h-0.5 bg-[#E50914] rounded-full"
                       transition={{ type: 'spring', stiffness: 500, damping: 35 }}
                     />
                   )}
@@ -631,6 +632,18 @@ export default function MobileCafeDetailsView({
 
         {/* Row 8: Tab Content (all tabs share identical width and padding) */}
         <div className="mt-4 min-w-0 w-full">
+                    {/* TAB: DINING FOOD MENU */}
+          {selectedTab === 'menu' && (
+            <motion.div
+              initial={{ opacity: 0, y: 4 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.18 }}
+              className="space-y-4 min-w-0"
+            >
+              <RestaurantMenuSection cafeId={cafeId} cafeName={name} />
+            </motion.div>
+          )}
+
           {/* TAB 1: OVERVIEW */}
           {selectedTab === 'overview' && (
             <motion.div 
@@ -640,7 +653,7 @@ export default function MobileCafeDetailsView({
               className="space-y-4 min-w-0"
             >
               <div>
-                <h2 className="text-sm sm:text-base font-black text-[#2C1810] mb-1">About</h2>
+                <h2 className="text-sm sm:text-base font-black text-[#252525] mb-1">About</h2>
                 <div className="text-xs text-stone-600 leading-relaxed font-normal">
                   <p className={cn("transition-all", !isDescExpanded && "line-clamp-3")}>
                     {cafeDescription}
@@ -649,7 +662,7 @@ export default function MobileCafeDetailsView({
                     <button
                       type="button"
                       onClick={() => setIsDescExpanded(!isDescExpanded)}
-                      className="text-xs font-black text-[#6F4E37] mt-1 hover:underline cursor-pointer inline-block"
+                      className="text-xs font-black text-[#E50914] mt-1 hover:underline cursor-pointer inline-block"
                     >
                       {isDescExpanded ? 'Show Less' : 'Read More'}
                     </button>
@@ -665,7 +678,7 @@ export default function MobileCafeDetailsView({
                       whileTap={{ scale: 0.95 }}
                       key={i}
                       onClick={() => openLightbox(i)}
-                      className="aspect-[4/3] rounded-xl overflow-hidden bg-stone-100 border border-[#E8DED5] cursor-pointer shadow-2xs relative group"
+                      className="aspect-[4/3] rounded-xl overflow-hidden bg-stone-100 border border-[#FEE2E2] cursor-pointer shadow-2xs relative group"
                     >
                       <img 
                         src={imgUrl} 
@@ -719,7 +732,7 @@ export default function MobileCafeDetailsView({
                 <span className="text-[10px] sm:text-[11px] font-black uppercase tracking-wider text-stone-400">
                   Venue Event Packages ({cafe_packages.length})
                 </span>
-                <span className="text-[10px] sm:text-[11px] font-bold text-[#6F4E37]">
+                <span className="text-[10px] sm:text-[11px] font-bold text-[#E50914]">
                   Tap to Select
                 </span>
               </div>
@@ -751,8 +764,8 @@ export default function MobileCafeDetailsView({
                       className={cn(
                         "p-3 rounded-2xl border transition-all cursor-pointer relative shadow-xs min-w-0 w-full",
                         isSelected
-                          ? "bg-white border-[#6F4E37] ring-2 ring-[#6F4E37]/20 shadow-md"
-                          : "bg-white border-[#E8DED5] hover:border-stone-300"
+                          ? "bg-white border-[#E50914] ring-2 ring-[#E50914]/20 shadow-md"
+                          : "bg-white border-[#FEE2E2] hover:border-stone-300"
                       )}
                     >
                       <div className="flex items-start justify-between gap-2 min-w-0">
@@ -760,11 +773,11 @@ export default function MobileCafeDetailsView({
                           <div className="flex items-center gap-1.5 min-w-0">
                             <span className={cn(
                               "w-3.5 h-3.5 rounded-full border flex items-center justify-center shrink-0",
-                              isSelected ? "border-[#6F4E37] bg-[#6F4E37]" : "border-stone-300"
+                              isSelected ? "border-[#E50914] bg-[#E50914]" : "border-stone-300"
                             )}>
                               {isSelected && <span className="w-1.5 h-1.5 rounded-full bg-white" />}
                             </span>
-                            <h3 className="text-xs sm:text-sm font-black text-[#2C1810] tracking-tight truncate">
+                            <h3 className="text-xs sm:text-sm font-black text-[#252525] tracking-tight truncate">
                               {pkg.package_name || pkg.title || 'Special Package'}
                             </h3>
                           </div>
@@ -774,7 +787,7 @@ export default function MobileCafeDetailsView({
                             </p>
                           )}
                         </div>
-                        <span className="text-xs sm:text-sm font-black text-[#6F4E37] shrink-0">
+                        <span className="text-xs sm:text-sm font-black text-[#E50914] shrink-0">
                           ₹{pkgPrice.toLocaleString('en-IN')}
                         </span>
                       </div>
@@ -782,12 +795,12 @@ export default function MobileCafeDetailsView({
                       {/* Package Capacity & Duration Badges */}
                       <div className="flex items-center gap-2 text-[10px] font-bold text-stone-500 mt-2 pl-5 flex-wrap">
                         <div className="flex items-center gap-1">
-                          <Users size={11} className="text-[#6F4E37] shrink-0" />
+                          <Users size={11} className="text-[#E50914] shrink-0" />
                           <span>{pkg.minimum_persons || 1} - {pkg.maximum_persons || 25} guests</span>
                         </div>
                         <span>•</span>
                         <div className="flex items-center gap-1">
-                          <Clock size={11} className="text-[#6F4E37] shrink-0" />
+                          <Clock size={11} className="text-[#E50914] shrink-0" />
                           <span>{pkg.duration_hours ? `${pkg.duration_hours} hrs` : '2 hrs session'}</span>
                         </div>
                       </div>
@@ -803,7 +816,7 @@ export default function MobileCafeDetailsView({
                             return (
                               <span
                                 key={i}
-                                className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-[#FFF8F0] border border-[#DDB892]/50 text-[#6F4E37] text-[10px] font-extrabold max-w-full"
+                                className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-[#FFF5F5] border border-[#EF5350]/50 text-[#E50914] text-[10px] font-extrabold max-w-full"
                               >
                                 <CheckCircle2 size={10} className="text-emerald-600 shrink-0" />
                                 <span className="truncate max-w-[120px]">{incName}</span>
@@ -821,7 +834,7 @@ export default function MobileCafeDetailsView({
                   );
                 })
               ) : (
-                <div className="p-6 rounded-2xl bg-white border border-[#E8DED5] text-center text-stone-500 text-xs font-bold">
+                <div className="p-6 rounded-2xl bg-white border border-[#FEE2E2] text-center text-stone-500 text-xs font-bold">
                   Custom celebration and event packages available upon inquiry.
                 </div>
               )}
@@ -849,7 +862,7 @@ export default function MobileCafeDetailsView({
         style={{ 
           paddingBottom: 'max(0.75rem, env(safe-area-inset-bottom, 0px))' 
         }}
-        className="fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-xl border-t border-[#E8DED5] pt-2.5 px-3.5 sm:px-4 shadow-[0_-8px_25px_rgba(44,24,16,0.08)] pointer-events-auto"
+        className="fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-xl border-t border-[#FEE2E2] pt-2.5 px-3.5 sm:px-4 shadow-[0_-8px_25px_rgba(44,24,16,0.08)] pointer-events-auto"
       >
         <div className="flex items-center gap-2.5 sm:gap-3 max-w-md mx-auto w-full">
           {/* Price Indicator (Left side, approx ~40% width) */}
@@ -857,9 +870,9 @@ export default function MobileCafeDetailsView({
             tabIndex={0}
             role="status"
             aria-label={`Price: ${priceDisplay.amount} ${priceDisplay.subtitle}`}
-            className="w-[40%] h-12 rounded-2xl bg-[#FFF8F0] border border-[#DDB892]/60 flex items-center justify-center px-2 text-center shadow-2xs select-none transition-colors hover:border-[#DDB892]"
+            className="w-[40%] h-12 rounded-2xl bg-[#FFF5F5] border border-[#EF5350]/60 flex items-center justify-center px-2 text-center shadow-2xs select-none transition-colors hover:border-[#EF5350]"
           >
-            <span className="text-xs sm:text-sm font-black text-[#2C1810] tracking-tight truncate">
+            <span className="text-xs sm:text-sm font-black text-[#252525] tracking-tight truncate">
               {priceDisplay.amount}{' '}
               <span className="text-[11px] font-bold text-stone-500">{priceDisplay.subtitle}</span>
             </span>
@@ -872,9 +885,9 @@ export default function MobileCafeDetailsView({
             disabled={!isOpen && !isWalkingCafe}
             aria-label={isWalkingCafe ? 'Get Directions to cafe' : !isOpen ? 'Cafe is currently closed' : 'Book now'}
             className={cn(
-              "w-[60%] h-12 rounded-2xl font-black text-xs sm:text-sm flex items-center justify-center gap-1.5 transition-all cursor-pointer shadow-md select-none focus:outline-none focus:ring-2 focus:ring-[#4A2C11]/40 active:scale-[0.98]",
+              "w-[60%] h-12 rounded-2xl font-black text-xs sm:text-sm flex items-center justify-center gap-1.5 transition-all cursor-pointer shadow-md select-none focus:outline-none focus:ring-2 focus:ring-[#B71C1C]/40 active:scale-[0.98]",
               isOpen || isWalkingCafe
-                ? "bg-[#4A2C11] hover:bg-[#3B1F13] active:bg-[#2C1810] text-white shadow-[#4A2C11]/25"
+                ? "bg-[#B71C1C] hover:bg-[#3B1F13] active:bg-[#252525] text-white shadow-[#B71C1C]/25"
                 : "bg-stone-200 text-stone-400 cursor-not-allowed shadow-none"
             )}
           >

@@ -1,20 +1,20 @@
 'use client';
 
 import React from 'react';
-import MobileCafeDetailsLoader from './MobileCafeDetailsLoader';
+import FoodLoadingScreen from '@/app/components/common/FoodLoadingScreen';
 
 /**
  * FaharaInteractiveLoader
  * Standardized across the entire application (mobile and desktop).
- * Renders the friendly animated theme-based cloud character loader with zero brand clutter or fake percentages.
+ * Renders the official Grab2GO Animated Food Loading Screen.
  */
 export default function FaharaInteractiveLoader({ 
-  message = "Finding your perfect cafe...",
+  message = "Loading your food experience...",
   badgeTag = "", // retained for backwards compatibility
   fullScreen = true
 }) {
   return (
-    <MobileCafeDetailsLoader 
+    <FoodLoadingScreen 
       message={message} 
       fullScreen={fullScreen} 
     />

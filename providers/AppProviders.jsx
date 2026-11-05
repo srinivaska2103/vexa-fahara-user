@@ -1,13 +1,13 @@
 'use client';
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { useState, useEffect } from 'react';
+import { Suspense, useState, useEffect } from 'react';
 import { Toaster } from 'react-hot-toast';
 import { LanguageProvider } from '@/context/LanguageContext';
 import { usePathname, useRouter } from 'next/navigation';
 import { useAuthStore } from '@/stores/auth.store';
 import { motion } from 'framer-motion';
-import { ShieldAlert, Lock, ArrowRight, Sparkles, Compass } from 'lucide-react';
+import { Sparkles, ArrowRight, Compass } from 'lucide-react';
 import Link from 'next/link';
 
 import MobileBottomNav from '@/app/components/navigation/MobileBottomNav';
@@ -36,7 +36,8 @@ function AuthGuard({ children }) {
       pathname.startsWith('/customer/receipt') ||
       pathname.startsWith('/customer/invoice') ||
       pathname.startsWith('/customer/profile') ||
-      pathname.startsWith('/customer/favorites');
+      pathname.startsWith('/customer/favorites') ||
+      pathname.startsWith('/customer/orders');
     
     if (isProtectedRoute && !isAuthenticated) {
       router.replace(`/login?redirect=${encodeURIComponent(pathname)}`);
@@ -52,7 +53,8 @@ function AuthGuard({ children }) {
     pathname.startsWith('/customer/receipt') ||
     pathname.startsWith('/customer/invoice') ||
     pathname.startsWith('/customer/profile') ||
-    pathname.startsWith('/customer/favorites');
+    pathname.startsWith('/customer/favorites') ||
+    pathname.startsWith('/customer/orders');
 
   if (!mounted) {
     return children;
@@ -78,30 +80,8 @@ function AuthGuard({ children }) {
           transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
           className="relative z-10 w-full max-w-md bg-white/95 backdrop-blur-2xl border border-stone-200/90 rounded-3xl p-6 sm:p-8 shadow-[0_20px_50px_rgba(44,24,16,0.08)] text-center space-y-6"
         >
-          {/* Animated Icon Badge */}
-          <div className="relative mx-auto w-20 h-20 flex items-center justify-center">
-            <motion.div 
-              animate={{ rotate: 360 }}
-              transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
-              className="absolute inset-0 rounded-full border-2 border-dashed border-[#6F4E37]/30"
-            />
-            
-            <div className="relative w-16 h-16 bg-gradient-to-tr from-[#4A2C11] to-[#6F4E37] text-white rounded-2xl p-4 shadow-xl flex items-center justify-center">
-              <Lock size={28} className="drop-shadow-sm" />
-              
-              <motion.div 
-                animate={{ scale: [1, 1.2, 1] }}
-                transition={{ duration: 1.5, repeat: Infinity }}
-                className="absolute -top-1 -right-1 bg-amber-500 text-white p-1 rounded-full border-2 border-white shadow-md"
-              >
-                <ShieldAlert size={12} />
-              </motion.div>
-            </div>
-          </div>
-
-          {/* Text Details */}
           <div className="space-y-2">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#FFF8F0] border border-[#DDB892]/60 text-[10px] font-black text-[#6F4E37] uppercase tracking-wider shadow-2xs">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#DDB892]/20 border border-[#DDB892]/60 text-[10px] font-black text-[#6F4E37] uppercase tracking-wider shadow-2xs">
               <Sparkles size={12} />
               <span>Authentication Required</span>
             </div>
@@ -111,7 +91,7 @@ function AuthGuard({ children }) {
             </h2>
 
             <p className="text-stone-500 font-medium text-xs sm:text-sm leading-relaxed">
-              Please sign in to access your personal profile, bookings, and exclusive cafe perks.
+              Please sign in to access your personal profile, orders, and exclusive perks.
             </p>
           </div>
 
@@ -189,46 +169,44 @@ export default function AppProviders({ children }) {
       <LanguageProvider>
         <AuthGuard>
           {children}
-          <MobileBottomNav />
+          <Suspense fallback={null}>
+            <MobileBottomNav />
+          </Suspense>
         </AuthGuard>
         <Toaster 
           position="top-center"
           toastOptions={{
             duration: 4000,
             style: {
-              background: 'rgba(255, 255, 255, 0.95)',
-              backdropFilter: 'blur(16px)',
-              border: '1px solid rgba(221, 184, 146, 0.5)',
-              borderRadius: '20px',
-              color: '#2C1810',
+              background: '#FFFFFF',
+              border: '1px solid #E5E7EB',
+              borderRadius: '16px',
+              color: '#1F2937',
               padding: '12px 18px',
               fontSize: '13px',
-              fontWeight: '900',
-              fontFamily: 'system-ui, -apple-system, sans-serif',
-              boxShadow: '0 16px 40px rgba(74, 44, 17, 0.12)',
+              fontWeight: '700',
+              boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)',
             },
             success: {
               style: {
-                background: 'linear-gradient(135deg, #2C1810 0%, #4A2C11 50%, #6F4E37 100%)',
-                color: '#FFFFFF',
-                border: '1px solid rgba(255, 255, 255, 0.2)',
-                boxShadow: '0 16px 40px rgba(44, 24, 16, 0.25)',
+                background: '#ECFDF5',
+                color: '#065F46',
+                border: '1px solid #A7F3D0',
               },
               iconTheme: {
                 primary: '#10B981',
-                secondary: '#FFFFFF',
+                secondary: '#ECFDF5',
               },
             },
             error: {
               style: {
-                background: 'linear-gradient(135deg, #7F1D1D 0%, #991B1B 100%)',
-                color: '#FFFFFF',
-                border: '1px solid rgba(255, 255, 255, 0.2)',
-                boxShadow: '0 16px 40px rgba(153, 27, 27, 0.25)',
+                background: '#FEF2F2',
+                color: '#991B1B',
+                border: '1px solid #FECACA',
               },
               iconTheme: {
                 primary: '#EF4444',
-                secondary: '#FFFFFF',
+                secondary: '#FEF2F2',
               },
             },
           }}

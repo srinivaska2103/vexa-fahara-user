@@ -54,9 +54,9 @@ export default function PackageSelectorCards({
 
   if (!packages || packages.length === 0) {
     return (
-      <div className="bg-[#FFF8F0] p-6 sm:p-8 rounded-3xl border border-[#DDB892]/40 text-center text-xs text-stone-600 space-y-2">
-        <Sparkles className="w-8 h-8 text-[#6F4E37] opacity-40 mx-auto" />
-        <p className="font-black text-base text-[#2C1810]">No Event Packages Available</p>
+      <div className="bg-[#FFF5F5] p-6 sm:p-8 rounded-3xl border border-[#EF5350]/40 text-center text-xs text-stone-600 space-y-2">
+        <Sparkles className="w-8 h-8 text-[#E50914] opacity-40 mx-auto" />
+        <p className="font-black text-base text-[#252525]">No Event Packages Available</p>
         <p className="text-stone-500 font-medium">No active custom packages have been configured for this venue yet.</p>
       </div>
     );
@@ -67,12 +67,12 @@ export default function PackageSelectorCards({
   const isGuestCountExceeded = maxGuests && guestCount > maxGuests;
 
   return (
-    <div className="space-y-6 my-4 text-[#2C1810]">
+    <div className="space-y-6 my-4 text-[#252525]">
       {/* Header & Event Type Category Filter Pills */}
       <div className="space-y-3">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <div>
-            <h3 className="text-lg sm:text-xl font-black text-[#2C1810] tracking-tight">
+            <h3 className="text-lg sm:text-xl font-black text-[#252525] tracking-tight">
               Select Event Package
             </h3>
             <p className="text-xs text-stone-500 font-medium mt-0.5">
@@ -89,8 +89,8 @@ export default function PackageSelectorCards({
               onClick={() => setSelectedCategory('ALL')}
               className={`px-3.5 py-1.5 rounded-xl text-xs font-extrabold transition-all shrink-0 cursor-pointer ${
                 selectedCategory === 'ALL'
-                  ? 'bg-[#6F4E37] text-white shadow-2xs'
-                  : 'bg-white text-stone-700 border border-stone-200 hover:bg-[#FFF8F0]'
+                  ? 'bg-[#E50914] text-white shadow-2xs'
+                  : 'bg-white text-stone-700 border border-stone-200 hover:bg-[#FFF5F5]'
               }`}
             >
               All Packages ({packages.length})
@@ -102,8 +102,8 @@ export default function PackageSelectorCards({
                 onClick={() => setSelectedCategory(type)}
                 className={`px-3.5 py-1.5 rounded-xl text-xs font-extrabold transition-all shrink-0 cursor-pointer ${
                   selectedCategory.toLowerCase() === type.toLowerCase()
-                    ? 'bg-[#6F4E37] text-white shadow-2xs'
-                    : 'bg-white text-stone-700 border border-stone-200 hover:bg-[#FFF8F0]'
+                    ? 'bg-[#E50914] text-white shadow-2xs'
+                    : 'bg-white text-stone-700 border border-stone-200 hover:bg-[#FFF5F5]'
                 }`}
               >
                 {type}
@@ -163,9 +163,9 @@ export default function PackageSelectorCards({
               }}
               className={`relative rounded-3xl p-5 border transition-all flex flex-col justify-between overflow-hidden ${
                 isSelected
-                  ? 'bg-[#FFF8F0] text-[#2C1810] border-[#6F4E37] shadow-md ring-2 ring-[#6F4E37]/30'
+                  ? 'bg-[#FFF5F5] text-[#252525] border-[#E50914] shadow-md ring-2 ring-[#E50914]/30'
                   : isCompatible
-                  ? 'bg-white text-[#2C1810] border-[#E8DED5] hover:border-[#6F4E37] shadow-2xs hover:shadow-sm cursor-pointer'
+                  ? 'bg-white text-[#252525] border-[#FEE2E2] hover:border-[#E50914] shadow-2xs hover:shadow-sm cursor-pointer'
                   : 'bg-stone-50/90 text-stone-400 border-stone-200 opacity-75 cursor-not-allowed'
               }`}
             >
@@ -175,28 +175,28 @@ export default function PackageSelectorCards({
                   <div className="flex items-center gap-1.5">
                     <span className={`inline-block px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider ${
                       isSelected
-                        ? 'bg-[#6F4E37] text-white'
+                        ? 'bg-[#ED0014] text-white'
                         : isCompatible
-                        ? 'bg-[#6F4E37]/10 text-[#6F4E37] border border-[#6F4E37]/20'
-                        : 'bg-stone-200 text-stone-500'
+                        ? 'bg-red-50 text-[#ED0014] border border-red-200'
+                        : 'bg-stone-200 text-stone-600'
                     }`}>
                       {pkg.event_type || pkg.category || 'Package'}
                     </span>
 
                     {/* Compatibility Pill */}
                     {isCompatible ? (
-                      <span className="text-[9px] font-black px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+                      <span className="text-[10px] font-black px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200">
                         Compatible
                       </span>
                     ) : (
-                      <span className="text-[9px] font-black px-2 py-0.5 rounded-full bg-rose-50 text-rose-700 border border-rose-200">
+                      <span className="text-[10px] font-black px-2.5 py-0.5 rounded-full bg-rose-50 text-rose-800 border border-rose-200">
                         Incompatible ({pkgMaxGuests} max)
                       </span>
                     )}
                   </div>
 
                   {isSelected && (
-                    <span className="flex items-center gap-1 text-[10px] font-black text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-full border border-emerald-300">
+                    <span className="flex items-center gap-1 text-[10px] font-black text-emerald-800 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-300">
                       <Check className="w-3 h-3 stroke-[3]" /> Selected
                     </span>
                   )}
@@ -204,7 +204,7 @@ export default function PackageSelectorCards({
 
                 {/* Package Name */}
                 <h4 className={`text-base sm:text-lg font-black tracking-tight mb-2 leading-snug ${
-                  isCompatible ? 'text-[#2C1810]' : 'text-stone-500'
+                  isCompatible ? 'text-[#1E1E1E]' : 'text-stone-500'
                 }`}>
                   {pkg.package_name}
                 </h4>
@@ -212,11 +212,11 @@ export default function PackageSelectorCards({
                 {/* Package Price */}
                 <div className="my-2 flex items-baseline gap-1">
                   <span className={`text-2xl sm:text-3xl font-black ${
-                    isCompatible ? 'text-[#6F4E37]' : 'text-stone-400'
+                    isCompatible ? 'text-[#ED0014]' : 'text-stone-400'
                   }`}>
                     ₹{price.toLocaleString()}
                   </span>
-                  <span className="text-xs font-bold text-stone-500">
+                  <span className="text-xs font-bold text-stone-600">
                     / package
                   </span>
                 </div>
@@ -224,19 +224,19 @@ export default function PackageSelectorCards({
                 {/* Capacity & Duration Badges */}
                 <div className="flex flex-wrap items-center gap-2 my-3">
                   {pkgMaxGuests && (
-                    <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-xl text-[11px] font-extrabold border ${
+                    <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-xs font-black border ${
                       isCompatible
-                        ? 'bg-[#FFF8F0] border-[#DDB892]/60 text-[#2C1810]'
-                        : 'bg-rose-50/80 border-rose-200 text-rose-800'
+                        ? 'bg-[#FFF5F5] border-red-200 text-[#1E1E1E]'
+                        : 'bg-rose-50 border-rose-200 text-rose-800'
                     }`}>
-                      <Users className={`w-3.5 h-3.5 ${isCompatible ? 'text-[#6F4E37]' : 'text-rose-600'}`} />
-                      Up to {pkgMaxGuests} Guests
+                      <Users className={`w-3.5 h-3.5 ${isCompatible ? 'text-[#ED0014]' : 'text-rose-600'}`} />
+                      <span>Up to {pkgMaxGuests} Guests</span>
                     </span>
                   )}
                   {durationVal && (
-                    <span className="inline-flex items-center gap-1 bg-cyan-50 border border-cyan-200 px-2.5 py-1 rounded-xl text-[11px] font-extrabold text-cyan-900">
-                      <Clock className="w-3.5 h-3.5 text-cyan-700" />
-                      {durationVal} {durationUnit}
+                    <span className="inline-flex items-center gap-1.5 bg-sky-50 border border-sky-200 px-3 py-1 rounded-xl text-xs font-black text-sky-950">
+                      <Clock className="w-3.5 h-3.5 text-sky-700" />
+                      <span>{durationVal} {durationUnit}</span>
                     </span>
                   )}
                 </div>
@@ -256,8 +256,8 @@ export default function PackageSelectorCards({
 
                 {/* Inclusions count */}
                 {incCount > 0 && (
-                  <div className="text-[11px] font-bold text-[#6F4E37] flex items-center gap-1 pt-2 border-t border-stone-100">
-                    <Sparkles className="w-3.5 h-3.5 text-[#6F4E37]" />
+                  <div className="text-[11px] font-bold text-[#E50914] flex items-center gap-1 pt-2 border-t border-stone-100">
+                    <Sparkles className="w-3.5 h-3.5 text-[#E50914]" />
                     <span>{incCount} Included {incCount === 1 ? 'Feature' : 'Features'}</span>
                   </div>
                 )}
@@ -276,8 +276,8 @@ export default function PackageSelectorCards({
                     !isCompatible
                       ? 'bg-stone-200 text-stone-400 border border-stone-300 cursor-not-allowed shadow-none'
                       : isSelected
-                      ? 'bg-[#6F4E37] text-white shadow-xs hover:bg-[#5C402E] cursor-pointer'
-                      : 'bg-stone-100 text-[#2C1810] hover:bg-[#6F4E37] hover:text-white border border-stone-200 cursor-pointer'
+                      ? 'bg-[#E50914] text-white shadow-xs hover:bg-[#5C402E] cursor-pointer'
+                      : 'bg-stone-100 text-[#252525] hover:bg-[#E50914] hover:text-white border border-stone-200 cursor-pointer'
                   }`}
                 >
                   {isSelected ? (
@@ -300,24 +300,24 @@ export default function PackageSelectorCards({
 
       {/* SELECTED PACKAGE DETAILS & WHAT'S INCLUDED DISPLAY */}
       {selectedPackage && (
-        <div className="bg-white rounded-3xl p-5 sm:p-6 border border-[#6F4E37]/30 shadow-xs space-y-5">
+        <div className="bg-white rounded-3xl p-5 sm:p-6 border border-[#E50914]/30 shadow-xs space-y-5">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-stone-100 pb-4 gap-3">
             <div>
               <div className="flex items-center gap-2 mb-1">
-                <span className="px-2.5 py-0.5 rounded-full bg-[#6F4E37]/10 text-[#6F4E37] text-[10px] font-black uppercase tracking-wider">
+                <span className="px-2.5 py-0.5 rounded-full bg-[#E50914]/10 text-[#E50914] text-[10px] font-black uppercase tracking-wider">
                   SELECTED PACKAGE
                 </span>
                 <span className="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-black flex items-center gap-1">
                   <Check className="w-3 h-3 stroke-[3]" /> Active Choice
                 </span>
               </div>
-              <h3 className="text-xl sm:text-2xl font-black text-[#2C1810] tracking-tight">
+              <h3 className="text-xl sm:text-2xl font-black text-[#252525] tracking-tight">
                 {selectedPackage.package_name}
               </h3>
             </div>
 
-            <div className="flex items-baseline gap-1 bg-[#FFF8F0] px-4 py-2 rounded-2xl border border-[#DDB892]/60 self-start sm:self-auto">
-              <span className="text-2xl font-black text-[#6F4E37]">
+            <div className="flex items-baseline gap-1 bg-[#FFF5F5] px-4 py-2 rounded-2xl border border-[#EF5350]/60 self-start sm:self-auto">
+              <span className="text-2xl font-black text-[#E50914]">
                 ₹{Number(selectedPackage.price ?? selectedPackage.base_price ?? 0).toLocaleString()}
               </span>
               <span className="text-xs font-bold text-stone-500">/ package</span>
@@ -327,8 +327,8 @@ export default function PackageSelectorCards({
           {/* Quick Specifications */}
           <div className="flex flex-wrap items-center gap-3">
             {maxGuests && (
-              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#FFF8F0] border border-[#DDB892]/60 text-xs font-extrabold text-[#2C1810]">
-                <Users className="w-4 h-4 text-[#6F4E37]" />
+              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#FFF5F5] border border-[#EF5350]/60 text-xs font-extrabold text-[#252525]">
+                <Users className="w-4 h-4 text-[#E50914]" />
                 Up to {maxGuests} Guests
               </span>
             )}
@@ -358,13 +358,13 @@ export default function PackageSelectorCards({
 
           {/* WHAT'S INCLUDED SECTION */}
           <div className="space-y-3 pt-2">
-            <h4 className="text-xs font-black uppercase tracking-wider text-[#6F4E37] flex items-center gap-1.5">
-              <Sparkles className="w-4 h-4 text-[#6F4E37]" />
+            <h4 className="text-xs font-black uppercase tracking-wider text-[#E50914] flex items-center gap-1.5">
+              <Sparkles className="w-4 h-4 text-[#E50914]" />
               <span>What&apos;s Included in {selectedPackage.package_name}</span>
             </h4>
 
             {selectedPackageInclusions.length === 0 ? (
-              <div className="p-4 rounded-2xl bg-[#FFF8F0]/50 border border-stone-200 text-xs text-stone-500 font-medium">
+              <div className="p-4 rounded-2xl bg-[#FFF5F5]/50 border border-stone-200 text-xs text-stone-500 font-medium">
                 Standard venue facilities and celebration space included.
               </div>
             ) : (
@@ -378,13 +378,13 @@ export default function PackageSelectorCards({
                   return (
                     <div
                       key={inc.id || idx}
-                      className="p-3.5 rounded-2xl bg-gradient-to-r from-[#FFF8F0] via-white to-white border border-[#DDB892]/50 flex items-start gap-3 shadow-2xs"
+                      className="p-3.5 rounded-2xl bg-gradient-to-r from-[#FFF5F5] via-white to-white border border-[#EF5350]/50 flex items-start gap-3 shadow-2xs"
                     >
-                      <div className="w-6 h-6 rounded-lg bg-[#6F4E37] text-[#FFFFFF] flex items-center justify-center text-xs font-black shrink-0 mt-0.5 shadow-2xs">
+                      <div className="w-6 h-6 rounded-lg bg-[#E50914] text-[#FFFFFF] flex items-center justify-center text-xs font-black shrink-0 mt-0.5 shadow-2xs">
                         <Check className="w-4 h-4 stroke-[3]" />
                       </div>
                       <div className="min-w-0">
-                        <p className="text-xs font-black text-[#2C1810]">
+                        <p className="text-xs font-black text-[#252525]">
                           {qty}{name}{unit}
                         </p>
                         {desc && (

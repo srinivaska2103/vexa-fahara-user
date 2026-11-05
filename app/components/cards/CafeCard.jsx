@@ -14,7 +14,7 @@ import { useFavoritesStore } from '@/stores/favorites.store';
 import { useLanguage } from '@/context/LanguageContext';
 import toast from 'react-hot-toast';
 
-export default function CafeCard({ cafe, activeCategory = '' }) {
+export default function CafeCard({ cafe, activeCategory = '', compact = false }) {
   const router = useRouter();
   const { t } = useLanguage();
   const [isOpen, setIsOpen] = useState(true);
@@ -291,7 +291,7 @@ export default function CafeCard({ cafe, activeCategory = '' }) {
     e.stopPropagation();
     const shareUrl = `${window.location.origin}/cafes/${cafeId}`;
     if (navigator.share) {
-      navigator.share({ title: name, text: `Check out ${name} on Fahara!`, url: shareUrl }).catch(() => {});
+      navigator.share({ title: name, text: `Check out ${name} on Grab2GO!`, url: shareUrl }).catch(() => {});
     } else {
       navigator.clipboard.writeText(shareUrl);
       toast.success('Venue link copied to clipboard!');
@@ -317,19 +317,18 @@ export default function CafeCard({ cafe, activeCategory = '' }) {
   };
 
   return (
-    <motion.div 
-      initial={{ opacity: 0, y: 12 }}
-      animate={{ opacity: 1, y: 0 }}
-      whileHover={{ y: -4, scale: 1.01 }}
-      whileTap={{ scale: 0.98 }}
-      onHoverStart={() => setIsHovered(true)}
-      onHoverEnd={() => setIsHovered(false)}
+    <div 
       onClick={handleCardClick}
-      transition={{ type: 'spring', stiffness: 350, damping: 22 }}
-      className="bg-white rounded-[22px] sm:rounded-[26px] overflow-visible border border-[#E8DED5] shadow-[0_6px_24px_rgba(44,24,16,0.06)] hover:shadow-[0_16px_36px_rgba(111,78,55,0.14)] hover:border-[#6F4E37]/50 transition-all duration-300 flex flex-col h-full w-full group relative cursor-pointer select-none"
+      className={cn(
+        "bg-white overflow-visible border border-[#FEE2E2] shadow-[0_6px_24px_rgba(44,24,16,0.06)] hover:shadow-[0_16px_36px_rgba(111,78,55,0.14)] hover:border-[#E50914]/50 transition-all duration-300 flex flex-col h-full w-full group relative cursor-pointer select-none hover:-translate-y-1",
+        compact ? "rounded-[18px]" : "rounded-[22px] sm:rounded-[26px]"
+      )}
     >
-      {/* 🖼️ Image Section - 16:9 Landscape Aspect Ratio with Rounded Top Corners */}
-      <div className="relative aspect-[16/9.5] w-full overflow-hidden rounded-t-[21px] sm:rounded-t-[25px] bg-stone-100 select-none">
+      {/* 🖼️ Image Section - Landscape Aspect Ratio with Rounded Top Corners */}
+      <div className={cn(
+        "relative w-full overflow-hidden bg-stone-100 select-none",
+        compact ? "aspect-[16/10.5] rounded-t-[17px]" : "aspect-[16/9.5] rounded-t-[21px] sm:rounded-t-[25px]"
+      )}>
         <img 
           src={coverImage} 
           alt={name} 
@@ -344,8 +343,11 @@ export default function CafeCard({ cafe, activeCategory = '' }) {
         <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-black/25 pointer-events-none" />
 
         {/* Top-Left Cafe Brand Pill Overlay */}
-        <div className="absolute top-3 left-3 z-20 max-w-[65%]">
-          <span className="px-3 py-1 rounded-full bg-white/95 backdrop-blur-xs text-[#2C1810] text-[11px] sm:text-xs font-black tracking-tight truncate block shadow-sm border border-white/60">
+        <div className={cn("absolute z-20 max-w-[65%]", compact ? "top-2 left-2" : "top-3 left-3")}>
+          <span className={cn(
+            "rounded-full bg-white/95 backdrop-blur-xs text-[#252525] font-black tracking-tight truncate block shadow-sm border border-white/60",
+            compact ? "px-2 py-0.5 text-[10px]" : "px-3 py-1 text-[11px] sm:text-xs"
+          )}>
             {name}
           </span>
         </div>
@@ -356,10 +358,13 @@ export default function CafeCard({ cafe, activeCategory = '' }) {
           whileTap={{ scale: 0.88 }}
           onClick={handleFavoriteClick}
           aria-label={`Add ${name} to wishlist`}
-          className="absolute top-3 right-3 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white/95 hover:bg-white text-stone-700 hover:text-rose-500 backdrop-blur-xs flex items-center justify-center transition-all shadow-md active:scale-95 group/fav cursor-pointer border border-white/60 z-20"
+          className={cn(
+            "absolute rounded-full bg-white/95 hover:bg-white text-stone-700 hover:text-rose-500 backdrop-blur-xs flex items-center justify-center transition-all shadow-md active:scale-95 group/fav cursor-pointer border border-white/60 z-20",
+            compact ? "top-2 right-2 w-7 h-7" : "top-3 right-3 w-8 h-8 sm:w-9 sm:h-9"
+          )}
         >
           <Heart 
-            size={16} 
+            size={compact ? 13 : 16} 
             className={cn(
               "transition-all duration-300", 
               favorite 
@@ -371,8 +376,11 @@ export default function CafeCard({ cafe, activeCategory = '' }) {
 
         {/* Bottom-Left Overlay: Dark Translucent Star Rating & Reviews Badge */}
         {hasRating ? (
-          <div className="absolute bottom-2.5 left-3 z-20 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-black/75 backdrop-blur-md text-white text-[11px] sm:text-xs font-black border border-white/20 shadow-md">
-            <Star size={12} className="fill-amber-400 text-amber-400 stroke-none" />
+          <div className={cn(
+            "absolute z-20 flex items-center gap-1 rounded-full bg-black/75 backdrop-blur-md text-white font-black border border-white/20 shadow-md",
+            compact ? "bottom-2 left-2 px-2 py-0.5 text-[10px]" : "bottom-2.5 left-3 px-2.5 py-1 text-[11px] sm:text-xs"
+          )}>
+            <Star size={compact ? 10 : 12} className="fill-amber-400 text-amber-400 stroke-none" />
             <span>{rating}</span>
             {reviewsCount > 0 && (
               <span className="text-stone-300 text-[10px] font-medium">({reviewsCount})</span>
@@ -380,35 +388,46 @@ export default function CafeCard({ cafe, activeCategory = '' }) {
           </div>
         ) : (
           <div className="absolute bottom-2.5 left-3 z-20 flex items-center gap-1 px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-md text-stone-200 text-[10px] font-bold border border-white/10 shadow-xs">
-            <span>New on Fahara</span>
+            <span>New on Grab2GO</span>
           </div>
         )}
       </div>
 
       {/* CONTENT SECTION */}
-      <div className="p-3 sm:p-4 flex flex-col flex-1 justify-between bg-white rounded-b-[21px] sm:rounded-b-[25px] relative z-10 gap-2.5">
-        <div className="space-y-1.5">
+      <div className={cn(
+        "flex flex-col flex-1 justify-between bg-white relative z-10",
+        compact 
+          ? "p-2.5 rounded-b-[17px] gap-1.5" 
+          : "p-3 sm:p-4 rounded-b-[21px] sm:rounded-b-[25px] gap-2.5"
+      )}>
+        <div className={compact ? "space-y-1" : "space-y-1.5"}>
           {/* Cafe Name in Bold Uppercase */}
           <div>
-            <h3 className="text-sm sm:text-base font-black text-[#2C1810] uppercase tracking-wide truncate group-hover:text-[#6F4E37] transition-colors leading-tight">
+            <h3 className={cn(
+              "font-black text-[#252525] uppercase tracking-wide truncate group-hover:text-[#E50914] transition-colors leading-tight",
+              compact ? "text-xs" : "text-sm sm:text-base"
+            )}>
               {name}
             </h3>
           </div>
           
           {/* Location & Distance on One Compact Line */}
-          <div className="flex items-center text-[11px] sm:text-xs text-stone-500 font-medium truncate">
-            <MapPin size={12} className="mr-1 text-[#6F4E37] shrink-0" />
+          <div className={cn(
+            "flex items-center text-stone-500 font-medium truncate",
+            compact ? "text-[10px]" : "text-[11px] sm:text-xs"
+          )}>
+            <MapPin size={compact ? 10 : 12} className="mr-1 text-[#E50914] shrink-0" />
             <span className="truncate text-stone-600 font-semibold">{city || 'Location available'}</span>
             {distance && (
               <>
-                <span className="mx-1.5 text-stone-300 font-bold">•</span>
+                <span className="mx-1 text-stone-300 font-bold">•</span>
                 <span className="text-stone-500 shrink-0 font-medium">{distance}</span>
               </>
             )}
           </div>
 
-          {/* Compact Feature Chips (max 3 visible chips + N more popover) */}
-          <div className="flex items-center gap-1.5 flex-wrap pt-1 relative z-20">
+          {/* Compact Feature Chips (max 2 visible chips + N more popover) */}
+          <div className="flex items-center gap-1 flex-wrap pt-0.5 relative z-20">
             {(() => {
               // Extract professional display chips (combining indoor/outdoor, amenities & categories)
               const featureChips = [];
@@ -451,11 +470,11 @@ export default function CafeCard({ cafe, activeCategory = '' }) {
                   {visibleChips.map((chip, idx) => (
                     <span
                       key={idx}
-                      className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#FFF8F0] border border-[#E8DED5] text-[10px] sm:text-[11px] font-bold text-[#6F4E37] shadow-2xs"
+                      className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#FFF5F5] border border-[#FEE2E2] text-[10px] sm:text-[11px] font-bold text-[#E50914] shadow-2xs"
                     >
-                      {chip.icon === 'coffee' && <Coffee size={11} className="text-[#6F4E37] shrink-0" strokeWidth={2.2} />}
+                      {chip.icon === 'coffee' && <Coffee size={11} className="text-[#E50914] shrink-0" strokeWidth={2.2} />}
                       {chip.icon === 'sun' && <Sun size={11} className="text-amber-600 shrink-0" strokeWidth={2.2} />}
-                      {chip.icon === 'calendar' && <Calendar size={11} className="text-[#6F4E37] shrink-0" strokeWidth={2.2} />}
+                      {chip.icon === 'calendar' && <Calendar size={11} className="text-[#E50914] shrink-0" strokeWidth={2.2} />}
                       {chip.icon === 'wind' && <Wind size={11} className="text-sky-600 shrink-0" strokeWidth={2.2} />}
                       {chip.icon === 'wifi' && <Wifi size={11} className="text-emerald-600 shrink-0" strokeWidth={2.2} />}
                       {chip.icon === 'check' && <Check size={10} className="text-emerald-600 stroke-[3] shrink-0" />}
@@ -473,7 +492,7 @@ export default function CafeCard({ cafe, activeCategory = '' }) {
                           e.stopPropagation();
                           setShowAmenityPopover(!showAmenityPopover);
                         }}
-                        className="inline-flex items-center gap-0.5 px-2 py-1 rounded-full bg-[#F5EDE4] hover:bg-[#6F4E37] text-[#6F4E37] hover:text-white border border-[#E8DED5] text-[10px] sm:text-[11px] font-black shadow-2xs transition-all cursor-pointer"
+                        className="inline-flex items-center gap-0.5 px-2 py-1 rounded-full bg-[#F5EDE4] hover:bg-[#E50914] text-[#E50914] hover:text-white border border-[#FEE2E2] text-[10px] sm:text-[11px] font-black shadow-2xs transition-all cursor-pointer"
                         aria-label="Toggle Features List"
                       >
                         <span>+{remainingChips.length}</span>
@@ -495,10 +514,10 @@ export default function CafeCard({ cafe, activeCategory = '' }) {
                 exit={{ opacity: 0, height: 0 }}
                 transition={{ duration: 0.2 }}
                 onClick={(e) => e.stopPropagation()}
-                className="overflow-hidden border border-[#E8DED5] rounded-xl bg-[#FFFDF9] shadow-inner p-2.5 mt-2 space-y-1.5"
+                className="overflow-hidden border border-[#FEE2E2] rounded-xl bg-[#FFFDF9] shadow-inner p-2.5 mt-2 space-y-1.5"
               >
                 <div className="flex items-center justify-between border-b border-[#F5EDE4] pb-1">
-                  <span className="text-[10px] font-black text-[#6F4E37] uppercase tracking-wider">
+                  <span className="text-[10px] font-black text-[#E50914] uppercase tracking-wider">
                     All Features ({(() => {
                       const list = [];
                       if (categoryStr.includes('indoor') || amenityList.some(a => String(a).toLowerCase().includes('indoor'))) list.push('Indoor');
@@ -521,7 +540,7 @@ export default function CafeCard({ cafe, activeCategory = '' }) {
                       e.stopPropagation();
                       setShowAmenityPopover(false);
                     }}
-                    className="w-5 h-5 rounded-full bg-[#F5EDE4] hover:bg-[#E8DED5] text-[#6F4E37] flex items-center justify-center transition-colors active:scale-90 cursor-pointer"
+                    className="w-5 h-5 rounded-full bg-[#F5EDE4] hover:bg-[#FEE2E2] text-[#E50914] flex items-center justify-center transition-colors active:scale-90 cursor-pointer"
                     aria-label="Close Features"
                   >
                     <X size={11} strokeWidth={2.5} />
@@ -529,7 +548,7 @@ export default function CafeCard({ cafe, activeCategory = '' }) {
                 </div>
 
                 {/* Grid of features */}
-                <div className="grid grid-cols-2 gap-1.5 max-h-36 overflow-y-auto overscroll-contain pr-0.5 text-[11px] font-bold text-[#2C1810]">
+                <div className="grid grid-cols-2 gap-1.5 max-h-36 overflow-y-auto overscroll-contain pr-0.5 text-[11px] font-bold text-[#252525]">
                   {(() => {
                     const list = [];
                     if (categoryStr.includes('indoor') || amenityList.some(a => String(a).toLowerCase().includes('indoor'))) list.push('Indoor');
@@ -543,9 +562,9 @@ export default function CafeCard({ cafe, activeCategory = '' }) {
                     });
                     if (list.length === 0) list.push(cafe?.category || 'Cafe');
                     return list.map((item, i) => (
-                      <div key={i} className="flex items-center gap-1.5 py-0.5 px-1 rounded-md bg-white border border-[#E8DED5]/60">
-                        <span className="w-1.5 h-1.5 rounded-full bg-[#6F4E37] shrink-0" />
-                        <span className="truncate text-[10px] sm:text-[11px] text-[#4A2C11]">{item}</span>
+                      <div key={i} className="flex items-center gap-1.5 py-0.5 px-1 rounded-md bg-white border border-[#FEE2E2]/60">
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#E50914] shrink-0" />
+                        <span className="truncate text-[10px] sm:text-[11px] text-[#B71C1C]">{item}</span>
                       </div>
                     ));
                   })()}
@@ -556,20 +575,36 @@ export default function CafeCard({ cafe, activeCategory = '' }) {
         </div>
 
         {/* BOTTOM PRICE & CIRCULAR ACTION BUTTON FOOTER */}
-        <div className="pt-2 sm:pt-2.5 border-t border-stone-100 flex items-center justify-between mt-1">
+        <div className={cn(
+          "border-t border-stone-100 flex items-center justify-between",
+          compact ? "pt-1.5 mt-0.5" : "pt-2 sm:pt-2.5 mt-1"
+        )}>
           {/* Left Price Display */}
           <div>
             {hasValidPrice ? (
               <div className="flex items-baseline gap-1">
-                <span className="text-base sm:text-lg font-black text-[#2C1810] tracking-tight">₹{numPrice}</span>
-                <span className="text-[11px] sm:text-xs font-bold text-stone-500">for 2</span>
+                <span className={cn(
+                  "font-black text-[#252525] tracking-tight",
+                  compact ? "text-sm" : "text-base sm:text-lg"
+                )}>
+                  ₹{numPrice}
+                </span>
+                <span className={cn(
+                  "font-bold text-stone-500",
+                  compact ? "text-[9.5px]" : "text-[11px] sm:text-xs"
+                )}>
+                  for 2
+                </span>
               </div>
             ) : isWalkingCafe ? (
-              <span className="text-[10px] sm:text-xs font-black text-emerald-800 bg-emerald-50 border border-emerald-300 px-2 py-0.5 rounded-full">
+              <span className="text-[9.5px] font-black text-emerald-800 bg-emerald-50 border border-emerald-300 px-2 py-0.5 rounded-full">
                 Walk In
               </span>
             ) : (
-              <span className="text-xs sm:text-sm font-black text-[#6F4E37]">
+              <span className={cn(
+                "font-black text-[#E50914]",
+                compact ? "text-[11px]" : "text-xs sm:text-sm"
+              )}>
                 Price on request
               </span>
             )}
@@ -579,13 +614,16 @@ export default function CafeCard({ cafe, activeCategory = '' }) {
           <motion.div 
             whileHover={{ scale: 1.08 }}
             whileTap={{ scale: 0.92 }}
-            className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-[#6F4E37] hover:bg-[#523723] text-white flex items-center justify-center shadow-md active:scale-95 transition-all shrink-0 cursor-pointer"
+            className={cn(
+              "rounded-full bg-[#E50914] hover:bg-[#523723] text-white flex items-center justify-center shadow-md active:scale-95 transition-all shrink-0 cursor-pointer",
+              compact ? "w-7 h-7" : "w-8 h-8 sm:w-9 sm:h-9"
+            )}
             title="View Cafe Details"
           >
-            <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform" />
+            <ArrowRight size={compact ? 12 : 14} className="group-hover:translate-x-0.5 transition-transform" />
           </motion.div>
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 }

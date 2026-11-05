@@ -37,17 +37,17 @@ export default function HomeWhatCanYouFind() {
   ];
 
   return (
-    <section className="py-16 sm:py-24 bg-white border-y border-[#E8DED5]">
+    <section className="py-16 sm:py-24 bg-white border-y border-[#FEE2E2]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* HEADER */}
         <div className="text-center max-w-3xl mx-auto mb-12 sm:mb-16">
-          <span className="text-[11px] font-black uppercase tracking-widest text-[#6F4E37] bg-[#FFF8F0] px-4 py-1.5 rounded-full border border-[#DDB892]/50 inline-flex items-center gap-1.5 mb-3 shadow-2xs">
+          <span className="text-[11px] font-black uppercase tracking-widest text-[#E50914] bg-[#FFF5F5] px-4 py-1.5 rounded-full border border-[#EF5350]/50 inline-flex items-center gap-1.5 mb-3 shadow-2xs">
             <Store size={14} />
             <span>DISCOVER SPACES & SERVICES</span>
           </span>
 
-          <h2 className="text-3xl sm:text-5xl font-black text-[#2C1810] tracking-tight">
+          <h2 className="text-3xl sm:text-5xl font-black text-[#252525] tracking-tight">
             Everything You Need, <br className="hidden sm:inline" />
             In One Place.
           </h2>
@@ -65,7 +65,7 @@ export default function HomeWhatCanYouFind() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.4, delay: idx * 0.1 }}
                 whileHover={{ y: -6 }}
-                className="bg-[#FFF8F0] p-6 sm:p-7 rounded-3xl border border-[#E8DED5] hover:border-[#DDB892] flex flex-col justify-between shadow-2xs hover:shadow-xl transition-all duration-300 group text-left"
+                className="bg-[#FFF5F5] p-6 sm:p-7 rounded-3xl border border-[#FEE2E2] hover:border-[#EF5350] flex flex-col justify-between shadow-2xs hover:shadow-xl transition-all duration-300 group text-left"
               >
                 <div>
                   <div className="flex items-center justify-between mb-4">
@@ -74,16 +74,16 @@ export default function HomeWhatCanYouFind() {
                     </div>
                   </div>
 
-                  <h3 className="text-xl font-black text-[#2C1810] mb-2">{cat.title}</h3>
+                  <h3 className="text-xl font-black text-[#252525] mb-2">{cat.title}</h3>
                   <p className="text-xs sm:text-sm font-medium text-stone-600 leading-relaxed">
                     {cat.desc}
                   </p>
                 </div>
 
-                <div className="pt-6 border-t border-[#E8DED5]/60 mt-4">
+                <div className="pt-6 border-t border-[#FEE2E2]/60 mt-4">
                   <Link
                     href={cat.link}
-                    className="inline-flex items-center gap-1.5 text-xs font-black text-[#6F4E37] group-hover:text-[#4A2C11] transition-colors"
+                    className="inline-flex items-center gap-1.5 text-xs font-black text-[#E50914] group-hover:text-[#B71C1C] transition-colors"
                   >
                     <span>Explore</span>
                     <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />

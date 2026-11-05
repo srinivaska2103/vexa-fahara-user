@@ -18,11 +18,11 @@ export default function ReviewStats({ reviews = [] }) {
   };
 
   return (
-    <div className="bg-white p-6 rounded-2xl border border-[#E8DED5] flex flex-col md:flex-row gap-8 items-center">
+    <div className="bg-white p-6 rounded-2xl border border-[#FEE2E2] flex flex-col md:flex-row gap-8 items-center">
       
       {/* Overall Score */}
-      <div className="flex flex-col items-center justify-center shrink-0 w-48 border-b md:border-b-0 md:border-r border-[#E8DED5] pb-6 md:pb-0 md:pr-8">
-        <h2 className="text-5xl font-bold text-[#2C1810] mb-2">{average}</h2>
+      <div className="flex flex-col items-center justify-center shrink-0 w-48 border-b md:border-b-0 md:border-r border-[#FEE2E2] pb-6 md:pb-0 md:pr-8">
+        <h2 className="text-5xl font-bold text-[#252525] mb-2">{average}</h2>
         <RatingStars value={Math.round(average)} readOnly size="sm" />
         <p className="text-sm text-gray-500 mt-2">{total} verified reviews</p>
       </div>

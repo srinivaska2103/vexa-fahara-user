@@ -51,7 +51,7 @@ export default function FavoriteCafeCard({ cafe, onRemove, type = 'favorite' }) 
 
         {/* Price Tag Bottom Left */}
         {cafe.price_per_hour && (
-          <div className="absolute bottom-3 left-3 bg-[#2C1810]/90 text-white backdrop-blur-md px-3 py-1 rounded-xl text-xs font-black shadow-md border border-white/20">
+          <div className="absolute bottom-3 left-3 bg-[#252525]/90 text-white backdrop-blur-md px-3 py-1 rounded-xl text-xs font-black shadow-md border border-white/20">
             ₹{cafe.price_per_hour}/hr
           </div>
         )}
@@ -61,7 +61,7 @@ export default function FavoriteCafeCard({ cafe, onRemove, type = 'favorite' }) 
       <div className="p-4 sm:p-5 flex flex-col flex-1 justify-between space-y-3">
         <div>
           <div className="flex items-center justify-between gap-2 mb-1">
-            <h3 className="text-base sm:text-lg font-black text-[#2C1810] tracking-tight line-clamp-1 group-hover:text-[#6F4E37] transition-colors">
+            <h3 className="text-base sm:text-lg font-black text-[#252525] tracking-tight line-clamp-1 group-hover:text-[#E50914] transition-colors">
               {cafe.name}
             </h3>
             <span className="inline-flex items-center gap-1 bg-amber-50 border border-amber-200/80 text-amber-900 text-[10px] font-black px-2 py-0.5 rounded-full shrink-0">
@@ -71,11 +71,11 @@ export default function FavoriteCafeCard({ cafe, onRemove, type = 'favorite' }) 
 
           <div className="space-y-1.5 mt-2">
             <div className="flex items-center gap-2 text-xs font-semibold text-stone-600 line-clamp-1">
-              <MapPin className="w-3.5 h-3.5 text-[#6F4E37] shrink-0" />
+              <MapPin className="w-3.5 h-3.5 text-[#E50914] shrink-0" />
               <span>{cafe.address || cafe.city || 'Indiranagar, Bengaluru'}</span>
             </div>
             <div className="flex items-center gap-2 text-xs font-semibold text-stone-600">
-              <Users className="w-3.5 h-3.5 text-[#6F4E37] shrink-0" />
+              <Users className="w-3.5 h-3.5 text-[#E50914] shrink-0" />
               <span>Up to {cafe.maximum_persons || 10} guests</span>
             </div>
           </div>
@@ -97,7 +97,7 @@ export default function FavoriteCafeCard({ cafe, onRemove, type = 'favorite' }) 
           >
             <motion.div
               whileTap={{ scale: 0.96 }}
-              className="w-full flex items-center justify-center gap-1.5 px-4 py-2 bg-gradient-to-r from-[#4A2C11] to-[#6F4E37] text-white text-xs font-extrabold rounded-xl shadow-md hover:shadow-lg transition-all cursor-pointer"
+              className="w-full flex items-center justify-center gap-1.5 px-4 py-2 bg-gradient-to-r from-[#B71C1C] to-[#E50914] text-white text-xs font-extrabold rounded-xl shadow-md hover:shadow-lg transition-all cursor-pointer"
             >
               <span>Book Now</span>
               <ArrowRight className="w-3.5 h-3.5" />

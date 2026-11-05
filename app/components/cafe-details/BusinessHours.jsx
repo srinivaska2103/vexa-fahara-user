@@ -15,7 +15,7 @@ export default function BusinessHours({ cafe, isMobileView = false }) {
         {/* Header with Live Status Badge */}
         <div className={`flex items-center justify-between ${isMobileView ? 'mb-3 pb-3 border-b border-stone-100' : 'mb-6 pb-5 border-b border-stone-100'}`}>
           <div>
-            <h2 className={isMobileView ? "text-base font-black text-[#2C1810] tracking-tight" : "text-xl sm:text-2xl font-black text-[#2C1810] tracking-tight"}>Business Hours</h2>
+            <h2 className={isMobileView ? "text-base font-black text-[#252525] tracking-tight" : "text-xl sm:text-2xl font-black text-[#252525] tracking-tight"}>Business Hours</h2>
             {!isMobileView && (
               <p className="text-xs text-stone-500 font-medium mt-0.5">Weekly operating schedule and venue availability.</p>
             )}
@@ -98,12 +98,12 @@ export default function BusinessHours({ cafe, isMobileView = false }) {
                 key={day} 
                 className={`flex justify-between items-center py-3 px-4 rounded-2xl transition-all ${
                   isToday 
-                    ? 'bg-gradient-to-r from-[#FFF8F0] to-[#FFF3E4] border border-[#DDB892]/60 shadow-2xs font-extrabold text-[#4A2C11]' 
+                    ? 'bg-gradient-to-r from-[#FFF5F5] to-[#FFF3E4] border border-[#EF5350]/60 shadow-2xs font-extrabold text-[#B71C1C]' 
                     : 'hover:bg-stone-50/80 text-stone-700'
                 }`}
               >
                 <div className="flex items-center gap-2.5">
-                  <span className={`text-xs sm:text-sm font-black ${isToday ? 'text-[#4A2C11]' : 'text-stone-800'}`}>
+                  <span className={`text-xs sm:text-sm font-black ${isToday ? 'text-[#B71C1C]' : 'text-stone-800'}`}>
                     {day}
                   </span>
                   {isToday && (
@@ -113,10 +113,10 @@ export default function BusinessHours({ cafe, isMobileView = false }) {
                   )}
                 </div>
 
-                <div className={`text-xs sm:text-sm flex items-center font-black ${isOpen ? 'text-[#2C1810]' : 'text-rose-500'}`}>
+                <div className={`text-xs sm:text-sm flex items-center font-black ${isOpen ? 'text-[#252525]' : 'text-rose-500'}`}>
                   {isOpen ? (
                     <>
-                      <Clock size={14} className="mr-2 text-[#6F4E37]" />
+                      <Clock size={14} className="mr-2 text-[#E50914]" />
                       <span>{timeString}</span>
                     </>
                   ) : (

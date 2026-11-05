@@ -62,7 +62,7 @@ export const useCouponValidation = () => {
       await new Promise(resolve => setTimeout(resolve, 800));
       
       const code = couponCode.toUpperCase();
-      if (code === 'FAHARA10') {
+      if (code === 'Grab2GO10') {
         return { isValid: true, discountAmount: 10, message: '10% flat discount applied!' };
       }
       if (code === 'WELCOME50') {

@@ -21,14 +21,14 @@ export default function RecommendationsPage() {
 
   return (
     <div className="min-h-screen bg-[var(--color-background)] pb-12">
-      <div className="bg-white border-b border-[#E8DED5] sticky top-0 z-40">
+      <div className="bg-white border-b border-[#FEE2E2] sticky top-0 z-40">
         <div className="container mx-auto px-4 py-4 flex items-center gap-4">
           <Link href="/customer/discover" className="p-2 hover:bg-gray-100 rounded-full transition-colors text-gray-600">
             <ArrowLeft size={20} />
           </Link>
           <div className="flex items-center gap-2">
             <Sparkles className="text-[#F59E0B]" size={20} />
-            <h1 className="text-xl font-bold text-[#2C1810]">AI Recommendations</h1>
+            <h1 className="text-xl font-bold text-[#252525]">AI Recommendations</h1>
           </div>
         </div>
       </div>

@@ -1,10 +1,10 @@
 {
-  "short_name": "Fahara",
-  "name": "Fahara • Cafe & Event Booking Platform",
+  "short_name": "Grab2GO",
+  "name": "Grab2GO • Cafe & Event Booking Platform",
   "description": "Book top-rated cafes, private venues, packages, and event spaces near you.",
   "icons": [
     {
-      "src": "/Fahara Logo.jpeg",
+      "src": "/GRAB IT Logo.jpeg",
       "type": "image/jpeg",
       "sizes": "192x192 512x512"
     }

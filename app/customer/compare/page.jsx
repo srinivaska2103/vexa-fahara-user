@@ -51,13 +51,13 @@ export default function ComparePage() {
   }, [compareCafes, compareEvents]);
 
   return (
-    <div className="min-h-screen bg-[#FFF8F0] pb-24">
+    <div className="min-h-screen bg-[#FFF5F5] pb-24">
       {/* Header */}
-      <div className="bg-white border-b border-[#E8DED5] sticky top-0 z-40">
+      <div className="bg-white border-b border-[#FEE2E2] sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
           <div>
-            <h1 className="text-3xl font-bold text-[#2C1810] flex items-center gap-3">
-              <Scale className="w-8 h-8 text-[#A67B5B]" />
+            <h1 className="text-3xl font-bold text-[#252525] flex items-center gap-3">
+              <Scale className="w-8 h-8 text-[#B71C1C]" />
               Compare
             </h1>
             <p className="text-gray-600 mt-1">Make the perfect choice by comparing features side-by-side</p>
@@ -69,7 +69,7 @@ export default function ComparePage() {
               onClick={() => setActiveTab('cafes')}
               className={`flex items-center gap-2 pb-4 text-sm font-medium border-b-2 transition-colors ${
                 activeTab === 'cafes' 
-                  ? 'border-[#6F4E37] text-[#6F4E37]' 
+                  ? 'border-[#E50914] text-[#E50914]' 
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
               }`}
             >
@@ -83,7 +83,7 @@ export default function ComparePage() {
               onClick={() => setActiveTab('events')}
               className={`flex items-center gap-2 pb-4 text-sm font-medium border-b-2 transition-colors ${
                 activeTab === 'events' 
-                  ? 'border-[#6F4E37] text-[#6F4E37]' 
+                  ? 'border-[#E50914] text-[#E50914]' 
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
               }`}
             >
@@ -101,7 +101,7 @@ export default function ComparePage() {
       <div className="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
         {isLoading ? (
           <div className="flex justify-center items-center py-20">
-            <div className="animate-spin rounded-full h-12 w-12 border-4 border-[#E8DED5] border-t-[#6F4E37]" />
+            <div className="animate-spin rounded-full h-12 w-12 border-4 border-[#FEE2E2] border-t-[#E50914]" />
           </div>
         ) : (
           <AnimatePresence mode="wait">
@@ -111,7 +111,7 @@ export default function ComparePage() {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
-                className="bg-white rounded-2xl shadow-sm border border-[#E8DED5]"
+                className="bg-white rounded-2xl shadow-sm border border-[#FEE2E2]"
               >
                 {cafes.length > 0 ? (
                   <CompareTable 
@@ -136,7 +136,7 @@ export default function ComparePage() {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
-                className="bg-white rounded-2xl shadow-sm border border-[#E8DED5]"
+                className="bg-white rounded-2xl shadow-sm border border-[#FEE2E2]"
               >
                 {events.length > 0 ? (
                   <CompareTable 

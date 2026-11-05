@@ -46,7 +46,7 @@ export default function BookingCard({ booking, onDeleteSuccess }) {
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3, ease: 'easeOut' }}
-          className="bg-white/95 backdrop-blur-xl border border-stone-200/90 rounded-3xl overflow-hidden shadow-xs hover:shadow-xl hover:border-amber-900/20 transition-all duration-300 group h-full flex flex-col font-sans cursor-pointer relative"
+          className="bg-white/95 backdrop-blur-xl border border-stone-200/90 rounded-3xl overflow-hidden shadow-xs hover:shadow-xl hover:border-[#E50914]/30 transition-all duration-300 group h-full flex flex-col font-sans cursor-pointer relative"
         >
           {/* Header Graphic / Image Banner */}
           <div className="relative w-full h-44 sm:h-48 overflow-hidden flex-shrink-0 bg-stone-100 border-b border-stone-100">
@@ -61,13 +61,13 @@ export default function BookingCard({ booking, onDeleteSuccess }) {
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-black/20" />
               </>
             ) : (
-              <div className="w-full h-full bg-gradient-to-br from-[#FFF8F0] via-[#F7EBE1] to-[#EBD5C4] flex flex-col items-center justify-center text-[#6F4E37] p-4 relative overflow-hidden">
-                <div className="absolute -right-6 -bottom-6 w-32 h-32 rounded-full bg-[#6F4E37]/5 blur-2xl" />
-                <div className="w-13 h-13 rounded-2xl bg-white/90 backdrop-blur-md shadow-xs border border-white/60 flex items-center justify-center mb-2 group-hover:scale-110 transition-transform">
-                  <Calendar className="w-6 h-6 text-[#6F4E37]" />
+              <div className="w-full h-full bg-gradient-to-br from-[#FFF5F5] via-white to-[#FEE2E2] flex flex-col items-center justify-center text-[#E50914] p-4 relative overflow-hidden">
+                <div className="absolute -right-6 -bottom-6 w-32 h-32 rounded-full bg-[#E50914]/5 blur-2xl" />
+                <div className="w-13 h-13 rounded-2xl bg-white shadow-xs border border-[#FEE2E2] flex items-center justify-center mb-2 group-hover:scale-110 transition-transform">
+                  <Calendar className="w-6 h-6 text-[#E50914]" />
                 </div>
-                <span className="font-black text-[#2C1810] text-sm tracking-tight">Fahara Booking</span>
-                <span className="text-[10px] font-extrabold text-[#6F4E37]/70 mt-0.5 text-center uppercase tracking-wider">Cafe Reservation</span>
+                <span className="font-black text-[#252525] text-sm tracking-tight">Grab2GO Booking</span>
+                <span className="text-[10px] font-extrabold text-[#E50914] mt-0.5 text-center uppercase tracking-wider">Cafe Reservation</span>
               </div>
             )}
             
@@ -93,7 +93,7 @@ export default function BookingCard({ booking, onDeleteSuccess }) {
                   if (!isRestaurant) {
                     return (
                       <div className="bg-white/95 backdrop-blur-md px-3 py-1.5 rounded-full shadow-xs border border-stone-200/90">
-                        <p className="text-xs sm:text-sm font-black text-[#2C1810] tracking-tight">
+                        <p className="text-xs sm:text-sm font-black text-[#252525] tracking-tight">
                           ₹{Number(booking.total || 0).toFixed(2)}
                         </p>
                       </div>
@@ -143,7 +143,7 @@ export default function BookingCard({ booking, onDeleteSuccess }) {
                   }}
                   className="group/cafe inline-flex items-center cursor-pointer max-w-full"
                 >
-                  <h3 className="text-base sm:text-lg font-black text-[#2C1810] group-hover/cafe:text-[#6F4E37] tracking-tight line-clamp-1 transition-colors">
+                  <h3 className="text-base sm:text-lg font-black text-[#252525] group-hover/cafe:text-[#E50914] tracking-tight line-clamp-1 transition-colors">
                     {cafe?.name || 'Cafe Venue'}
                   </h3>
                 </div>
@@ -155,7 +155,7 @@ export default function BookingCard({ booking, onDeleteSuccess }) {
                     </span>
                   )}
                   {eventService && (
-                    <span className="text-[10px] font-extrabold text-[#2C1810] bg-[#FFF8F0] border border-[#DDB892]/60 px-2.5 py-1 rounded-lg uppercase tracking-wider">
+                    <span className="text-[10px] font-extrabold text-[#252525] bg-[#FFF5F5] border border-[#EF5350]/60 px-2.5 py-1 rounded-lg uppercase tracking-wider">
                       Event: {eventService.profiles?.name || 'Company'}
                     </span>
                   )}
@@ -164,18 +164,18 @@ export default function BookingCard({ booking, onDeleteSuccess }) {
               
               {/* 2x2 Info Grid - Responsive down to 360px */}
               <div className="grid grid-cols-2 gap-2 text-xs font-bold text-stone-700">
-                <div className="flex items-center gap-2 bg-stone-50/90 rounded-2xl p-2.5 border border-stone-200/70 hover:border-amber-900/20 transition-colors">
+                <div className="flex items-center gap-2 bg-stone-50/90 rounded-2xl p-2.5 border border-stone-200/70 hover:border-[#E50914]/30 transition-colors">
                   <div className="w-7 h-7 rounded-xl bg-white shadow-xs border border-stone-200/60 flex items-center justify-center shrink-0">
-                    <Calendar className="w-3.5 h-3.5 text-[#6F4E37]" />
+                    <Calendar className="w-3.5 h-3.5 text-[#E50914]" />
                   </div>
                   <span className="truncate text-stone-800 text-[11px] sm:text-xs">
                     {format(new Date(booking.booking_date), 'MMM dd')}
                   </span>
                 </div>
 
-                <div className="flex items-center gap-2 bg-stone-50/90 rounded-2xl p-2.5 border border-stone-200/70 hover:border-amber-900/20 transition-colors">
+                <div className="flex items-center gap-2 bg-stone-50/90 rounded-2xl p-2.5 border border-stone-200/70 hover:border-[#E50914]/30 transition-colors">
                   <div className="w-7 h-7 rounded-xl bg-white shadow-xs border border-stone-200/60 flex items-center justify-center shrink-0">
-                    <Clock className="w-3.5 h-3.5 text-[#6F4E37]" />
+                    <Clock className="w-3.5 h-3.5 text-[#E50914]" />
                   </div>
                   <span className="truncate text-stone-800 text-[11px] sm:text-xs">
                     {(() => {
@@ -188,18 +188,18 @@ export default function BookingCard({ booking, onDeleteSuccess }) {
                   </span>
                 </div>
 
-                <div className="flex items-center gap-2 bg-stone-50/90 rounded-2xl p-2.5 border border-stone-200/70 hover:border-amber-900/20 transition-colors">
+                <div className="flex items-center gap-2 bg-stone-50/90 rounded-2xl p-2.5 border border-stone-200/70 hover:border-[#E50914]/30 transition-colors">
                   <div className="w-7 h-7 rounded-xl bg-white shadow-xs border border-stone-200/60 flex items-center justify-center shrink-0">
-                    <Users className="w-3.5 h-3.5 text-[#6F4E37]" />
+                    <Users className="w-3.5 h-3.5 text-[#E50914]" />
                   </div>
                   <span className="truncate text-stone-800 text-[11px] sm:text-xs">
                     {booking.total_persons || booking.number_of_guests || 0} Guests
                   </span>
                 </div>
 
-                <div className="flex items-center gap-2 bg-stone-50/90 rounded-2xl p-2.5 border border-stone-200/70 hover:border-amber-900/20 transition-colors">
+                <div className="flex items-center gap-2 bg-stone-50/90 rounded-2xl p-2.5 border border-stone-200/70 hover:border-[#E50914]/30 transition-colors">
                   <div className="w-7 h-7 rounded-xl bg-white shadow-xs border border-stone-200/60 flex items-center justify-center shrink-0">
-                    <MapPin className="w-3.5 h-3.5 text-[#6F4E37]" />
+                    <MapPin className="w-3.5 h-3.5 text-[#E50914]" />
                   </div>
                   <span className="truncate text-stone-800 text-[11px] sm:text-xs">
                     {cafe?.city || cafe?.address?.split(',')[0] || 'Location'}
@@ -210,7 +210,7 @@ export default function BookingCard({ booking, onDeleteSuccess }) {
             
             {/* Bottom Actions Bar */}
             <div className="mt-4 pt-3 border-t border-stone-100 flex items-center gap-2">
-              <div className="flex-1 flex items-center justify-center bg-gradient-to-r from-[#4A2C11] to-[#6F4E37] hover:from-[#36200B] hover:to-[#5A3E2B] text-white px-4 py-2.5 rounded-2xl text-xs sm:text-sm font-black shadow-xs hover:shadow-md transition-all cursor-pointer">
+              <div className="flex-1 flex items-center justify-center bg-gradient-to-r from-[#B71C1C] to-[#E50914] hover:from-[#990000] hover:to-[#B71C1C] text-white px-4 py-2.5 rounded-2xl text-xs sm:text-sm font-black shadow-xs hover:shadow-md transition-all cursor-pointer">
                 View Details
               </div>
 
@@ -250,7 +250,7 @@ export default function BookingCard({ booking, onDeleteSuccess }) {
             </div>
 
             <div className="text-center space-y-1">
-              <h3 className="text-lg font-black text-[#2C1810]">Delete Booking?</h3>
+              <h3 className="text-lg font-black text-[#252525]">Delete Booking?</h3>
               <p className="text-xs text-stone-500 font-medium leading-relaxed">
                 Are you sure you want to delete booking <span className="font-bold text-stone-800">{booking.booking_number}</span>? This action cannot be undone.
               </p>

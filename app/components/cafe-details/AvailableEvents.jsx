@@ -31,16 +31,16 @@ export default function AvailableEvents({ cafe }) {
         >
           {/* Ambient Decorative Glow */}
           <div className="absolute -top-12 -right-12 w-40 h-40 bg-amber-500/10 rounded-full blur-2xl pointer-events-none" />
-          <div className="absolute -bottom-12 -left-12 w-40 h-40 bg-[#6F4E37]/10 rounded-full blur-2xl pointer-events-none" />
+          <div className="absolute -bottom-12 -left-12 w-40 h-40 bg-[#E50914]/10 rounded-full blur-2xl pointer-events-none" />
 
           <div className="max-w-md mx-auto relative z-10 flex flex-col items-center">
             {/* Animated Icon Badge */}
             <motion.div 
               animate={{ y: [0, -6, 0] }}
               transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
-              className="w-16 h-16 sm:w-20 sm:h-20 rounded-3xl bg-[#FFF8F0] border-2 border-[#DDB892]/60 flex items-center justify-center text-[#6F4E37] shadow-md mb-5 relative"
+              className="w-16 h-16 sm:w-20 sm:h-20 rounded-3xl bg-[#FFF5F5] border-2 border-[#EF5350]/60 flex items-center justify-center text-[#E50914] shadow-md mb-5 relative"
             >
-              <PackageX size={34} className="text-[#6F4E37]" />
+              <PackageX size={34} className="text-[#E50914]" />
               <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-amber-500 animate-ping" />
               <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-amber-500 flex items-center justify-center text-[8px] text-white font-black">!</span>
             </motion.div>
@@ -51,7 +51,7 @@ export default function AvailableEvents({ cafe }) {
               <span>General Space Booking Available</span>
             </span>
 
-            <h3 className="text-xl sm:text-2xl font-black text-[#2C1810] tracking-tight mb-2">
+            <h3 className="text-xl sm:text-2xl font-black text-[#252525] tracking-tight mb-2">
               No Event Packages Provided by Cafe
             </h3>
 
@@ -65,7 +65,7 @@ export default function AvailableEvents({ cafe }) {
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.96 }}
                 onClick={() => router.push(`/booking/${cafe?.id || 1}`)}
-                className="w-full sm:w-auto px-6 py-3.5 bg-gradient-to-r from-[#4A2C11] to-[#6F4E37] text-white font-black text-xs rounded-2xl shadow-md hover:shadow-lg flex items-center justify-center gap-2 cursor-pointer transition-all"
+                className="w-full sm:w-auto px-6 py-3.5 bg-gradient-to-r from-[#B71C1C] to-[#E50914] text-white font-black text-xs rounded-2xl shadow-md hover:shadow-lg flex items-center justify-center gap-2 cursor-pointer transition-all"
               >
                 <CalendarCheck size={16} />
                 <span>Book Cafe Space Now</span>
@@ -76,7 +76,7 @@ export default function AvailableEvents({ cafe }) {
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.96 }}
                 onClick={() => router.push('/customer/cafe')}
-                className="w-full sm:w-auto px-5 py-3.5 bg-white border border-stone-200 text-stone-700 hover:bg-[#FFF8F0] hover:text-[#6F4E37] font-black text-xs rounded-2xl shadow-2xs flex items-center justify-center gap-2 cursor-pointer transition-all"
+                className="w-full sm:w-auto px-5 py-3.5 bg-white border border-stone-200 text-stone-700 hover:bg-[#FFF5F5] hover:text-[#E50914] font-black text-xs rounded-2xl shadow-2xs flex items-center justify-center gap-2 cursor-pointer transition-all"
               >
                 <Coffee size={15} />
                 <span>Explore Other Cafes</span>
@@ -93,7 +93,7 @@ export default function AvailableEvents({ cafe }) {
     <div className="mb-8" id="packages">
       <div className="bg-white rounded-3xl p-6 sm:p-8 border border-stone-200/80 shadow-[0_4px_25px_rgba(0,0,0,0.04)] font-sans">
         <div className="mb-6">
-          <h2 className="text-xl sm:text-2xl font-black text-[#2C1810] tracking-tight">Available Event Packages</h2>
+          <h2 className="text-xl sm:text-2xl font-black text-[#252525] tracking-tight">Available Event Packages</h2>
           <p className="text-xs sm:text-sm text-stone-500 font-medium mt-1">Choose from curated event packages hosted at this venue.</p>
         </div>
         

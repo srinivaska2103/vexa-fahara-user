@@ -35,15 +35,15 @@ export default function CafeInfo({ cafe }) {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-6 border-b border-stone-100">
           <div>
             <div className="flex items-center gap-2 mb-2">
-              <span className="w-2.5 h-2.5 rounded-full bg-[#6F4E37] animate-pulse" />
-              <h2 className="text-xl sm:text-2xl font-black text-[#2C1810] tracking-tight">About this space</h2>
+              <span className="w-2.5 h-2.5 rounded-full bg-[#E50914] animate-pulse" />
+              <h2 className="text-xl sm:text-2xl font-black text-[#252525] tracking-tight">About this space</h2>
             </div>
             
             <div className="flex flex-wrap items-center gap-2.5 text-xs font-bold text-stone-700 mt-3">
               {maximum_persons && (
                 <motion.span 
                   whileHover={{ scale: 1.04 }}
-                  className="flex items-center gap-1.5 bg-[#FFF8F0] border border-[#DDB892]/50 text-[#6F4E37] px-3.5 py-1.5 rounded-xl shadow-2xs cursor-default"
+                  className="flex items-center gap-1.5 bg-[#FFF5F5] border border-[#EF5350]/50 text-[#E50914] px-3.5 py-1.5 rounded-xl shadow-2xs cursor-default"
                 >
                   <Users size={15} /> 
                   <span>Up to {maximum_persons} guests</span>
@@ -54,8 +54,8 @@ export default function CafeInfo({ cafe }) {
                 whileHover={{ scale: 1.04 }}
                 className="flex items-center gap-1.5 bg-stone-100/90 text-stone-700 border border-stone-200/60 px-3.5 py-1.5 rounded-xl max-w-full shadow-2xs cursor-default"
               >
-                <Building size={15} className="text-[#6F4E37] shrink-0" /> 
-                <span className="truncate">Hosted by {users?.name || name || 'Fahara Partner'}</span>
+                <Building size={15} className="text-[#E50914] shrink-0" /> 
+                <span className="truncate">Hosted by {users?.name || name || 'Grab2GO Partner'}</span>
               </motion.span>
 
               {(() => {
@@ -77,7 +77,7 @@ export default function CafeInfo({ cafe }) {
           {/* Quick Copy Action */}
           <button
             onClick={handleCopy}
-            className="self-start sm:self-center px-3.5 py-2 rounded-xl bg-stone-100 hover:bg-[#FFF8F0] text-stone-600 hover:text-[#6F4E37] border border-stone-200/80 hover:border-[#DDB892]/60 text-xs font-black transition-all flex items-center gap-1.5 cursor-pointer shrink-0 active:scale-95 shadow-2xs"
+            className="self-start sm:self-center px-3.5 py-2 rounded-xl bg-stone-100 hover:bg-[#FFF5F5] text-stone-600 hover:text-[#E50914] border border-stone-200/80 hover:border-[#EF5350]/60 text-xs font-black transition-all flex items-center gap-1.5 cursor-pointer shrink-0 active:scale-95 shadow-2xs"
             title="Copy venue description"
           >
             {copied ? <Check size={14} className="text-emerald-600" /> : <Copy size={14} />}
@@ -116,7 +116,7 @@ export default function CafeInfo({ cafe }) {
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.96 }}
               onClick={() => setIsExpanded(!isExpanded)}
-              className="inline-flex items-center gap-1.5 text-xs font-black text-[#6F4E37] hover:text-[#4A2C11] bg-[#FFF8F0] hover:bg-[#FFF3E6] px-4 py-2 rounded-xl border border-[#DDB892]/60 transition-all cursor-pointer shadow-2xs"
+              className="inline-flex items-center gap-1.5 text-xs font-black text-[#E50914] hover:text-[#B71C1C] bg-[#FFF5F5] hover:bg-[#FFF3E6] px-4 py-2 rounded-xl border border-[#EF5350]/60 transition-all cursor-pointer shadow-2xs"
             >
               <span>{isExpanded ? 'Show less' : 'Read full description'}</span>
               {isExpanded ? <ChevronUp size={15} /> : <ChevronDown size={15} />}
@@ -138,33 +138,33 @@ export default function CafeInfo({ cafe }) {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <motion.div 
               whileHover={{ y: -3, scale: 1.01 }}
-              className="bg-[#FFF8F0]/90 border border-[#DDB892]/50 p-4 rounded-2xl flex flex-col justify-between space-y-2.5 transition-all shadow-2xs hover:shadow-xs group"
+              className="bg-[#FFF5F5]/90 border border-[#EF5350]/50 p-4 rounded-2xl flex flex-col justify-between space-y-2.5 transition-all shadow-2xs hover:shadow-xs group"
             >
               <div className="flex items-center gap-2.5">
-                <span className="w-7 h-7 rounded-xl bg-[#6F4E37] text-white flex items-center justify-center font-black text-xs shadow-xs group-hover:scale-110 transition-transform">1</span>
-                <span className="font-black text-xs text-[#2C1810]">Select Date & Slot</span>
+                <span className="w-7 h-7 rounded-xl bg-[#E50914] text-white flex items-center justify-center font-black text-xs shadow-xs group-hover:scale-110 transition-transform">1</span>
+                <span className="font-black text-xs text-[#252525]">Select Date & Slot</span>
               </div>
               <p className="text-[11px] text-stone-600 font-medium leading-relaxed">Choose your date, duration, and guest count from the live booking panel.</p>
             </motion.div>
 
             <motion.div 
               whileHover={{ y: -3, scale: 1.01 }}
-              className="bg-[#FFF8F0]/90 border border-[#DDB892]/50 p-4 rounded-2xl flex flex-col justify-between space-y-2.5 transition-all shadow-2xs hover:shadow-xs group"
+              className="bg-[#FFF5F5]/90 border border-[#EF5350]/50 p-4 rounded-2xl flex flex-col justify-between space-y-2.5 transition-all shadow-2xs hover:shadow-xs group"
             >
               <div className="flex items-center gap-2.5">
-                <span className="w-7 h-7 rounded-xl bg-[#6F4E37] text-white flex items-center justify-center font-black text-xs shadow-xs group-hover:scale-110 transition-transform">2</span>
-                <span className="font-black text-xs text-[#2C1810]">Instant Lock</span>
+                <span className="w-7 h-7 rounded-xl bg-[#E50914] text-white flex items-center justify-center font-black text-xs shadow-xs group-hover:scale-110 transition-transform">2</span>
+                <span className="font-black text-xs text-[#252525]">Instant Lock</span>
               </div>
               <p className="text-[11px] text-stone-600 font-medium leading-relaxed">Securely lock your venue slot with zero double-booking guarantee.</p>
             </motion.div>
 
             <motion.div 
               whileHover={{ y: -3, scale: 1.01 }}
-              className="bg-[#FFF8F0]/90 border border-[#DDB892]/50 p-4 rounded-2xl flex flex-col justify-between space-y-2.5 transition-all shadow-2xs hover:shadow-xs group"
+              className="bg-[#FFF5F5]/90 border border-[#EF5350]/50 p-4 rounded-2xl flex flex-col justify-between space-y-2.5 transition-all shadow-2xs hover:shadow-xs group"
             >
               <div className="flex items-center gap-2.5">
-                <span className="w-7 h-7 rounded-xl bg-[#6F4E37] text-white flex items-center justify-center font-black text-xs shadow-xs group-hover:scale-110 transition-transform">3</span>
-                <span className="font-black text-xs text-[#2C1810]">Arrive & Celebrate</span>
+                <span className="w-7 h-7 rounded-xl bg-[#E50914] text-white flex items-center justify-center font-black text-xs shadow-xs group-hover:scale-110 transition-transform">3</span>
+                <span className="font-black text-xs text-[#252525]">Arrive & Celebrate</span>
               </div>
               <p className="text-[11px] text-stone-600 font-medium leading-relaxed">Enjoy exclusive access and dedicated service at your reserved space.</p>
             </motion.div>
@@ -174,12 +174,12 @@ export default function CafeInfo({ cafe }) {
           <div className="mt-6 pt-4 border-t border-stone-100 hidden md:flex flex-row items-center justify-between gap-3">
             <div className="text-left w-auto">
               <span className="text-[11px] font-black text-stone-400 uppercase tracking-widest block">Instant Venue Reservation</span>
-              <span className="text-sm font-black text-[#2C1810]">Ready to celebrate or reserve your table?</span>
+              <span className="text-sm font-black text-[#252525]">Ready to celebrate or reserve your table?</span>
             </div>
             
             <a
               href={`/booking/${cafe?.id || 1}`}
-              className="w-auto px-7 py-3 rounded-full bg-[#6F4E37] hover:bg-[#4A2C11] text-white text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 shadow-md hover:shadow-lg active:scale-95 transition-all cursor-pointer shrink-0"
+              className="w-auto px-7 py-3 rounded-full bg-[#E50914] hover:bg-[#B71C1C] text-white text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 shadow-md hover:shadow-lg active:scale-95 transition-all cursor-pointer shrink-0"
             >
               <span>Book Now</span>
               <ArrowRight size={14} />

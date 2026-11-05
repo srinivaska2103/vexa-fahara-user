@@ -68,7 +68,7 @@ function FavoritesContent() {
           const formattedCafes = userFavoriteCafes.map(c => ({
             id: c.id || c._id,
             _id: c._id || c.id,
-            name: c.name || c.title || 'Fahara Cafe',
+            name: c.name || c.title || 'Grab2GO Cafe',
             address: c.address || c.location || c.city || 'Indiranagar, Bengaluru',
             city: c.city || 'Bengaluru',
             category: c.category || c.category_name || c.service_type || 'Cafe',
@@ -308,7 +308,7 @@ function FavoritesContent() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#FFF8F0] font-sans antialiased text-[#2C1810] flex flex-col selection:bg-[#6F4E37] selection:text-white pb-24 md:pb-8">
+    <div className="min-h-screen bg-[#FFF5F5] font-sans antialiased text-[#252525] flex flex-col selection:bg-[#E50914] selection:text-white pb-24 md:pb-8">
       
       {/* ─────────────────────────────────────────────────────────────
           1. MOBILE VIEW REDESIGN (Exact match to Reference Image 1)
@@ -317,24 +317,24 @@ function FavoritesContent() {
       <div className="block md:hidden w-full select-none pb-20">
         
         {/* Sticky Top Header, Search & Category Chips Container */}
-        <div className="sticky top-0 z-30 bg-[#FFF8F0]/95 backdrop-blur-md pt-4 pb-2 px-4 border-b border-[#E8DED5]/60 shadow-[0_4px_16px_rgba(44,24,16,0.03)]">
+        <div className="sticky top-0 z-30 bg-[#FFF5F5]/95 backdrop-blur-md pt-4 pb-2 px-4 border-b border-[#FEE2E2]/60 shadow-[0_4px_16px_rgba(44,24,16,0.03)]">
           {/* Mobile Header: Back button, Heart Circle Icon, Title & Subtitle */}
           <div className="flex items-center gap-3.5 mb-3.5">
             <button
               type="button"
               onClick={() => router.back()}
-              className="w-10 h-10 rounded-full bg-white border border-[#E8DED5] flex items-center justify-center text-[#2C1810] shadow-2xs active:scale-90 transition-transform cursor-pointer"
+              className="w-10 h-10 rounded-full bg-white border border-[#FEE2E2] flex items-center justify-center text-[#252525] shadow-2xs active:scale-90 transition-transform cursor-pointer"
               aria-label="Back"
             >
               <ArrowLeft size={18} />
             </button>
 
-            <div className="w-10 h-10 rounded-full bg-[#F5EBE0] border border-[#DDB892]/50 flex items-center justify-center flex-shrink-0 shadow-2xs">
-              <Heart size={18} className="text-[#6F4E37] fill-[#6F4E37]/15" />
+            <div className="w-10 h-10 rounded-full bg-[#F5EBE0] border border-[#EF5350]/50 flex items-center justify-center flex-shrink-0 shadow-2xs">
+              <Heart size={18} className="text-[#E50914] fill-[#E50914]/15" />
             </div>
 
             <div className="min-w-0 flex-1">
-              <h1 className="text-xl font-black text-[#2C1810] tracking-tight leading-tight">
+              <h1 className="text-xl font-black text-[#252525] tracking-tight leading-tight">
                 My Favourites
               </h1>
               <p className="text-xs text-stone-500 font-medium">
@@ -352,7 +352,7 @@ function FavoritesContent() {
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Search your favourites..."
-                className="w-full pl-9 pr-9 py-2.5 rounded-full bg-white border border-[#E8DED5] text-xs font-semibold text-[#2C1810] placeholder:text-stone-400 shadow-2xs focus:outline-none focus:ring-2 focus:ring-[#DDB892] transition-all"
+                className="w-full pl-9 pr-9 py-2.5 rounded-full bg-white border border-[#FEE2E2] text-xs font-semibold text-[#252525] placeholder:text-stone-400 shadow-2xs focus:outline-none focus:ring-2 focus:ring-[#EF5350] transition-all"
               />
               {search && (
                 <button
@@ -368,10 +368,10 @@ function FavoritesContent() {
             <button
               type="button"
               onClick={() => setIsFilterSheetOpen(true)}
-              className="w-11 h-11 rounded-2xl bg-white border border-[#E8DED5] flex items-center justify-center text-[#2C1810] shadow-2xs active:scale-95 transition-transform cursor-pointer flex-shrink-0"
+              className="w-11 h-11 rounded-2xl bg-white border border-[#FEE2E2] flex items-center justify-center text-[#252525] shadow-2xs active:scale-95 transition-transform cursor-pointer flex-shrink-0"
               aria-label="Filter"
             >
-              <SlidersHorizontal size={17} className="text-[#6F4E37]" />
+              <SlidersHorizontal size={17} className="text-[#E50914]" />
             </button>
           </div>
 
@@ -388,8 +388,8 @@ function FavoritesContent() {
                   className={cn(
                     "flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-bold transition-all flex-shrink-0 cursor-pointer shadow-2xs active:scale-95",
                     isSelected
-                      ? "bg-[#6F4E37] text-white border border-[#6F4E37] shadow-sm"
-                      : "bg-white text-stone-600 border border-[#E8DED5] hover:bg-stone-50"
+                      ? "bg-[#E50914] text-white border border-[#E50914] shadow-sm"
+                      : "bg-white text-stone-600 border border-[#FEE2E2] hover:bg-stone-50"
                   )}
                 >
                   {Icon && <Icon size={14} />}
@@ -418,11 +418,11 @@ function FavoritesContent() {
               />
             ))
           ) : (
-            <div className="bg-white rounded-3xl p-8 border border-[#E8DED5] text-center my-6 shadow-2xs">
-              <div className="w-14 h-14 rounded-full bg-[#FFF8F0] border border-[#DDB892]/40 flex items-center justify-center mx-auto mb-3 text-[#6F4E37]">
-                <Heart size={24} className="fill-[#6F4E37]/10" />
+            <div className="bg-white rounded-3xl p-8 border border-[#FEE2E2] text-center my-6 shadow-2xs">
+              <div className="w-14 h-14 rounded-full bg-[#FFF5F5] border border-[#EF5350]/40 flex items-center justify-center mx-auto mb-3 text-[#E50914]">
+                <Heart size={24} className="fill-[#E50914]/10" />
               </div>
-              <h3 className="text-base font-black text-[#2C1810] mb-1">
+              <h3 className="text-base font-black text-[#252525] mb-1">
                 {search ? "No matching favourites found" : "No favourites yet"}
               </h3>
               <p className="text-xs text-stone-500 mb-5 max-w-xs mx-auto">
@@ -434,14 +434,14 @@ function FavoritesContent() {
                 <button
                   type="button"
                   onClick={() => setSearch('')}
-                  className="px-6 py-2.5 rounded-full bg-[#6F4E37] text-white text-xs font-bold shadow-md cursor-pointer"
+                  className="px-6 py-2.5 rounded-full bg-[#E50914] text-white text-xs font-bold shadow-md cursor-pointer"
                 >
                   Clear Search
                 </button>
               ) : (
                 <Link
                   href="/customer/cafe"
-                  className="inline-block px-6 py-2.5 rounded-full bg-[#6F4E37] text-white text-xs font-bold shadow-md cursor-pointer"
+                  className="inline-block px-6 py-2.5 rounded-full bg-[#E50914] text-white text-xs font-bold shadow-md cursor-pointer"
                 >
                   Explore Cafes
                 </Link>
@@ -466,12 +466,12 @@ function FavoritesContent() {
                 animate={{ y: 0 }}
                 exit={{ y: '100%' }}
                 transition={{ type: 'spring', damping: 26, stiffness: 300 }}
-                className="fixed bottom-0 left-0 right-0 bg-[#FFF8F0] rounded-t-[28px] p-5 z-50 shadow-2xl border-t border-[#E8DED5]"
+                className="fixed bottom-0 left-0 right-0 bg-[#FFF5F5] rounded-t-[28px] p-5 z-50 shadow-2xl border-t border-[#FEE2E2]"
               >
                 <div className="w-10 h-1 bg-stone-300 rounded-full mx-auto mb-4" />
                 
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-base font-black text-[#2C1810]">Sort & Filters</h3>
+                  <h3 className="text-base font-black text-[#252525]">Sort & Filters</h3>
                   <button
                     onClick={() => setIsFilterSheetOpen(false)}
                     className="p-1 rounded-full text-stone-400 hover:text-stone-700"
@@ -501,8 +501,8 @@ function FavoritesContent() {
                           className={cn(
                             "py-2.5 px-3 rounded-2xl text-xs font-bold text-left transition-all border flex items-center justify-between",
                             sort === s.id
-                              ? "bg-[#6F4E37] text-white border-[#6F4E37]"
-                              : "bg-white text-stone-700 border-[#E8DED5]"
+                              ? "bg-[#E50914] text-white border-[#E50914]"
+                              : "bg-white text-stone-700 border-[#FEE2E2]"
                           )}
                         >
                           <span>{s.label}</span>
@@ -517,7 +517,7 @@ function FavoritesContent() {
                   <button
                     type="button"
                     onClick={() => setIsFilterSheetOpen(false)}
-                    className="w-full py-3 rounded-full bg-[#6F4E37] text-white font-bold text-xs uppercase tracking-wider"
+                    className="w-full py-3 rounded-full bg-[#E50914] text-white font-bold text-xs uppercase tracking-wider"
                   >
                     Apply Filters
                   </button>
@@ -562,7 +562,7 @@ function FavoritesContent() {
               {/* Header Title + Controls Row */}
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                  <h1 className="text-2xl sm:text-3xl font-black text-[#2C1810] tracking-tight">
+                  <h1 className="text-2xl sm:text-3xl font-black text-[#252525] tracking-tight">
                     Your Favorites
                   </h1>
                   <p className="text-stone-500 font-medium text-xs sm:text-sm mt-1">
@@ -580,7 +580,7 @@ function FavoritesContent() {
                       value={search}
                       onChange={(e) => setSearch(e.target.value)}
                       placeholder="Search your favorites..."
-                      className="w-full pl-9 pr-4 py-2.5 rounded-2xl border border-stone-200 bg-stone-50/80 text-xs font-semibold text-[#2C1810] focus:outline-none focus:ring-2 focus:ring-[#DDB892] focus:bg-white transition-all shadow-2xs placeholder:text-stone-400"
+                      className="w-full pl-9 pr-4 py-2.5 rounded-2xl border border-stone-200 bg-stone-50/80 text-xs font-semibold text-[#252525] focus:outline-none focus:ring-2 focus:ring-[#EF5350] focus:bg-white transition-all shadow-2xs placeholder:text-stone-400"
                     />
                   </div>
 
@@ -605,13 +605,13 @@ function FavoritesContent() {
                 <button
                   onClick={() => handleTabChange('cafes')}
                   className={`relative pb-3 text-xs sm:text-sm font-black flex items-center gap-2 transition-colors cursor-pointer ${
-                    activeTab === 'cafes' ? 'text-[#6F4E37]' : 'text-stone-400 hover:text-stone-700'
+                    activeTab === 'cafes' ? 'text-[#E50914]' : 'text-stone-400 hover:text-stone-700'
                   }`}
                 >
                   <Coffee size={16} />
                   <span>Favorite Cafes</span>
                   <span className={`px-2 py-0.5 rounded-full text-[10px] font-black transition-all ${
-                    activeTab === 'cafes' ? 'bg-[#FFF8F0] text-[#6F4E37] border border-[#DDB892]/60' : 'bg-stone-100 text-stone-500'
+                    activeTab === 'cafes' ? 'bg-[#FFF5F5] text-[#E50914] border border-[#EF5350]/60' : 'bg-stone-100 text-stone-500'
                   }`}>
                     {cafes.length}
                   </span>
@@ -619,7 +619,7 @@ function FavoritesContent() {
                   {activeTab === 'cafes' && (
                     <motion.div 
                       layoutId="favoritesActiveTabIndicator" 
-                      className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#6F4E37] rounded-full"
+                      className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#E50914] rounded-full"
                       transition={{ type: 'spring', stiffness: 500, damping: 35 }}
                     />
                   )}
@@ -628,13 +628,13 @@ function FavoritesContent() {
                 <button
                   onClick={() => handleTabChange('events')}
                   className={`relative pb-3 text-xs sm:text-sm font-black flex items-center gap-2 transition-colors cursor-pointer ${
-                    activeTab === 'events' ? 'text-[#6F4E37]' : 'text-stone-400 hover:text-stone-700'
+                    activeTab === 'events' ? 'text-[#E50914]' : 'text-stone-400 hover:text-stone-700'
                   }`}
                 >
                   <PartyPopper size={16} />
                   <span>Favorite Event Companies</span>
                   <span className={`px-2 py-0.5 rounded-full text-[10px] font-black transition-all ${
-                    activeTab === 'events' ? 'bg-[#FFF8F0] text-[#6F4E37] border border-[#DDB892]/60' : 'bg-stone-100 text-stone-500'
+                    activeTab === 'events' ? 'bg-[#FFF5F5] text-[#E50914] border border-[#EF5350]/60' : 'bg-stone-100 text-stone-500'
                   }`}>
                     {events.length}
                   </span>
@@ -642,7 +642,7 @@ function FavoritesContent() {
                   {activeTab === 'events' && (
                     <motion.div 
                       layoutId="favoritesActiveTabIndicator" 
-                      className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#6F4E37] rounded-full"
+                      className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#E50914] rounded-full"
                       transition={{ type: 'spring', stiffness: 500, damping: 35 }}
                     />
                   )}

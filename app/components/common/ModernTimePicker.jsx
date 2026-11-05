@@ -104,9 +104,9 @@ export default function ModernTimePicker({
             setIsOpen(!isOpen);
           }
         }}
-        className="relative w-full pl-10 pr-10 py-2.5 sm:py-3 rounded-2xl border border-stone-200 bg-white hover:border-[#6F4E37]/60 focus:border-[#6F4E37] focus:ring-2 focus:ring-[#6F4E37]/20 outline-none text-xs sm:text-sm font-medium text-stone-800 transition-all flex items-center justify-between cursor-pointer shadow-2xs group min-h-[44px]"
+        className="relative w-full pl-10 pr-10 py-2.5 sm:py-3 rounded-2xl border border-stone-200 bg-white hover:border-[#E50914]/60 focus:border-[#E50914] focus:ring-2 focus:ring-[#E50914]/20 outline-none text-xs sm:text-sm font-medium text-stone-800 transition-all flex items-center justify-between cursor-pointer shadow-2xs group min-h-[44px]"
       >
-        <Clock size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-stone-400 group-hover:text-[#6F4E37] transition-colors pointer-events-none" />
+        <Clock size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-stone-400 group-hover:text-[#E50914] transition-colors pointer-events-none" />
 
         <span className={`truncate ${displayTimeText ? 'text-stone-900 font-bold' : 'text-stone-400 font-medium'}`}>
           {displayTimeText || placeholder}
@@ -128,7 +128,7 @@ export default function ModernTimePicker({
               <X size={14} />
             </span>
           )}
-          <ChevronDown size={16} className={`text-stone-400 transition-transform ${isOpen ? 'rotate-180 text-[#6F4E37]' : ''}`} />
+          <ChevronDown size={16} className={`text-stone-400 transition-transform ${isOpen ? 'rotate-180 text-[#E50914]' : ''}`} />
         </div>
       </div>
 
@@ -140,19 +140,19 @@ export default function ModernTimePicker({
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 8, scale: 0.96 }}
             transition={{ type: 'spring', damping: 25, stiffness: 350 }}
-            className="absolute left-0 top-full z-[100] mt-2 w-full min-w-[280px] sm:min-w-[320px] max-w-[340px] bg-white rounded-3xl border border-stone-200/90 shadow-2xl p-4 font-sans text-[#2C1810]"
+            className="absolute left-0 top-full z-[100] mt-2 w-full min-w-[280px] sm:min-w-[320px] max-w-[340px] bg-white rounded-3xl border border-stone-200/90 shadow-2xl p-4 font-sans text-[#252525]"
           >
             {/* AM / PM Segmented Control Header */}
             <div className="flex items-center justify-between gap-2 pb-3 mb-3 border-b border-stone-100">
               <span className="text-xs font-black uppercase tracking-wider text-stone-400">Select Time</span>
-              <div className="flex items-center bg-[#FFF8F0] p-1 rounded-2xl border border-[#DDB892]/40">
+              <div className="flex items-center bg-[#FFF5F5] p-1 rounded-2xl border border-[#EF5350]/40">
                 <button
                   type="button"
                   onClick={() => handleSelectTime(selectedHour, selectedMinute, 'AM')}
                   className={`px-3 py-1 text-xs font-black rounded-xl transition-all cursor-pointer ${
                     selectedPeriod === 'AM'
-                      ? 'bg-gradient-to-r from-[#4A2C11] to-[#6F4E37] text-white shadow-sm'
-                      : 'text-stone-600 hover:text-[#6F4E37]'
+                      ? 'bg-gradient-to-r from-[#B71C1C] to-[#E50914] text-white shadow-sm'
+                      : 'text-stone-600 hover:text-[#E50914]'
                   }`}
                 >
                   AM
@@ -162,8 +162,8 @@ export default function ModernTimePicker({
                   onClick={() => handleSelectTime(selectedHour, selectedMinute, 'PM')}
                   className={`px-3 py-1 text-xs font-black rounded-xl transition-all cursor-pointer ${
                     selectedPeriod === 'PM'
-                      ? 'bg-gradient-to-r from-[#4A2C11] to-[#6F4E37] text-white shadow-sm'
-                      : 'text-stone-600 hover:text-[#6F4E37]'
+                      ? 'bg-gradient-to-r from-[#B71C1C] to-[#E50914] text-white shadow-sm'
+                      : 'text-stone-600 hover:text-[#E50914]'
                   }`}
                 >
                   PM
@@ -187,8 +187,8 @@ export default function ModernTimePicker({
                       onClick={() => handleSelectTime(slot.h, slot.m, slot.p)}
                       className={`px-2.5 py-1 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                         isMatch
-                          ? 'bg-[#6F4E37] text-white font-black shadow-xs'
-                          : 'bg-stone-50 border border-stone-200 text-stone-700 hover:bg-[#FFF8F0] hover:text-[#6F4E37] hover:border-[#DDB892]'
+                          ? 'bg-[#E50914] text-white font-black shadow-xs'
+                          : 'bg-stone-50 border border-stone-200 text-stone-700 hover:bg-[#FFF5F5] hover:text-[#E50914] hover:border-[#EF5350]'
                       }`}
                     >
                       {slot.label}
@@ -199,7 +199,7 @@ export default function ModernTimePicker({
             </div>
 
             {/* Hours and Minutes Columns */}
-            <div className="grid grid-cols-2 gap-3 py-1 bg-[#FFF8F0]/40 p-2.5 rounded-2xl border border-stone-100">
+            <div className="grid grid-cols-2 gap-3 py-1 bg-[#FFF5F5]/40 p-2.5 rounded-2xl border border-stone-100">
               {/* Hour Selection */}
               <div>
                 <span className="text-[10px] font-black text-stone-400 uppercase tracking-wider block mb-1 text-center">Hour</span>
@@ -213,8 +213,8 @@ export default function ModernTimePicker({
                         onClick={() => handleSelectTime(h, selectedMinute, selectedPeriod)}
                         className={`w-full py-1.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center cursor-pointer ${
                           active
-                            ? 'bg-[#6F4E37] text-white font-black shadow-xs'
-                            : 'text-stone-700 hover:bg-white hover:text-[#6F4E37]'
+                            ? 'bg-[#E50914] text-white font-black shadow-xs'
+                            : 'text-stone-700 hover:bg-white hover:text-[#E50914]'
                         }`}
                       >
                         {h}
@@ -237,8 +237,8 @@ export default function ModernTimePicker({
                         onClick={() => handleSelectTime(selectedHour, m, selectedPeriod)}
                         className={`w-full py-1.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center cursor-pointer ${
                           active
-                            ? 'bg-[#6F4E37] text-white font-black shadow-xs'
-                            : 'text-stone-700 hover:bg-white hover:text-[#6F4E37]'
+                            ? 'bg-[#E50914] text-white font-black shadow-xs'
+                            : 'text-stone-700 hover:bg-white hover:text-[#E50914]'
                         }`}
                       >
                         :{m}
@@ -251,13 +251,13 @@ export default function ModernTimePicker({
 
             {/* Footer Bar */}
             <div className="flex items-center justify-between pt-3 mt-3 border-t border-stone-100 text-xs">
-              <span className="font-bold text-[#6F4E37] text-xs">
+              <span className="font-bold text-[#E50914] text-xs">
                 {selectedHour}:{selectedMinute} {selectedPeriod}
               </span>
               <button
                 type="button"
                 onClick={() => setIsOpen(false)}
-                className="px-4 py-1.5 bg-[#6F4E37] text-white font-black rounded-xl hover:bg-[#4A2C11] transition-colors cursor-pointer"
+                className="px-4 py-1.5 bg-[#E50914] text-white font-black rounded-xl hover:bg-[#B71C1C] transition-colors cursor-pointer"
               >
                 Done
               </button>

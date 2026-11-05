@@ -4,8 +4,9 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
+import { usePathname } from 'next/navigation';
 import { 
-  Bell, Search, X, SlidersHorizontal, ArrowRight, User, LogOut, Heart, CalendarCheck, Star
+  Bell, Search, X, SlidersHorizontal, ArrowRight, User, LogOut, Heart, CalendarCheck, Star, Utensils
 } from 'lucide-react';
 import { useAuthStore } from '@/stores/auth.store';
 import { useSearchStore } from '@/stores/search.store';
@@ -17,6 +18,7 @@ import toast from 'react-hot-toast';
 import { cn } from '@/lib/utils';
 
 export default function MobileCafeHeader({ onFilterClick }) {
+  const pathname = usePathname();
   const user = useAuthStore((state) => state.user);
   const logout = useAuthStore((state) => state.logout);
   const query = useSearchStore((state) => state.query);
@@ -72,7 +74,7 @@ export default function MobileCafeHeader({ onFilterClick }) {
   const ROTATING_SUBTITLES = [
     "Let's find your perfect cafe.",
     "Discover events. Make memories.",
-    "Book your next celebration with Fahara."
+    "Book your next celebration with Grab2GO."
   ];
 
   // Calculate dynamic greeting:
@@ -155,40 +157,78 @@ export default function MobileCafeHeader({ onFilterClick }) {
 
   return (
     <>
+      {/* Backdrop for closing popups when clicking outside */}
+      {(isNotifOpen || isProfileOpen) && (
+        <div 
+          className="fixed inset-0 z-40 bg-black/20 backdrop-blur-[1px] md:hidden"
+          onClick={() => {
+            setIsNotifOpen(false);
+            setIsProfileOpen(false);
+          }}
+        />
+      )}
+
       {/* ── TOP HEADER ROW (Logo, Notifications, Avatar) ── */}
-      <div className="md:hidden relative w-full bg-[#2C1810] text-white px-4 pt-3.5 pb-1 transition-all duration-200 overflow-visible border-0" suppressHydrationWarning>
+      <div className="md:hidden relative z-50 w-full bg-[#E50914] text-white px-4 pt-3.5 pb-1 transition-all duration-200 overflow-visible border-0" suppressHydrationWarning>
         <div className="relative z-10 flex flex-col space-y-2.5" suppressHydrationWarning>
           
           {/* Navigation Row (Logo + Notifications + Avatar) */}
           <div className="flex items-center justify-between">
-            {/* Left: Fahara Logo + Branded Wordmark */}
+            {/* Left: Grab2GO Logo + Branded Wordmark */}
             <Link 
               href="/customer/cafe" 
               className="flex items-center gap-2.5 active:scale-95 transition-transform"
             >
-              <div className="relative w-9 h-9 rounded-xl overflow-hidden shadow-md ring-1 ring-white/20 bg-black/40 shrink-0">
+              <div className="relative w-11 h-11 rounded-2xl overflow-hidden shadow-md ring-1 ring-white/40 bg-white shrink-0 p-0.5">
                 <Image
-                  src="/Fahara%20Logo.jpeg"
-                  alt="Fahara Logo"
-                  width={36}
-                  height={36}
-                  className="w-full h-full object-cover"
+                  src="/grab-it-logo.png"
+                  alt="Grab2GO Logo"
+                  width={44}
+                  height={44}
+                  className="w-full h-full object-contain"
                   priority
                 />
               </div>
               <div className="flex flex-col">
-                <span className="text-base font-black tracking-wider text-[#FFF8F0] leading-none">
-                  FAHARA
+                <span className="text-lg font-black tracking-tight text-white leading-none">
+                  Grab<span className="text-amber-300">2GO</span>
                 </span>
-                <span className="text-[9px] font-extrabold tracking-widest text-[#DDB892] uppercase mt-0.5 leading-none">
-                  Cafe & Events
+                <span className="text-[9px] font-black tracking-widest text-white/90 uppercase mt-0.5 leading-none">
+                  Cafe &amp; Events
                 </span>
               </div>
             </Link>
 
-            {/* Right: Notification Bell Button & User Avatar Control */}
-            <div className="flex items-center gap-2">
+            {/* Right: Switch Button + Notification Bell + User Avatar Control */}
+            <div className="flex items-center gap-1.5 xs:gap-2">
               
+              {/* Switch Pill (Food & Discover Cafe) */}
+              <div className="flex items-center bg-white/20 p-0.5 rounded-full border border-white/30 backdrop-blur-md">
+                <Link
+                  href="/customer/food"
+                  className={cn(
+                    "px-2 py-1 rounded-full text-[10px] font-black transition-all flex items-center gap-1",
+                    pathname?.startsWith('/customer/food')
+                      ? "bg-white text-[#E50914] shadow-xs"
+                      : "text-white hover:text-white/80"
+                  )}
+                >
+                  <Utensils size={10} />
+                  <span>Food</span>
+                </Link>
+                <Link
+                  href="/customer/cafe"
+                  className={cn(
+                    "px-2 py-1 rounded-full text-[10px] font-black transition-all",
+                    pathname?.startsWith('/customer/cafe') || pathname?.startsWith('/customer/discover')
+                      ? "bg-white text-[#E50914] shadow-xs"
+                      : "text-white hover:text-white/80"
+                  )}
+                >
+                  <span>Cafe</span>
+                </Link>
+              </div>
+
               {/* Notification Button */}
               <div className="relative">
                 <button
@@ -201,14 +241,19 @@ export default function MobileCafeHeader({ onFilterClick }) {
                   className={cn(
                     "w-10 h-10 rounded-2xl backdrop-blur-md flex items-center justify-center transition-all relative active:scale-90 cursor-pointer shadow-sm",
                     isNotifOpen
-                      ? "bg-[#6F4E37] text-white ring-2 ring-[#DDB892]/50"
-                      : "bg-white/10 text-white border border-white/15 hover:bg-white/20"
+                      ? "bg-white text-[#E50914] ring-2 ring-white/50"
+                      : "bg-white/20 text-white border border-white/25 hover:bg-white/30"
                   )}
                   aria-label="Notifications"
                 >
-                  <Bell size={18} className="text-[#FFF8F0]" />
+                  <Bell size={18} className={isNotifOpen ? "text-[#E50914]" : "text-white"} />
                   {unreadCount > 0 && (
-                    <span className="absolute -top-1 -right-1 min-w-4 h-4 px-1 rounded-full bg-[#E63946] text-white text-[9px] font-black flex items-center justify-center ring-2 ring-[#2A150D]">
+                    <span className={cn(
+                      "absolute -top-1 -right-1 min-w-4 h-4 px-1 rounded-full text-[9px] font-black flex items-center justify-center ring-2",
+                      isNotifOpen
+                        ? "bg-[#E50914] text-white ring-white"
+                        : "bg-white text-[#E50914] ring-[#B71C1C]"
+                    )}>
                       {unreadCount}
                     </span>
                   )}
@@ -222,13 +267,13 @@ export default function MobileCafeHeader({ onFilterClick }) {
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       exit={{ opacity: 0, y: 6, scale: 0.95 }}
                       transition={{ duration: 0.15 }}
-                      className="absolute right-0 mt-2 w-72 bg-white text-[#2C1810] rounded-2xl border border-stone-200 shadow-2xl p-3 z-50 space-y-2 text-left"
+                      className="absolute right-0 top-full mt-2 w-72 max-w-[calc(100vw-24px)] bg-white text-[#252525] rounded-2xl border border-stone-200 shadow-2xl p-3 z-[100] space-y-2 text-left"
                     >
                       <div className="flex items-center justify-between pb-1.5 border-b border-stone-100">
-                        <span className="text-xs font-black text-[#2C1810]">Notifications</span>
+                        <span className="text-xs font-black text-[#252525]">Notifications</span>
                         <div className="flex items-center gap-2">
                           {unreadCount > 0 && (
-                            <span className="text-[10px] font-extrabold text-[#6F4E37] bg-[#FFF8F0] px-2 py-0.5 rounded-full border border-[#DDB892]">
+                            <span className="text-[10px] font-extrabold text-[#E50914] bg-[#FFF5F5] px-2 py-0.5 rounded-full border border-[#EF5350]">
                               {unreadCount} New
                             </span>
                           )}
@@ -245,7 +290,7 @@ export default function MobileCafeHeader({ onFilterClick }) {
                                   // silent
                                 }
                               }}
-                              className="text-[10px] font-bold text-[#6F4E37] hover:underline active:scale-95 transition-transform cursor-pointer"
+                              className="text-[10px] font-bold text-[#E50914] hover:underline active:scale-95 transition-transform cursor-pointer"
                             >
                               Mark all as read
                             </button>
@@ -269,12 +314,12 @@ export default function MobileCafeHeader({ onFilterClick }) {
                               className={cn(
                                 "p-2 rounded-xl border text-xs transition-colors cursor-pointer",
                                 n.is_read 
-                                  ? "bg-stone-50/80 border-stone-100 hover:bg-[#FFF8F0]" 
-                                  : "bg-[#FFF8F0] border-[#DDB892]/50 hover:bg-[#FDF4E7]"
+                                  ? "bg-stone-50/80 border-stone-100 hover:bg-[#FFF5F5]" 
+                                  : "bg-[#FFF5F5] border-[#EF5350]/50 hover:bg-[#FDF4E7]"
                               )}
                             >
                               <div className="flex items-center justify-between gap-1">
-                                <p className="font-bold text-[#2C1810] line-clamp-1">{n.title || 'Notification'}</p>
+                                <p className="font-bold text-[#252525] line-clamp-1">{n.title || 'Notification'}</p>
                                 {!n.is_read && (
                                   <span className="w-1.5 h-1.5 rounded-full bg-[#E63946] shrink-0" />
                                 )}
@@ -292,7 +337,7 @@ export default function MobileCafeHeader({ onFilterClick }) {
                         <Link
                           href="/customer/profile?tab=notifications"
                           onClick={() => setIsNotifOpen(false)}
-                          className="text-[11px] font-extrabold text-[#6F4E37] hover:underline"
+                          className="text-[11px] font-extrabold text-[#E50914] hover:underline"
                         >
                           View all notifications →
                         </Link>
@@ -322,7 +367,7 @@ export default function MobileCafeHeader({ onFilterClick }) {
                       onError={() => setImageError(true)}
                     />
                   ) : (
-                    <span className="text-xs font-black text-[#DDB892] tracking-wider">
+                    <span className="text-xs font-black text-[#EF5350] tracking-wider">
                       {userInitials}
                     </span>
                   )}
@@ -336,13 +381,13 @@ export default function MobileCafeHeader({ onFilterClick }) {
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       exit={{ opacity: 0, y: 6, scale: 0.95 }}
                       transition={{ duration: 0.15 }}
-                      className="absolute right-0 mt-2 w-56 bg-white text-[#2C1810] rounded-2xl border border-stone-200 shadow-2xl p-2.5 z-50 space-y-1 text-left"
+                      className="absolute right-0 top-full mt-2 w-60 max-w-[calc(100vw-24px)] bg-white text-[#252525] rounded-2xl border border-stone-200 shadow-2xl p-2.5 z-[100] space-y-1 text-left"
                     >
                       <div className="p-2 border-b border-stone-100">
-                        <p className="font-black text-xs text-[#2C1810] truncate">{userName}</p>
+                        <p className="font-black text-xs text-[#252525] truncate">{userName}</p>
                         <p className="text-[10px] text-stone-500 truncate">{user?.email || 'Logged in'}</p>
                         {loyaltyCredits > 0 && (
-                          <div className="mt-1 inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#FFF8F0] border border-[#DDB892]/60 text-[10px] font-extrabold text-[#6F4E37]">
+                          <div className="mt-1 inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#FFF5F5] border border-[#EF5350]/60 text-[10px] font-extrabold text-[#E50914]">
                             <span>⭐ {loyaltyCredits} Credits</span>
                           </div>
                         )}
@@ -351,7 +396,7 @@ export default function MobileCafeHeader({ onFilterClick }) {
                       <Link
                         href="/customer/profile"
                         onClick={() => setIsProfileOpen(false)}
-                        className="flex items-center gap-2 p-2 rounded-xl text-xs font-bold text-stone-700 hover:bg-[#FFF8F0] hover:text-[#6F4E37] transition-colors"
+                        className="flex items-center gap-2 p-2 rounded-xl text-xs font-bold text-stone-700 hover:bg-[#FFF5F5] hover:text-[#E50914] transition-colors"
                       >
                         <User size={14} />
                         <span>My Profile</span>
@@ -360,7 +405,7 @@ export default function MobileCafeHeader({ onFilterClick }) {
                       <Link
                         href="/customer/bookings"
                         onClick={() => setIsProfileOpen(false)}
-                        className="flex items-center gap-2 p-2 rounded-xl text-xs font-bold text-stone-700 hover:bg-[#FFF8F0] hover:text-[#6F4E37] transition-colors"
+                        className="flex items-center gap-2 p-2 rounded-xl text-xs font-bold text-stone-700 hover:bg-[#FFF5F5] hover:text-[#E50914] transition-colors"
                       >
                         <CalendarCheck size={14} />
                         <span>My Bookings</span>
@@ -369,7 +414,7 @@ export default function MobileCafeHeader({ onFilterClick }) {
                       <Link
                         href="/customer/favorites"
                         onClick={() => setIsProfileOpen(false)}
-                        className="flex items-center gap-2 p-2 rounded-xl text-xs font-bold text-stone-700 hover:bg-[#FFF8F0] hover:text-[#6F4E37] transition-colors"
+                        className="flex items-center gap-2 p-2 rounded-xl text-xs font-bold text-stone-700 hover:bg-[#FFF5F5] hover:text-[#E50914] transition-colors"
                       >
                         <Heart size={14} />
                         <span>Favorites</span>
@@ -394,7 +439,7 @@ export default function MobileCafeHeader({ onFilterClick }) {
 
           {/* Greeting Row (Dynamic time-based greeting + Rotating subtitle carousel) */}
           <div className="flex flex-col pt-0.5" suppressHydrationWarning>
-            <h1 className="text-xl xs:text-2xl font-black text-[#FFF8F0] tracking-tight leading-tight" suppressHydrationWarning>
+            <h1 className="text-xl xs:text-2xl font-black text-white tracking-tight leading-tight" suppressHydrationWarning>
               <span suppressHydrationWarning>
                 {userName ? `${greetingPrefix}, ${userName}!` : `${greetingPrefix}!`}
               </span>
@@ -409,7 +454,7 @@ export default function MobileCafeHeader({ onFilterClick }) {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -7 }}
                   transition={{ duration: 0.35, ease: 'easeOut' }}
-                  className="text-xs text-[#DDB892] font-semibold tracking-wide truncate w-full text-left motion-reduce:transition-none"
+                  className="text-xs text-white/90 font-semibold tracking-wide truncate w-full text-left motion-reduce:transition-none"
                 >
                   {ROTATING_SUBTITLES[subtitleIndex]}
                 </motion.p>
@@ -423,13 +468,13 @@ export default function MobileCafeHeader({ onFilterClick }) {
       {/* ── STICKY SEARCH & FILTER ROW (Floating at top on scroll) ── */}
       <div 
         id="mobile-sticky-search-bar"
-        className="md:hidden sticky top-0 z-40 w-full bg-[#2C1810] px-4 py-2.5 shadow-[0_8px_20px_rgba(20,9,5,0.35)]"
+        className="md:hidden sticky top-0 z-30 w-full bg-[#E50914] px-4 py-2.5 shadow-[0_8px_20px_rgba(183,28,28,0.25)]"
         suppressHydrationWarning
       >
         <div className="flex items-center gap-2.5">
           {/* Search Pill Input */}
-          <div className="relative flex-1 flex items-center bg-[#FFF8F0] rounded-full px-4 py-2.5 shadow-inner border border-white/20">
-            <Search size={16} className="text-[#8C5E3C] shrink-0 mr-2.5 pointer-events-none" />
+          <div className="relative flex-1 flex items-center bg-white rounded-full px-4 py-2.5 shadow-xs border border-white/40">
+            <Search size={16} className="text-[#E50914] shrink-0 mr-2.5 pointer-events-none" />
             <input
               type="text"
               value={searchInput}
@@ -438,7 +483,7 @@ export default function MobileCafeHeader({ onFilterClick }) {
               suppressHydrationWarning
               autoComplete="off"
               spellCheck="false"
-              className="w-full bg-transparent text-[#2C1810] placeholder:text-stone-400 text-xs font-bold focus:outline-none cursor-text pr-1"
+              className="w-full bg-transparent text-[#252525] placeholder:text-stone-400 text-xs font-bold focus:outline-none cursor-text pr-1"
             />
             {Boolean(searchInput) && (
               <button
@@ -458,7 +503,7 @@ export default function MobileCafeHeader({ onFilterClick }) {
             type="button"
             suppressHydrationWarning
             onClick={onFilterClick}
-            className="w-11 h-11 rounded-full bg-[#FFF8F0] flex items-center justify-center text-[#6F4E37] active:scale-90 transition-transform cursor-pointer shrink-0 shadow-md hover:bg-white"
+            className="w-11 h-11 rounded-full bg-white flex items-center justify-center text-[#E50914] active:scale-90 transition-transform cursor-pointer shrink-0 shadow-md hover:bg-stone-50"
             aria-label="Open Filters"
           >
             <SlidersHorizontal size={17} strokeWidth={2.3} />

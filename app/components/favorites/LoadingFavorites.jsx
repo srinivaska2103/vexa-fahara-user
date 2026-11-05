@@ -5,7 +5,7 @@ export default function LoadingFavorites() {
   return (
     <FaharaInteractiveLoader 
       message="Fetching Your Saved Cafes & Events..." 
-      badgeTag="FAHARA FAVORITES" 
+      badgeTag="Grab2GO FAVORITES" 
       fullScreen={true} 
     />
   );

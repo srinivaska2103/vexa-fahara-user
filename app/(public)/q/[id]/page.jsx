@@ -96,12 +96,12 @@ export default function QrLandingPage() {
   }, [qrCodeId, router]);
 
   return (
-    <div className="min-h-screen bg-[#FFF8F0] text-[#2C1810] font-sans antialiased selection:bg-[#6F4E37] selection:text-white flex flex-col justify-between overflow-x-hidden">
+    <div className="min-h-screen bg-[#FFF5F5] text-[#252525] font-sans antialiased selection:bg-[#E50914] selection:text-white flex flex-col justify-between overflow-x-hidden">
       <CustomerNavbar showSearch={false} showViewToggles={false} />
 
       <main className="flex-1 flex flex-col items-center justify-center px-4 sm:px-6 lg:px-8 py-12 relative">
         {/* Glow backdrop */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 sm:w-96 sm:h-96 bg-gradient-to-tr from-[#DDB892]/30 via-[#A67B5B]/20 to-amber-200/30 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 sm:w-96 sm:h-96 bg-gradient-to-tr from-[#EF5350]/30 via-[#B71C1C]/20 to-amber-200/30 rounded-full blur-3xl pointer-events-none" />
 
         <div className="max-w-md w-full mx-auto text-center relative z-10 space-y-6">
           {loading ? (
@@ -109,26 +109,26 @@ export default function QrLandingPage() {
             <motion.div 
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="bg-white rounded-3xl p-8 shadow-xl border border-[#DDB892]/40 space-y-6 text-center"
+              className="bg-white rounded-3xl p-8 shadow-xl border border-[#EF5350]/40 space-y-6 text-center"
             >
               <div className="relative mx-auto w-20 h-20 flex items-center justify-center">
                 <div className="absolute inset-0 rounded-full border-4 border-amber-200 animate-ping opacity-25" />
-                <div className="w-16 h-16 rounded-2xl bg-amber-500/10 border border-amber-300 flex items-center justify-center text-[#6F4E37]">
+                <div className="w-16 h-16 rounded-2xl bg-amber-500/10 border border-amber-300 flex items-center justify-center text-[#E50914]">
                   <QrCode size={36} className="animate-pulse" />
                 </div>
               </div>
 
               <div className="space-y-2">
-                <h2 className="text-xl font-black text-[#2C1810] tracking-tight">
+                <h2 className="text-xl font-black text-[#252525] tracking-tight">
                   {statusMessage}
                 </h2>
                 <p className="text-xs text-stone-500 font-medium">
-                  Resolving secure Fahara QR code identifier: <span className="font-mono text-amber-700 bg-amber-50 px-2 py-0.5 rounded">{qrCodeId}</span>
+                  Resolving secure Grab2GO QR code identifier: <span className="font-mono text-amber-700 bg-amber-50 px-2 py-0.5 rounded">{qrCodeId}</span>
                 </p>
               </div>
 
               <div className="w-full bg-stone-100 h-1.5 rounded-full overflow-hidden">
-                <div className="bg-gradient-to-r from-amber-500 to-[#6F4E37] h-full w-2/3 rounded-full animate-pulse" />
+                <div className="bg-gradient-to-r from-amber-500 to-[#E50914] h-full w-2/3 rounded-full animate-pulse" />
               </div>
             </motion.div>
           ) : errorStatus === 'INELIGIBLE' ? (
@@ -146,18 +146,18 @@ export default function QrLandingPage() {
                 <span className="text-[11px] font-bold uppercase tracking-wider text-amber-600 bg-amber-50 px-2.5 py-1 rounded-full border border-amber-200">
                   Venue Notice
                 </span>
-                <h2 className="text-2xl font-black text-[#2C1810]">
+                <h2 className="text-2xl font-black text-[#252525]">
                   {cafeDetails?.cafeName ? `${cafeDetails.cafeName} is Temporarily Unavailable` : 'Cafe Is Currently Unavailable'}
                 </h2>
                 <p className="text-xs sm:text-sm text-stone-500 leading-relaxed">
-                  This cafe is currently completing verification or updating its listing on Fahara. Please check back shortly or explore other popular cafes nearby.
+                  This cafe is currently completing verification or updating its listing on Grab2GO. Please check back shortly or explore other popular cafes nearby.
                 </p>
               </div>
 
               <div className="pt-2 flex flex-col gap-3">
                 <Link 
                   href="/customer/cafe"
-                  className="w-full py-3 px-4 rounded-xl bg-[#6F4E37] hover:bg-[#5A3E2D] text-white text-sm font-bold shadow-md transition-all flex items-center justify-center gap-2"
+                  className="w-full py-3 px-4 rounded-xl bg-[#E50914] hover:bg-[#5A3E2D] text-white text-sm font-bold shadow-md transition-all flex items-center justify-center gap-2"
                 >
                   <Compass size={16} />
                   <span>Explore Other Cafes</span>
@@ -186,7 +186,7 @@ export default function QrLandingPage() {
                 <span className="text-[11px] font-bold uppercase tracking-wider text-rose-600 bg-rose-50 px-2.5 py-1 rounded-full border border-rose-200">
                   Invalid QR Code
                 </span>
-                <h2 className="text-2xl font-black text-[#2C1810]">
+                <h2 className="text-2xl font-black text-[#252525]">
                   QR Code Not Found
                 </h2>
                 <p className="text-xs sm:text-sm text-stone-500 leading-relaxed">
@@ -197,7 +197,7 @@ export default function QrLandingPage() {
               <div className="pt-2 flex flex-col gap-3">
                 <Link 
                   href="/customer/cafe"
-                  className="w-full py-3 px-4 rounded-xl bg-[#6F4E37] hover:bg-[#5A3E2D] text-white text-sm font-bold shadow-md transition-all flex items-center justify-center gap-2"
+                  className="w-full py-3 px-4 rounded-xl bg-[#E50914] hover:bg-[#5A3E2D] text-white text-sm font-bold shadow-md transition-all flex items-center justify-center gap-2"
                 >
                   <Store size={16} />
                   <span>Browse Active Cafes</span>

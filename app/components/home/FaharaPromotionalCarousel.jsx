@@ -8,10 +8,10 @@ import { useRouter } from 'next/navigation';
 export const PROMOTIONAL_SLIDES = [
   {
     id: 1,
-    badge: 'WELCOME TO FAHARA',
+    badge: 'WELCOME TO Grab2GO',
     heading: 'Your Moments. Your Place.',
-    description: 'Discover cafés, plan special occasions, and make every gathering memorable with Fahara.',
-    cta: 'Explore Fahara',
+    description: 'Discover cafés, plan special occasions, and make every gathering memorable with Grab2GO.',
+    cta: 'Explore Grab2GO',
     ctaLink: '/customer/cafe',
     image: '/cafe1.jpg',
     imageAlt: 'Warm, elegant cafe interior with ambient lighting',
@@ -32,7 +32,7 @@ export const PROMOTIONAL_SLIDES = [
     id: 3,
     badge: 'COMING SOON',
     heading: 'Something Exciting Is Brewing.',
-    description: 'Exclusive café deals, special offers, and exciting experiences are coming soon to Fahara. Stay tuned!',
+    description: 'Exclusive café deals, special offers, and exciting experiences are coming soon to Grab2GO. Stay tuned!',
     cta: 'Coming Soon',
     ctaLink: null,
     image: '/cafe2.jpg',
@@ -52,7 +52,7 @@ export const PROMOTIONAL_SLIDES = [
   },
 ];
 
-export default function FaharaPromotionalCarousel({ 
+export default function ({ 
   className = '', 
   compact = false 
 }) {
@@ -136,16 +136,16 @@ export default function FaharaPromotionalCarousel({
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
       aria-roledescription="carousel"
-      aria-label="Fahara Promotional Announcements"
+      aria-label="Grab2GO Promotional Announcements"
     >
       {/* ── MAIN HORIZONTAL SPLIT BANNER CARD ── */}
-      <div className={`relative w-full rounded-[24px] sm:rounded-[32px] overflow-hidden bg-[#FFF8F0] border border-[#E8DED5] shadow-[0_12px_36px_rgba(44,24,16,0.06)] flex flex-col sm:flex-row transition-all duration-300 ${
+      <div className={`relative w-full rounded-[24px] sm:rounded-[32px] overflow-hidden bg-[#FFF5F5] border border-[#FEE2E2] shadow-[0_12px_36px_rgba(44,24,16,0.06)] flex flex-col sm:flex-row transition-all duration-300 ${
         compact ? 'min-h-[190px] p-4 xs:p-5' : 'min-h-[220px] sm:min-h-[260px] md:min-h-[280px] p-5 sm:p-7 md:p-8'
       }`}>
         
         {/* Soft Background Warm Accent Glow */}
-        <div className="absolute -left-12 -bottom-12 w-48 h-48 rounded-full bg-[#EAD8C7]/40 blur-3xl pointer-events-none" />
-        <div className="absolute right-0 top-0 w-64 h-64 rounded-full bg-[#DDB892]/20 blur-3xl pointer-events-none" />
+        <div className="absolute -left-12 -bottom-12 w-48 h-48 rounded-full bg-red-100/40 blur-3xl pointer-events-none" />
+        <div className="absolute right-0 top-0 w-64 h-64 rounded-full bg-[#E50914]/10 blur-3xl pointer-events-none" />
 
         {/* ── LEFT COLUMN: Text Content & Primary CTA ── */}
         <div className="relative z-10 flex-1 flex flex-col justify-center items-start text-left pr-0 sm:pr-6 md:pr-8 min-w-0">
@@ -173,13 +173,13 @@ export default function FaharaPromotionalCarousel({
               <span className={`inline-flex items-center text-[10px] sm:text-[11px] font-black uppercase tracking-wider px-3 py-1 rounded-full border shadow-2xs ${
                 currentSlide.isUpcoming 
                   ? 'bg-[#FFE8D6] text-[#A64B2A] border-[#F4A261]/40'
-                  : 'bg-[#FAF2EB] text-[#A67B5B] border-[#DDB892]/60'
+                  : 'bg-[#FAF2EB] text-[#B71C1C] border-[#EF5350]/60'
               }`}>
                 {currentSlide.badge}
               </span>
 
               {/* Heading */}
-              <h3 className={`font-black text-[#2C1810] tracking-tight leading-[1.12] line-clamp-2 ${
+              <h3 className={`font-black text-[#252525] tracking-tight leading-[1.12] line-clamp-2 ${
                 compact 
                   ? 'text-lg xs:text-xl' 
                   : 'text-xl sm:text-2xl md:text-3xl'
@@ -199,7 +199,7 @@ export default function FaharaPromotionalCarousel({
               {/* Action Button */}
               <div className="pt-1.5 sm:pt-2">
                 {currentSlide.isUpcoming ? (
-                  <div className="inline-flex items-center gap-2 px-4 sm:px-5 py-2 sm:py-2.5 rounded-full bg-[#E8DED5] text-[#6D5A50] text-xs sm:text-sm font-black shadow-2xs cursor-default">
+                  <div className="inline-flex items-center gap-2 px-4 sm:px-5 py-2 sm:py-2.5 rounded-full bg-[#FEE2E2] text-[#6D5A50] text-xs sm:text-sm font-black shadow-2xs cursor-default">
                     <span>{currentSlide.cta}</span>
                   </div>
                 ) : (
@@ -207,7 +207,7 @@ export default function FaharaPromotionalCarousel({
                     type="button"
                     suppressHydrationWarning
                     onClick={() => handleCtaClick(currentSlide)}
-                    className="inline-flex items-center gap-2 px-4 sm:px-5 py-2 sm:py-2.5 rounded-full bg-[#6F4E37] hover:bg-[#523723] active:bg-[#3B1F13] text-white text-xs sm:text-sm font-black shadow-md shadow-[#6F4E37]/25 hover:shadow-lg active:scale-95 transition-all cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#6F4E37]/40"
+                    className="inline-flex items-center gap-2 px-4 sm:px-5 py-2 sm:py-2.5 rounded-full bg-[#E50914] hover:bg-[#523723] active:bg-[#3B1F13] text-white text-xs sm:text-sm font-black shadow-md shadow-[#E50914]/25 hover:shadow-lg active:scale-95 transition-all cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#E50914]/40"
                     aria-label={`${currentSlide.cta}: ${currentSlide.heading}`}
                   >
                     <span>{currentSlide.cta}</span>
@@ -223,7 +223,7 @@ export default function FaharaPromotionalCarousel({
 
         {/* ── RIGHT COLUMN: High-Quality Cafe & Event Visual ── */}
         <div className="relative z-10 mt-4 sm:mt-0 sm:w-[42%] md:w-[40%] flex items-center justify-center shrink-0">
-          <div className="relative w-full h-[150px] xs:h-[170px] sm:h-full min-h-[160px] sm:min-h-[190px] md:min-h-[210px] rounded-2xl sm:rounded-3xl overflow-hidden shadow-sm border border-[#E8DED5]/80 bg-stone-100">
+          <div className="relative w-full h-[150px] xs:h-[170px] sm:h-full min-h-[160px] sm:min-h-[190px] md:min-h-[210px] rounded-2xl sm:rounded-3xl overflow-hidden shadow-sm border border-[#FEE2E2]/80 bg-stone-100">
             <AnimatePresence mode="wait" custom={direction}>
               <motion.img
                 key={currentSlide.image}
@@ -249,7 +249,7 @@ export default function FaharaPromotionalCarousel({
           suppressHydrationWarning
           onClick={handlePrev}
           aria-label="Previous Slide"
-          className="hidden sm:flex absolute left-2.5 top-1/2 -translate-y-1/2 z-20 w-8 h-8 rounded-full bg-white/85 hover:bg-white text-[#2C1810] border border-[#E8DED5] items-center justify-center shadow-md active:scale-90 transition-all cursor-pointer opacity-70 hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-[#6F4E37]/40"
+          className="hidden sm:flex absolute left-2.5 top-1/2 -translate-y-1/2 z-20 w-8 h-8 rounded-full bg-white/85 hover:bg-white text-[#252525] border border-[#FEE2E2] items-center justify-center shadow-md active:scale-90 transition-all cursor-pointer opacity-70 hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-[#E50914]/40"
         >
           <ChevronLeft size={16} strokeWidth={2.5} />
         </button>
@@ -259,7 +259,7 @@ export default function FaharaPromotionalCarousel({
           suppressHydrationWarning
           onClick={handleNext}
           aria-label="Next Slide"
-          className="hidden sm:flex absolute right-2.5 top-1/2 -translate-y-1/2 z-20 w-8 h-8 rounded-full bg-white/85 hover:bg-white text-[#2C1810] border border-[#E8DED5] items-center justify-center shadow-md active:scale-90 transition-all cursor-pointer opacity-70 hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-[#6F4E37]/40"
+          className="hidden sm:flex absolute right-2.5 top-1/2 -translate-y-1/2 z-20 w-8 h-8 rounded-full bg-white/85 hover:bg-white text-[#252525] border border-[#FEE2E2] items-center justify-center shadow-md active:scale-90 transition-all cursor-pointer opacity-70 hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-[#E50914]/40"
         >
           <ChevronRight size={16} strokeWidth={2.5} />
         </button>
@@ -283,10 +283,10 @@ export default function FaharaPromotionalCarousel({
               aria-selected={isActive}
               aria-label={`Go to slide ${idx + 1}: ${slide.heading}`}
               onClick={() => setCurrentIndex(idx)}
-              className={`h-2 rounded-full transition-all duration-300 cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#6F4E37]/40 ${
+              className={`h-2 rounded-full transition-all duration-300 cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#E50914]/40 ${
                 isActive 
-                  ? 'w-6 bg-[#6F4E37] shadow-xs' 
-                  : 'w-2 bg-[#DDB892]/60 hover:bg-[#6F4E37]/50'
+                  ? 'w-6 bg-[#E50914] shadow-xs' 
+                  : 'w-2 bg-[#EF5350]/60 hover:bg-[#E50914]/50'
               }`}
             />
           );

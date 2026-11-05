@@ -28,15 +28,15 @@ export default function HeroSection({ onCategorySelect, activeCategory }) {
   };
 
   return (
-    <section className="relative min-h-[85vh] lg:min-h-[720px] w-full flex items-center justify-center overflow-hidden bg-[#6F4E37] text-white py-16 lg:py-24">
+    <section className="relative min-h-[85vh] lg:min-h-[720px] w-full flex items-center justify-center overflow-hidden bg-[#E50914] text-white py-16 lg:py-24">
       {/* Background Image / Gradient Overlay */}
       <div className="absolute inset-0 z-0">
         <img 
           src="https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&q=80" 
-          alt="Fahara Hero Cafe" 
+          alt="Grab2GO Hero Cafe" 
           className="w-full h-full object-cover opacity-25 scale-105 transform transition-transform duration-1000"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#2C1810] via-[#4A2C11]/80 to-[#6F4E37]/90 mix-blend-multiply" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#252525] via-[#B71C1C]/80 to-[#E50914]/90 mix-blend-multiply" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-amber-500/10 via-transparent to-transparent pointer-events-none" />
       </div>
 
@@ -47,10 +47,10 @@ export default function HeroSection({ onCategorySelect, activeCategory }) {
           initial={{ opacity: 0, y: -15 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-[#DDB892] text-xs font-black tracking-wider uppercase mb-6 shadow-inner"
+          className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-[#EF5350] text-xs font-black tracking-wider uppercase mb-6 shadow-inner"
         >
           <Sparkles size={14} className="text-amber-400 animate-pulse" />
-          <span>Fahara Cafe & Event Booking Marketplace</span>
+          <span>Grab2GO Cafe & Event Booking Marketplace</span>
         </motion.div>
 
         {/* Main Headline */}
@@ -61,7 +61,7 @@ export default function HeroSection({ onCategorySelect, activeCategory }) {
           className="text-3xl sm:text-5xl lg:text-7xl font-black text-white mb-4 tracking-tight leading-[1.1] max-w-5xl"
         >
           Find the Perfect Cafe <br className="hidden sm:inline" />
-          <span className="bg-gradient-to-r from-[#FFF8F0] via-[#DDB892] to-amber-200 bg-clip-text text-transparent">
+          <span className="bg-gradient-to-r from-[#FFF5F5] via-[#EF5350] to-amber-200 bg-clip-text text-transparent">
             for Your Moment
           </span>
         </motion.h1>
@@ -71,7 +71,7 @@ export default function HeroSection({ onCategorySelect, activeCategory }) {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="text-base sm:text-xl text-[#FFF8F0]/90 mb-10 max-w-2xl font-medium leading-relaxed"
+          className="text-base sm:text-xl text-[#FFF5F5]/90 mb-10 max-w-2xl font-medium leading-relaxed"
         >
           Discover cafes for meetups, birthdays, meetings, celebrations, and private events.
         </motion.p>
@@ -82,11 +82,11 @@ export default function HeroSection({ onCategorySelect, activeCategory }) {
           initial={{ opacity: 0, scale: 0.95, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.3 }}
-          className="w-full max-w-5xl bg-white/95 backdrop-blur-xl p-3 sm:p-4 rounded-3xl sm:rounded-[32px] shadow-[0_20px_50px_rgba(44,24,16,0.3)] border border-white/40 flex flex-col md:flex-row items-center gap-2 text-[#2C1810] mb-8"
+          className="w-full max-w-5xl bg-white/95 backdrop-blur-xl p-3 sm:p-4 rounded-3xl sm:rounded-[32px] shadow-[0_20px_50px_rgba(44,24,16,0.3)] border border-white/40 flex flex-col md:flex-row items-center gap-2 text-[#252525] mb-8"
         >
           {/* Search Cafe / Location Input */}
           <div className="flex-1 flex items-center px-4 py-3 w-full border-b md:border-b-0 md:border-r border-stone-200/80 group">
-            <Search className="text-[#6F4E37] mr-3 shrink-0 transition-transform group-focus-within:scale-110" size={20} />
+            <Search className="text-[#E50914] mr-3 shrink-0 transition-transform group-focus-within:scale-110" size={20} />
             <div className="flex flex-col text-left w-full">
               <label className="text-[10px] font-black uppercase tracking-wider text-stone-400">Search Cafe or Location</label>
               <input 
@@ -94,7 +94,7 @@ export default function HeroSection({ onCategorySelect, activeCategory }) {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Where to? (e.g. Bandra, Rooftop, Birthday)" 
-                className="w-full outline-none text-xs sm:text-sm font-extrabold text-[#2C1810] bg-transparent placeholder:text-stone-400"
+                className="w-full outline-none text-xs sm:text-sm font-extrabold text-[#252525] bg-transparent placeholder:text-stone-400"
                 suppressHydrationWarning
               />
             </div>
@@ -138,7 +138,7 @@ export default function HeroSection({ onCategorySelect, activeCategory }) {
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.96 }}
             type="submit"
-            className="w-full md:w-auto px-8 py-4 bg-gradient-to-r from-[#4A2C11] to-[#6F4E37] hover:from-[#361f0a] hover:to-[#573d2a] text-white font-black rounded-2xl sm:rounded-[24px] text-sm flex items-center justify-center gap-2 shadow-lg shadow-[#4A2C11]/30 transition-all cursor-pointer shrink-0"
+            className="w-full md:w-auto px-8 py-4 bg-gradient-to-r from-[#B71C1C] to-[#E50914] hover:from-[#361f0a] hover:to-[#573d2a] text-white font-black rounded-2xl sm:rounded-[24px] text-sm flex items-center justify-center gap-2 shadow-lg shadow-[#B71C1C]/30 transition-all cursor-pointer shrink-0"
           >
             <span>Search</span>
             <ArrowRight size={18} />
@@ -152,7 +152,7 @@ export default function HeroSection({ onCategorySelect, activeCategory }) {
           transition={{ duration: 0.6, delay: 0.4 }}
           className="w-full flex items-center justify-center flex-wrap gap-2 sm:gap-3"
         >
-          <span className="text-xs font-black tracking-wider uppercase text-[#DDB892] mr-1 hidden sm:inline">Event Types:</span>
+          <span className="text-xs font-black tracking-wider uppercase text-[#EF5350] mr-1 hidden sm:inline">Event Types:</span>
           {eventPills.map((pill) => {
             const Icon = pill.icon;
             const isSelected = activeCategory === pill.category;
@@ -162,11 +162,11 @@ export default function HeroSection({ onCategorySelect, activeCategory }) {
                 onClick={() => onCategorySelect && onCategorySelect(pill.category)}
                 className={`flex items-center gap-1.5 px-3.5 py-2 rounded-full text-xs font-bold transition-all duration-300 backdrop-blur-md cursor-pointer ${
                   isSelected 
-                    ? "bg-white text-[#2C1810] shadow-md scale-105 ring-2 ring-white/60" 
+                    ? "bg-white text-[#252525] shadow-md scale-105 ring-2 ring-white/60" 
                     : "bg-white/10 hover:bg-white/20 text-white border border-white/15"
                 }`}
               >
-                <Icon size={14} className={isSelected ? "text-[#6F4E37]" : "text-[#DDB892]"} />
+                <Icon size={14} className={isSelected ? "text-[#E50914]" : "text-[#EF5350]"} />
                 <span>{pill.label}</span>
               </button>
             );

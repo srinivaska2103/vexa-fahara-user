@@ -138,7 +138,7 @@ export default function CategoryVenueSection({
   if (isLoading) {
     return (
       <div className={`space-y-6 ${className}`}>
-        <div className="w-full bg-white rounded-[24px] border border-[#E8DED5] p-4 sm:p-6 min-h-[90px] flex items-center justify-between animate-pulse">
+        <div className="w-full bg-white rounded-[24px] border border-[#FEE2E2] p-4 sm:p-6 min-h-[90px] flex items-center justify-between animate-pulse">
           <div className="flex items-center gap-3">
             <div className="w-[56px] h-[56px] sm:w-[64px] sm:h-[64px] rounded-full bg-[#EADBCE]/50 shrink-0" />
             <div className="space-y-2">
@@ -166,8 +166,8 @@ export default function CategoryVenueSection({
         transition={{ duration: 0.25 }}
         className={`space-y-4 ${className}`}
       >
-        <div className="w-full bg-white rounded-[24px] border border-[#E8DED5] p-5 sm:p-8 shadow-[0_4px_20px_rgba(0,0,0,0.03)] flex flex-col items-center justify-center text-center space-y-3">
-          <div className="w-[64px] h-[64px] sm:w-[80px] sm:h-[80px] rounded-full overflow-hidden border border-[#E8DED5] bg-[#F5EDE4] flex items-center justify-center shadow-xs">
+        <div className="w-full bg-white rounded-[24px] border border-[#FEE2E2] p-5 sm:p-8 shadow-[0_4px_20px_rgba(0,0,0,0.03)] flex flex-col items-center justify-center text-center space-y-3">
+          <div className="w-[64px] h-[64px] sm:w-[80px] sm:h-[80px] rounded-full overflow-hidden border border-[#FEE2E2] bg-[#F5EDE4] flex items-center justify-center shadow-xs">
             {image ? (
               <img src={image} alt={categoryName} className="w-full h-full object-cover" />
             ) : (
@@ -178,11 +178,11 @@ export default function CategoryVenueSection({
           </div>
           
           <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#FFF4E8] text-[#6F4E37] border border-[#E8DED5] text-xs font-black tracking-wide uppercase mb-1">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#FFF4E8] text-[#E50914] border border-[#FEE2E2] text-xs font-black tracking-wide uppercase mb-1">
               <span>{categoryName} Coming Soon</span>
             </div>
-            <h3 className="text-lg sm:text-xl font-extrabold text-[#2C1810]">
-              We're onboarding amazing {categoryName.toLowerCase()} spaces to Fahara soon.
+            <h3 className="text-lg sm:text-xl font-extrabold text-[#252525]">
+              We're onboarding amazing {categoryName.toLowerCase()} spaces to Grab2GO soon.
             </h3>
             <p className="text-xs sm:text-sm text-stone-500 font-medium max-w-md mx-auto mt-1">
               Be the first to know when active customer-visible venues become available in your area.
@@ -215,13 +215,13 @@ export default function CategoryVenueSection({
       className={`space-y-4 ${className}`}
     >
       {/* SECTION HEADER CARD (Matching attached reference 1 pill card design) */}
-      <div className="w-full bg-white rounded-[24px] border border-[#E8DED5] p-3.5 sm:p-5 shadow-[0_4px_20px_rgba(0,0,0,0.03)] flex items-center justify-between gap-3 sm:gap-4 transition-all duration-300">
+      <div className="w-full bg-white rounded-[24px] border border-[#FEE2E2] p-3.5 sm:p-5 shadow-[0_4px_20px_rgba(0,0,0,0.03)] flex items-center justify-between gap-3 sm:gap-4 transition-all duration-300">
         
         {/* LEFT: CIRCULAR CATEGORY IMAGE + TITLE + BADGES */}
         <div className="flex items-center gap-3 sm:gap-4 min-w-0 flex-1">
           
           {/* Circular Category Thumbnail / Icon Box */}
-          <div className="w-[52px] h-[52px] sm:w-[64px] sm:h-[64px] rounded-full overflow-hidden border border-[#E8DED5] shrink-0 bg-[#F5EDE4] flex items-center justify-center shadow-xs">
+          <div className="w-[52px] h-[52px] sm:w-[64px] sm:h-[64px] rounded-full overflow-hidden border border-[#FEE2E2] shrink-0 bg-[#F5EDE4] flex items-center justify-center shadow-xs">
             {image ? (
               <img src={image} alt={categoryName} className="w-full h-full object-cover" />
             ) : (
@@ -233,7 +233,7 @@ export default function CategoryVenueSection({
 
           {/* Title & Info Stack */}
           <div className="min-w-0 flex-1">
-            <h2 className="text-base sm:text-xl md:text-2xl font-extrabold text-[#2C1810] tracking-tight leading-tight truncate">
+            <h2 className="text-base sm:text-xl md:text-2xl font-extrabold text-[#252525] tracking-tight leading-tight truncate">
               {categoryName}
             </h2>
 
@@ -257,7 +257,7 @@ export default function CategoryVenueSection({
             href={targetExploreUrl}
             onClick={handleCtaClick}
             aria-label={`View all ${categoryName}`}
-            className="w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-[#FFF4E8] text-[#5A3215] hover:bg-[#5A3215] hover:text-white flex items-center justify-center transition-all duration-200 cursor-pointer border border-[#E8DED5] shadow-2xs hover:scale-105 active:scale-95 group"
+            className="w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-[#FFF4E8] text-[#5A3215] hover:bg-[#5A3215] hover:text-white flex items-center justify-center transition-all duration-200 cursor-pointer border border-[#FEE2E2] shadow-2xs hover:scale-105 active:scale-95 group"
           >
             <ChevronRight size={20} className="stroke-[2.5] group-hover:translate-x-0.5 transition-transform" />
           </Link>

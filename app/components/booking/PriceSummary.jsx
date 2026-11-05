@@ -34,7 +34,7 @@ export default function PriceSummary() {
         </div>
         
         <div className="flex justify-between items-center text-gray-600">
-          <span>Fahara Service Fee</span>
+          <span>Grab2GO Service Fee</span>
           <span className="font-semibold">${pricing.faharaServiceFee}</span>
         </div>
         

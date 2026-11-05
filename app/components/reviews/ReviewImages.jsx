@@ -29,7 +29,7 @@ export default function ReviewImages({ images, setImages, maxImages = 10 }) {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <label className="text-sm font-semibold text-[#2C1810]">
+        <label className="text-sm font-semibold text-[#252525]">
           Add Photos (Optional)
         </label>
         <span className="text-xs text-gray-500">{images.length} / {maxImages}</span>
@@ -43,7 +43,7 @@ export default function ReviewImages({ images, setImages, maxImages = 10 }) {
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.8 }}
-              className="relative w-24 h-24 rounded-xl overflow-hidden border border-[#E8DED5] group"
+              className="relative w-24 h-24 rounded-xl overflow-hidden border border-[#FEE2E2] group"
             >
               <Image src={src} alt="Upload preview" fill className="object-cover" />
               <button
@@ -61,7 +61,7 @@ export default function ReviewImages({ images, setImages, maxImages = 10 }) {
           <button
             type="button"
             onClick={() => fileInputRef.current?.click()}
-            className="w-24 h-24 rounded-xl border-2 border-dashed border-[#A67B5B] bg-[#FFF8F0] text-[#6F4E37] flex flex-col items-center justify-center gap-2 hover:bg-[#FDECE0] transition-colors"
+            className="w-24 h-24 rounded-xl border-2 border-dashed border-[#B71C1C] bg-[#FFF5F5] text-[#E50914] flex flex-col items-center justify-center gap-2 hover:bg-[#FDECE0] transition-colors"
           >
             <Upload className="w-6 h-6" />
             <span className="text-xs font-medium">Upload</span>

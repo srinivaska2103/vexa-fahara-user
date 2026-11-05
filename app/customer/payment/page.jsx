@@ -80,7 +80,7 @@ function PaymentPageContent() {
         key: paymentInfo.keyId || process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
         amount: paymentInfo.amount,
         currency: paymentInfo.currency || 'INR',
-        name: 'FAHARA',
+        name: 'Grab2GO',
         description: `Booking #${bookingId.substring(0, 8)}`,
         order_id: paymentInfo.orderId,
         handler: async function (res) {
@@ -107,7 +107,7 @@ function PaymentPageContent() {
           contact: booking?.users?.phone || '',
         },
         theme: {
-          color: '#6F4E37',
+          color: '#E50914',
         },
         modal: {
           ondismiss: function () {
@@ -152,8 +152,8 @@ function PaymentPageContent() {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <h2 className="text-xl font-bold text-[#2C1810]">Booking Not Found</h2>
-          <p className="text-[#A67B5B] mt-2">We could not find the booking you are looking for.</p>
+          <h2 className="text-xl font-bold text-[#252525]">Booking Not Found</h2>
+          <p className="text-[#B71C1C] mt-2">We could not find the booking you are looking for.</p>
         </div>
       </div>
     );
@@ -389,7 +389,7 @@ export default function PaymentPage() {
     <Suspense fallback={
       <FaharaInteractiveLoader 
         message="Loading Payment Summary & Checkout..." 
-        badgeTag="FAHARA PAYMENTS" 
+        badgeTag="Grab2GO PAYMENTS" 
         fullScreen={true} 
       />
     }>

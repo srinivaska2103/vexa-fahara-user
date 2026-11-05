@@ -128,7 +128,7 @@ export default function MyBookingsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#FFF8F0] font-sans antialiased text-[#2C1810] flex flex-col selection:bg-[#6F4E37] selection:text-white pb-24 lg:pb-12">
+    <div className="min-h-screen bg-[#FFF5F5] font-sans antialiased text-[#252525] flex flex-col selection:bg-[#E50914] selection:text-white pb-24 lg:pb-12">
       
       {/* ─────────────────────────────────────────────────────────────
           1. MOBILE VIEW REDESIGN (Exact Match to Favourites UI)
@@ -137,26 +137,26 @@ export default function MyBookingsPage() {
       <div className="block md:hidden w-full select-none pb-20">
         
         {/* Sticky Top Header, Search & Filter Chips Container */}
-        <div className="sticky top-0 z-30 bg-[#FFF8F0]/95 backdrop-blur-md pt-4 pb-2 px-4 border-b border-[#E8DED5]/60 shadow-[0_4px_16px_rgba(44,24,16,0.03)]">
+        <div className="sticky top-0 z-30 bg-[#FFF5F5]/95 backdrop-blur-md pt-4 pb-2 px-4 border-b border-[#FEE2E2]/60 shadow-[0_4px_16px_rgba(44,24,16,0.03)]">
           {/* Header Row: Back button, Calendar Circle Icon, Title & Subtitle */}
           <div className="flex items-center gap-3.5 mb-3.5">
             <Link
               href="/customer/cafe"
-              className="w-10 h-10 rounded-full bg-white border border-[#E8DED5] flex items-center justify-center text-[#2C1810] shadow-2xs active:scale-90 transition-transform cursor-pointer"
+              className="w-10 h-10 rounded-full bg-white border border-[#FEE2E2] flex items-center justify-center text-[#252525] shadow-2xs active:scale-90 transition-transform cursor-pointer"
               aria-label="Back to cafes"
             >
               <ArrowLeft size={18} />
             </Link>
 
-            <div className="w-10 h-10 rounded-full bg-[#F5EBE0] border border-[#DDB892]/50 flex items-center justify-center flex-shrink-0 shadow-2xs">
-              <Calendar size={18} className="text-[#6F4E37]" />
+            <div className="w-10 h-10 rounded-full bg-[#F5EBE0] border border-[#EF5350]/50 flex items-center justify-center flex-shrink-0 shadow-2xs">
+              <Calendar size={18} className="text-[#E50914]" />
             </div>
 
             <div className="min-w-0 flex-1">
-              <h1 className="text-xl font-black text-[#2C1810] tracking-tight leading-tight flex items-center gap-2">
+              <h1 className="text-xl font-black text-[#252525] tracking-tight leading-tight flex items-center gap-2">
                 <span>My Bookings</span>
                 {filteredBookings.length > 0 && (
-                  <span className="text-[10px] font-black bg-[#FFF8F0] text-[#6F4E37] border border-[#DDB892]/60 px-2 py-0.5 rounded-full">
+                  <span className="text-[10px] font-black bg-[#FFF5F5] text-[#E50914] border border-[#EF5350]/60 px-2 py-0.5 rounded-full">
                     {filteredBookings.length}
                   </span>
                 )}
@@ -176,7 +176,7 @@ export default function MyBookingsPage() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search by cafe or booking ID..."
-                className="w-full pl-9 pr-9 py-2.5 rounded-full bg-white border border-[#E8DED5] text-xs font-semibold text-[#2C1810] placeholder:text-stone-400 shadow-2xs focus:outline-none focus:ring-2 focus:ring-[#DDB892] transition-all"
+                className="w-full pl-9 pr-9 py-2.5 rounded-full bg-white border border-[#FEE2E2] text-xs font-semibold text-[#252525] placeholder:text-stone-400 shadow-2xs focus:outline-none focus:ring-2 focus:ring-[#EF5350] transition-all"
               />
               {searchQuery && (
                 <button
@@ -192,10 +192,10 @@ export default function MyBookingsPage() {
             <button
               type="button"
               onClick={() => setIsFilterSheetOpen(true)}
-              className="w-11 h-11 rounded-2xl bg-white border border-[#E8DED5] flex items-center justify-center text-[#2C1810] shadow-2xs active:scale-95 transition-transform cursor-pointer flex-shrink-0"
+              className="w-11 h-11 rounded-2xl bg-white border border-[#FEE2E2] flex items-center justify-center text-[#252525] shadow-2xs active:scale-95 transition-transform cursor-pointer flex-shrink-0"
               aria-label="Sort & Filter"
             >
-              <SlidersHorizontal size={17} className="text-[#6F4E37]" />
+              <SlidersHorizontal size={17} className="text-[#E50914]" />
             </button>
           </div>
 
@@ -210,8 +210,8 @@ export default function MyBookingsPage() {
                   onClick={() => setActiveTab(chip.id)}
                   className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-bold transition-all flex-shrink-0 cursor-pointer shadow-2xs active:scale-95 ${
                     isSelected
-                      ? 'bg-[#6F4E37] text-white border border-[#6F4E37] shadow-sm'
-                      : 'bg-white text-stone-600 border border-[#E8DED5] hover:bg-stone-50'
+                      ? 'bg-[#E50914] text-white border border-[#E50914] shadow-sm'
+                      : 'bg-white text-stone-600 border border-[#FEE2E2] hover:bg-stone-50'
                   }`}
                 >
                   <span>{chip.label}</span>
@@ -241,11 +241,11 @@ export default function MyBookingsPage() {
               />
             ))
           ) : (
-            <div className="bg-white rounded-3xl p-8 border border-[#E8DED5] text-center my-6 shadow-2xs">
-              <div className="w-14 h-14 rounded-full bg-[#FFF8F0] border border-[#DDB892]/40 flex items-center justify-center mx-auto mb-3 text-[#6F4E37]">
-                <Calendar size={24} className="text-[#6F4E37]" />
+            <div className="bg-white rounded-3xl p-8 border border-[#FEE2E2] text-center my-6 shadow-2xs">
+              <div className="w-14 h-14 rounded-full bg-[#FFF5F5] border border-[#EF5350]/40 flex items-center justify-center mx-auto mb-3 text-[#E50914]">
+                <Calendar size={24} className="text-[#E50914]" />
               </div>
-              <h3 className="text-base font-black text-[#2C1810] mb-1">
+              <h3 className="text-base font-black text-[#252525] mb-1">
                 {searchQuery ? "No matching bookings found" : "No bookings yet"}
               </h3>
               <p className="text-xs text-stone-500 mb-5 max-w-xs mx-auto">
@@ -257,14 +257,14 @@ export default function MyBookingsPage() {
                 <button
                   type="button"
                   onClick={() => setSearchQuery('')}
-                  className="px-6 py-2.5 rounded-full bg-[#6F4E37] text-white text-xs font-bold shadow-md cursor-pointer"
+                  className="px-6 py-2.5 rounded-full bg-[#E50914] text-white text-xs font-bold shadow-md cursor-pointer"
                 >
                   Clear Search
                 </button>
               ) : (
                 <Link
                   href="/customer/cafe"
-                  className="inline-block px-6 py-2.5 rounded-full bg-[#6F4E37] text-white text-xs font-bold shadow-md cursor-pointer"
+                  className="inline-block px-6 py-2.5 rounded-full bg-[#E50914] text-white text-xs font-bold shadow-md cursor-pointer"
                 >
                   Explore Cafes
                 </Link>
@@ -289,12 +289,12 @@ export default function MyBookingsPage() {
                 animate={{ y: 0 }}
                 exit={{ y: '100%' }}
                 transition={{ type: 'spring', damping: 26, stiffness: 300 }}
-                className="fixed bottom-0 left-0 right-0 bg-[#FFF8F0] rounded-t-[28px] p-5 z-50 shadow-2xl border-t border-[#E8DED5]"
+                className="fixed bottom-0 left-0 right-0 bg-[#FFF5F5] rounded-t-[28px] p-5 z-50 shadow-2xl border-t border-[#FEE2E2]"
               >
                 <div className="w-10 h-1 bg-stone-300 rounded-full mx-auto mb-4" />
                 
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-base font-black text-[#2C1810]">Sort Bookings</h3>
+                  <h3 className="text-base font-black text-[#252525]">Sort Bookings</h3>
                   <button
                     type="button"
                     onClick={() => setIsFilterSheetOpen(false)}
@@ -325,8 +325,8 @@ export default function MyBookingsPage() {
                           }}
                           className={`py-2.5 px-3 rounded-2xl text-xs font-bold text-left transition-all border flex items-center justify-between ${
                             mobileSort === s.id
-                              ? 'bg-[#6F4E37] text-white border-[#6F4E37]'
-                              : 'bg-white text-stone-700 border-[#E8DED5]'
+                              ? 'bg-[#E50914] text-white border-[#E50914]'
+                              : 'bg-white text-stone-700 border-[#FEE2E2]'
                           }`}
                         >
                           <span>{s.label}</span>
@@ -341,7 +341,7 @@ export default function MyBookingsPage() {
                   <button
                     type="button"
                     onClick={() => setIsFilterSheetOpen(false)}
-                    className="w-full py-3 rounded-full bg-[#6F4E37] text-white font-bold text-xs uppercase tracking-wider"
+                    className="w-full py-3 rounded-full bg-[#E50914] text-white font-bold text-xs uppercase tracking-wider"
                   >
                     Apply
                   </button>
@@ -384,9 +384,9 @@ export default function MyBookingsPage() {
             {/* Header Row: Title & Real-time Search Input */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
               <div>
-                <h1 className="text-2xl sm:text-3xl font-black text-[#2C1810] tracking-tight flex items-center gap-2">
+                <h1 className="text-2xl sm:text-3xl font-black text-[#252525] tracking-tight flex items-center gap-2">
                   <span>My Bookings</span>
-                  <span className="text-xs font-black bg-[#FFF8F0] text-[#6F4E37] border border-[#DDB892]/60 px-2.5 py-1 rounded-full shadow-2xs">
+                  <span className="text-xs font-black bg-[#FFF5F5] text-[#E50914] border border-[#EF5350]/60 px-2.5 py-1 rounded-full shadow-2xs">
                     {filteredBookings.length} Total
                   </span>
                 </h1>
@@ -402,7 +402,7 @@ export default function MyBookingsPage() {
                   placeholder="Search by cafe or booking ID..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2.5 bg-white border border-stone-200/80 rounded-2xl text-xs font-bold text-stone-800 focus:outline-none focus:ring-4 focus:ring-[#DDB892]/30 focus:border-[#6F4E37] transition-all shadow-2xs"
+                  className="w-full pl-10 pr-4 py-2.5 bg-white border border-stone-200/80 rounded-2xl text-xs font-bold text-stone-800 focus:outline-none focus:ring-4 focus:ring-[#EF5350]/30 focus:border-[#E50914] transition-all shadow-2xs"
                 />
               </div>
             </div>

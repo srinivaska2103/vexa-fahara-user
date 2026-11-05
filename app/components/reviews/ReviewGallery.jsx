@@ -17,7 +17,7 @@ export default function ReviewGallery({ images = [] }) {
           <div 
             key={idx} 
             onClick={() => setSelectedImage(src)}
-            className="relative w-20 h-20 rounded-xl overflow-hidden cursor-pointer border border-[#E8DED5] hover:opacity-90 transition-opacity"
+            className="relative w-20 h-20 rounded-xl overflow-hidden cursor-pointer border border-[#FEE2E2] hover:opacity-90 transition-opacity"
           >
             <Image
               src={src}

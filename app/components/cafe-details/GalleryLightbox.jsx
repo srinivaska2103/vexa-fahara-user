@@ -74,7 +74,7 @@ export default function GalleryLightbox({ images = [] }) {
           {/* Header Bar */}
           <div className="flex justify-between items-center text-white z-20">
             <div className="flex items-center gap-2 bg-white/10 backdrop-blur-md px-3.5 py-1.5 rounded-full text-xs font-bold border border-white/10">
-              <ImageIcon size={14} className="text-[#DDB892]" />
+              <ImageIcon size={14} className="text-[#EF5350]" />
               <span>{lightboxIndex + 1} / {images.length}</span>
             </div>
 
@@ -133,7 +133,7 @@ export default function GalleryLightbox({ images = [] }) {
                 }}
                 className={`relative w-12 h-12 rounded-xl overflow-hidden flex-shrink-0 transition-all ${
                   idx === lightboxIndex 
-                    ? 'ring-2 ring-[#DDB892] scale-110 opacity-100' 
+                    ? 'ring-2 ring-[#EF5350] scale-110 opacity-100' 
                     : 'opacity-40 hover:opacity-80'
                 }`}
               >

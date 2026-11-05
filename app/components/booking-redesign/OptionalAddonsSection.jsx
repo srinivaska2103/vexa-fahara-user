@@ -16,10 +16,10 @@ export default function OptionalAddonsSection({
   if (optionalAddons.length === 0) return null;
 
   return (
-    <div className="my-6 p-5 rounded-3xl bg-[#FFF8F0] border border-[#DDB892]/60 space-y-4">
+    <div className="my-6 p-5 rounded-3xl bg-[#FFF5F5] border border-[#EF5350]/60 space-y-4">
       <div className="flex items-center gap-2">
-        <Sparkles className="w-4 h-4 text-[#6F4E37]" />
-        <h4 className="text-sm font-black text-[#2C1810] uppercase tracking-wider">
+        <Sparkles className="w-4 h-4 text-[#E50914]" />
+        <h4 className="text-sm font-black text-[#252525] uppercase tracking-wider">
           Optional Package Add-ons
         </h4>
       </div>
@@ -47,8 +47,8 @@ export default function OptionalAddonsSection({
               onClick={() => onToggleAddOn(addon.id)}
               className={`p-4 rounded-2xl border transition-all cursor-pointer flex items-center justify-between gap-3 ${
                 isSelected
-                  ? 'bg-[#6F4E37] text-white border-[#6F4E37] shadow-sm'
-                  : 'bg-white text-[#2C1810] border-[#DDB892]/50 hover:border-[#6F4E37]'
+                  ? 'bg-[#E50914] text-white border-[#E50914] shadow-sm'
+                  : 'bg-white text-[#252525] border-[#EF5350]/50 hover:border-[#E50914]'
               }`}
             >
               <div className="space-y-0.5">
@@ -58,13 +58,13 @@ export default function OptionalAddonsSection({
                     {addon.description}
                   </p>
                 )}
-                <p className={`text-[11px] font-extrabold ${isSelected ? 'text-amber-200' : 'text-[#6F4E37]'}`}>
+                <p className={`text-[11px] font-extrabold ${isSelected ? 'text-amber-200' : 'text-[#E50914]'}`}>
                   {priceDisplay}
                 </p>
               </div>
 
               <div className={`w-6 h-6 rounded-xl flex items-center justify-center shrink-0 border transition-all ${
-                isSelected ? 'bg-amber-400 border-amber-300 text-[#2C1810]' : 'border-stone-300 bg-stone-50 text-stone-400'
+                isSelected ? 'bg-amber-400 border-amber-300 text-[#252525]' : 'border-stone-300 bg-stone-50 text-stone-400'
               }`}>
                 {isSelected ? <Check className="w-3.5 h-3.5 stroke-[3]" /> : <Plus className="w-3.5 h-3.5" />}
               </div>

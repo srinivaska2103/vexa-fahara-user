@@ -87,7 +87,7 @@ export default function PaymentSuccessCard({ bookingId, transactionId, amount, d
             <Sparkles size={13} className="text-emerald-600" />
             <span>Booking Confirmed</span>
           </span>
-          <h2 className="text-2xl sm:text-3xl font-black text-[#2C1810] tracking-tight">Payment Successful!</h2>
+          <h2 className="text-2xl sm:text-3xl font-black text-[#252525] tracking-tight">Payment Successful!</h2>
           <p className="text-stone-500 font-medium text-xs sm:text-sm mt-1.5 max-w-md mx-auto leading-relaxed">
             Your booking is confirmed. A confirmation receipt has been generated and emailed to you.
           </p>
@@ -109,7 +109,7 @@ export default function PaymentSuccessCard({ bookingId, transactionId, amount, d
             aria-label="View loyalty credit details"
           >
             {/* Badge top-right */}
-            <div className="absolute top-0 right-0 translate-x-2 -translate-y-2 bg-amber-400 text-[#2C1810] text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-bl-xl shadow-xs flex items-center gap-1">
+            <div className="absolute top-0 right-0 translate-x-2 -translate-y-2 bg-amber-400 text-[#252525] text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-bl-xl shadow-xs flex items-center gap-1">
               <Gift size={11} />
               <span>Loyalty Reward</span>
             </div>
@@ -130,8 +130,8 @@ export default function PaymentSuccessCard({ bookingId, transactionId, amount, d
 
                 <div>
                   <div className="flex items-center gap-2 flex-wrap">
-                    <h3 className="font-black text-base sm:text-lg text-[#2C1810]">
-                      +{creditsInfo.earnedNow} Fahara Credit Added!
+                    <h3 className="font-black text-base sm:text-lg text-[#252525]">
+                      +{creditsInfo.earnedNow} Grab2GO Credit Added!
                     </h3>
                     <motion.span
                       animate={{ scale: [1, 1.1, 1] }}
@@ -147,7 +147,7 @@ export default function PaymentSuccessCard({ bookingId, transactionId, amount, d
                   ) : (
                     <p className="text-stone-600 font-bold text-xs mt-0.5">
                       Total Balance:{' '}
-                      <span className="text-[#6F4E37] font-black">{creditsInfo.balance} Credits</span>
+                      <span className="text-[#E50914] font-black">{creditsInfo.balance} Credits</span>
                       {' '}({rupeeDisplay})
                     </p>
                   )}
@@ -195,7 +195,7 @@ export default function PaymentSuccessCard({ bookingId, transactionId, amount, d
                     {creditsInfo.loading ? (
                       <div className="h-4 w-20 bg-amber-200 rounded animate-pulse" />
                     ) : (
-                      <span className="font-black text-sm text-[#6F4E37]">{creditsInfo.balance} Credits</span>
+                      <span className="font-black text-sm text-[#E50914]">{creditsInfo.balance} Credits</span>
                     )}
                   </div>
 
@@ -222,7 +222,7 @@ export default function PaymentSuccessCard({ bookingId, transactionId, amount, d
                     <motion.div
                       whileHover={{ scale: 1.03 }}
                       whileTap={{ scale: 0.96 }}
-                      className="mt-1 w-full bg-gradient-to-r from-amber-500 to-yellow-400 text-[#2C1810] font-black text-sm py-2.5 rounded-2xl flex items-center justify-center gap-2 shadow-md hover:shadow-lg transition-all cursor-pointer"
+                      className="mt-1 w-full bg-gradient-to-r from-amber-500 to-yellow-400 text-[#252525] font-black text-sm py-2.5 rounded-2xl flex items-center justify-center gap-2 shadow-md hover:shadow-lg transition-all cursor-pointer"
                     >
                       <Wallet size={16} />
                       <span>View My Wallet</span>
@@ -241,7 +241,7 @@ export default function PaymentSuccessCard({ bookingId, transactionId, amount, d
                 <motion.div
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className="bg-white hover:bg-amber-50 text-[#6F4E37] border border-amber-300 font-black text-xs px-3.5 py-2 rounded-xl flex items-center gap-1.5 shadow-2xs transition-all cursor-pointer"
+                  className="bg-white hover:bg-amber-50 text-[#E50914] border border-amber-300 font-black text-xs px-3.5 py-2 rounded-xl flex items-center gap-1.5 shadow-2xs transition-all cursor-pointer"
                 >
                   <Wallet size={13} />
                   <span>View Wallet</span>
@@ -253,22 +253,22 @@ export default function PaymentSuccessCard({ bookingId, transactionId, amount, d
         </motion.div>
 
         {/* Receipt Details */}
-        <div className="bg-gradient-to-br from-[#FFF8F0] via-[#FFF8F0]/80 to-[#F5EBE0]/60 border border-[#DDB892]/50 rounded-3xl p-5 sm:p-6 mb-6 text-left space-y-3.5 shadow-2xs">
-          <div className="flex justify-between items-center border-b border-[#DDB892]/30 pb-2.5">
+        <div className="bg-gradient-to-br from-[#FFF5F5] via-[#FFF5F5]/80 to-[#F5EBE0]/60 border border-[#EF5350]/50 rounded-3xl p-5 sm:p-6 mb-6 text-left space-y-3.5 shadow-2xs">
+          <div className="flex justify-between items-center border-b border-[#EF5350]/30 pb-2.5">
             <span className="text-xs font-extrabold text-stone-400 uppercase tracking-wider">Booking ID</span>
-            <span className="font-black text-xs sm:text-sm text-[#2C1810] font-mono bg-white px-3 py-1 rounded-xl border border-stone-200/80 shadow-2xs">{bookingId}</span>
+            <span className="font-black text-xs sm:text-sm text-[#252525] font-mono bg-white px-3 py-1 rounded-xl border border-stone-200/80 shadow-2xs">{bookingId}</span>
           </div>
-          <div className="flex justify-between items-center border-b border-[#DDB892]/30 pb-2.5">
+          <div className="flex justify-between items-center border-b border-[#EF5350]/30 pb-2.5">
             <span className="text-xs font-extrabold text-stone-400 uppercase tracking-wider">Transaction ID</span>
-            <span className="font-black text-xs sm:text-sm text-[#2C1810] font-mono truncate max-w-[180px] sm:max-w-[240px] text-right">{transactionId}</span>
+            <span className="font-black text-xs sm:text-sm text-[#252525] font-mono truncate max-w-[180px] sm:max-w-[240px] text-right">{transactionId}</span>
           </div>
-          <div className="flex justify-between items-center border-b border-[#DDB892]/30 pb-2.5">
+          <div className="flex justify-between items-center border-b border-[#EF5350]/30 pb-2.5">
             <span className="text-xs font-extrabold text-stone-400 uppercase tracking-wider">Payment Date</span>
-            <span className="font-black text-xs sm:text-sm text-[#2C1810]">{date}</span>
+            <span className="font-black text-xs sm:text-sm text-[#252525]">{date}</span>
           </div>
           <div className="flex justify-between items-center pt-1">
-            <span className="text-xs sm:text-sm font-black text-[#2C1810]">Total Paid</span>
-            <span className="font-black text-[#2C1810] text-2xl sm:text-3xl tracking-tight">₹{amount?.toFixed(2)}</span>
+            <span className="text-xs sm:text-sm font-black text-[#252525]">Total Paid</span>
+            <span className="font-black text-[#252525] text-2xl sm:text-3xl tracking-tight">₹{amount?.toFixed(2)}</span>
           </div>
         </div>
 
@@ -283,7 +283,7 @@ export default function PaymentSuccessCard({ bookingId, transactionId, amount, d
           <motion.button
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.96 }}
-            className="w-full bg-gradient-to-r from-[#4A2C11] to-[#6F4E37] text-white py-3.5 sm:py-4 rounded-2xl font-black text-xs sm:text-sm shadow-md hover:shadow-lg transition-all cursor-pointer"
+            className="w-full bg-gradient-to-r from-[#B71C1C] to-[#E50914] text-white py-3.5 sm:py-4 rounded-2xl font-black text-xs sm:text-sm shadow-md hover:shadow-lg transition-all cursor-pointer"
           >
             Go To My Bookings
           </motion.button>

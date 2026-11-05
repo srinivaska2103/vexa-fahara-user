@@ -23,8 +23,8 @@ function BookingConfirmationContent() {
   return (
     <div className="max-w-3xl mx-auto py-12 px-4">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-[#2C1810]">Your Booking</h1>
-        <p className="text-[#A67B5B] mt-1">Review your confirmed booking details below.</p>
+        <h1 className="text-3xl font-bold text-[#252525]">Your Booking</h1>
+        <p className="text-[#B71C1C] mt-1">Review your confirmed booking details below.</p>
       </div>
 
       <BookingConfirmedCard bookingData={dummyBookingData} />

@@ -91,13 +91,13 @@ export default function DiscoverPage() {
         {/* Recently Viewed Link Block */}
         <Link 
           href="/customer/recently-viewed"
-          className="block bg-[#FFF8F0] border border-[#DDB892] rounded-2xl p-6 flex items-center justify-between hover:bg-[#F3E8DF] transition-colors"
+          className="block bg-[#FFF5F5] border border-[#EF5350] rounded-2xl p-6 flex items-center justify-between hover:bg-[#F3E8DF] transition-colors"
         >
           <div>
-            <h3 className="text-lg font-bold text-[#2C1810]">View your browsing history</h3>
-            <p className="text-sm text-[#6F4E37]">Quickly jump back to cafes you looked at recently.</p>
+            <h3 className="text-lg font-bold text-[#252525]">View your browsing history</h3>
+            <p className="text-sm text-[#E50914]">Quickly jump back to cafes you looked at recently.</p>
           </div>
-          <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center text-[#6F4E37] shadow-sm">
+          <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center text-[#E50914] shadow-sm">
             <Clock size={20} />
           </div>
         </Link>

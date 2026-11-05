@@ -57,7 +57,7 @@ export default function SearchHistoryPage() {
           <Link href="/customer/discover" className="p-2.5 bg-white border border-gray-100 shadow-sm hover:shadow-md rounded-full transition-all active:scale-95 text-gray-600">
             <ArrowLeft size={20} />
           </Link>
-          <h1 className="text-3xl font-black text-[#2C1810] tracking-tight">Search History</h1>
+          <h1 className="text-3xl font-black text-[#252525] tracking-tight">Search History</h1>
         </div>
         <div className="flex items-center justify-between mb-8">
           <p className="text-gray-500">Your recent searches and browsing activity.</p>

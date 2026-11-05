@@ -28,15 +28,15 @@ export const viewport = {
 };
 
 export const metadata = {
-  title: "Fahara • Cafe & Event Booking Platform",
+  title: "Grab2GO • Cafe & Event Booking Platform",
   description: "Book top-rated cafes, private venues, and event spaces near you.",
   manifest: "/manifest.json",
   icons: {
     icon: [
-      { url: '/Fahara%20Logo.jpeg', type: 'image/jpeg' },
+      { url: '/grab-it-logo.png', type: 'image/png' },
     ],
-    shortcut: '/Fahara%20Logo.jpeg',
-    apple: '/Fahara%20Logo.jpeg',
+    shortcut: '/grab-it-logo.png',
+    apple: '/grab-it-logo.png',
   },
 };
 
@@ -48,11 +48,14 @@ export default function RootLayout({ children }) {
       className={`${plusJakartaSans.variable} ${playfairDisplay.variable} ${geistMono.variable} h-full antialiased`}
     >
       <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
         <link rel="manifest" href="/manifest.json" />
-        <link rel="icon" href="/Fahara%20Logo.jpeg" type="image/jpeg" />
-        <link rel="apple-touch-icon" href="/Fahara%20Logo.jpeg" />
+        <link rel="icon" href="/grab-it-logo.png" type="image/png" />
+        <link rel="apple-touch-icon" href="/grab-it-logo.png" />
       </head>
-      <body className="min-h-full flex flex-col font-sans" suppressHydrationWarning>
+      <body className="min-h-full flex flex-col font-sans" suppressHydrationWarning={true}>
         <AppProviders>
           {children}
         </AppProviders>

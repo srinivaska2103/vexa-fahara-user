@@ -7,8 +7,8 @@ export default function ShareBookingButton({ bookingId }) {
     try {
       if (navigator.share) {
         await navigator.share({
-          title: 'My Fahara Booking',
-          text: `Check out my booking on Fahara! Booking ID: ${bookingId}`,
+          title: 'My Grab2GO Booking',
+          text: `Check out my booking on Grab2GO! Booking ID: ${bookingId}`,
           url: window.location.href,
         });
       } else {

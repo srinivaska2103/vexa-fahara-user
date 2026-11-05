@@ -143,7 +143,7 @@ function PaymentSuccessContent() {
             <span className="inline-flex items-center gap-1.5 bg-rose-50 text-rose-700 border border-rose-200/80 px-3 py-1 rounded-full text-[10px] sm:text-xs font-black uppercase tracking-wider mb-2.5">
               Verification Notice
             </span>
-            <h2 className="text-2xl sm:text-3xl font-black text-[#2C1810] tracking-tight">Payment Verification Issue</h2>
+            <h2 className="text-2xl sm:text-3xl font-black text-[#252525] tracking-tight">Payment Verification Issue</h2>
             <p className="text-stone-500 text-xs sm:text-sm font-medium mt-2 max-w-md mx-auto leading-relaxed">
               We couldn&apos;t verify your payment confirmation. The transaction may have been cancelled, timed out, or encountered an issue during processing.
             </p>
@@ -176,7 +176,7 @@ function PaymentSuccessContent() {
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.96 }}
               onClick={() => window.location.reload()}
-              className="flex-1 flex items-center justify-center gap-2 bg-[#FFF8F0] border border-[#DDB892]/60 hover:border-[#6F4E37] text-[#6F4E37] py-3.5 px-5 rounded-2xl font-black text-xs transition-all cursor-pointer shadow-2xs hover:shadow-md"
+              className="flex-1 flex items-center justify-center gap-2 bg-[#FFF5F5] border border-[#EF5350]/60 hover:border-[#E50914] text-[#E50914] py-3.5 px-5 rounded-2xl font-black text-xs transition-all cursor-pointer shadow-2xs hover:shadow-md"
             >
               <RefreshCcw size={16} />
               <span>Try Again</span>
@@ -186,7 +186,7 @@ function PaymentSuccessContent() {
               <motion.div 
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.96 }}
-                className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-[#4A2C11] to-[#6F4E37] text-white py-3.5 px-5 rounded-2xl font-black text-xs shadow-md hover:shadow-lg transition-all cursor-pointer"
+                className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-[#B71C1C] to-[#E50914] text-white py-3.5 px-5 rounded-2xl font-black text-xs shadow-md hover:shadow-lg transition-all cursor-pointer"
               >
                 <ArrowLeft size={16} />
                 <span>Back to Cafes</span>
@@ -216,10 +216,10 @@ function PaymentSuccessContent() {
 
 export default function PaymentSuccessPage() {
   return (
-    <div className="min-h-screen bg-[#FFF8F0] font-sans antialiased selection:bg-[#6F4E37] selection:text-white pb-24 lg:pb-16">
+    <div className="min-h-screen bg-[#FFF5F5] font-sans antialiased selection:bg-[#E50914] selection:text-white pb-24 lg:pb-16">
       <CustomerNavbar showSearch={true} showViewToggles={false} />
       <main className="container mx-auto px-2 sm:px-6 lg:px-8 py-4 sm:py-6 max-w-full overflow-x-hidden">
-        <Suspense fallback={<div className="min-h-[70vh] flex items-center justify-center font-black text-sm text-[#6F4E37]">Loading...</div>}>
+        <Suspense fallback={<div className="min-h-[70vh] flex items-center justify-center font-black text-sm text-[#E50914]">Loading...</div>}>
           <PaymentSuccessContent />
         </Suspense>
       </main>

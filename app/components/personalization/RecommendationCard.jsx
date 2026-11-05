@@ -7,7 +7,7 @@ export default function RecommendationCard({ item }) {
   return (
     <motion.div 
       whileHover={{ y: -4 }}
-      className="group bg-white rounded-2xl overflow-hidden hover:shadow-lg transition-all border border-[#E8DED5] flex flex-col h-full"
+      className="group bg-white rounded-2xl overflow-hidden hover:shadow-lg transition-all border border-[#FEE2E2] flex flex-col h-full"
     >
       <Link href={`/cafes/${item.id}`} className="block relative aspect-[4/3] overflow-hidden">
         <Image 
@@ -19,7 +19,7 @@ export default function RecommendationCard({ item }) {
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
         
         {/* Recommendation Reason Badge */}
-        <div className="absolute top-3 left-3 flex items-center gap-1.5 px-3 py-1.5 bg-[#FFF8F0]/95 backdrop-blur-md rounded-lg text-xs font-bold text-[#6F4E37] shadow-sm border border-[#DDB892]/30">
+        <div className="absolute top-3 left-3 flex items-center gap-1.5 px-3 py-1.5 bg-[#FFF5F5]/95 backdrop-blur-md rounded-lg text-xs font-bold text-[#E50914] shadow-sm border border-[#EF5350]/30">
           <Sparkles size={12} className="text-[#F59E0B]" />
           {item.reason}
         </div>
@@ -32,7 +32,7 @@ export default function RecommendationCard({ item }) {
               </span>
             ))}
           </div>
-          <div className="flex items-center gap-1 bg-white/95 text-[#2C1810] px-2 py-1 rounded-lg shadow-sm">
+          <div className="flex items-center gap-1 bg-white/95 text-[#252525] px-2 py-1 rounded-lg shadow-sm">
             <Star size={12} className="fill-[#F59E0B] text-[#F59E0B]" />
             <span className="text-xs font-bold">{item.rating}</span>
           </div>
@@ -40,7 +40,7 @@ export default function RecommendationCard({ item }) {
       </Link>
       
       <div className="p-4 flex flex-col flex-1">
-        <h3 className="font-bold text-[#2C1810] leading-tight mb-2 line-clamp-1">{item.name}</h3>
+        <h3 className="font-bold text-[#252525] leading-tight mb-2 line-clamp-1">{item.name}</h3>
         
         <div className="flex items-center text-xs text-gray-500 mb-4 gap-3">
           <div className="flex items-center gap-1">
@@ -52,11 +52,11 @@ export default function RecommendationCard({ item }) {
         <div className="mt-auto pt-3 border-t border-gray-100 flex items-center justify-between">
           <div>
             <div className="text-[10px] text-gray-500 font-medium uppercase tracking-wider">Est. Price</div>
-            <div className="font-bold text-[#2C1810]">{item.price}</div>
+            <div className="font-bold text-[#252525]">{item.price}</div>
           </div>
           <Link 
             href={`/customer/cafe/${item.id}`}
-            className="px-4 py-2 bg-[#6F4E37] text-white text-xs font-bold rounded-lg hover:bg-[#5A3E2B] transition-colors"
+            className="px-4 py-2 bg-[#E50914] text-white text-xs font-bold rounded-lg hover:bg-[#5A3E2B] transition-colors"
           >
             Book Now
           </Link>

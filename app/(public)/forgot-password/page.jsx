@@ -35,7 +35,7 @@ export default function ForgotPasswordPage() {
       <div className="block md:hidden">
         <MobileAuthWrapper 
           title="Forgot Password?" 
-          subtitle="Enter the email address associated with your Fahara account to recover access."
+          subtitle="Enter the email address associated with your Grab2GO account to recover access."
         >
           <form
             onSubmit={mobileForm.handleSubmit(onMobileSubmit)}
@@ -46,12 +46,12 @@ export default function ForgotPasswordPage() {
             <div>
               <label
                 htmlFor="mobile-forgot-email"
-                className="block text-xs font-bold text-[#6B5B4F] mb-1.5"
+                className="block text-xs font-bold text-[#757575] mb-1.5"
               >
                 Email Address
               </label>
               <div className="relative flex items-center">
-                <div className="absolute left-3 text-[#A67B5B] pointer-events-none">
+                <div className="absolute left-3 text-[#B71C1C] pointer-events-none">
                   <Mail size={16} strokeWidth={2} />
                 </div>
                 <input
@@ -63,10 +63,10 @@ export default function ForgotPasswordPage() {
                   placeholder="demo@email.com"
                   suppressHydrationWarning
                   className={cn(
-                    'w-full py-3 pl-9 pr-3 text-sm font-medium text-[#2C1810] placeholder:text-stone-300 rounded-2xl border bg-[#FFFDF9] focus:bg-white focus:outline-none transition-all shadow-2xs',
+                    'w-full py-3 pl-9 pr-3 text-sm font-medium text-[#252525] placeholder:text-stone-300 rounded-2xl border bg-[#FFFDF9] focus:bg-white focus:outline-none transition-all shadow-2xs',
                     mobileForm.formState.errors.email
                       ? 'border-red-400 focus:border-red-500 focus:ring-2 focus:ring-red-100'
-                      : 'border-[#E8DED5] focus:border-[#6F4E37] focus:ring-2 focus:ring-[#DDB892]/30'
+                      : 'border-[#FEE2E2] focus:border-[#E50914] focus:ring-2 focus:ring-[#EF5350]/30'
                   )}
                 />
               </div>
@@ -83,7 +83,7 @@ export default function ForgotPasswordPage() {
                 type="submit"
                 disabled={isPending}
                 suppressHydrationWarning
-                className="w-full py-3.5 px-6 rounded-2xl bg-gradient-to-r from-[#6F4E37] via-[#825C40] to-[#A67B5B] text-white text-sm font-extrabold tracking-wide shadow-[0_10px_25px_-5px_rgba(111,78,55,0.4)] active:scale-[0.98] transition-all flex items-center justify-center disabled:opacity-70 hover:brightness-105 cursor-pointer"
+                className="w-full py-3.5 px-6 rounded-2xl bg-gradient-to-r from-[#E50914] via-[#825C40] to-[#B71C1C] text-white text-sm font-extrabold tracking-wide shadow-[0_10px_25px_-5px_rgba(111,78,55,0.4)] active:scale-[0.98] transition-all flex items-center justify-center disabled:opacity-70 hover:brightness-105 cursor-pointer"
               >
                 {isPending ? (
                   <Loader2 className="animate-spin mr-2" size={16} />
@@ -96,7 +96,7 @@ export default function ForgotPasswordPage() {
             <div className="pt-3 text-center">
               <Link
                 href="/login"
-                className="inline-flex items-center gap-1.5 text-xs font-extrabold text-[#6F4E37] hover:text-[#8D6345] transition-colors underline-offset-2 hover:underline"
+                className="inline-flex items-center gap-1.5 text-xs font-extrabold text-[#E50914] hover:text-[#8D6345] transition-colors underline-offset-2 hover:underline"
               >
                 <ArrowLeft size={13} strokeWidth={2.5} />
                 Back to Sign In
@@ -111,9 +111,9 @@ export default function ForgotPasswordPage() {
         <AuthLayout title="Forgot Password" subtitle="Enter your email to receive a reset code">
           <form onSubmit={desktopForm.handleSubmit(onDesktopSubmit)} className="space-y-4" noValidate>
             <div>
-              <label className="block text-sm font-semibold text-[#2C1810] mb-1.5">Email</label>
+              <label className="block text-sm font-semibold text-[#252525] mb-1.5">Email</label>
               <div className="relative group">
-                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[#6F4E37] group-focus-within:text-[#4A2614] transition-colors z-10">
+                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[#E50914] group-focus-within:text-[#4A2614] transition-colors z-10">
                   <Mail size={20} strokeWidth={2.2} />
                 </div>
                 <input
@@ -122,7 +122,7 @@ export default function ForgotPasswordPage() {
                   placeholder="Enter your email"
                   suppressHydrationWarning
                   className={cn(
-                    "w-full pl-11 pr-4 py-3 rounded-xl border bg-white/80 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-[#DDB892] focus:bg-white transition-all shadow-sm font-medium text-[#2C1810] placeholder:text-gray-400",
+                    "w-full pl-11 pr-4 py-3 rounded-xl border bg-white/80 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-[#EF5350] focus:bg-white transition-all shadow-sm font-medium text-[#252525] placeholder:text-gray-400",
                     desktopForm.formState.errors.email ? "border-red-400 ring-red-400" : "border-gray-200 hover:border-gray-300"
                   )}
                 />
@@ -152,7 +152,7 @@ export default function ForgotPasswordPage() {
 
             <p className="text-center text-sm text-gray-600 mt-8">
               Remember your password?{' '}
-              <Link href="/login" className="font-bold text-[#6F4E37] hover:text-[#A67B5B] transition-colors">
+              <Link href="/login" className="font-bold text-[#E50914] hover:text-[#B71C1C] transition-colors">
                 Back to Login
               </Link>
             </p>

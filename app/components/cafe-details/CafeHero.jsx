@@ -46,8 +46,8 @@ export default function CafeHero({ cafe }) {
     if (navigator.share) {
       try {
         await navigator.share({
-          title: name || 'Fahara Cafe',
-          text: `Check out ${name || 'this cafe'} on Fahara!`,
+          title: name || 'Grab2GO Cafe',
+          text: `Check out ${name || 'this cafe'} on Grab2GO!`,
           url: window.location.href,
         });
       } catch (err) {
@@ -82,7 +82,7 @@ export default function CafeHero({ cafe }) {
           
           {/* Cafe Name & Verified Badge */}
           <div className="flex flex-wrap items-center gap-3">
-            <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-[#2C1810] tracking-tight leading-tight">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-[#252525] tracking-tight leading-tight">
               {name || 'Cafe Details'}
             </h1>
             {isVerified && (
@@ -102,19 +102,19 @@ export default function CafeHero({ cafe }) {
                 target="_blank"
                 rel="noopener noreferrer"
                 title="Open original Google Reviews page"
-                className="flex items-center bg-[#FFF8F0] hover:bg-[#F5EBE0] text-[#4A2C11] border border-[#DDB892]/60 hover:border-[#6F4E37] px-3 py-1.5 rounded-xl shadow-2xs font-extrabold transition-all cursor-pointer group/glink"
+                className="flex items-center bg-[#FFF5F5] hover:bg-[#F5EBE0] text-[#B71C1C] border border-[#EF5350]/60 hover:border-[#E50914] px-3 py-1.5 rounded-xl shadow-2xs font-extrabold transition-all cursor-pointer group/glink"
               >
                 <Star size={15} className="fill-amber-500 text-amber-500 mr-1.5 group-hover/glink:scale-110 transition-transform" />
                 <span>{rating}</span>
                 <span className="text-stone-400 font-semibold ml-1.5">
                   ({reviewsCount} {t('reviews', 'reviews')})
                 </span>
-                <span className="ml-2 text-[10px] font-black text-[#6F4E37] bg-white/80 px-2 py-0.5 rounded-md border border-[#DDB892]/40 shadow-2xs">
+                <span className="ml-2 text-[10px] font-black text-[#E50914] bg-white/80 px-2 py-0.5 rounded-md border border-[#EF5350]/40 shadow-2xs">
                   Google Reviews ↗
                 </span>
               </a>
             ) : (
-              <div className="flex items-center bg-[#FFF8F0] text-[#4A2C11] border border-[#DDB892]/60 px-3 py-1.5 rounded-xl shadow-2xs font-extrabold">
+              <div className="flex items-center bg-[#FFF5F5] text-[#B71C1C] border border-[#EF5350]/60 px-3 py-1.5 rounded-xl shadow-2xs font-extrabold">
                 <Star size={15} className="fill-amber-500 text-amber-500 mr-1.5" />
                 <span>{rating}</span>
                 <span className="text-stone-400 font-semibold ml-1.5">
@@ -126,9 +126,9 @@ export default function CafeHero({ cafe }) {
             <span className="text-stone-300 hidden sm:inline">•</span>
             
             {/* Location Badge */}
-            <div className="flex items-center text-stone-700 hover:text-[#6F4E37] cursor-pointer transition-colors group">
-              <MapPin size={16} className="mr-1.5 text-[#6F4E37] group-hover:scale-110 transition-transform shrink-0" />
-              <span className="font-bold text-stone-600 group-hover:text-[#6F4E37] transition-colors">
+            <div className="flex items-center text-stone-700 hover:text-[#E50914] cursor-pointer transition-colors group">
+              <MapPin size={16} className="mr-1.5 text-[#E50914] group-hover:scale-110 transition-transform shrink-0" />
+              <span className="font-bold text-stone-600 group-hover:text-[#E50914] transition-colors">
                 {fullAddress}
               </span>
             </div>
@@ -142,9 +142,9 @@ export default function CafeHero({ cafe }) {
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.95 }}
             onClick={handleShareClick}
-            className="flex items-center gap-2 px-4.5 py-2.5 bg-stone-50 hover:bg-[#FFF8F0] border border-stone-200/80 hover:border-[#DDB892] rounded-2xl transition-all font-black text-xs text-[#2C1810] shadow-2xs"
+            className="flex items-center gap-2 px-4.5 py-2.5 bg-stone-50 hover:bg-[#FFF5F5] border border-stone-200/80 hover:border-[#EF5350] rounded-2xl transition-all font-black text-xs text-[#252525] shadow-2xs"
           >
-            {copied ? <Check size={16} className="text-emerald-600" /> : <Share2 size={16} className="text-[#6F4E37]" />}
+            {copied ? <Check size={16} className="text-emerald-600" /> : <Share2 size={16} className="text-[#E50914]" />}
             <span>{copied ? 'Copied!' : 'Share'}</span>
           </motion.button>
 
@@ -153,7 +153,7 @@ export default function CafeHero({ cafe }) {
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.95 }}
             onClick={handleFavoriteClick}
-            className="flex items-center gap-2 px-4.5 py-2.5 bg-stone-50 hover:bg-[#FFF8F0] border border-stone-200/80 hover:border-[#DDB892] rounded-2xl transition-all font-black text-xs text-[#2C1810] shadow-2xs"
+            className="flex items-center gap-2 px-4.5 py-2.5 bg-stone-50 hover:bg-[#FFF5F5] border border-stone-200/80 hover:border-[#EF5350] rounded-2xl transition-all font-black text-xs text-[#252525] shadow-2xs"
           >
             <Heart size={17} className={cn("transition-all duration-300", favorite ? "fill-rose-500 text-rose-500 scale-110" : "text-stone-500 hover:text-rose-500")} />
             <span>{favorite ? 'Saved' : 'Save'}</span>

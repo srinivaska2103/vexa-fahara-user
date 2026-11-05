@@ -54,7 +54,7 @@ export default function RescheduleBookingModal({ isOpen, onClose, onConfirm, boo
           className="relative bg-white w-full max-w-lg rounded-2xl shadow-xl z-10"
         >
           <div className="p-6 border-b border-gray-100 flex justify-between items-center">
-            <h2 className="text-xl font-bold text-[#2C1810]">Reschedule Booking</h2>
+            <h2 className="text-xl font-bold text-[#252525]">Reschedule Booking</h2>
             <button 
               onClick={onClose}
               className="p-2 hover:bg-gray-100 rounded-full transition-colors"
@@ -66,7 +66,7 @@ export default function RescheduleBookingModal({ isOpen, onClose, onConfirm, boo
           <div className="p-6">
             <div className="space-y-5">
               <div>
-                <label className="block text-sm font-medium text-[#2C1810] mb-2">New Date</label>
+                <label className="block text-sm font-medium text-[#252525] mb-2">New Date</label>
                 <ModernDatePicker
                   value={date}
                   onChange={(newDate) => setDate(newDate)}
@@ -77,7 +77,7 @@ export default function RescheduleBookingModal({ isOpen, onClose, onConfirm, boo
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-[#2C1810] mb-2">New Time</label>
+                  <label className="block text-sm font-medium text-[#252525] mb-2">New Time</label>
                   <ModernTimePicker
                     value={time}
                     onChange={(newTime) => setTime(newTime)}
@@ -85,7 +85,7 @@ export default function RescheduleBookingModal({ isOpen, onClose, onConfirm, boo
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-[#2C1810] mb-2">Guests</label>
+                  <label className="block text-sm font-medium text-[#252525] mb-2">Guests</label>
                   <div className="relative">
                     <Users className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                     <input
@@ -93,7 +93,7 @@ export default function RescheduleBookingModal({ isOpen, onClose, onConfirm, boo
                       min="1"
                       value={guests}
                       onChange={(e) => setGuests(Number(e.target.value))}
-                      className="w-full pl-10 pr-4 py-3 rounded-xl border border-[#E8DED5] focus:outline-none focus:ring-2 focus:ring-[#A67B5B]/50"
+                      className="w-full pl-10 pr-4 py-3 rounded-xl border border-[#FEE2E2] focus:outline-none focus:ring-2 focus:ring-[#B71C1C]/50"
                     />
                   </div>
                 </div>
@@ -105,7 +105,7 @@ export default function RescheduleBookingModal({ isOpen, onClose, onConfirm, boo
                 type="button"
                 onClick={onClose}
                 disabled={isProcessing}
-                className="flex-1 py-3 px-4 border border-[#E8DED5] rounded-xl text-[#2C1810] font-semibold hover:bg-gray-50 transition-colors"
+                className="flex-1 py-3 px-4 border border-[#FEE2E2] rounded-xl text-[#252525] font-semibold hover:bg-gray-50 transition-colors"
               >
                 Cancel
               </button>
@@ -113,7 +113,7 @@ export default function RescheduleBookingModal({ isOpen, onClose, onConfirm, boo
                 type="button"
                 onClick={() => onConfirm({ date, time, guests })}
                 disabled={isProcessing || !date || !time || !guests}
-                className="flex-1 py-3 px-4 bg-[#6F4E37] rounded-xl text-white font-semibold hover:bg-[#5A3E2B] transition-colors disabled:opacity-70 flex justify-center items-center"
+                className="flex-1 py-3 px-4 bg-[#E50914] rounded-xl text-white font-semibold hover:bg-[#5A3E2B] transition-colors disabled:opacity-70 flex justify-center items-center"
               >
                 {isProcessing ? 'Checking...' : 'Check Availability'}
               </button>

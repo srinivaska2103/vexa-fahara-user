@@ -75,7 +75,7 @@ export default function CancelBookingModal({ isOpen, onClose, onConfirm, booking
           className="relative bg-white w-full max-w-lg rounded-2xl shadow-xl overflow-hidden z-10"
         >
           <div className="p-6 border-b border-gray-100 flex justify-between items-center">
-            <h2 className="text-xl font-bold text-[#2C1810]">Cancel Booking</h2>
+            <h2 className="text-xl font-bold text-[#252525]">Cancel Booking</h2>
             <button 
               onClick={onClose}
               className="p-2 hover:bg-gray-100 rounded-full transition-colors"
@@ -98,13 +98,13 @@ export default function CancelBookingModal({ isOpen, onClose, onConfirm, booking
 
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-[#2C1810] mb-2">
+                <label className="block text-sm font-medium text-[#252525] mb-2">
                   Reason for cancellation (Optional)
                 </label>
                 <textarea
                   value={reason}
                   onChange={(e) => setReason(e.target.value)}
-                  className="w-full border border-[#E8DED5] rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-[#A67B5B]/50 resize-none h-24"
+                  className="w-full border border-[#FEE2E2] rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-[#B71C1C]/50 resize-none h-24"
                   placeholder="Please tell us why you are cancelling..."
                 />
               </div>
@@ -115,7 +115,7 @@ export default function CancelBookingModal({ isOpen, onClose, onConfirm, booking
                 type="button"
                 onClick={onClose}
                 disabled={isProcessing}
-                className="flex-1 py-3 px-4 border border-[#E8DED5] rounded-xl text-[#2C1810] font-semibold hover:bg-gray-50 transition-colors"
+                className="flex-1 py-3 px-4 border border-[#FEE2E2] rounded-xl text-[#252525] font-semibold hover:bg-gray-50 transition-colors"
               >
                 Keep Booking
               </button>

@@ -14,17 +14,17 @@ const statusConfig = {
   PENDING: {
     label: 'Pending',
     icon: Clock,
-    className: 'bg-amber-500/10 text-amber-800 border-amber-300/70 dark:text-amber-300 shadow-2xs font-bold',
+    className: 'bg-[#FFF5F5] text-[#E50914] border-[#FEE2E2] shadow-2xs font-bold',
   },
   CONFIRMED: {
     label: 'Confirmed',
     icon: CheckCircle2,
-    className: 'bg-emerald-500/10 text-emerald-800 border-emerald-300/70 shadow-2xs font-bold',
+    className: 'bg-[#FFF5F5] text-[#E50914] border-[#FEE2E2] shadow-2xs font-bold',
   },
   COMPLETED: {
     label: 'Completed',
     icon: ShieldCheck,
-    className: 'bg-blue-500/10 text-blue-800 border-blue-300/70 shadow-2xs font-bold',
+    className: 'bg-stone-100 text-stone-700 border-stone-200 shadow-2xs font-bold',
   },
   CANCELLED: {
     label: 'Cancelled',
@@ -50,7 +50,7 @@ const statusConfig = {
   PAID: {
     label: 'Paid',
     icon: CheckCircle2,
-    className: 'bg-emerald-500/10 text-emerald-800 border-emerald-300/70 shadow-2xs font-bold',
+    className: 'bg-[#FFF5F5] text-[#E50914] border-[#FEE2E2] shadow-2xs font-bold',
   },
   FAILED: {
     label: 'Failed',

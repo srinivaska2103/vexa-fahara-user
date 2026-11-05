@@ -13,7 +13,7 @@ export default function EditBookingPage() {
   }, [router]);
 
   return (
-    <div className="min-h-screen bg-[#FFF8F0] flex items-center justify-center p-4">
+    <div className="min-h-screen bg-[#FFF5F5] flex items-center justify-center p-4">
       <p className="text-gray-500">Redirecting...</p>
     </div>
   );

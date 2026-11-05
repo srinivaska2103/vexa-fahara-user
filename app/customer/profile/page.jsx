@@ -191,12 +191,12 @@ function ProfileDashboardContent() {
       return;
     }
     if (loyaltySummary.credit_balance < amount) {
-      toast.error('Insufficient Fahara Credits.');
+      toast.error('Insufficient Grab2GO Credits.');
       return;
     }
 
     const rupeeVal = amount / 50;
-    if (!confirm(`Redeem ${amount} Fahara Credits for ₹${rupeeVal}?`)) {
+    if (!confirm(`Redeem ${amount} Grab2GO Credits for ₹${rupeeVal}?`)) {
       return;
     }
 
@@ -204,7 +204,7 @@ function ProfileDashboardContent() {
     const toastId = toast.loading('Processing redemption...');
     try {
       const res = await loyaltyService.redeem(amount);
-      toast.success(res?.message || `🎉 Redeemed ${amount} Fahara Credits for ₹${rupeeVal}!`, { id: toastId });
+      toast.success(res?.message || `🎉 Redeemed ${amount} Grab2GO Credits for ₹${rupeeVal}!`, { id: toastId });
       setShowRedeemModal(false);
       await fetchLoyaltyData();
     } catch (err) {
@@ -342,7 +342,7 @@ function ProfileDashboardContent() {
         rewardPoints: user?.rewardPoints || 120,
         completedBookings: bookingsCount,
         avgRating: 4.9,
-        avatar: user?.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(user?.name || user?.email || 'User')}&background=6F4E37&color=fff&size=200`,
+        avatar: user?.profile_image || user?.avatar || apiData?.profile_image || apiData?.avatar || null,
       };
       
       setProfile(initialProfile);
@@ -515,7 +515,7 @@ function ProfileDashboardContent() {
 
   const tabs = [
     { id: 'personal', label: t('personalInfo', 'Personal Info'), icon: User },
-    { id: 'loyalty', label: t('faharabCredits', 'Fahara Credits'), icon: Award },
+    { id: 'loyalty', label: t('faharabCredits', 'Grab2GO Credits'), icon: Award },
     { id: 'addresses', label: t('addresses', 'Addresses'), icon: MapPin },
     { id: 'security', label: t('security', 'Security'), icon: Shield },
     { id: 'notifications', label: t('notifications', 'Notifications'), icon: Bell },
@@ -530,7 +530,7 @@ function ProfileDashboardContent() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-[#FFF8F0] flex flex-col font-sans antialiased pb-20 lg:pb-8 selection:bg-[#6F4E37] selection:text-white">
+      <div className="min-h-screen bg-[#FFF5F5] flex flex-col font-sans antialiased pb-20 lg:pb-8 selection:bg-[#E50914] selection:text-white">
         {/* Top Navbar Skeleton */}
         <CustomerNavbar showSearch={true} showViewToggles={false} />
 
@@ -657,7 +657,7 @@ function ProfileDashboardContent() {
   }
 
   return (
-    <div className="min-h-screen bg-[#FFF8F0] font-sans antialiased pb-24 lg:pb-12">
+    <div className="min-h-screen bg-[#FFF5F5] font-sans antialiased pb-24 lg:pb-12">
       {/* Sticky Top Navbar */}
       <CustomerNavbar showSearch={true} showViewToggles={false} />
 
@@ -709,20 +709,20 @@ function ProfileDashboardContent() {
               /* Mobile Sub-Tab Header Bar (Hidden for 'notifications' which features its own dedicated sticky header) */
               activeTab !== 'notifications' && (
                 <div className="px-3 pt-3">
-                  <div className="flex items-center justify-between bg-white rounded-2xl p-3 border border-[#E8DED5] shadow-xs mb-4">
+                  <div className="flex items-center justify-between bg-white rounded-2xl p-3 border border-[#FEE2E2] shadow-xs mb-4">
                     <button
                       type="button"
                       onClick={() => {
                         setMobileViewMode('menu');
                         router.replace('/customer/profile', { scroll: false });
                       }}
-                      className="flex items-center gap-2 text-xs font-black text-[#6F4E37] bg-[#FFF8F0] hover:bg-[#F5EBE1] active:scale-95 px-3 py-2 rounded-xl transition-all cursor-pointer border border-[#DDB892]/40"
+                      className="flex items-center gap-2 text-xs font-black text-[#E50914] bg-[#FFF5F5] hover:bg-[#F5EBE1] active:scale-95 px-3 py-2 rounded-xl transition-all cursor-pointer border border-[#EF5350]/40"
                     >
                       <ArrowLeft size={15} />
                       <span>Profile Menu</span>
                     </button>
                     <div className="flex items-center gap-2">
-                      <span className="text-xs font-black text-[#2C1810] uppercase tracking-wider">
+                      <span className="text-xs font-black text-[#252525] uppercase tracking-wider">
                         {tabs.find((t) => t.id === activeTab)?.label || 'Section'}
                       </span>
                     </div>
@@ -735,7 +735,7 @@ function ProfileDashboardContent() {
           {/* Profile Header Card (Desktop & Tablet: hidden on mobile) */}
           <div className="hidden md:block bg-white/95 backdrop-blur-xl rounded-3xl border border-stone-200/90 shadow-[0_8px_30px_rgba(0,0,0,0.04)] overflow-hidden font-sans">
             {/* Top Cover Banner */}
-            <div className="relative h-32 sm:h-44 w-full bg-gradient-to-r from-[#4A2C11] via-[#5C3D28] to-[#6F4E37]">
+            <div className="relative h-32 sm:h-44 w-full bg-gradient-to-r from-[#B71C1C] via-[#5C3D28] to-[#E50914]">
               <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:16px_16px]"></div>
               <div className="p-4 flex justify-between items-center relative z-10">
                 <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-white/90 text-xs font-black uppercase tracking-wider">
@@ -758,7 +758,7 @@ function ProfileDashboardContent() {
               <div className="flex flex-col md:flex-row items-center justify-between gap-6 -mt-12 sm:-mt-16 relative z-10">
                 <div className="flex flex-col sm:flex-row items-center gap-4 text-center sm:text-left">
                   <div className="relative group shrink-0">
-                    <div className="relative rounded-full p-1 bg-gradient-to-tr from-[#4A2C11] to-[#6F4E37] shadow-xl">
+                    <div className="relative rounded-full p-1 bg-gradient-to-tr from-[#B71C1C] to-[#E50914] shadow-xl">
                       <img 
                         src={profile.avatar} 
                         alt={profile.name} 
@@ -776,7 +776,7 @@ function ProfileDashboardContent() {
                       type="button"
                       disabled={isUploadingAvatar}
                       onClick={() => fileInputRef.current?.click()}
-                      className="absolute bottom-1 right-1 bg-gradient-to-r from-[#4A2C11] to-[#6F4E37] text-white p-2 rounded-full hover:scale-110 active:scale-95 shadow-lg border-2 border-white transition-all cursor-pointer disabled:opacity-60"
+                      className="absolute bottom-1 right-1 bg-gradient-to-r from-[#B71C1C] to-[#E50914] text-white p-2 rounded-full hover:scale-110 active:scale-95 shadow-lg border-2 border-white transition-all cursor-pointer disabled:opacity-60"
                       title="Upload your image within 2MB"
                     >
                       {isUploadingAvatar ? <Loader2 size={14} className="animate-spin" /> : <Camera size={14} />}
@@ -785,11 +785,11 @@ function ProfileDashboardContent() {
                   
                   <div className="pt-2 sm:pt-14">
                     <div className="flex items-center justify-center sm:justify-start gap-1.5">
-                      <h1 className="text-xl sm:text-2xl font-black text-[#2C1810] tracking-tight">{profile.name}</h1>
+                      <h1 className="text-xl sm:text-2xl font-black text-[#252525] tracking-tight">{profile.name}</h1>
                       <CheckCircle2 size={18} className="text-amber-500 fill-amber-100" />
                     </div>
                     <p className="text-stone-500 font-bold text-xs sm:text-sm mt-0.5">{profile.email}</p>
-                    <span className="inline-block text-[10px] font-bold text-[#6F4E37] bg-[#6F4E37]/10 px-2 py-0.5 rounded-full mt-1">
+                    <span className="inline-block text-[10px] font-bold text-[#E50914] bg-[#E50914]/10 px-2 py-0.5 rounded-full mt-1">
                       Upload your image within 2MB
                     </span>
                   </div>
@@ -799,24 +799,24 @@ function ProfileDashboardContent() {
                 <div className="w-full md:w-72 bg-stone-50/90 p-4 rounded-2xl border border-stone-200/80 space-y-2.5 shrink-0 mt-2 md:mt-14 shadow-2xs">
                   <div className="flex justify-between items-center text-xs font-black text-stone-600">
                     <span>{t('profileStrength', 'Profile Strength')}</span>
-                    <span className="text-[#6F4E37] font-black">{completionPercent}%</span>
+                    <span className="text-[#E50914] font-black">{completionPercent}%</span>
                   </div>
                   <div className="w-full h-2 bg-stone-200/80 rounded-full overflow-hidden">
                     <motion.div 
                       initial={{ width: 0 }}
                       animate={{ width: `${completionPercent}%` }}
                       transition={{ duration: 0.8, ease: 'easeOut' }}
-                      className="h-full bg-gradient-to-r from-[#4A2C11] to-[#6F4E37] rounded-full"
+                      className="h-full bg-gradient-to-r from-[#B71C1C] to-[#E50914] rounded-full"
                     />
                   </div>
                   <div className="grid grid-cols-2 gap-2 pt-2 border-t border-stone-200/50 text-center">
                     <div>
                       <span className="text-[10px] font-black text-stone-400 uppercase">Bookings</span>
-                      <p className="text-sm font-black text-[#2C1810]">{profile.completedBookings}</p>
+                      <p className="text-sm font-black text-[#252525]">{profile.completedBookings}</p>
                     </div>
                     <div>
                       <span className="text-[10px] font-black text-stone-400 uppercase">Rating</span>
-                      <p className="text-sm font-black text-[#2C1810] flex items-center justify-center gap-1">
+                      <p className="text-sm font-black text-[#252525] flex items-center justify-center gap-1">
                         {profile.avgRating} <Star size={12} className="fill-amber-400 text-amber-400" />
                       </p>
                     </div>
@@ -838,7 +838,7 @@ function ProfileDashboardContent() {
                   onClick={() => handleTabChange(tab.id)}
                   className={`flex-1 min-w-[120px] px-4 py-2.5 rounded-xl text-xs font-black flex items-center justify-center gap-2 transition-all cursor-pointer ${
                     isActive
-                      ? 'bg-[#6F4E37] text-white shadow-md'
+                      ? 'bg-[#E50914] text-white shadow-md'
                       : 'text-stone-600 hover:text-stone-900 hover:bg-stone-100/70'
                   }`}
                 >
@@ -865,12 +865,12 @@ function ProfileDashboardContent() {
                   <div className="bg-white/95 backdrop-blur-xl rounded-3xl shadow-[0_8px_30px_rgba(0,0,0,0.04)] border border-stone-200/90 p-6 sm:p-8 font-sans">
                     <div className="flex items-center justify-between mb-6 pb-4 border-b border-stone-100">
                       <div>
-                        <h2 className="text-xl sm:text-2xl font-black text-[#2C1810] tracking-tight">{t('personalInfo', 'Personal Information')}</h2>
+                        <h2 className="text-xl sm:text-2xl font-black text-[#252525] tracking-tight">{t('personalInfo', 'Personal Information')}</h2>
                         <p className="text-stone-500 font-bold text-xs sm:text-sm mt-0.5">Manage your personal profile details and contact information</p>
                       </div>
                       <button
                         onClick={() => setIsEditing(!isEditing)}
-                        className="px-4 py-2.5 rounded-2xl bg-[#FFF8F0] hover:bg-[#F5EBE1] border border-[#DDB892]/60 text-[#6F4E37] font-black text-xs sm:text-sm transition-all flex items-center gap-2 active:scale-95 cursor-pointer shadow-2xs"
+                        className="px-4 py-2.5 rounded-2xl bg-[#FFF5F5] hover:bg-[#F5EBE1] border border-[#EF5350]/60 text-[#E50914] font-black text-xs sm:text-sm transition-all flex items-center gap-2 active:scale-95 cursor-pointer shadow-2xs"
                       >
                         {isEditing ? <><X size={16} /> {t('cancel', 'Cancel')}</> : <><Edit2 size={16} /> {t('editInfo', 'Edit Info')}</>}
                       </button>
@@ -978,7 +978,7 @@ function ProfileDashboardContent() {
                           <button
                             type="submit"
                             disabled={isSaving}
-                            className="px-6 py-3 rounded-2xl bg-gradient-to-r from-[#4A2C11] to-[#6F4E37] text-white font-black text-xs sm:text-sm hover:shadow-lg active:scale-95 transition-all flex items-center gap-2 disabled:opacity-50 cursor-pointer"
+                            className="px-6 py-3 rounded-2xl bg-gradient-to-r from-[#B71C1C] to-[#E50914] text-white font-black text-xs sm:text-sm hover:shadow-lg active:scale-95 transition-all flex items-center gap-2 disabled:opacity-50 cursor-pointer"
                           >
                             {isSaving ? <><RefreshCw size={16} className="animate-spin" /> Saving...</> : <><Save size={16} /> {t('saveChanges', 'Save Changes')}</>}
                           </button>
@@ -1292,7 +1292,7 @@ function ProfileDashboardContent() {
               </AnimatePresence>
             )}
 
-            {/* TAB VIEW: FAHARA LOYALTY CREDITS SYSTEM */}
+            {/* TAB VIEW: Grab2GO LOYALTY CREDITS SYSTEM */}
             {activeTab === 'loyalty' && (
               <AnimatePresence mode="wait">
                 <motion.div
@@ -1303,18 +1303,18 @@ function ProfileDashboardContent() {
                   className="space-y-6"
                 >
                   {/* Hero Loyalty Card */}
-                  <div className="bg-gradient-to-br from-[#2C1810] via-[#4A2C11] to-[#6F4E37] text-white rounded-3xl p-6 sm:p-8 shadow-xl relative overflow-hidden space-y-6 border border-[#DDB892]/30">
+                  <div className="bg-gradient-to-br from-[#252525] via-[#B71C1C] to-[#E50914] text-white rounded-3xl p-6 sm:p-8 shadow-xl relative overflow-hidden space-y-6 border border-[#EF5350]/30">
                     <div className="absolute top-0 right-0 w-64 h-64 bg-amber-500/10 rounded-full blur-3xl -z-0 pointer-events-none" />
                     
                     <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 relative z-10 border-b border-white/10 pb-5">
                       <div className="space-y-1">
                         <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-400/20 text-amber-300 text-xs font-black uppercase tracking-widest border border-amber-400/30">
                           <Award size={14} />
-                          <span>FAHARA LOYALTY REWARDS</span>
+                          <span>Grab2GO LOYALTY REWARDS</span>
                         </div>
-                        <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-white">FAHARA CREDITS</h2>
+                        <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-white">Grab2GO CREDITS</h2>
                         <p className="text-xs sm:text-sm text-stone-300 font-medium">
-                          Earn 1 Fahara Credit on every completed booking. Convert 50 credits to ₹1 cash discount!
+                          Earn 1 Grab2GO Credit on every completed booking. Convert 50 credits to ₹1 cash discount!
                         </p>
                       </div>
                       
@@ -1381,12 +1381,12 @@ function ProfileDashboardContent() {
                   <div className="bg-white rounded-3xl shadow-xl shadow-stone-200/50 border border-stone-200/80 p-6 sm:p-8 space-y-6">
                     <div className="flex items-center justify-between pb-4 border-b border-stone-100">
                       <div>
-                        <h3 className="text-xl font-black text-[#2C1810] tracking-tight">Fahara Credits Transaction History</h3>
+                        <h3 className="text-xl font-black text-[#252525] tracking-tight">Grab2GO Credits Transaction History</h3>
                         <p className="text-xs text-stone-500 font-medium mt-0.5">Complete audit ledger of earned, redeemed, and adjusted loyalty credits</p>
                       </div>
                       <button 
                         onClick={fetchLoyaltyData} 
-                        className="p-2 rounded-xl bg-stone-100 hover:bg-[#FFF8F0] text-stone-600 hover:text-[#6F4E37] transition-all cursor-pointer"
+                        className="p-2 rounded-xl bg-stone-100 hover:bg-[#FFF5F5] text-stone-600 hover:text-[#E50914] transition-all cursor-pointer"
                         title="Refresh transactions"
                       >
                         <RefreshCw size={16} className={isLoyaltyLoading ? 'animate-spin' : ''} />
@@ -1400,8 +1400,8 @@ function ProfileDashboardContent() {
                     ) : loyaltyTransactions.length === 0 ? (
                       <div className="py-12 text-center text-stone-400 space-y-2">
                         <Award size={36} className="mx-auto text-amber-400/60" />
-                        <p className="font-bold text-sm text-[#2C1810]">No Credit Transactions Yet</p>
-                        <p className="text-xs text-stone-500">Complete your first booking to earn 1 Fahara Credit!</p>
+                        <p className="font-bold text-sm text-[#252525]">No Credit Transactions Yet</p>
+                        <p className="text-xs text-stone-500">Complete your first booking to earn 1 Grab2GO Credit!</p>
                       </div>
                     ) : (
                       <div className="space-y-3">
@@ -1426,7 +1426,7 @@ function ProfileDashboardContent() {
                                 </div>
                                 <div className="min-w-0">
                                   <div className="flex items-center gap-2">
-                                    <h4 className="font-bold text-sm text-[#2C1810] truncate">{tx.reason || tx.type}</h4>
+                                    <h4 className="font-bold text-sm text-[#252525] truncate">{tx.reason || tx.type}</h4>
                                     <span className={`px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider ${
                                       isEarn ? 'bg-emerald-100 text-emerald-800' :
                                       isRedeem ? 'bg-amber-100 text-amber-900' :
@@ -1482,7 +1482,7 @@ function ProfileDashboardContent() {
                         <Sparkles size={24} />
                       </div>
                       <div>
-                        <h3 className="text-lg font-black text-[#2C1810]">Redeem Fahara Credits</h3>
+                        <h3 className="text-lg font-black text-[#252525]">Redeem Grab2GO Credits</h3>
                         <p className="text-xs text-stone-500 font-medium">Available: {loyaltySummary.credit_balance} Credits (Worth ₹{loyaltySummary.rupee_value})</p>
                       </div>
                     </div>
@@ -1499,7 +1499,7 @@ function ProfileDashboardContent() {
                             disabled={loyaltySummary.credit_balance < amt}
                             className={`py-2.5 rounded-xl text-xs font-extrabold border transition-all cursor-pointer ${
                               redeemCreditsInput === amt 
-                                ? 'bg-[#6F4E37] text-white border-[#6F4E37] shadow-sm' 
+                                ? 'bg-[#E50914] text-white border-[#E50914] shadow-sm' 
                                 : 'bg-stone-50 text-stone-700 border-stone-200 hover:border-amber-400 disabled:opacity-40 disabled:cursor-not-allowed'
                             }`}
                           >
@@ -1519,12 +1519,12 @@ function ProfileDashboardContent() {
                         max={loyaltySummary.credit_balance}
                         value={redeemCreditsInput}
                         onChange={(e) => setRedeemCreditsInput(Number(e.target.value))}
-                        className="w-full px-4 py-3 rounded-2xl border border-stone-200 font-black text-sm text-[#2C1810] outline-none focus:border-[#6F4E37]"
+                        className="w-full px-4 py-3 rounded-2xl border border-stone-200 font-black text-sm text-[#252525] outline-none focus:border-[#E50914]"
                       />
                     </div>
 
                     {/* Conversion Preview Card */}
-                    <div className="p-4 rounded-2xl bg-[#FFF8F0] border border-[#DDB892]/60 flex items-center justify-between text-xs font-extrabold text-[#6F4E37]">
+                    <div className="p-4 rounded-2xl bg-[#FFF5F5] border border-[#EF5350]/60 flex items-center justify-between text-xs font-extrabold text-[#E50914]">
                       <span>Conversion Preview:</span>
                       <span className="text-sm font-black">{redeemCreditsInput} Credits = ₹{redeemCreditsInput / 50}</span>
                     </div>
@@ -1662,7 +1662,7 @@ function ProfileDashboardContent() {
                           <div className="flex items-center gap-3">
                             <Smartphone size={20} className="text-stone-500" />
                             <div>
-                              <p className="text-xs font-bold text-stone-800">Fahara Mobile App • iOS 17</p>
+                              <p className="text-xs font-bold text-stone-800">Grab2GO Mobile App • iOS 17</p>
                               <p className="text-[11px] text-stone-400">Last active 2 days ago</p>
                             </div>
                           </div>
@@ -1701,7 +1701,7 @@ function ProfileDashboardContent() {
                   <div className="hidden md:block bg-white rounded-3xl shadow-xl shadow-stone-200/50 border border-stone-200/80 p-6 sm:p-8 space-y-6">
                     <div className="pb-4 border-b border-stone-100">
                       <h2 className="text-xl sm:text-2xl font-black text-stone-900 tracking-tight">{t('notificationPreferences', 'Notification Preferences')}</h2>
-                      <p className="text-stone-500 text-xs sm:text-sm mt-0.5">Control how and when you receive updates from Fahara</p>
+                      <p className="text-stone-500 text-xs sm:text-sm mt-0.5">Control how and when you receive updates from Grab2GO</p>
                     </div>
 
                     <div className="space-y-4">
@@ -1806,7 +1806,7 @@ export default function ProfilePage() {
     <Suspense fallback={
       <FaharaInteractiveLoader 
         message="Loading Customer Profile & Account Details..." 
-        badgeTag="FAHARA PROFILE" 
+        badgeTag="Grab2GO PROFILE" 
         fullScreen={true} 
       />
     }>

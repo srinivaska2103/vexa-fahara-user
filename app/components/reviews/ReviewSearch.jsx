@@ -13,7 +13,7 @@ export default function ReviewSearch({ search, setSearch }) {
         type="text"
         value={search}
         onChange={(e) => setSearch(e.target.value)}
-        className="block w-full pl-10 pr-3 py-2.5 border border-[#E8DED5] rounded-xl leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-[#6F4E37] focus:border-[#6F4E37] sm:text-sm transition-colors"
+        className="block w-full pl-10 pr-3 py-2.5 border border-[#FEE2E2] rounded-xl leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-[#E50914] focus:border-[#E50914] sm:text-sm transition-colors"
         placeholder="Search reviews..."
       />
     </div>

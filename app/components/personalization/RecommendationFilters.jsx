@@ -24,8 +24,8 @@ export default function RecommendationFilters({ activeFilter, setFilter }) {
             onClick={() => setFilter(filter.id)}
             className={`px-4 py-2 rounded-lg font-medium whitespace-nowrap transition-all shrink-0 ${
               isActive 
-                ? 'bg-[#2C1810] text-white shadow-md' 
-                : 'bg-white border border-[#E8DED5] text-gray-600 hover:bg-gray-50'
+                ? 'bg-[#252525] text-white shadow-md' 
+                : 'bg-white border border-[#FEE2E2] text-gray-600 hover:bg-gray-50'
             }`}
           >
             {filter.label}

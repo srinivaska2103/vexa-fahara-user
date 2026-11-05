@@ -132,8 +132,8 @@ const CustomDatePicker = ({ value, onChange, label, cafe, blockedBlocks = [] }) 
 
   return (
     <div className="w-full relative">
-      <label className="block text-xs sm:text-sm font-black text-[#2C1810] mb-2 flex items-center">
-        <Calendar size={15} className="mr-2 text-[#6F4E37]" /> {label}
+      <label className="block text-xs sm:text-sm font-black text-[#252525] mb-2 flex items-center">
+        <Calendar size={15} className="mr-2 text-[#E50914]" /> {label}
       </label>
 
       {/* Trigger Button */}
@@ -142,8 +142,8 @@ const CustomDatePicker = ({ value, onChange, label, cafe, blockedBlocks = [] }) 
         onClick={() => setIsOpen(!isOpen)}
         className="w-full flex items-center justify-between bg-stone-50/90 hover:bg-white border border-stone-200/90 rounded-2xl px-3.5 sm:px-4 h-[46px] sm:h-[50px] transition-all shadow-2xs cursor-pointer group"
       >
-        <span className="text-xs sm:text-sm font-black text-[#2C1810]">{formattedDisplay}</span>
-        <span className="text-[10px] font-extrabold text-stone-400 group-hover:text-[#6F4E37] transition-colors">
+        <span className="text-xs sm:text-sm font-black text-[#252525]">{formattedDisplay}</span>
+        <span className="text-[10px] font-extrabold text-stone-400 group-hover:text-[#E50914] transition-colors">
           Pick Date
         </span>
       </button>
@@ -162,7 +162,7 @@ const CustomDatePicker = ({ value, onChange, label, cafe, blockedBlocks = [] }) 
               &larr;
             </button>
 
-            <span className="text-xs sm:text-sm font-black text-[#2C1810]">
+            <span className="text-xs sm:text-sm font-black text-[#252525]">
               {monthNames[currentMonth]} {currentYear}
             </span>
 
@@ -215,9 +215,9 @@ const CustomDatePicker = ({ value, onChange, label, cafe, blockedBlocks = [] }) 
                     isDisabled
                       ? 'bg-rose-50/80 text-rose-400 opacity-50 line-through cursor-not-allowed border border-rose-200/50'
                       : active
-                      ? 'bg-gradient-to-r from-[#4A2C11] to-[#6F4E37] text-white shadow-xs cursor-pointer'
+                      ? 'bg-gradient-to-r from-[#B71C1C] to-[#E50914] text-white shadow-xs cursor-pointer'
                       : current
-                      ? 'bg-[#FFF8F0] text-[#6F4E37] border border-[#DDB892]/60 font-black cursor-pointer'
+                      ? 'bg-[#FFF5F5] text-[#E50914] border border-[#FEE2E2] font-black cursor-pointer'
                       : 'hover:bg-stone-100 text-stone-700 cursor-pointer'
                   }`}
                 >
@@ -237,7 +237,7 @@ const CustomDatePicker = ({ value, onChange, label, cafe, blockedBlocks = [] }) 
                 onChange(str);
                 setIsOpen(false);
               }}
-              className="text-[10px] font-black text-[#6F4E37] hover:underline cursor-pointer"
+              className="text-[10px] font-black text-[#E50914] hover:underline cursor-pointer"
             >
               Tomorrow
             </button>
@@ -290,7 +290,7 @@ const RollingColumn = ({ items, selectedValue, onSelect, label, formatDisplay })
         <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-white via-white/80 to-transparent z-10 pointer-events-none" />
 
         {/* Center Highlight Selection Bar */}
-        <div className="absolute inset-x-1.5 top-[66px] h-[44px] bg-[#6F4E37]/15 rounded-xl border border-[#6F4E37]/30 pointer-events-none z-0 shadow-2xs" />
+        <div className="absolute inset-x-1.5 top-[66px] h-[44px] bg-[#E50914]/15 rounded-xl border border-[#E50914]/30 pointer-events-none z-0 shadow-2xs" />
 
         {/* Scrollable Wheel List with Snap Physics */}
         <div
@@ -307,7 +307,7 @@ const RollingColumn = ({ items, selectedValue, onSelect, label, formatDisplay })
                 onClick={() => onSelect(item)}
                 className={`h-[44px] snap-center flex items-center justify-center font-black transition-all cursor-pointer ${
                   isSelected
-                    ? 'text-[#2C1810] text-base sm:text-lg font-black scale-110'
+                    ? 'text-[#252525] text-base sm:text-lg font-black scale-110'
                     : 'text-stone-400 opacity-40 text-xs sm:text-sm hover:opacity-80 scale-95'
                 }`}
               >
@@ -364,8 +364,8 @@ const CustomTimePicker = ({ value, onChange, label }) => {
 
   return (
     <div className="flex-1 w-full min-w-0 relative">
-      <span className="block text-xs font-black text-[#2C1810] mb-1.5 flex items-center gap-1.5">
-        <Clock size={14} className="text-[#6F4E37]" />
+      <span className="block text-xs font-black text-[#252525] mb-1.5 flex items-center gap-1.5">
+        <Clock size={14} className="text-[#E50914]" />
         <span>{label}</span>
       </span>
       
@@ -373,35 +373,35 @@ const CustomTimePicker = ({ value, onChange, label }) => {
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full flex items-center justify-between bg-stone-50/90 hover:bg-white border border-stone-200/90 hover:border-[#DDB892] rounded-2xl px-4 h-[50px] transition-all shadow-2xs hover:shadow-md cursor-pointer group"
+        className="w-full flex items-center justify-between bg-stone-50/90 hover:bg-white border border-stone-200/90 hover:border-[#EF5350] rounded-2xl px-4 h-[50px] transition-all shadow-2xs hover:shadow-md cursor-pointer group"
       >
         <div className="flex items-center gap-2">
-          <div className="bg-gradient-to-r from-[#FFF8F0] to-[#F5EBE0] text-[#6F4E37] px-3 py-1 rounded-xl border border-[#DDB892]/50 font-black text-sm shadow-2xs flex items-center gap-1">
+          <div className="bg-gradient-to-r from-[#FFF5F5] to-[#F5EBE0] text-[#E50914] px-3 py-1 rounded-xl border border-[#EF5350]/50 font-black text-sm shadow-2xs flex items-center gap-1">
             <span>{hour}:{min}</span>
-            <span className="text-[11px] font-black uppercase text-[#4A2C11] ml-0.5">{ampm}</span>
+            <span className="text-[11px] font-black uppercase text-[#B71C1C] ml-0.5">{ampm}</span>
           </div>
         </div>
 
-        <span className="text-xs font-extrabold text-[#6F4E37] bg-[#FFF8F0] px-2.5 py-1 rounded-xl border border-[#DDB892]/40 group-hover:bg-[#6F4E37] group-hover:text-white transition-all">
+        <span className="text-xs font-extrabold text-[#E50914] bg-[#FFF5F5] px-2.5 py-1 rounded-xl border border-[#FEE2E2] group-hover:bg-[#E50914] group-hover:text-white transition-all">
           Change
         </span>
       </button>
 
       {/* Rolling Drum Wheel Time Picker Panel */}
       {isOpen && (
-        <div className="relative mt-2.5 bg-[#FFF8F0]/95 backdrop-blur-xl rounded-3xl border border-[#DDB892]/60 shadow-[0_12px_40px_rgba(74,44,17,0.12)] p-4 sm:p-5 font-sans w-full z-10 transition-all space-y-4">
+        <div className="relative mt-2.5 bg-[#FFF5F5]/95 backdrop-blur-xl rounded-3xl border border-[#FEE2E2] shadow-[0_12px_40px_rgba(74,44,17,0.12)] p-4 sm:p-5 font-sans w-full z-10 transition-all space-y-4">
           
           {/* Header */}
-          <div className="flex items-center justify-between pb-2 border-b border-[#DDB892]/30">
+          <div className="flex items-center justify-between pb-2 border-b border-[#EF5350]/30">
             <div className="flex items-center gap-2">
-              <Clock size={16} className="text-[#6F4E37]" />
-              <span className="text-xs font-black text-[#2C1810]">Select {label}</span>
+              <Clock size={16} className="text-[#E50914]" />
+              <span className="text-xs font-black text-[#252525]">Select {label}</span>
             </div>
 
             <button 
               type="button"
               onClick={() => setIsOpen(false)}
-              className="text-xs font-black text-[#6F4E37] hover:text-stone-900 bg-white hover:bg-stone-100 border border-[#DDB892]/40 px-3 py-1 rounded-full transition-colors cursor-pointer shadow-2xs"
+              className="text-xs font-black text-[#E50914] hover:text-stone-900 bg-white hover:bg-stone-100 border border-[#FEE2E2] px-3 py-1 rounded-full transition-colors cursor-pointer shadow-2xs"
             >
               Close
             </button>
@@ -420,8 +420,8 @@ const CustomTimePicker = ({ value, onChange, label }) => {
                     onClick={() => updateTime(preset.h, preset.m, preset.mode)}
                     className={`px-2.5 py-1.5 rounded-xl text-[11px] font-black whitespace-nowrap transition-all cursor-pointer shrink-0 ${
                       isSelected
-                        ? 'bg-[#6F4E37] text-white shadow-2xs'
-                        : 'bg-white text-stone-700 hover:bg-[#FFF8F0] hover:text-[#6F4E37] border border-[#DDB892]/40'
+                        ? 'bg-[#E50914] text-white shadow-2xs'
+                        : 'bg-white text-stone-700 hover:bg-[#FFF5F5] hover:text-[#E50914] border border-[#FEE2E2]'
                     }`}
                   >
                     {preset.label}
@@ -440,7 +440,7 @@ const CustomTimePicker = ({ value, onChange, label }) => {
               label="Hours"
             />
             
-            <div className="text-xl font-black text-[#6F4E37] self-center pb-2">:</div>
+            <div className="text-xl font-black text-[#E50914] self-center pb-2">:</div>
 
             <RollingColumn 
               items={minutesList} 
@@ -462,7 +462,7 @@ const CustomTimePicker = ({ value, onChange, label }) => {
           <button
             type="button"
             onClick={() => setIsOpen(false)}
-            className="w-full py-2.5 bg-gradient-to-r from-[#4A2C11] to-[#6F4E37] hover:from-[#3A220D] hover:to-[#5D3F2B] text-white text-xs font-black rounded-2xl shadow-xs flex items-center justify-center gap-1.5 transition-all cursor-pointer"
+            className="w-full py-2.5 bg-gradient-to-r from-[#B71C1C] to-[#E50914] hover:from-[#3A220D] hover:to-[#E50914] text-white text-xs font-black rounded-2xl shadow-xs flex items-center justify-center gap-1.5 transition-all cursor-pointer"
           >
             <CheckCircle2 size={15} /> Confirm {label} ({hour}:{min} {ampm})
           </button>
@@ -495,7 +495,7 @@ export default function BookingInformationForm() {
       applyCoupon(localCoupon, 500); // flat 500 off
       toast.success('Coupon applied successfully!');
     } else {
-      toast.error('Invalid Coupon Code. Try FAHARA10', {
+      toast.error('Invalid Coupon Code. Try Grab2GO10', {
         style: {
           borderRadius: '12px',
           background: '#333',
@@ -689,7 +689,7 @@ export default function BookingInformationForm() {
       className="bg-white/95 backdrop-blur-xl border border-stone-200/90 rounded-3xl p-5 sm:p-8 mb-8 shadow-[0_8px_30px_rgba(0,0,0,0.04)] font-sans"
     >
       <div className="mb-6">
-        <h2 className="text-xl sm:text-2xl font-black text-[#2C1810] mb-1.5 tracking-tight">Booking Details</h2>
+        <h2 className="text-xl sm:text-2xl font-black text-[#252525] mb-1.5 tracking-tight">Booking Details</h2>
         <p className="text-stone-500 font-medium text-xs sm:text-sm">Select when you want to visit and how many guests are coming.</p>
       </div>
 
@@ -714,12 +714,12 @@ export default function BookingInformationForm() {
         {/* Guest Count Card */}
         <div className="flex flex-col justify-between">
           <div>
-            <label className="text-xs sm:text-sm font-black text-[#2C1810] mb-2 flex items-center justify-between">
+            <label className="text-xs sm:text-sm font-black text-[#252525] mb-2 flex items-center justify-between">
               <span className="flex items-center">
-                <Users size={15} className="mr-2 text-[#6F4E37]" /> Guests
+                <Users size={15} className="mr-2 text-[#E50914]" /> Guests
               </span>
               {maxAllowedGuests !== null && (
-                <span className="text-[10px] font-extrabold text-[#6F4E37] bg-[#FFF8F0] px-2.5 py-0.5 rounded-full border border-[#DDB892]/60">
+                <span className="text-[10px] font-extrabold text-[#E50914] bg-[#FFF5F5] px-2.5 py-0.5 rounded-full border border-[#FEE2E2]">
                   Max: {maxAllowedGuests} guests
                 </span>
               )}
@@ -733,12 +733,12 @@ export default function BookingInformationForm() {
                 disabled={guestCount <= 1}
                 aria-label="Decrease guests"
                 className={`w-10 sm:w-12 h-full flex items-center justify-center bg-white rounded-xl border border-stone-200 font-black text-sm transition-all shadow-2xs ${
-                  guestCount <= 1 ? 'opacity-30 text-stone-300 cursor-not-allowed' : 'text-[#2C1810] hover:bg-stone-100 hover:text-[#6F4E37] active:scale-95 cursor-pointer'
+                  guestCount <= 1 ? 'opacity-30 text-stone-300 cursor-not-allowed' : 'text-[#252525] hover:bg-stone-100 hover:text-[#E50914] active:scale-95 cursor-pointer'
                 }`}
               >
                 -
               </button>
-              <div className="flex-1 text-center font-black text-sm sm:text-base text-[#2C1810] tracking-tight">
+              <div className="flex-1 text-center font-black text-sm sm:text-base text-[#252525] tracking-tight">
                 {guestCount} {guestCount === 1 ? 'guest' : 'guests'}
               </div>
               <button 
@@ -751,7 +751,7 @@ export default function BookingInformationForm() {
                 disabled={isAtMaxLimit}
                 aria-label="Increase guests"
                 className={`w-10 sm:w-12 h-full flex items-center justify-center bg-white rounded-xl border border-stone-200 font-black text-sm transition-all shadow-2xs ${
-                  isAtMaxLimit ? 'opacity-30 text-stone-300 cursor-not-allowed' : 'text-[#2C1810] hover:bg-stone-100 hover:text-[#6F4E37] active:scale-95 cursor-pointer'
+                  isAtMaxLimit ? 'opacity-30 text-stone-300 cursor-not-allowed' : 'text-[#252525] hover:bg-stone-100 hover:text-[#E50914] active:scale-95 cursor-pointer'
                 }`}
               >
                 +
@@ -764,31 +764,31 @@ export default function BookingInformationForm() {
             {capacityInfo.cafeLimit && (
               <div className="flex items-center justify-between text-stone-500 font-semibold">
                 <span>Cafe capacity</span>
-                <span className="font-extrabold text-[#2C1810]">{capacityInfo.cafeLimit} guests</span>
+                <span className="font-extrabold text-[#252525]">{capacityInfo.cafeLimit} guests</span>
               </div>
             )}
             {capacityInfo.tableLimit && (
               <div className="flex items-center justify-between text-stone-500 font-semibold">
                 <span>Selected table</span>
-                <span className="font-extrabold text-[#2C1810]">{capacityInfo.tableLimit} guests</span>
+                <span className="font-extrabold text-[#252525]">{capacityInfo.tableLimit} guests</span>
               </div>
             )}
             {capacityInfo.cafePackageLimit && (
               <div className="flex items-center justify-between text-stone-500 font-semibold">
                 <span>Selected package</span>
-                <span className="font-extrabold text-[#6F4E37]">Up to {capacityInfo.cafePackageLimit} guests</span>
+                <span className="font-extrabold text-[#E50914]">Up to {capacityInfo.cafePackageLimit} guests</span>
               </div>
             )}
             {capacityInfo.eventManagerLimit && (
               <div className="flex items-center justify-between text-stone-500 font-semibold">
                 <span>Event Manager</span>
-                <span className="font-extrabold text-[#6F4E37]">Up to {capacityInfo.eventManagerLimit} guests</span>
+                <span className="font-extrabold text-[#E50914]">Up to {capacityInfo.eventManagerLimit} guests</span>
               </div>
             )}
             {maxAllowedGuests !== null && (
-              <div className="flex items-center justify-between pt-1.5 border-t border-stone-200/60 font-black text-[#2C1810]">
+              <div className="flex items-center justify-between pt-1.5 border-t border-stone-200/60 font-black text-[#252525]">
                 <span className="text-stone-700">Maximum allowed</span>
-                <span className="text-[#6F4E37] bg-white px-2 py-0.5 rounded-lg border border-[#DDB892]/60 text-[10px] uppercase tracking-wide">
+                <span className="text-[#E50914] bg-white px-2 py-0.5 rounded-lg border border-[#FEE2E2] text-[10px] uppercase tracking-wide">
                   {maxAllowedGuests} guests
                 </span>
               </div>
@@ -812,12 +812,12 @@ export default function BookingInformationForm() {
 
       {/* Custom Modern Time Selection */}
       <div className="mb-6">
-        <label className="block text-xs sm:text-sm font-black text-[#2C1810] mb-2.5 flex items-center justify-between">
+        <label className="block text-xs sm:text-sm font-black text-[#252525] mb-2.5 flex items-center justify-between">
           <span className="flex items-center">
-            <Clock size={15} className="mr-2 text-[#6F4E37]" /> Select Time
+            <Clock size={15} className="mr-2 text-[#E50914]" /> Select Time
           </span>
           {timeValidation.openTimeFormatted && timeValidation.closeTimeFormatted && (
-            <span className="text-[10px] font-black text-[#6F4E37] bg-[#FFF8F0] px-2.5 py-1 rounded-full border border-[#DDB892]/40">
+            <span className="text-[10px] font-black text-[#E50914] bg-[#FFF5F5] px-2.5 py-1 rounded-full border border-[#FEE2E2]">
               Operating Hours: {timeValidation.openTimeFormatted} - {timeValidation.closeTimeFormatted}
             </span>
           )}
@@ -832,18 +832,18 @@ export default function BookingInformationForm() {
           />
 
           {activePackageDuration > 0 ? (
-            <div className="bg-[#FFF8F0]/90 border border-[#DDB892]/80 rounded-2xl p-3 sm:p-3.5 flex flex-col justify-between shadow-2xs">
+            <div className="bg-[#FFF5F5]/90 border border-[#FEE2E2] rounded-2xl p-3 sm:p-3.5 flex flex-col justify-between shadow-2xs">
               <div className="flex items-center justify-between">
-                <span className="text-[10px] font-black uppercase tracking-wider text-[#6F4E37] flex items-center gap-1.5">
-                  <Sparkles size={12} className="text-[#6F4E37]" /> Package Duration Locked
+                <span className="text-[10px] font-black uppercase tracking-wider text-[#E50914] flex items-center gap-1.5">
+                  <Sparkles size={12} className="text-[#E50914]" /> Package Duration Locked
                 </span>
-                <span className="text-[10px] font-extrabold text-[#6F4E37] bg-white px-2 py-0.5 rounded-full border border-[#DDB892]/60">
+                <span className="text-[10px] font-extrabold text-[#E50914] bg-white px-2 py-0.5 rounded-full border border-[#FEE2E2]">
                   {activePackageDuration} {activePackageDuration === 1 ? 'Hour' : 'Hours'}
                 </span>
               </div>
               <div className="mt-2">
                 <p className="text-xs font-bold text-stone-500">Event Time (Calculated)</p>
-                <p className="text-sm sm:text-base font-black text-[#2C1810] mt-0.5">
+                <p className="text-sm sm:text-base font-black text-[#252525] mt-0.5">
                   {selectedTimeSlot ? `${selectedTimeSlot.start} – ${selectedTimeSlot.end}` : 'Select start time'}
                 </p>
               </div>
@@ -866,10 +866,10 @@ export default function BookingInformationForm() {
           <div className="mt-3.5 space-y-2.5">
             <div className="flex items-center justify-between text-xs px-1">
               <span className="font-bold text-stone-600">
-                Event Duration: <strong className="text-[#6F4E37]">{activePackageDuration} {activePackageDuration === 1 ? 'Hour' : 'Hours'}</strong>
+                Event Duration: <strong className="text-[#E50914]">{activePackageDuration} {activePackageDuration === 1 ? 'Hour' : 'Hours'}</strong>
               </span>
               <span className="font-bold text-stone-600">
-                Calculated Time: <strong className="text-[#2C1810]">{selectedTimeSlot ? `${selectedTimeSlot.start} – ${selectedTimeSlot.end}` : '—'}</strong>
+                Calculated Time: <strong className="text-[#252525]">{selectedTimeSlot ? `${selectedTimeSlot.start} – ${selectedTimeSlot.end}` : '—'}</strong>
               </span>
             </div>
 
@@ -884,8 +884,8 @@ export default function BookingInformationForm() {
         ) : (
           <div className="flex items-center justify-end mt-2">
             {selectedTimeSlot && selectedTimeSlot.hours > 0 ? (
-              <span className="inline-flex items-center gap-1.5 text-xs font-black text-emerald-700 bg-emerald-50 border border-emerald-200/80 px-2.5 py-1 rounded-full shadow-2xs">
-                <Clock size={12} className="text-emerald-600" />
+              <span className="inline-flex items-center gap-1.5 text-xs font-black text-[#E50914] bg-[#FFF5F5] border border-[#FEE2E2] px-2.5 py-1 rounded-full shadow-2xs">
+                <Clock size={12} className="text-[#E50914]" />
                 Total Duration: {selectedTimeSlot.hours} {selectedTimeSlot.hours === 1 ? 'Hour' : 'Hours'}
               </span>
             ) : selectedTimeSlot && selectedTimeSlot.hours <= 0 ? (
@@ -934,30 +934,30 @@ export default function BookingInformationForm() {
 
       {/* Special Requests for Cafe / Venue */}
       <div className="mb-5">
-        <label className="block text-xs sm:text-sm font-black text-[#2C1810] mb-2 flex items-center">
-          <MessageSquare size={15} className="mr-2 text-[#6F4E37]" /> Venue & Cafe Special Requests <span className="text-stone-400 font-bold ml-1">(Optional)</span>
+        <label className="block text-xs sm:text-sm font-black text-[#252525] mb-2 flex items-center">
+          <MessageSquare size={15} className="mr-2 text-[#E50914]" /> Venue & Cafe Special Requests <span className="text-stone-400 font-bold ml-1">(Optional)</span>
         </label>
         <textarea 
           value={specialRequests}
           onChange={(e) => setSpecialRequests(e.target.value)}
           placeholder="E.g., Any dietary restrictions, specific seating location, table preferences..."
           rows={2}
-          className="w-full p-3 sm:p-3.5 bg-stone-50/90 border border-stone-200/90 rounded-2xl focus:ring-2 focus:ring-[#6F4E37]/40 focus:border-[#6F4E37] outline-none text-[#2C1810] text-xs sm:text-sm font-semibold leading-relaxed resize-none transition-all placeholder:text-stone-400"
+          className="w-full p-3 sm:p-3.5 bg-stone-50/90 border border-stone-200/90 rounded-2xl focus:ring-2 focus:ring-[#E50914]/40 focus:border-[#E50914] outline-none text-[#252525] text-xs sm:text-sm font-semibold leading-relaxed resize-none transition-all placeholder:text-stone-400"
         ></textarea>
       </div>
 
       {/* Special Requests for Event Manager / Setup (Only shown if 3rd party Event Manager is chosen) */}
       {selectedEventCompany && (
         <div className="mb-6">
-          <label className="block text-xs sm:text-sm font-black text-[#6F4E37] mb-2 flex items-center">
-            <Sparkles size={15} className="mr-2 text-[#6F4E37]" /> Special Requests for Event Manager <span className="text-stone-400 font-bold ml-1">(Optional)</span>
+          <label className="block text-xs sm:text-sm font-black text-[#E50914] mb-2 flex items-center">
+            <Sparkles size={15} className="mr-2 text-[#E50914]" /> Special Requests for Event Manager <span className="text-stone-400 font-bold ml-1">(Optional)</span>
           </label>
           <textarea 
             value={eventSpecialRequests}
             onChange={(e) => setEventSpecialRequests(e.target.value)}
             placeholder="E.g., Cake customization details (e.g. two unique cakes), theme colors, entrance song..."
             rows={3}
-            className="w-full p-3 sm:p-3.5 bg-[#FFF8F0]/90 border border-[#DDB892]/80 rounded-2xl focus:ring-2 focus:ring-[#6F4E37]/40 focus:border-[#6F4E37] outline-none text-[#2C1810] text-xs sm:text-sm font-semibold leading-relaxed resize-none transition-all placeholder:text-stone-400"
+            className="w-full p-3 sm:p-3.5 bg-[#FFF5F5]/90 border border-[#FEE2E2] rounded-2xl focus:ring-2 focus:ring-[#E50914]/40 focus:border-[#E50914] outline-none text-[#252525] text-xs sm:text-sm font-semibold leading-relaxed resize-none transition-all placeholder:text-stone-400"
           ></textarea>
         </div>
       )}

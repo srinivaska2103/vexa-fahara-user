@@ -14,7 +14,7 @@ export default function PersonalizedBanner() {
   else if (hour < 18) greeting = 'Good Afternoon';
 
   return (
-    <div className="relative rounded-3xl overflow-hidden bg-[#2C1810] text-white p-5 sm:p-8 md:p-12 border border-stone-800 shadow-xl group">
+    <div className="relative rounded-3xl overflow-hidden bg-[#252525] text-white p-5 sm:p-8 md:p-12 border border-stone-800 shadow-xl group">
       <div className="absolute inset-0 z-0">
         <Image 
           src="https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&q=80"
@@ -22,14 +22,14 @@ export default function PersonalizedBanner() {
           fill
           className="object-cover opacity-25 group-hover:scale-105 transition-transform duration-700 ease-out"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#2C1810] via-[#2C1810]/90 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#252525] via-[#252525]/90 to-transparent" />
       </div>
 
       <div className="relative z-10 max-w-2xl">
         <motion.div 
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
-          className="flex items-center gap-2 text-[#DDB892] font-black tracking-widest uppercase text-[11px] sm:text-xs mb-3"
+          className="flex items-center gap-2 text-[#EF5350] font-black tracking-widest uppercase text-[11px] sm:text-xs mb-3"
         >
           <Sparkles size={15} className="text-amber-400" />
           <span>Curated for you</span>
@@ -60,8 +60,8 @@ export default function PersonalizedBanner() {
           className="flex flex-wrap items-center gap-3 pt-1"
         >
           <Link href="/customer/cafe">
-            <button className="px-5 sm:px-7 py-2.5 sm:py-3 bg-white text-[#2C1810] font-black rounded-xl text-xs sm:text-sm hover:bg-amber-100 hover:scale-105 active:scale-95 shadow-md hover:shadow-xl transition-all flex items-center gap-2 cursor-pointer">
-              <Compass className="w-4 h-4 text-[#6F4E37]" />
+            <button className="px-5 sm:px-7 py-2.5 sm:py-3 bg-white text-[#252525] font-black rounded-xl text-xs sm:text-sm hover:bg-amber-100 hover:scale-105 active:scale-95 shadow-md hover:shadow-xl transition-all flex items-center gap-2 cursor-pointer">
+              <Compass className="w-4 h-4 text-[#E50914]" />
               <span>Explore Top Picks</span>
             </button>
           </Link>

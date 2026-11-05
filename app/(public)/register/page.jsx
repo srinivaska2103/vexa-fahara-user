@@ -52,7 +52,7 @@ export default function RegisterPage() {
       <div className="block md:hidden">
         <MobileAuthWrapper 
           title="Create Account"
-          subtitle="Join Fahara and discover places for your special moments."
+          subtitle="Join Grab2GO and discover places for your special moments."
         >
           <form
             onSubmit={mobileForm.handleSubmit(onMobileSubmit)}
@@ -65,12 +65,12 @@ export default function RegisterPage() {
             <div>
               <label
                 htmlFor="mobile-reg-name"
-                className="block text-xs font-bold text-[#6B5B4F] mb-1.5"
+                className="block text-xs font-bold text-[#757575] mb-1.5"
               >
                 Full Name
               </label>
               <div className="relative flex items-center">
-                <div className="absolute left-3 text-[#A67B5B] pointer-events-none">
+                <div className="absolute left-3 text-[#B71C1C] pointer-events-none">
                   <User size={16} strokeWidth={2} />
                 </div>
                 <input
@@ -81,10 +81,10 @@ export default function RegisterPage() {
                   placeholder="Simon Njege"
                   suppressHydrationWarning
                   className={cn(
-                    'w-full py-3 pl-9 pr-3 text-sm font-medium text-[#2C1810] placeholder:text-stone-300 rounded-2xl border bg-[#FFFDF9] focus:bg-white focus:outline-none transition-all shadow-2xs',
+                    'w-full py-3 pl-9 pr-3 text-sm font-medium text-[#252525] placeholder:text-stone-300 rounded-2xl border bg-[#FFFDF9] focus:bg-white focus:outline-none transition-all shadow-2xs',
                     mobileForm.formState.errors.name
                       ? 'border-red-400 focus:border-red-500 focus:ring-2 focus:ring-red-100'
-                      : 'border-[#E8DED5] focus:border-[#6F4E37] focus:ring-2 focus:ring-[#DDB892]/30'
+                      : 'border-[#FEE2E2] focus:border-[#E50914] focus:ring-2 focus:ring-[#EF5350]/30'
                   )}
                 />
               </div>
@@ -99,12 +99,12 @@ export default function RegisterPage() {
             <div>
               <label
                 htmlFor="mobile-reg-email"
-                className="block text-xs font-bold text-[#6B5B4F] mb-1.5"
+                className="block text-xs font-bold text-[#757575] mb-1.5"
               >
                 Email Address
               </label>
               <div className="relative flex items-center">
-                <div className="absolute left-3 text-[#A67B5B] pointer-events-none">
+                <div className="absolute left-3 text-[#B71C1C] pointer-events-none">
                   <Mail size={16} strokeWidth={2} />
                 </div>
                 <input
@@ -116,10 +116,10 @@ export default function RegisterPage() {
                   placeholder="simonnjege@gmail.com"
                   suppressHydrationWarning
                   className={cn(
-                    'w-full py-3 pl-9 pr-3 text-sm font-medium text-[#2C1810] placeholder:text-stone-300 rounded-2xl border bg-[#FFFDF9] focus:bg-white focus:outline-none transition-all shadow-2xs',
+                    'w-full py-3 pl-9 pr-3 text-sm font-medium text-[#252525] placeholder:text-stone-300 rounded-2xl border bg-[#FFFDF9] focus:bg-white focus:outline-none transition-all shadow-2xs',
                     mobileForm.formState.errors.email
                       ? 'border-red-400 focus:border-red-500 focus:ring-2 focus:ring-red-100'
-                      : 'border-[#E8DED5] focus:border-[#6F4E37] focus:ring-2 focus:ring-[#DDB892]/30'
+                      : 'border-[#FEE2E2] focus:border-[#E50914] focus:ring-2 focus:ring-[#EF5350]/30'
                   )}
                 />
               </div>
@@ -134,12 +134,12 @@ export default function RegisterPage() {
             <div>
               <label
                 htmlFor="mobile-reg-phone"
-                className="block text-xs font-bold text-[#6B5B4F] mb-1.5"
+                className="block text-xs font-bold text-[#757575] mb-1.5"
               >
                 Phone Number
               </label>
               <div className="relative flex items-center">
-                <div className="absolute left-3 text-[#A67B5B] pointer-events-none">
+                <div className="absolute left-3 text-[#B71C1C] pointer-events-none">
                   <Phone size={16} strokeWidth={2} />
                 </div>
                 <input
@@ -151,10 +151,10 @@ export default function RegisterPage() {
                   placeholder="9876543210"
                   suppressHydrationWarning
                   className={cn(
-                    'w-full py-3 pl-9 pr-3 text-sm font-medium text-[#2C1810] placeholder:text-stone-300 rounded-2xl border bg-[#FFFDF9] focus:bg-white focus:outline-none transition-all shadow-2xs',
+                    'w-full py-3 pl-9 pr-3 text-sm font-medium text-[#252525] placeholder:text-stone-300 rounded-2xl border bg-[#FFFDF9] focus:bg-white focus:outline-none transition-all shadow-2xs',
                     mobileForm.formState.errors.phoneNumber
                       ? 'border-red-400 focus:border-red-500 focus:ring-2 focus:ring-red-100'
-                      : 'border-[#E8DED5] focus:border-[#6F4E37] focus:ring-2 focus:ring-[#DDB892]/30'
+                      : 'border-[#FEE2E2] focus:border-[#E50914] focus:ring-2 focus:ring-[#EF5350]/30'
                   )}
                 />
               </div>
@@ -169,12 +169,12 @@ export default function RegisterPage() {
             <div>
               <label
                 htmlFor="mobile-reg-password"
-                className="block text-xs font-bold text-[#6B5B4F] mb-1.5"
+                className="block text-xs font-bold text-[#757575] mb-1.5"
               >
                 Password
               </label>
               <div className="relative flex items-center">
-                <div className="absolute left-3 text-[#A67B5B] pointer-events-none">
+                <div className="absolute left-3 text-[#B71C1C] pointer-events-none">
                   <Lock size={16} strokeWidth={2} />
                 </div>
                 <input
@@ -185,10 +185,10 @@ export default function RegisterPage() {
                   placeholder="••••••••"
                   suppressHydrationWarning
                   className={cn(
-                    'w-full py-3 pl-9 pr-10 text-sm font-medium text-[#2C1810] placeholder:text-stone-300 rounded-2xl border bg-[#FFFDF9] focus:bg-white focus:outline-none transition-all tracking-wide shadow-2xs',
+                    'w-full py-3 pl-9 pr-10 text-sm font-medium text-[#252525] placeholder:text-stone-300 rounded-2xl border bg-[#FFFDF9] focus:bg-white focus:outline-none transition-all tracking-wide shadow-2xs',
                     mobileForm.formState.errors.password
                       ? 'border-red-400 focus:border-red-500 focus:ring-2 focus:ring-red-100'
-                      : 'border-[#E8DED5] focus:border-[#6F4E37] focus:ring-2 focus:ring-[#DDB892]/30'
+                      : 'border-[#FEE2E2] focus:border-[#E50914] focus:ring-2 focus:ring-[#EF5350]/30'
                   )}
                 />
                 <button
@@ -196,7 +196,7 @@ export default function RegisterPage() {
                   onClick={() => setShowPassword(!showPassword)}
                   aria-label={showPassword ? 'Hide password' : 'Show password'}
                   suppressHydrationWarning
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[#A67B5B] hover:text-[#6F4E37] transition-colors p-1"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[#B71C1C] hover:text-[#E50914] transition-colors p-1"
                 >
                   {showPassword ? <EyeOff size={17} /> : <Eye size={17} />}
                 </button>
@@ -212,12 +212,12 @@ export default function RegisterPage() {
             <div>
               <label
                 htmlFor="mobile-reg-confirm-password"
-                className="block text-xs font-bold text-[#6B5B4F] mb-1.5"
+                className="block text-xs font-bold text-[#757575] mb-1.5"
               >
                 Confirm Password
               </label>
               <div className="relative flex items-center">
-                <div className="absolute left-3 text-[#A67B5B] pointer-events-none">
+                <div className="absolute left-3 text-[#B71C1C] pointer-events-none">
                   <Lock size={16} strokeWidth={2} />
                 </div>
                 <input
@@ -232,10 +232,10 @@ export default function RegisterPage() {
                     if (confirmPasswordError) setConfirmPasswordError('');
                   }}
                   className={cn(
-                    'w-full py-3 pl-9 pr-10 text-sm font-medium text-[#2C1810] placeholder:text-stone-300 rounded-2xl border bg-[#FFFDF9] focus:bg-white focus:outline-none transition-all tracking-wide shadow-2xs',
+                    'w-full py-3 pl-9 pr-10 text-sm font-medium text-[#252525] placeholder:text-stone-300 rounded-2xl border bg-[#FFFDF9] focus:bg-white focus:outline-none transition-all tracking-wide shadow-2xs',
                     confirmPasswordError
                       ? 'border-red-400 focus:border-red-500 focus:ring-2 focus:ring-red-100'
-                      : 'border-[#E8DED5] focus:border-[#6F4E37] focus:ring-2 focus:ring-[#DDB892]/30'
+                      : 'border-[#FEE2E2] focus:border-[#E50914] focus:ring-2 focus:ring-[#EF5350]/30'
                   )}
                 />
                 <button
@@ -243,7 +243,7 @@ export default function RegisterPage() {
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                   aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
                   suppressHydrationWarning
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[#A67B5B] hover:text-[#6F4E37] transition-colors p-1"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[#B71C1C] hover:text-[#E50914] transition-colors p-1"
                 >
                   {showConfirmPassword ? <EyeOff size={17} /> : <Eye size={17} />}
                 </button>
@@ -261,7 +261,7 @@ export default function RegisterPage() {
                 type="submit"
                 disabled={isPending}
                 suppressHydrationWarning
-                className="w-full py-3.5 px-6 rounded-2xl bg-gradient-to-r from-[#6F4E37] via-[#825C40] to-[#A67B5B] text-white text-sm font-extrabold tracking-wide shadow-[0_10px_25px_-5px_rgba(111,78,55,0.4)] active:scale-[0.98] transition-all flex items-center justify-center disabled:opacity-70 hover:brightness-105 cursor-pointer"
+                className="w-full py-3.5 px-6 rounded-2xl bg-gradient-to-r from-[#E50914] via-[#825C40] to-[#B71C1C] text-white text-sm font-extrabold tracking-wide shadow-[0_10px_25px_-5px_rgba(111,78,55,0.4)] active:scale-[0.98] transition-all flex items-center justify-center disabled:opacity-70 hover:brightness-105 cursor-pointer"
               >
                 {isPending ? (
                   <Loader2 className="animate-spin mr-2" size={16} />
@@ -276,7 +276,7 @@ export default function RegisterPage() {
                 Already have an account?{' '}
                 <Link
                   href="/login"
-                  className="font-extrabold text-[#6F4E37] hover:text-[#8D6345] transition-colors underline-offset-2 hover:underline"
+                  className="font-extrabold text-[#E50914] hover:text-[#8D6345] transition-colors underline-offset-2 hover:underline"
                 >
                   Sign In
                 </Link>
@@ -288,7 +288,7 @@ export default function RegisterPage() {
 
       {/* ── DESKTOP & TABLET VIEWPORT (md: 768px+): Untouched Existing Desktop UI ── */}
       <div className="hidden md:block">
-        <AuthLayout title="Create Account" subtitle="Join Fahara today">
+        <AuthLayout title="Create Account" subtitle="Join Grab2GO today">
           <form
             onSubmit={desktopForm.handleSubmit(onDesktopSubmit)}
             className="space-y-4"
@@ -297,11 +297,11 @@ export default function RegisterPage() {
             <input type="hidden" {...desktopForm.register('roleName')} value="CUSTOMER" />
 
             <div>
-              <label className="block text-sm font-semibold text-[#2C1810] mb-1.5">
+              <label className="block text-sm font-semibold text-[#252525] mb-1.5">
                 Full Name
               </label>
               <div className="relative group">
-                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[#6F4E37] group-focus-within:text-[#4A2614] transition-colors z-10">
+                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[#E50914] group-focus-within:text-[#4A2614] transition-colors z-10">
                   <User size={20} strokeWidth={2.2} />
                 </div>
                 <input
@@ -309,7 +309,7 @@ export default function RegisterPage() {
                   type="text"
                   placeholder="Enter your name"
                   className={cn(
-                    'w-full pl-11 pr-4 py-3 rounded-xl border bg-white/80 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-[#DDB892] focus:bg-white transition-all shadow-sm font-medium text-[#2C1810] placeholder:text-gray-400',
+                    'w-full pl-11 pr-4 py-3 rounded-xl border bg-white/80 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-[#EF5350] focus:bg-white transition-all shadow-sm font-medium text-[#252525] placeholder:text-gray-400',
                     desktopForm.formState.errors.name
                       ? 'border-red-400 ring-red-400'
                       : 'border-gray-200 hover:border-gray-300'
@@ -324,11 +324,11 @@ export default function RegisterPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-[#2C1810] mb-1.5">
+              <label className="block text-sm font-semibold text-[#252525] mb-1.5">
                 Email
               </label>
               <div className="relative group">
-                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[#6F4E37] group-focus-within:text-[#4A2614] transition-colors z-10">
+                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[#E50914] group-focus-within:text-[#4A2614] transition-colors z-10">
                   <Mail size={20} strokeWidth={2.2} />
                 </div>
                 <input
@@ -336,7 +336,7 @@ export default function RegisterPage() {
                   type="email"
                   placeholder="Enter your email"
                   className={cn(
-                    'w-full pl-11 pr-4 py-3 rounded-xl border bg-white/80 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-[#DDB892] focus:bg-white transition-all shadow-sm font-medium text-[#2C1810] placeholder:text-gray-400',
+                    'w-full pl-11 pr-4 py-3 rounded-xl border bg-white/80 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-[#EF5350] focus:bg-white transition-all shadow-sm font-medium text-[#252525] placeholder:text-gray-400',
                     desktopForm.formState.errors.email
                       ? 'border-red-400 ring-red-400'
                       : 'border-gray-200 hover:border-gray-300'
@@ -351,11 +351,11 @@ export default function RegisterPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-[#2C1810] mb-1.5">
+              <label className="block text-sm font-semibold text-[#252525] mb-1.5">
                 Phone Number
               </label>
               <div className="relative group">
-                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[#6F4E37] group-focus-within:text-[#4A2614] transition-colors z-10">
+                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[#E50914] group-focus-within:text-[#4A2614] transition-colors z-10">
                   <Phone size={20} strokeWidth={2.2} />
                 </div>
                 <input
@@ -363,7 +363,7 @@ export default function RegisterPage() {
                   type="tel"
                   placeholder="Enter phone number"
                   className={cn(
-                    'w-full pl-11 pr-4 py-3 rounded-xl border bg-white/80 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-[#DDB892] focus:bg-white transition-all shadow-sm font-medium text-[#2C1810] placeholder:text-gray-400',
+                    'w-full pl-11 pr-4 py-3 rounded-xl border bg-white/80 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-[#EF5350] focus:bg-white transition-all shadow-sm font-medium text-[#252525] placeholder:text-gray-400',
                     desktopForm.formState.errors.phoneNumber
                       ? 'border-red-400 ring-red-400'
                       : 'border-gray-200 hover:border-gray-300'
@@ -378,11 +378,11 @@ export default function RegisterPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-[#2C1810] mb-1.5">
+              <label className="block text-sm font-semibold text-[#252525] mb-1.5">
                 Password
               </label>
               <div className="relative group">
-                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[#6F4E37] group-focus-within:text-[#4A2614] transition-colors z-10">
+                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[#E50914] group-focus-within:text-[#4A2614] transition-colors z-10">
                   <Lock size={20} strokeWidth={2.2} />
                 </div>
                 <input
@@ -390,7 +390,7 @@ export default function RegisterPage() {
                   type={showPassword ? 'text' : 'password'}
                   placeholder="Create a password"
                   className={cn(
-                    'w-full pl-11 pr-12 py-3 rounded-xl border bg-white/80 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-[#DDB892] focus:bg-white transition-all shadow-sm font-medium text-[#2C1810] placeholder:text-gray-400',
+                    'w-full pl-11 pr-12 py-3 rounded-xl border bg-white/80 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-[#EF5350] focus:bg-white transition-all shadow-sm font-medium text-[#252525] placeholder:text-gray-400',
                     desktopForm.formState.errors.password
                       ? 'border-red-400 ring-red-400'
                       : 'border-gray-200 hover:border-gray-300'
@@ -399,7 +399,7 @@ export default function RegisterPage() {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-[#6F4E37] hover:text-[#4A2614] transition-colors focus:outline-none z-10"
+                  className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-[#E50914] hover:text-[#4A2614] transition-colors focus:outline-none z-10"
                   tabIndex={-1}
                   title={showPassword ? 'Hide password' : 'Show password'}
                 >
@@ -451,7 +451,7 @@ export default function RegisterPage() {
               Already have an account?{' '}
               <Link
                 href="/login"
-                className="font-bold text-[#6F4E37] hover:text-[#A67B5B] transition-colors"
+                className="font-bold text-[#E50914] hover:text-[#B71C1C] transition-colors"
               >
                 Login here
               </Link>

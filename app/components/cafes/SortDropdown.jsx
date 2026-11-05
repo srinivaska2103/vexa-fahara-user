@@ -72,23 +72,23 @@ export default function SortDropdown() {
             suppressHydrationWarning
             onClick={() => setIsOpen(!isOpen)}
             className={cn(
-              "flex items-center justify-between gap-2 bg-white border text-[#2C1810] py-2 px-3 sm:px-4 rounded-xl shadow-2xs transition-all font-extrabold text-xs sm:text-sm cursor-pointer select-none w-40 sm:w-48",
+              "flex items-center justify-between gap-2 bg-white border text-[#252525] py-2 px-3 sm:px-4 rounded-xl shadow-2xs transition-all font-extrabold text-xs sm:text-sm cursor-pointer select-none w-40 sm:w-48",
               isOpen 
-                ? "border-[#6F4E37] ring-2 ring-[#6F4E37]/15 bg-[#FFF8F0]/40" 
-                : "border-stone-200/90 hover:border-[#6F4E37]"
+                ? "border-[#E50914] ring-2 ring-[#E50914]/15 bg-[#FFF5F5]/40" 
+                : "border-stone-200/90 hover:border-[#E50914]"
             )}
           >
             <div className="flex items-center gap-2 truncate">
               {isRequestingLocation ? (
-                <Loader2 size={14} className="text-[#6F4E37] animate-spin shrink-0" />
+                <Loader2 size={14} className="text-[#E50914] animate-spin shrink-0" />
               ) : sortBy === 'nearest' ? (
-                <Navigation size={14} className="text-[#6F4E37] shrink-0 fill-[#6F4E37]/20" />
+                <Navigation size={14} className="text-[#E50914] shrink-0 fill-[#E50914]/20" />
               ) : (
-                <ArrowUpDown size={14} className="text-[#6F4E37] shrink-0" />
+                <ArrowUpDown size={14} className="text-[#E50914] shrink-0" />
               )}
               <span className="truncate">{currentLabel}</span>
             </div>
-            <ChevronDown size={15} className={cn("text-stone-400 transition-transform duration-200 shrink-0", isOpen ? "rotate-180 text-[#6F4E37]" : "")} />
+            <ChevronDown size={15} className={cn("text-stone-400 transition-transform duration-200 shrink-0", isOpen ? "rotate-180 text-[#E50914]" : "")} />
           </button>
 
           <AnimatePresence>
@@ -109,12 +109,12 @@ export default function SortDropdown() {
                         className={cn(
                           "flex items-center justify-between w-full px-3 py-2 rounded-xl text-xs sm:text-sm transition-colors text-left cursor-pointer",
                           sortBy === opt.value 
-                            ? "bg-[#FFF8F0] text-[#6F4E37] font-black" 
-                            : "text-stone-700 hover:bg-stone-50 hover:text-[#2C1810] font-semibold"
+                            ? "bg-[#FFF5F5] text-[#E50914] font-black" 
+                            : "text-stone-700 hover:bg-stone-50 hover:text-[#252525] font-semibold"
                         )}
                       >
                         <span className="truncate mr-2">{opt.label}</span>
-                        {sortBy === opt.value && <Check size={14} className="text-[#6F4E37] shrink-0 stroke-[3]" />}
+                        {sortBy === opt.value && <Check size={14} className="text-[#E50914] shrink-0 stroke-[3]" />}
                       </button>
                     </li>
                   ))}

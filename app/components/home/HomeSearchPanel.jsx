@@ -70,22 +70,22 @@ export default function HomeSearchPanel() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="w-full bg-white backdrop-blur-xl p-4 sm:p-5 rounded-3xl shadow-xl border border-[#E8DED5] text-[#2C1810]"
+        className="w-full bg-white backdrop-blur-xl p-4 sm:p-5 rounded-3xl shadow-xl border border-[#FEE2E2] text-[#252525]"
       >
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-3">
           
           {/* LOCATION FIELD */}
           <div className="flex flex-col text-left w-full min-w-0 relative">
             <label className="text-[10px] font-black uppercase text-stone-400 block tracking-wider mb-1">Where</label>
-            <div className="relative w-full flex items-center px-3.5 py-2.5 rounded-2xl border border-stone-200 bg-white hover:border-[#6F4E37]/60 focus-within:border-[#6F4E37] focus-within:ring-2 focus-within:ring-[#6F4E37]/20 transition-all shadow-2xs min-h-[44px] group">
-              <MapPin size={16} className="text-[#6F4E37] mr-2 shrink-0 group-hover:scale-110 transition-transform" />
+            <div className="relative w-full flex items-center px-3.5 py-2.5 rounded-2xl border border-stone-200 bg-white hover:border-[#E50914]/60 focus-within:border-[#E50914] focus-within:ring-2 focus-within:ring-[#E50914]/20 transition-all shadow-2xs min-h-[44px] group">
+              <MapPin size={16} className="text-[#E50914] mr-2 shrink-0 group-hover:scale-110 transition-transform" />
               <input 
                 type="text"
                 value={searchLocation}
                 onFocus={() => setShowLocationDropdown(true)}
                 onChange={(e) => setSearchLocation(e.target.value)}
                 placeholder="e.g. Bandra, Indiranagar"
-                className="w-full text-xs font-extrabold text-[#2C1810] outline-none bg-transparent placeholder:text-stone-400 truncate"
+                className="w-full text-xs font-extrabold text-[#252525] outline-none bg-transparent placeholder:text-stone-400 truncate"
                 suppressHydrationWarning
               />
               {searchLocation && (
@@ -120,7 +120,7 @@ export default function HomeSearchPanel() {
                             setSearchLocation(loc);
                             setShowLocationDropdown(false);
                           }}
-                          className="w-full text-left px-3 py-2 rounded-xl text-xs font-bold text-stone-700 hover:bg-[#FFF8F0] hover:text-[#6F4E37] flex items-center justify-between transition-colors min-h-[40px]"
+                          className="w-full text-left px-3 py-2 rounded-xl text-xs font-bold text-stone-700 hover:bg-[#FFF5F5] hover:text-[#E50914] flex items-center justify-between transition-colors min-h-[40px]"
                         >
                           <span>{loc}</span>
                           <ChevronRight size={14} className="text-stone-400" />
@@ -186,7 +186,7 @@ export default function HomeSearchPanel() {
         {/* SEARCH ACTION & CHIPS */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-3 border-t border-stone-100">
           <div className="flex items-center gap-2 overflow-x-auto scrollbar-none py-1 w-full sm:w-auto">
-            <span className="text-[10px] font-black uppercase tracking-wider text-[#6F4E37] shrink-0 mr-1">Occasions:</span>
+            <span className="text-[10px] font-black uppercase tracking-wider text-[#E50914] shrink-0 mr-1">Occasions:</span>
             {popularEventChips.map((chip) => {
               const isSelected = selectedChip === chip.id;
               return (
@@ -196,8 +196,8 @@ export default function HomeSearchPanel() {
                   onClick={() => handleChipSelect(chip.id, chip.label)}
                   className={`px-3 py-1 rounded-full text-xs font-bold shrink-0 transition-all cursor-pointer min-h-[32px] flex items-center ${
                     isSelected 
-                      ? 'bg-[#6F4E37] text-white font-black shadow-xs' 
-                      : 'bg-[#FFF8F0] hover:bg-[#F5EBE0] text-[#6F4E37] border border-[#DDB892]/40'
+                      ? 'bg-[#E50914] text-white font-black shadow-xs' 
+                      : 'bg-[#FFF5F5] hover:bg-[#F5EBE0] text-[#E50914] border border-[#EF5350]/40'
                   }`}
                 >
                   {chip.label}
@@ -210,7 +210,7 @@ export default function HomeSearchPanel() {
             <button 
               type="button" 
               onClick={handleResetSearch}
-              className="text-xs font-extrabold text-stone-400 hover:text-[#6F4E37] flex items-center gap-1 transition-colors px-2 py-1 min-h-[44px]"
+              className="text-xs font-extrabold text-stone-400 hover:text-[#E50914] flex items-center gap-1 transition-colors px-2 py-1 min-h-[44px]"
             >
               <RotateCcw size={13} />
               <span>Reset</span>
@@ -218,7 +218,7 @@ export default function HomeSearchPanel() {
 
             <button 
               type="submit"
-              className="w-full sm:w-auto px-8 py-3.5 bg-gradient-to-r from-[#6F4E37] to-[#4A2C11] hover:from-[#5c402d] hover:to-[#38210d] text-white font-black text-xs sm:text-sm rounded-2xl flex items-center justify-center gap-2 shadow-lg hover:shadow-xl hover:-translate-y-0.5 active:translate-y-0 transition-all cursor-pointer min-h-[46px]"
+              className="w-full sm:w-auto px-8 py-3.5 bg-gradient-to-r from-[#E50914] to-[#B71C1C] hover:from-[#5c402d] hover:to-[#38210d] text-white font-black text-xs sm:text-sm rounded-2xl flex items-center justify-center gap-2 shadow-lg hover:shadow-xl hover:-translate-y-0.5 active:translate-y-0 transition-all cursor-pointer min-h-[46px]"
             >
               <span>Search Places</span>
               <ArrowRight size={16} />

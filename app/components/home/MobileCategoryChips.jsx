@@ -40,7 +40,7 @@ const getCategoryIconMeta = (id = '', title = '') => {
           <path d="M10 24L14 26L18 24L24 26L30 24L34 26L38 24" stroke="#2A9D8F" strokeWidth="2.5" strokeLinecap="round" />
           <path d="M14 24H34L32 28H16L14 24Z" fill="#E76F51" />
           {/* Patty */}
-          <rect x="12" y="27" width="24" height="4" rx="2" fill="#6F4E37" stroke="#4A2F1B" strokeWidth="1.5" />
+          <rect x="12" y="27" width="24" height="4" rx="2" fill="#E50914" stroke="#4A2F1B" strokeWidth="1.5" />
           {/* Bottom bun */}
           <path d="M13 33C13 33 13 38 24 38C35 38 35 33 35 33H13Z" fill="#F4A261" stroke="#8C4A16" strokeWidth="2.5" strokeLinejoin="round" />
         </svg>
@@ -116,14 +116,14 @@ const getCategoryIconMeta = (id = '', title = '') => {
       svg: (
         <svg viewBox="0 0 48 48" className="w-7 h-7" fill="none">
           {/* Coffee cup */}
-          <path d="M12 16H32V27C32 32 28 36 22 36C16 36 12 32 12 27V16Z" fill="#FFF2DF" stroke="#6F4E37" strokeWidth="2.5" strokeLinejoin="round" />
+          <path d="M12 16H32V27C32 32 28 36 22 36C16 36 12 32 12 27V16Z" fill="#FFF2DF" stroke="#E50914" strokeWidth="2.5" strokeLinejoin="round" />
           {/* Handle */}
-          <path d="M32 20C35 20 37 22 37 25C37 28 35 30 32 30" stroke="#6F4E37" strokeWidth="2.5" strokeLinecap="round" />
+          <path d="M32 20C35 20 37 22 37 25C37 28 35 30 32 30" stroke="#E50914" strokeWidth="2.5" strokeLinecap="round" />
           {/* Steam curves */}
           <path d="M18 11C18 9 20 8 20 6" stroke="#C5A059" strokeWidth="2" strokeLinecap="round" />
           <path d="M24 12C24 10 26 9 26 7" stroke="#C5A059" strokeWidth="2" strokeLinecap="round" />
           {/* Coffee surface */}
-          <ellipse cx="22" cy="18" rx="8" ry="2.5" fill="#6F4E37" />
+          <ellipse cx="22" cy="18" rx="8" ry="2.5" fill="#E50914" />
         </svg>
       )
     };
@@ -146,7 +146,7 @@ const getCategoryIconMeta = (id = '', title = '') => {
       svg: (
         <svg viewBox="0 0 48 48" className="w-7 h-7" fill="none">
           <circle cx="24" cy="24" r="14" fill="#FFFBF5" stroke="#7A3E1D" strokeWidth="2.5" />
-          <circle cx="24" cy="24" r="9" fill="#FFF4E6" stroke="#DDB892" strokeWidth="1.5" />
+          <circle cx="24" cy="24" r="9" fill="#FFF4E6" stroke="#EF5350" strokeWidth="1.5" />
           <path d="M18 17V31" stroke="#7A3E1D" strokeWidth="2" strokeLinecap="round" />
           <path d="M30 17V31" stroke="#7A3E1D" strokeWidth="2" strokeLinecap="round" />
         </svg>
@@ -198,10 +198,10 @@ const getCategoryIconMeta = (id = '', title = '') => {
     return {
       svg: (
         <svg viewBox="0 0 48 48" className="w-7 h-7" fill="none">
-          <rect x="12" y="12" width="10" height="10" rx="3" fill="#FFF2DF" stroke="#6F4E37" strokeWidth="2.5" />
-          <rect x="26" y="12" width="10" height="10" rx="3" fill="#FFF2DF" stroke="#6F4E37" strokeWidth="2.5" />
-          <rect x="12" y="26" width="10" height="10" rx="3" fill="#FFF2DF" stroke="#6F4E37" strokeWidth="2.5" />
-          <rect x="26" y="26" width="10" height="10" rx="3" fill="#6F4E37" stroke="#6F4E37" strokeWidth="2.5" />
+          <rect x="12" y="12" width="10" height="10" rx="3" fill="#FFF2DF" stroke="#E50914" strokeWidth="2.5" />
+          <rect x="26" y="12" width="10" height="10" rx="3" fill="#FFF2DF" stroke="#E50914" strokeWidth="2.5" />
+          <rect x="12" y="26" width="10" height="10" rx="3" fill="#FFF2DF" stroke="#E50914" strokeWidth="2.5" />
+          <rect x="26" y="26" width="10" height="10" rx="3" fill="#E50914" stroke="#E50914" strokeWidth="2.5" />
         </svg>
       )
     };
@@ -211,8 +211,8 @@ const getCategoryIconMeta = (id = '', title = '') => {
   return {
     svg: (
       <svg viewBox="0 0 48 48" className="w-7 h-7" fill="none">
-        <circle cx="24" cy="24" r="13" fill="#FFF4D6" stroke="#6F4E37" strokeWidth="2.5" />
-        <path d="M20 24L23 27L28 21" stroke="#6F4E37" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+        <circle cx="24" cy="24" r="13" fill="#FFF4D6" stroke="#E50914" strokeWidth="2.5" />
+        <path d="M20 24L23 27L28 21" stroke="#E50914" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
       </svg>
     )
   };
@@ -275,11 +275,11 @@ export default function MobileCategoryChips({ categories = [], onOpenFilter }) {
 
   return (
     <div 
-      className="md:hidden sticky z-30 w-full px-3.5 pt-3 pb-3 mb-4 select-none bg-[#FFF8F0] customer-cafe-doodle-bg border-b border-[#E8DED5]/80 shadow-[0_6px_16px_rgba(44,24,16,0.06)]"
+      className="md:hidden sticky z-30 w-full px-3.5 pt-3 pb-3 mb-4 select-none bg-white border-b border-red-100 shadow-[0_4px_16px_rgba(229,9,20,0.05)]"
       style={{ top: `${searchBarHeight}px` }}
     >
       <div className="flex items-center justify-between mb-2.5 px-0.5">
-        <span className="text-xs font-black text-[#2C1810] tracking-wide uppercase">
+        <span className="text-xs font-black text-[#252525] tracking-wide uppercase">
           Categories
         </span>
       </div>
@@ -308,8 +308,8 @@ export default function MobileCategoryChips({ categories = [], onOpenFilter }) {
                 className={cn(
                   'w-13 h-13 xs:w-14 xs:h-14 rounded-full flex items-center justify-center transition-all duration-200 select-none shadow-xs',
                   isSelected
-                    ? 'bg-white shadow-[0_4px_14px_rgba(111,78,55,0.22)] border-2 border-[#6F4E37] ring-2 ring-[#6F4E37]/15 scale-105'
-                    : 'bg-white/95 border border-[#EBE4DD] hover:border-[#DDB892] hover:bg-[#FFFDF9]'
+                    ? 'bg-white shadow-[0_4px_14px_rgba(111,78,55,0.22)] border-2 border-[#E50914] ring-2 ring-[#E50914]/15 scale-105'
+                    : 'bg-white/95 border border-[#EBE4DD] hover:border-[#EF5350] hover:bg-[#FFFDF9]'
                 )}
               >
                 <div className="transition-transform group-hover:scale-110 flex items-center justify-center scale-90">
@@ -321,8 +321,8 @@ export default function MobileCategoryChips({ categories = [], onOpenFilter }) {
               <span className={cn(
                 'text-[10px] sm:text-[10.5px] font-bold tracking-tight text-center leading-tight truncate w-full px-0.5 transition-colors',
                 isSelected 
-                  ? 'text-[#6F4E37] font-black' 
-                  : 'text-[#3E2723] group-hover:text-[#6F4E37]'
+                  ? 'text-[#E50914] font-black' 
+                  : 'text-[#B71C1C] group-hover:text-[#E50914]'
               )}>
                 {chip.title}
               </span>

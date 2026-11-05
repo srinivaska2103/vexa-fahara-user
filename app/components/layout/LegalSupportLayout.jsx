@@ -40,7 +40,7 @@ export default function LegalSupportLayout({ children, breadcrumbs = [] }) {
   };
 
   return (
-    <div className="min-h-screen bg-[#FFF8F0] font-sans antialiased text-[#2C1810] selection:bg-[#6F4E37] selection:text-white flex flex-col justify-between">
+    <div className="min-h-screen bg-[#FFF5F5] font-sans antialiased text-[#252525] selection:bg-[#E50914] selection:text-white flex flex-col justify-between">
       <div className="relative">
         {/* Sticky Customer Header Navbar */}
         <CustomerNavbar showSearch={true} showViewToggles={false} />
@@ -52,7 +52,7 @@ export default function LegalSupportLayout({ children, breadcrumbs = [] }) {
           </div>
           <button 
             onClick={() => setMobileDrawerOpen(!mobileDrawerOpen)}
-            className="p-1.5 bg-[#FFF8F0] border border-[#DDB892]/60 rounded-xl text-[#6F4E37] font-bold text-xs flex items-center gap-1 cursor-pointer"
+            className="p-1.5 bg-[#FFF5F5] border border-[#EF5350]/60 rounded-xl text-[#E50914] font-bold text-xs flex items-center gap-1 cursor-pointer"
           >
             {mobileDrawerOpen ? <X size={16} /> : <Menu size={16} />}
             <span>Menu</span>
@@ -78,13 +78,13 @@ export default function LegalSupportLayout({ children, breadcrumbs = [] }) {
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.95, y: -10 }}
                 transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-                className="lg:hidden fixed left-4 right-4 top-24 z-50 bg-[#FFF8F0] border border-[#DDB892]/60 shadow-2xl rounded-3xl overflow-hidden max-h-[80vh] flex flex-col"
+                className="lg:hidden fixed left-4 right-4 top-24 z-50 bg-[#FFF5F5] border border-[#EF5350]/60 shadow-2xl rounded-3xl overflow-hidden max-h-[80vh] flex flex-col"
               >
                 {/* Modal Header */}
-                <div className="px-5 py-4 bg-linear-to-r from-[#FFF8F0] to-white border-b border-stone-100 flex items-center justify-between">
+                <div className="px-5 py-4 bg-linear-to-r from-[#FFF5F5] to-white border-b border-stone-100 flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 rounded-full bg-[#6F4E37] animate-pulse" />
-                    <span className="text-xs font-black text-[#2C1810] tracking-wide uppercase">Navigation Menu</span>
+                    <div className="w-2 h-2 rounded-full bg-[#E50914] animate-pulse" />
+                    <span className="text-xs font-black text-[#252525] tracking-wide uppercase">Navigation Menu</span>
                   </div>
                   <button 
                     onClick={() => setMobileDrawerOpen(false)}
@@ -106,13 +106,13 @@ export default function LegalSupportLayout({ children, breadcrumbs = [] }) {
                         onClick={() => setMobileDrawerOpen(false)}
                         className={`flex items-center justify-between px-4 py-3 rounded-2xl text-xs transition-all ${
                           isActive 
-                            ? 'bg-[#6F4E37] text-white shadow-md font-black' 
-                            : 'text-stone-700 font-bold hover:bg-[#FFF8F0] hover:text-[#6F4E37]'
+                            ? 'bg-[#E50914] text-white shadow-md font-black' 
+                            : 'text-stone-700 font-bold hover:bg-[#FFF5F5] hover:text-[#E50914]'
                         }`}
                       >
                         <div className="flex items-center gap-3">
                           <div className={`p-2 rounded-xl transition-colors ${
-                            isActive ? 'bg-white/20 text-white' : 'bg-[#FFF8F0] text-[#6F4E37]'
+                            isActive ? 'bg-white/20 text-white' : 'bg-[#FFF5F5] text-[#E50914]'
                           }`}>
                             <Icon size={16} />
                           </div>
@@ -133,13 +133,13 @@ export default function LegalSupportLayout({ children, breadcrumbs = [] }) {
           
           {/* Breadcrumbs Row */}
           <div className="mb-6 flex items-center gap-2 text-xs font-bold text-stone-500">
-            <Link href="/" className="hover:text-[#6F4E37]">Home</Link>
+            <Link href="/" className="hover:text-[#E50914]">Home</Link>
             <span>/</span>
-            <Link href="/faq" className="hover:text-[#6F4E37]">Legal & Support</Link>
+            <Link href="/faq" className="hover:text-[#E50914]">Legal & Support</Link>
             {breadcrumbs.map((b, idx) => (
               <span key={idx} className="flex items-center gap-2">
                 <span>/</span>
-                <span className="text-[#6F4E37] font-black">{b}</span>
+                <span className="text-[#E50914] font-black">{b}</span>
               </span>
             ))}
           </div>
@@ -159,12 +159,12 @@ export default function LegalSupportLayout({ children, breadcrumbs = [] }) {
                       href={item.href}
                       className={`flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-xs font-bold transition-all ${
                         isActive 
-                          ? 'bg-[#6F4E37] text-white shadow-md font-black' 
-                          : 'text-stone-700 hover:bg-[#FFF8F0] hover:text-[#6F4E37]'
+                          ? 'bg-[#E50914] text-white shadow-md font-black' 
+                          : 'text-stone-700 hover:bg-[#FFF5F5] hover:text-[#E50914]'
                       }`}
                     >
                       <div className="flex items-center gap-2.5">
-                        <Icon size={16} className={isActive ? 'text-white' : 'text-[#6F4E37]'} />
+                        <Icon size={16} className={isActive ? 'text-white' : 'text-[#E50914]'} />
                         <span className="truncate">{item.label}</span>
                       </div>
                       <ChevronRight size={14} className={`shrink-0 ${isActive ? 'text-white' : 'text-stone-400'}`} />
@@ -191,7 +191,7 @@ export default function LegalSupportLayout({ children, breadcrumbs = [] }) {
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.8 }}
             onClick={scrollToTop}
-            className="fixed bottom-20 lg:bottom-8 right-6 z-40 p-3 bg-[#6F4E37] text-white rounded-full shadow-xl hover:bg-[#4A2C11] transition-all cursor-pointer"
+            className="fixed bottom-20 lg:bottom-8 right-6 z-40 p-3 bg-[#E50914] text-white rounded-full shadow-xl hover:bg-[#B71C1C] transition-all cursor-pointer"
             aria-label="Back to Top"
           >
             <ArrowUp size={18} />

@@ -30,7 +30,7 @@ export default function MobilePromotionalBanner() {
 
   return (
     <div 
-      className="md:hidden w-full select-none bg-[#2C1810] text-white px-3.5 overflow-hidden will-change-[max-height,opacity,transform,padding,margin] transition-[max-height,opacity,padding,margin] duration-300 ease-[cubic-bezier(0.25,1,0.5,1)] motion-reduce:transition-none"
+      className="md:hidden w-full select-none bg-[#E50914] text-white px-3.5 overflow-hidden will-change-[max-height,opacity,transform,padding,margin] transition-[max-height,opacity,padding,margin] duration-300 ease-[cubic-bezier(0.25,1,0.5,1)] motion-reduce:transition-none"
       style={{
         maxHeight: isFullyCollapsed ? '0px' : '420px',
         opacity: isFullyCollapsed ? 0 : bannerOpacity,

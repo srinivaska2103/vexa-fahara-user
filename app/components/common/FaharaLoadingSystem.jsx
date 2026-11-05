@@ -1,15 +1,16 @@
 'use client';
 
+import FoodLoadingScreen from './FoodLoadingScreen';
 import React from 'react';
 
 /**
- * Fahara Skeleton Base with shimmer animation and brand cream/amber tones
+ * Grab2GO Skeleton Base with shimmer animation and brand cream/amber tones
  */
 export function Skeleton({ className = '', ...props }) {
   return (
     <div
       aria-hidden="true"
-      className={`relative overflow-hidden bg-[#EADBCE]/50 before:absolute before:inset-0 before:-translate-x-full before:animate-[shimmer_1.8s_infinite] before:bg-gradient-to-r before:from-transparent before:via-[#FFFDFB]/70 before:to-transparent rounded-xl ${className}`}
+      className={`relative overflow-hidden bg-stone-100 before:absolute before:inset-0 before:-translate-x-full before:animate-[shimmer_1.8s_infinite] before:bg-gradient-to-r before:from-transparent before:via-white/80 before:to-transparent rounded-xl ${className}`}
       {...props}
     />
   );
@@ -24,10 +25,10 @@ export function CafeCardSkeleton({ className = '' }) {
     <div
       aria-busy="true"
       aria-label="Loading venue details..."
-      className={`bg-white rounded-[24px] sm:rounded-[28px] overflow-hidden border border-[#E5D7CA]/80 shadow-[0_4px_20px_rgba(44,24,16,0.04)] flex flex-col h-full w-full select-none ${className}`}
+      className={`bg-white rounded-[24px] sm:rounded-[28px] overflow-hidden border border-red-50 shadow-[0_4px_20px_rgba(229,9,20,0.03)] flex flex-col h-full w-full select-none ${className}`}
     >
       {/* 🖼️ Image Section Skeleton */}
-      <div className="relative aspect-[16/10] w-full bg-[#EADBCE]/60 overflow-hidden">
+      <div className="relative aspect-[16/10] w-full bg-stone-100 overflow-hidden">
         <Skeleton className="w-full h-full rounded-none" />
         
         {/* Top badges placeholder */}
@@ -69,7 +70,7 @@ export function CafeCardSkeleton({ className = '' }) {
         </div>
 
         {/* Bottom Pricing & CTA */}
-        <div className="pt-2 border-t border-[#F5EDE4] flex items-center justify-between">
+        <div className="pt-2 border-t border-stone-100 flex items-center justify-between">
           <div className="space-y-1">
             <Skeleton className="h-3 w-12 rounded" />
             <Skeleton className="h-5 w-24 rounded-md" />
@@ -121,13 +122,13 @@ export function CategoryCarouselSkeleton() {
  */
 export function MapSkeleton({ height = 'h-[520px] sm:h-[620px]' }) {
   return (
-    <div className={`w-full ${height} rounded-3xl overflow-hidden border border-[#E8DED5] bg-[#FFF8F0] relative flex flex-col items-center justify-center p-6 text-center select-none shadow-xs`}>
+    <div className={`w-full ${height} rounded-3xl overflow-hidden border border-[#FEE2E2] bg-[#FFF5F5] relative flex flex-col items-center justify-center p-6 text-center select-none shadow-xs`}>
       <Skeleton className="absolute inset-0 w-full h-full rounded-none opacity-40" />
-      <div className="relative z-10 flex flex-col items-center gap-3 bg-white/90 backdrop-blur-md px-6 py-5 rounded-2xl border border-[#E8DED5] shadow-sm max-w-xs">
-        <div className="w-8 h-8 rounded-full border-2 border-[#6F4E37] border-t-transparent animate-spin" />
+      <div className="relative z-10 flex flex-col items-center gap-3 bg-white/90 backdrop-blur-md px-6 py-5 rounded-2xl border border-[#FEE2E2] shadow-sm max-w-xs">
+        <div className="w-8 h-8 rounded-full border-2 border-[#E50914] border-t-transparent animate-spin" />
         <div className="space-y-1">
-          <p className="text-xs font-black text-[#2C1810]">Loading Interactive Map</p>
-          <p className="text-[11px] text-[#8C6D58] font-medium">Pinpointing venues near you...</p>
+          <p className="text-xs font-black text-[#252525]">Loading Interactive Map</p>
+          <p className="text-[11px] text-[#757575] font-medium">Pinpointing venues near you...</p>
         </div>
       </div>
     </div>
@@ -174,9 +175,9 @@ export function FormSubmitButton({
  */
 export function TableSkeleton({ rows = 5, cols = 4 }) {
   return (
-    <div className="w-full bg-white rounded-2xl border border-[#E8DED5] overflow-hidden">
+    <div className="w-full bg-white rounded-2xl border border-[#FEE2E2] overflow-hidden">
       {/* Header */}
-      <div className="bg-[#FFF8F0] border-b border-[#E8DED5] px-6 py-4 flex gap-4">
+      <div className="bg-[#FFF5F5] border-b border-[#FEE2E2] px-6 py-4 flex gap-4">
         {Array.from({ length: cols }).map((_, i) => (
           <Skeleton key={i} className="h-4 flex-1 rounded" />
         ))}
@@ -201,8 +202,8 @@ export function TableSkeleton({ rows = 5, cols = 4 }) {
 export function RouteProgressIndicator({ active = false }) {
   if (!active) return null;
   return (
-    <div className="fixed top-0 left-0 right-0 h-1 bg-[#6F4E37]/15 z-50 overflow-hidden">
-      <div className="h-full bg-gradient-to-r from-[#6F4E37] via-[#A67B5B] to-[#DDB892] w-full animate-[progress_1.2s_ease-in-out_infinite]" />
+    <div className="fixed top-0 left-0 right-0 h-1 bg-[#E50914]/15 z-50 overflow-hidden">
+      <div className="h-full bg-gradient-to-r from-[#E50914] via-[#B71C1C] to-[#EF5350] w-full animate-[progress_1.2s_ease-in-out_infinite]" />
     </div>
   );
 }

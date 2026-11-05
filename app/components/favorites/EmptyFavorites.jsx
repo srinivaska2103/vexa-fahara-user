@@ -74,7 +74,7 @@ export default function EmptyFavorites({
     <div className="relative w-full max-w-4xl mx-auto py-10 px-4 sm:px-6">
       
       {/* Background Decorative Blur Orbs */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-tr from-[#DDB892]/20 via-[#6F4E37]/10 to-rose-200/20 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-tr from-[#EF5350]/20 via-[#E50914]/10 to-rose-200/20 rounded-full blur-3xl pointer-events-none" />
 
       <motion.div 
         initial={{ opacity: 0, y: 15 }}
@@ -83,7 +83,7 @@ export default function EmptyFavorites({
         className="relative bg-white/90 backdrop-blur-xl rounded-3xl border border-stone-200/80 shadow-[0_20px_50px_rgba(0,0,0,0.06)] p-6 sm:p-10 text-center overflow-hidden"
       >
         {/* Top Floating Interactive Badge */}
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#FFF8F0] border border-[#DDB892]/50 text-[#6F4E37] text-xs font-black tracking-wide uppercase mb-6 shadow-2xs">
+        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#FFF5F5] border border-[#EF5350]/50 text-[#E50914] text-xs font-black tracking-wide uppercase mb-6 shadow-2xs">
           <Sparkles size={14} className="text-amber-500 animate-pulse" />
           <span>Interactive Wishlist Preview</span>
         </div>
@@ -98,14 +98,14 @@ export default function EmptyFavorites({
           >
             {/* Pulsing Backglow */}
             <div className={`absolute inset-0 rounded-full blur-xl transition-all duration-500 ${
-              isSaved ? 'bg-rose-500/30 scale-125' : 'bg-[#6F4E37]/20 group-hover:bg-rose-400/20'
+              isSaved ? 'bg-rose-500/30 scale-125' : 'bg-[#E50914]/20 group-hover:bg-rose-400/20'
             }`} />
 
             {/* Circle Housing */}
             <div className={`relative w-24 h-24 sm:w-28 sm:h-28 rounded-3xl flex items-center justify-center border transition-all duration-300 shadow-lg ${
               isSaved 
                 ? 'bg-rose-50 border-rose-300 shadow-rose-200/50' 
-                : 'bg-gradient-to-br from-[#FFF8F0] via-[#F5EBE0] to-white border-[#DDB892]/60'
+                : 'bg-gradient-to-br from-[#FFF5F5] via-[#F5EBE0] to-white border-[#EF5350]/60'
             }`}>
               <motion.div
                 animate={isSaved ? { scale: [1, 1.3, 1] } : { y: [0, -3, 0] }}
@@ -116,13 +116,13 @@ export default function EmptyFavorites({
                   className={`transition-all duration-300 ${
                     isSaved 
                       ? 'fill-rose-500 text-rose-500 drop-shadow-md' 
-                      : 'text-[#6F4E37] group-hover:text-rose-500 group-hover:fill-rose-100'
+                      : 'text-[#E50914] group-hover:text-rose-500 group-hover:fill-rose-100'
                   }`} 
                 />
               </motion.div>
 
               {/* Tap Prompt Tooltip */}
-              <div className="absolute -bottom-2.5 bg-[#2C1810] text-white text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full flex items-center gap-1 shadow-md opacity-90 group-hover:opacity-100 transition-opacity">
+              <div className="absolute -bottom-2.5 bg-[#252525] text-white text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full flex items-center gap-1 shadow-md opacity-90 group-hover:opacity-100 transition-opacity">
                 <MousePointerClick size={10} />
                 <span>{isSaved ? 'Saved!' : 'Tap me'}</span>
               </div>
@@ -131,7 +131,7 @@ export default function EmptyFavorites({
         </div>
 
         {/* Title & Description */}
-        <h2 className="text-2xl sm:text-3xl font-black text-[#2C1810] tracking-tight mb-2">
+        <h2 className="text-2xl sm:text-3xl font-black text-[#252525] tracking-tight mb-2">
           {title}
         </h2>
         <p className="text-stone-500 text-xs sm:text-sm max-w-lg mx-auto font-medium leading-relaxed mb-8">
@@ -139,7 +139,7 @@ export default function EmptyFavorites({
         </p>
 
         {/* Real Cafe Backend Interactive Card */}
-        <div className="bg-stone-50/90 border border-stone-200/80 rounded-2xl p-4 sm:p-5 max-w-md mx-auto mb-8 text-left shadow-2xs hover:border-[#DDB892] transition-colors">
+        <div className="bg-stone-50/90 border border-stone-200/80 rounded-2xl p-4 sm:p-5 max-w-md mx-auto mb-8 text-left shadow-2xs hover:border-[#EF5350] transition-colors">
           <div className="flex items-center gap-3.5">
             <div className="w-16 h-16 rounded-xl bg-stone-200 overflow-hidden relative flex-shrink-0 shadow-inner">
               <img 
@@ -164,10 +164,10 @@ export default function EmptyFavorites({
                 </span>
               </div>
               <p className="text-[11px] text-stone-500 font-medium truncate flex items-center gap-1 mt-0.5">
-                <MapPin size={11} className="text-[#6F4E37] flex-shrink-0" /> {cafeDisplayAddress}
+                <MapPin size={11} className="text-[#E50914] flex-shrink-0" /> {cafeDisplayAddress}
               </p>
               <div className="mt-2 flex items-center justify-between">
-                <span className="text-[11px] font-black text-[#2C1810]">
+                <span className="text-[11px] font-black text-[#252525]">
                   ₹{Number(cafeDisplayPrice).toLocaleString('en-IN')} <span className="text-stone-400 font-normal">/ hr</span>
                 </span>
                 <button
@@ -176,7 +176,7 @@ export default function EmptyFavorites({
                   className={`text-[10px] font-extrabold px-2.5 py-1 rounded-lg transition-all cursor-pointer ${
                     isSaved 
                       ? 'bg-rose-100 text-rose-700 hover:bg-rose-200' 
-                      : 'bg-[#6F4E37] text-white hover:bg-[#4A2C11]'
+                      : 'bg-[#E50914] text-white hover:bg-[#B71C1C]'
                   }`}
                 >
                   {isSaved ? '✓ Saved' : '+ Save Cafe'}
@@ -205,7 +205,7 @@ export default function EmptyFavorites({
                     whileHover={{ scale: 1.05, y: -2 }}
                     whileTap={{ scale: 0.95 }}
                     className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-extrabold border transition-all cursor-pointer shadow-2xs ${cat.bg} ${
-                      isSelected ? 'ring-2 ring-[#6F4E37]' : ''
+                      isSelected ? 'ring-2 ring-[#E50914]' : ''
                     }`}
                   >
                     <Icon size={13} />
@@ -223,7 +223,7 @@ export default function EmptyFavorites({
             <motion.button
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.97 }}
-              className="w-full sm:w-auto px-8 py-3.5 bg-gradient-to-r from-[#4A2C11] via-[#6F4E37] to-[#A67B5B] text-white rounded-2xl font-black text-xs sm:text-sm tracking-wide shadow-md hover:shadow-xl transition-all flex items-center justify-center gap-2 cursor-pointer"
+              className="w-full sm:w-auto px-8 py-3.5 bg-gradient-to-r from-[#B71C1C] via-[#E50914] to-[#B71C1C] text-white rounded-2xl font-black text-xs sm:text-sm tracking-wide shadow-md hover:shadow-xl transition-all flex items-center justify-center gap-2 cursor-pointer"
             >
               <Compass size={16} />
               <span>{actionText}</span>

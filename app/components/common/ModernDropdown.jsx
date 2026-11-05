@@ -41,10 +41,10 @@ export default function ModernDropdown({
         type="button"
         suppressHydrationWarning
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full bg-white hover:bg-[#FFF8F0] border border-stone-200 hover:border-[#6F4E37]/60 py-2.5 sm:py-3 px-3.5 rounded-2xl text-xs font-bold text-stone-800 focus:outline-none focus:ring-2 focus:ring-[#6F4E37]/20 transition-all cursor-pointer shadow-2xs flex items-center justify-between group min-h-[44px]"
+        className="w-full bg-white hover:bg-[#FFF5F5] border border-stone-200 hover:border-[#E50914]/60 py-2.5 sm:py-3 px-3.5 rounded-2xl text-xs font-bold text-stone-800 focus:outline-none focus:ring-2 focus:ring-[#E50914]/20 transition-all cursor-pointer shadow-2xs flex items-center justify-between group min-h-[44px]"
       >
         <div className="flex items-center gap-2.5 min-w-0 pr-2">
-          {Icon && <Icon size={16} className="text-[#6F4E37] shrink-0 group-hover:scale-110 transition-transform" />}
+          {Icon && <Icon size={16} className="text-[#E50914] shrink-0 group-hover:scale-110 transition-transform" />}
           <span className="truncate text-stone-900 font-extrabold">
             {selectedOption ? selectedOption.label : placeholder}
           </span>
@@ -52,7 +52,7 @@ export default function ModernDropdown({
 
         <ChevronDown 
           size={16} 
-          className={`text-stone-400 group-hover:text-[#6F4E37] shrink-0 transition-transform duration-300 ${isOpen ? 'rotate-180 text-[#6F4E37]' : ''}`} 
+          className={`text-stone-400 group-hover:text-[#E50914] shrink-0 transition-transform duration-300 ${isOpen ? 'rotate-180 text-[#E50914]' : ''}`} 
         />
       </button>
 
@@ -80,12 +80,12 @@ export default function ModernDropdown({
                     }}
                     className={`w-full px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-between cursor-pointer ${
                       isSelected
-                        ? 'bg-gradient-to-r from-[#4A2C11] to-[#6F4E37] text-white shadow-xs'
-                        : 'text-stone-700 hover:bg-[#FFF8F0] hover:text-[#6F4E37]'
+                        ? 'bg-gradient-to-r from-[#B71C1C] to-[#E50914] text-white shadow-xs'
+                        : 'text-stone-700 hover:bg-[#FFF5F5] hover:text-[#E50914]'
                     }`}
                   >
                     <div className="flex items-center gap-2 truncate">
-                      {opt.icon && <opt.icon size={15} className={isSelected ? 'text-amber-300' : 'text-[#6F4E37]'} />}
+                      {opt.icon && <opt.icon size={15} className={isSelected ? 'text-amber-300' : 'text-[#E50914]'} />}
                       <span className="truncate">{opt.label}</span>
                     </div>
 

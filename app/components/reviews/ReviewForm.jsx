@@ -86,51 +86,51 @@ export default function ReviewForm({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="bg-white rounded-2xl border border-[#E8DED5] overflow-hidden">
+    <form onSubmit={handleSubmit} className="bg-white rounded-2xl border border-[#FEE2E2] overflow-hidden">
       <div className="p-6 md:p-8 space-y-8">
         
         {/* Overall Score preview */}
-        <div className="flex flex-col items-center justify-center bg-[#FFF8F0] p-6 rounded-2xl">
-          <h3 className="text-[#2C1810] font-bold mb-2">Overall Rating</h3>
+        <div className="flex flex-col items-center justify-center bg-[#FFF5F5] p-6 rounded-2xl">
+          <h3 className="text-[#252525] font-bold mb-2">Overall Rating</h3>
           <div className="flex items-center gap-3">
-            <span className="text-4xl font-bold text-[#6F4E37]">{overallRating}</span>
+            <span className="text-4xl font-bold text-[#E50914]">{overallRating}</span>
             <RatingStars value={overallRating} readOnly size="xl" />
           </div>
-          <p className="text-sm text-[#A67B5B] mt-2">Calculated based on your detailed ratings below</p>
+          <p className="text-sm text-[#B71C1C] mt-2">Calculated based on your detailed ratings below</p>
         </div>
 
         {/* Breakdown */}
         <div>
-          <h3 className="text-lg font-bold text-[#2C1810] mb-4">Detailed Ratings</h3>
+          <h3 className="text-lg font-bold text-[#252525] mb-4">Detailed Ratings</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-6">
             <RatingBreakdown breakdown={breakdown} onChange={handleBreakdownChange} />
           </div>
         </div>
 
-        <hr className="border-[#E8DED5]" />
+        <hr className="border-[#FEE2E2]" />
 
         {/* Text Fields */}
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-semibold text-[#2C1810] mb-2">Review Title</label>
+            <label className="block text-sm font-semibold text-[#252525] mb-2">Review Title</label>
             <input 
               type="text"
               required
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="Summarize your experience"
-              className="w-full px-4 py-3 bg-gray-50 border border-[#E8DED5] rounded-xl focus:ring-2 focus:ring-[#6F4E37] focus:border-transparent outline-none transition-all"
+              className="w-full px-4 py-3 bg-gray-50 border border-[#FEE2E2] rounded-xl focus:ring-2 focus:ring-[#E50914] focus:border-transparent outline-none transition-all"
             />
           </div>
           <div>
-            <label className="block text-sm font-semibold text-[#2C1810] mb-2">Detailed Review</label>
+            <label className="block text-sm font-semibold text-[#252525] mb-2">Detailed Review</label>
             <textarea 
               required
               rows={4}
               value={review}
               onChange={(e) => setReview(e.target.value)}
               placeholder="Tell us more about your experience..."
-              className="w-full px-4 py-3 bg-gray-50 border border-[#E8DED5] rounded-xl focus:ring-2 focus:ring-[#6F4E37] focus:border-transparent outline-none transition-all resize-none"
+              className="w-full px-4 py-3 bg-gray-50 border border-[#FEE2E2] rounded-xl focus:ring-2 focus:ring-[#E50914] focus:border-transparent outline-none transition-all resize-none"
             />
           </div>
         </div>
@@ -143,7 +143,7 @@ export default function ReviewForm({
           <button
             type="button"
             onClick={() => setIsAnonymous(!isAnonymous)}
-            className={`w-12 h-6 rounded-full transition-colors relative ${isAnonymous ? 'bg-[#6F4E37]' : 'bg-gray-300'}`}
+            className={`w-12 h-6 rounded-full transition-colors relative ${isAnonymous ? 'bg-[#E50914]' : 'bg-gray-300'}`}
           >
             <motion.div 
               layout
@@ -152,7 +152,7 @@ export default function ReviewForm({
             />
           </button>
           <div className="flex items-center gap-2">
-            {isAnonymous ? <Shield className="w-4 h-4 text-[#6F4E37]" /> : <User className="w-4 h-4 text-gray-500" />}
+            {isAnonymous ? <Shield className="w-4 h-4 text-[#E50914]" /> : <User className="w-4 h-4 text-gray-500" />}
             <span className="text-sm font-medium text-gray-700">
               Submit as Anonymous
             </span>
@@ -161,11 +161,11 @@ export default function ReviewForm({
 
       </div>
 
-      <div className="p-6 bg-gray-50 border-t border-[#E8DED5] flex justify-end">
+      <div className="p-6 bg-gray-50 border-t border-[#FEE2E2] flex justify-end">
         <button
           type="submit"
           disabled={isSubmitting || overallRating === 0}
-          className="flex items-center gap-2 px-8 py-3 bg-[#6F4E37] text-white rounded-xl font-medium hover:bg-[#5A3E2B] transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
+          className="flex items-center gap-2 px-8 py-3 bg-[#E50914] text-white rounded-xl font-medium hover:bg-[#5A3E2B] transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
         >
           {isSubmitting ? (
             <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />

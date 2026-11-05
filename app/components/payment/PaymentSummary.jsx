@@ -39,7 +39,7 @@ export default function PaymentSummary({ bookingData, priceData, onProceed }) {
       {/* ================================================================== */}
       {/* DESKTOP CHECKOUT & PAYMENT VIEW (hidden md:block) — Preserved      */}
       {/* ================================================================== */}
-      <div className="hidden md:block min-h-screen bg-[#FFF8F0] font-sans antialiased selection:bg-[#6F4E37] selection:text-white pb-16">
+      <div className="hidden md:block min-h-screen bg-[#FFF5F5] font-sans antialiased selection:bg-[#E50914] selection:text-white pb-16">
         
         {/* Top Navbar */}
         <CustomerNavbar showSearch={true} showViewToggles={false} />
@@ -47,15 +47,15 @@ export default function PaymentSummary({ bookingData, priceData, onProceed }) {
         <main className="container mx-auto px-6 lg:px-8 py-5 max-w-7xl overflow-x-hidden">
           
           {/* Page Header */}
-          <div className="mb-6 flex flex-wrap items-center justify-between gap-3 bg-white/90 backdrop-blur-xl p-5 sm:p-6 rounded-3xl border border-stone-200/90 shadow-xs">
+          <div className="mb-6 flex flex-wrap items-center justify-between gap-3 bg-white/95 backdrop-blur-xl p-5 sm:p-6 rounded-3xl border border-red-100 shadow-xs">
             <div>
               <div className="flex items-center gap-2 mb-1">
-                <span className="px-2.5 py-0.5 rounded-full bg-amber-500/10 text-amber-800 text-[10px] font-black uppercase tracking-wider border border-amber-200">
+                <span className="px-3 py-1 rounded-full bg-[#FFF5F5] text-[#ED0014] text-[10px] font-black uppercase tracking-wider border border-red-200">
                   Step 3 of 3 • Payment & Checkout
                 </span>
               </div>
-              <h1 className="text-2xl sm:text-4xl font-black text-[#2C1810] tracking-tight">Checkout & Payment</h1>
-              <p className="text-xs sm:text-sm text-stone-500 font-medium mt-0.5">Review your reserved items and complete your instant booking.</p>
+              <h1 className="text-2xl sm:text-4xl font-black text-[#1E1E1E] tracking-tight">Checkout & Payment</h1>
+              <p className="text-xs sm:text-sm text-[#4A4A4A] font-semibold mt-0.5">Review your reserved items and complete your instant booking.</p>
             </div>
 
             <div className="flex items-center gap-2">
@@ -88,14 +88,14 @@ export default function PaymentSummary({ bookingData, priceData, onProceed }) {
                   whileTap={{ scale: 0.96 }}
                   onClick={handleProceed}
                   disabled={isProcessing}
-                  className="w-full bg-gradient-to-r from-[#4A2C11] via-[#5A3825] to-[#6F4E37] hover:from-[#38200b] hover:to-[#5c402d] text-white py-4 rounded-2xl font-black text-sm tracking-wide shadow-lg shadow-[#4A2C11]/25 hover:shadow-xl transition-all cursor-pointer flex justify-center items-center gap-2 disabled:opacity-60"
+                  className="w-full bg-gradient-to-r from-[#B80012] via-[#ED0014] to-[#B80012] hover:opacity-95 text-white py-4 rounded-2xl font-black text-sm tracking-wide shadow-lg shadow-[#ED0014]/25 hover:shadow-xl transition-all cursor-pointer flex justify-center items-center gap-2 disabled:opacity-60"
                 >
                   {isProcessing ? (
                     <span>Processing Payment...</span>
                   ) : (
                     <>
                       <span>Pay ₹{priceData?.grandTotal?.toFixed(2) || '0.00'}</span>
-                      <ShieldCheck size={18} className="text-amber-200" />
+                      <ShieldCheck size={18} className="text-white" />
                     </>
                   )}
                 </motion.button>

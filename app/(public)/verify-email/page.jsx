@@ -36,9 +36,9 @@ function VerifyEmailForm() {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       <div>
-        <label className="block text-sm font-semibold text-[#2C1810] mb-1.5">Customer ID</label>
+        <label className="block text-sm font-semibold text-[#252525] mb-1.5">Customer ID</label>
         <div className="relative group">
-          <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[#6F4E37] z-10">
+          <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[#E50914] z-10">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
           </div>
           <input
@@ -52,9 +52,9 @@ function VerifyEmailForm() {
       </div>
 
       <div>
-        <label className="block text-sm font-semibold text-[#2C1810] mb-1.5">6-Digit OTP</label>
+        <label className="block text-sm font-semibold text-[#252525] mb-1.5">6-Digit OTP</label>
         <div className="relative group">
-          <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[#6F4E37] group-focus-within:text-[#4A2614] transition-colors z-10">
+          <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[#E50914] group-focus-within:text-[#4A2614] transition-colors z-10">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
           </div>
           <input
@@ -63,7 +63,7 @@ function VerifyEmailForm() {
             maxLength={6}
             placeholder="••••••"
             className={cn(
-              "w-full pl-11 pr-4 py-3 rounded-xl border bg-white/80 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-[#DDB892] focus:bg-white transition-all shadow-sm tracking-widest font-mono text-lg font-bold text-[#2C1810]",
+              "w-full pl-11 pr-4 py-3 rounded-xl border bg-white/80 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-[#EF5350] focus:bg-white transition-all shadow-sm tracking-widest font-mono text-lg font-bold text-[#252525]",
               errors.otp ? "border-red-400 ring-red-400" : "border-gray-200 hover:border-gray-300"
             )}
           />

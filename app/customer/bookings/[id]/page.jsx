@@ -159,7 +159,7 @@ export default function BookingDetailsPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#FFF8F0] font-sans antialiased pb-24 lg:pb-12">
+      <div className="min-h-screen bg-[#FFF5F5] font-sans antialiased pb-24 lg:pb-12">
         <CustomerNavbar showSearch={true} showViewToggles={false} />
         <div className="max-w-[1600px] w-full mx-auto px-4 py-8 flex flex-col lg:flex-row gap-6">
           <div className="hidden lg:block w-72 xl:w-80 h-96 bg-white/60 rounded-3xl animate-pulse"></div>
@@ -174,13 +174,13 @@ export default function BookingDetailsPage() {
 
   if (!booking) {
     return (
-      <div className="min-h-screen bg-[#FFF8F0] flex items-center justify-center p-4 text-center">
+      <div className="min-h-screen bg-[#FFF5F5] flex items-center justify-center p-4 text-center">
         <div className="bg-white p-8 rounded-3xl border border-stone-200 shadow-lg max-w-md w-full">
-          <h2 className="text-2xl font-black text-[#2C1810] mb-2">Booking Not Found</h2>
+          <h2 className="text-2xl font-black text-[#252525] mb-2">Booking Not Found</h2>
           <p className="text-stone-500 text-xs mb-6 font-medium">The booking you are looking for does not exist or has been removed.</p>
           <button 
             onClick={() => router.push('/customer/bookings')}
-            className="px-6 py-3 bg-[#6F4E37] text-white rounded-2xl font-black text-xs shadow-md hover:bg-[#4A2C11] transition-all cursor-pointer"
+            className="px-6 py-3 bg-[#E50914] text-white rounded-2xl font-black text-xs shadow-md hover:bg-[#B71C1C] transition-all cursor-pointer"
           >
             Go Back to Bookings
           </button>
@@ -223,7 +223,7 @@ export default function BookingDetailsPage() {
   const cafe = booking?.cafes;
 
   return (
-    <div className="min-h-screen bg-[#FFF8F0] font-sans antialiased selection:bg-[#6F4E37] selection:text-white pb-24 lg:pb-12">
+    <div className="min-h-screen bg-[#FFF5F5] font-sans antialiased selection:bg-[#E50914] selection:text-white pb-24 lg:pb-12">
       {/* Sticky Top Navbar */}
       <CustomerNavbar showSearch={true} showViewToggles={false} />
 
@@ -251,14 +251,14 @@ export default function BookingDetailsPage() {
             <div className="flex items-center gap-3.5">
               <button 
                 onClick={() => router.push('/customer/bookings')}
-                className="p-2.5 bg-stone-100 hover:bg-[#FFF8F0] border border-stone-200/80 rounded-2xl transition-all active:scale-95 text-[#6F4E37] cursor-pointer"
+                className="p-2.5 bg-stone-100 hover:bg-[#FFF5F5] border border-stone-200/80 rounded-2xl transition-all active:scale-95 text-[#E50914] cursor-pointer"
                 title="Back to Bookings"
               >
                 <ArrowLeft className="w-5 h-5" />
               </button>
               <div>
-                <h1 className="text-xl sm:text-2xl font-black text-[#2C1810] tracking-tight">Booking Details</h1>
-                <p className="text-[10px] sm:text-xs font-black text-[#6F4E37] uppercase tracking-wider mt-0.5">
+                <h1 className="text-xl sm:text-2xl font-black text-[#252525] tracking-tight">Booking Details</h1>
+                <p className="text-[10px] sm:text-xs font-black text-[#E50914] uppercase tracking-wider mt-0.5">
                   ID: {booking.booking_number}
                 </p>
               </div>
@@ -282,23 +282,23 @@ export default function BookingDetailsPage() {
             {/* Left Col (2 Columns on Desktop): Booking Details Card & Manage Actions */}
             <div className="xl:col-span-2 space-y-6">
               
-              {/* FAHARA LOYALTY CREDIT BANNER */}
+              {/* Grab2GO LOYALTY CREDIT BANNER */}
               <div className={`p-4 sm:p-5 rounded-3xl border flex items-center justify-between gap-4 shadow-2xs ${
                 booking.booking_status === 'COMPLETED'
                   ? 'bg-gradient-to-r from-emerald-500/10 via-emerald-50 to-white border-emerald-300 text-emerald-950'
-                  : 'bg-gradient-to-r from-[#FFF8F0] via-amber-50 to-white border-[#DDB892]/60 text-[#2C1810]'
+                  : 'bg-gradient-to-r from-[#FFF5F5] via-amber-50 to-white border-[#EF5350]/60 text-[#252525]'
               }`}>
                 <div className="flex items-center gap-3">
                   <div className={`w-10 h-10 rounded-2xl flex items-center justify-center font-black shrink-0 ${
-                    booking.booking_status === 'COMPLETED' ? 'bg-emerald-600 text-white' : 'bg-[#6F4E37] text-amber-300'
+                    booking.booking_status === 'COMPLETED' ? 'bg-emerald-600 text-white' : 'bg-[#E50914] text-amber-300'
                   }`}>
                     ⭐
                   </div>
                   <div>
                     <h4 className="font-extrabold text-sm sm:text-base">
                       {booking.booking_status === 'COMPLETED'
-                        ? '🎉 You earned 1 Fahara Credit!'
-                        : 'Earn 1 Fahara Credit after completing this booking.'
+                        ? '🎉 You earned 1 Grab2GO Credit!'
+                        : 'Earn 1 Grab2GO Credit after completing this booking.'
                       }
                     </h4>
                     <p className="text-xs text-stone-500 font-medium mt-0.5">
@@ -319,9 +319,9 @@ export default function BookingDetailsPage() {
               
               {/* Refund Summary Card (Rendered for Cancelled or Refunded Bookings) */}
               {(booking.booking_status === 'CANCELLED' || booking.booking_status === 'REJECTED' || booking.payment_status === 'REFUNDED' || booking.payment_status === 'PARTIALLY_REFUNDED') && (
-                <div className="bg-[#FFF8F0] border border-[#DDB892]/60 rounded-3xl p-5 sm:p-6 shadow-xs space-y-4">
-                  <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#DDB892]/40 pb-3">
-                    <div className="flex items-center gap-2 text-[#6F4E37] font-black text-sm uppercase tracking-wider">
+                <div className="bg-[#FFF5F5] border border-[#EF5350]/60 rounded-3xl p-5 sm:p-6 shadow-xs space-y-4">
+                  <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#EF5350]/40 pb-3">
+                    <div className="flex items-center gap-2 text-[#E50914] font-black text-sm uppercase tracking-wider">
                       <RotateCcw size={18} />
                       <span>Refund & Cancellation Details</span>
                     </div>
@@ -376,10 +376,10 @@ export default function BookingDetailsPage() {
               <div className="bg-white rounded-3xl shadow-[0_10px_35px_rgba(0,0,0,0.04)] border border-stone-200/80 p-5 sm:p-7 space-y-5">
                 <div className="flex items-center justify-between border-b border-stone-100 pb-3.5">
                   <div className="flex items-center gap-2.5">
-                    <div className="p-2 bg-[#FFF8F0] border border-[#DDB892]/40 rounded-xl text-[#6F4E37]">
+                    <div className="p-2 bg-[#FFF5F5] border border-[#EF5350]/40 rounded-xl text-[#E50914]">
                       <Sparkles className="w-4 h-4" />
                     </div>
-                    <h3 className="text-lg font-black text-[#2C1810] tracking-tight">Manage Booking</h3>
+                    <h3 className="text-lg font-black text-[#252525] tracking-tight">Manage Booking</h3>
                   </div>
                   <span className="text-[11px] font-bold uppercase tracking-wider text-stone-400 bg-stone-50 px-3 py-1 rounded-full border border-stone-200/60">
                     Actions & Details
@@ -407,9 +407,9 @@ export default function BookingDetailsPage() {
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.96 }}
                         onClick={() => setIsRescheduleModalOpen(true)}
-                        className="px-4.5 py-2.5 bg-amber-50/90 text-[#6F4E37] border border-amber-200 hover:bg-amber-100 rounded-2xl font-bold text-xs transition-all cursor-pointer shadow-2xs flex items-center gap-2"
+                        className="px-4.5 py-2.5 bg-amber-50/90 text-[#E50914] border border-amber-200 hover:bg-amber-100 rounded-2xl font-bold text-xs transition-all cursor-pointer shadow-2xs flex items-center gap-2"
                       >
-                        <Clock className="w-3.5 h-3.5 text-[#6F4E37]" />
+                        <Clock className="w-3.5 h-3.5 text-[#E50914]" />
                         <span>Reschedule</span>
                       </motion.button>
                       <motion.button 
@@ -431,7 +431,7 @@ export default function BookingDetailsPage() {
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.96 }}
                         onClick={() => setReviewModalData({ type: 'Cafe', targetName: booking.cafes?.name || 'Cafe' })}
-                        className="px-4.5 py-2.5 bg-gradient-to-r from-[#4A2C11] to-[#6F4E37] text-white rounded-2xl font-black text-xs transition-all cursor-pointer shadow-md hover:shadow-lg flex items-center gap-2"
+                        className="px-4.5 py-2.5 bg-gradient-to-r from-[#B71C1C] to-[#E50914] text-white rounded-2xl font-black text-xs transition-all cursor-pointer shadow-md hover:shadow-lg flex items-center gap-2"
                       >
                         <Sparkles className="w-3.5 h-3.5 text-amber-300" />
                         <span>Review Cafe</span>
@@ -444,7 +444,7 @@ export default function BookingDetailsPage() {
                           type: 'Event Manager', 
                           targetName: booking.event_services?.users?.event_management_profiles?.company_name || booking.event_services?.users?.name || 'Event Manager' 
                         })}
-                        className="px-4.5 py-2.5 bg-gradient-to-r from-amber-800 via-orange-800 to-[#6F4E37] text-white rounded-2xl font-black text-xs transition-all cursor-pointer shadow-md hover:shadow-lg flex items-center gap-2"
+                        className="px-4.5 py-2.5 bg-gradient-to-r from-amber-800 via-orange-800 to-[#E50914] text-white rounded-2xl font-black text-xs transition-all cursor-pointer shadow-md hover:shadow-lg flex items-center gap-2"
                       >
                         <Sparkles className="w-3.5 h-3.5 text-amber-300" />
                         <span>Review Event Manager</span>
@@ -455,7 +455,7 @@ export default function BookingDetailsPage() {
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.96 }}
                       onClick={() => setReviewModalData({ type: 'Cafe', targetName: booking.cafes?.name || 'Cafe' })}
-                      className="px-5 py-2.5 bg-gradient-to-r from-[#4A2C11] via-[#5C3818] to-[#6F4E37] text-white rounded-2xl font-black text-xs transition-all cursor-pointer shadow-md hover:shadow-lg flex items-center gap-2"
+                      className="px-5 py-2.5 bg-gradient-to-r from-[#B71C1C] via-[#5C3818] to-[#E50914] text-white rounded-2xl font-black text-xs transition-all cursor-pointer shadow-md hover:shadow-lg flex items-center gap-2"
                     >
                       <Sparkles className="w-3.5 h-3.5 text-amber-300" />
                       <span>Write a Review</span>
@@ -468,7 +468,7 @@ export default function BookingDetailsPage() {
                       whileTap={{ scale: 0.96 }}
                       className="px-4.5 py-2.5 bg-white border border-stone-200/90 text-stone-700 hover:bg-stone-50 hover:border-stone-300 rounded-2xl font-bold text-xs transition-all flex items-center gap-2 cursor-pointer shadow-2xs"
                     >
-                      <FileText className="w-3.5 h-3.5 text-[#6F4E37]" />
+                      <FileText className="w-3.5 h-3.5 text-[#E50914]" />
                       <span>Invoice</span>
                     </motion.button>
                   </Link>
@@ -479,7 +479,7 @@ export default function BookingDetailsPage() {
                       whileTap={{ scale: 0.96 }}
                       className="px-4.5 py-2.5 bg-white border border-stone-200/90 text-stone-700 hover:bg-stone-50 hover:border-stone-300 rounded-2xl font-bold text-xs transition-all flex items-center gap-2 cursor-pointer shadow-2xs"
                     >
-                      <Download className="w-3.5 h-3.5 text-[#6F4E37]" />
+                      <Download className="w-3.5 h-3.5 text-[#E50914]" />
                       <span>Receipt</span>
                     </motion.button>
                   </Link>
@@ -498,8 +498,8 @@ export default function BookingDetailsPage() {
               {/* Contact Info */}
               <div className="bg-white rounded-3xl border border-stone-200/80 p-5 sm:p-6 shadow-[0_8px_30px_rgba(0,0,0,0.03)] space-y-4">
                 <div className="flex items-center justify-between border-b border-stone-100 pb-3">
-                  <h3 className="text-lg font-black text-[#2C1810] tracking-tight">Host & Service Contacts</h3>
-                  <span className="text-[10px] font-black uppercase tracking-wider text-[#6F4E37] bg-[#FFF8F0] px-3 py-1 rounded-full border border-[#DDB892]/40">
+                  <h3 className="text-lg font-black text-[#252525] tracking-tight">Host & Service Contacts</h3>
+                  <span className="text-[10px] font-black uppercase tracking-wider text-[#E50914] bg-[#FFF5F5] px-3 py-1 rounded-full border border-[#EF5350]/40">
                     Direct Contact
                   </span>
                 </div>
@@ -514,7 +514,7 @@ export default function BookingDetailsPage() {
                             Cafe Venue
                           </span>
                         </div>
-                        <p className="font-black text-sm text-[#2C1810]">{cafe.name}</p>
+                        <p className="font-black text-sm text-[#252525]">{cafe.name}</p>
                         <p className="text-xs text-stone-500 font-semibold mt-0.5">Manager: {cafe.users?.name || 'Owner'}</p>
                         {cafe.users?.phone && (
                           <p className="text-xs font-bold text-stone-700 mt-1">{cafe.users.phone}</p>
@@ -527,7 +527,7 @@ export default function BookingDetailsPage() {
                         {cafe.users?.phone && (
                           <a 
                             href={`tel:${cafe.users.phone}`} 
-                            className="p-2.5 bg-white border border-stone-200/90 rounded-xl hover:bg-[#FFF8F0] text-[#6F4E37] shadow-2xs transition-all"
+                            className="p-2.5 bg-white border border-stone-200/90 rounded-xl hover:bg-[#FFF5F5] text-[#E50914] shadow-2xs transition-all"
                             title="Call Cafe Manager"
                           >
                             <Phone className="w-4 h-4" />
@@ -536,7 +536,7 @@ export default function BookingDetailsPage() {
                         {cafe.users?.email && (
                           <a 
                             href={`mailto:${cafe.users.email}`} 
-                            className="p-2.5 bg-white border border-stone-200/90 rounded-xl hover:bg-[#FFF8F0] text-[#6F4E37] shadow-2xs transition-all"
+                            className="p-2.5 bg-white border border-stone-200/90 rounded-xl hover:bg-[#FFF5F5] text-[#E50914] shadow-2xs transition-all"
                             title="Email Cafe Manager"
                           >
                             <Mail className="w-4 h-4" />
@@ -583,7 +583,7 @@ export default function BookingDetailsPage() {
                               3rd Party Event Manager
                             </span>
                           </div>
-                          <p className="font-black text-sm text-[#2C1810]">{companyName}</p>
+                          <p className="font-black text-sm text-[#252525]">{companyName}</p>
                           <p className="text-xs text-amber-900/80 font-bold mt-0.5">
                             Manager: {managerName}
                           </p>
@@ -596,7 +596,7 @@ export default function BookingDetailsPage() {
                             {evPhone && (
                               <a 
                                 href={`tel:${evPhone}`} 
-                                className="p-2.5 bg-white border border-amber-300/80 rounded-xl hover:bg-amber-100/70 text-[#6F4E37] shadow-2xs transition-all flex items-center justify-center cursor-pointer"
+                                className="p-2.5 bg-white border border-amber-300/80 rounded-xl hover:bg-amber-100/70 text-[#E50914] shadow-2xs transition-all flex items-center justify-center cursor-pointer"
                                 title="Call Event Manager"
                               >
                                 <Phone className="w-4 h-4" />
@@ -605,7 +605,7 @@ export default function BookingDetailsPage() {
                             {evEmail && (
                               <a 
                                 href={`mailto:${evEmail}`} 
-                                className="p-2.5 bg-white border border-amber-300/80 rounded-xl hover:bg-amber-100/70 text-[#6F4E37] shadow-2xs transition-all flex items-center justify-center cursor-pointer"
+                                className="p-2.5 bg-white border border-amber-300/80 rounded-xl hover:bg-amber-100/70 text-[#E50914] shadow-2xs transition-all flex items-center justify-center cursor-pointer"
                                 title="Email Event Manager"
                               >
                                 <Mail className="w-4 h-4" />

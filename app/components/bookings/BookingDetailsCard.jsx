@@ -10,7 +10,7 @@ export default function BookingDetailsCard({ booking }) {
   return (
     <div className="bg-white/95 backdrop-blur-xl rounded-3xl border border-stone-200/90 overflow-hidden shadow-[0_8px_30px_rgba(0,0,0,0.04)] font-sans">
       <div className="p-5 sm:p-6 border-b border-stone-100 flex flex-wrap items-center justify-between gap-2">
-        <h2 className="text-xl sm:text-2xl font-black text-[#2C1810] tracking-tight">Booking Summary</h2>
+        <h2 className="text-xl sm:text-2xl font-black text-[#252525] tracking-tight">Booking Summary</h2>
         <span className="text-xs font-mono font-bold text-stone-400 bg-stone-50 px-3 py-1 rounded-full border border-stone-200/60">
           ID: {booking.booking_number}
         </span>
@@ -21,21 +21,21 @@ export default function BookingDetailsCard({ booking }) {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-4">
           
           <div className="bg-stone-50/90 p-4 rounded-2xl border border-stone-200/80 shadow-2xs">
-            <div className="flex items-center gap-2 text-[#6F4E37] mb-1.5">
+            <div className="flex items-center gap-2 text-[#E50914] mb-1.5">
               <Calendar className="w-4 h-4" />
               <span className="font-black text-[10px] uppercase tracking-wider text-stone-400">Date</span>
             </div>
-            <p className="text-[#2C1810] font-black text-xs sm:text-sm">
+            <p className="text-[#252525] font-black text-xs sm:text-sm">
               {format(new Date(booking.booking_date), 'MMM dd, yyyy')}
             </p>
           </div>
           
           <div className="bg-stone-50/90 p-4 rounded-2xl border border-stone-200/80 shadow-2xs">
-            <div className="flex items-center gap-2 text-[#6F4E37] mb-1.5">
+            <div className="flex items-center gap-2 text-[#E50914] mb-1.5">
               <Clock className="w-4 h-4" />
               <span className="font-black text-[10px] uppercase tracking-wider text-stone-400">Time</span>
             </div>
-            <p className="text-[#2C1810] font-black text-xs sm:text-sm">
+            <p className="text-[#252525] font-black text-xs sm:text-sm">
               {(() => {
                 const parseT = (t) => t.includes('T') ? t.split('T')[1].substring(0, 5) : t.substring(0, 5);
                 const formatT = (tStr) => {
@@ -50,21 +50,21 @@ export default function BookingDetailsCard({ booking }) {
           </div>
           
           <div className="bg-stone-50/90 p-4 rounded-2xl border border-stone-200/80 shadow-2xs">
-            <div className="flex items-center gap-2 text-[#6F4E37] mb-1.5">
+            <div className="flex items-center gap-2 text-[#E50914] mb-1.5">
               <Users className="w-4 h-4" />
               <span className="font-black text-[10px] uppercase tracking-wider text-stone-400">Guests</span>
             </div>
-            <p className="text-[#2C1810] font-black text-xs sm:text-sm">
+            <p className="text-[#252525] font-black text-xs sm:text-sm">
               {booking.total_persons || booking.number_of_guests || 0} People
             </p>
           </div>
 
           <div className="bg-stone-50/90 p-4 rounded-2xl border border-stone-200/80 shadow-2xs">
-            <div className="flex items-center gap-2 text-[#6F4E37] mb-1.5">
+            <div className="flex items-center gap-2 text-[#E50914] mb-1.5">
               <Navigation className="w-4 h-4" />
               <span className="font-black text-[10px] uppercase tracking-wider text-stone-400">Location</span>
             </div>
-            <p className="text-[#2C1810] font-black text-xs sm:text-sm truncate">
+            <p className="text-[#252525] font-black text-xs sm:text-sm truncate">
               {cafe?.name}
             </p>
             <p className="text-[10px] text-stone-400 font-bold mt-0.5 truncate">{cafe?.address}</p>
@@ -74,7 +74,7 @@ export default function BookingDetailsCard({ booking }) {
 
         {/* Reserved Table Allocation */}
         <div className="pt-5 border-t border-stone-100">
-          <h3 className="font-black text-sm text-[#2C1810] mb-3 flex items-center justify-between">
+          <h3 className="font-black text-sm text-[#252525] mb-3 flex items-center justify-between">
             <span>Reserved Table Seating</span>
             <span className="text-[10px] font-extrabold px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
               Live Allocation
@@ -88,7 +88,7 @@ export default function BookingDetailsCard({ booking }) {
                 return (
                   <div key={bt.id || tbl.id} className="p-3.5 rounded-2xl bg-emerald-50/70 border border-emerald-200 flex items-center justify-between shadow-2xs">
                     <div>
-                      <p className="font-black text-xs sm:text-sm text-[#2C1810]">Table {tbl.table_number || tbl.name}</p>
+                      <p className="font-black text-xs sm:text-sm text-[#252525]">Table {tbl.table_number || tbl.name}</p>
                       <p className="text-[11px] font-bold text-emerald-800">{tbl.capacity || 2} Seats • {tbl.location || 'Indoor'}</p>
                     </div>
                     <span className="text-[10px] font-black px-2.5 py-1 rounded-xl bg-emerald-600 text-white uppercase tracking-wider">
@@ -163,7 +163,7 @@ export default function BookingDetailsCard({ booking }) {
             STANDARD: { bg: 'bg-[#F5F3FF]', border: 'border-[#DDD6FE]', text: 'text-[#6D28D9]', pill: 'bg-[#EDE9FE] text-[#6D28D9]' },
             PREMIUM:  { bg: 'bg-[#FFFBEB]', border: 'border-[#FDE68A]', text: 'text-[#B45309]', pill: 'bg-[#FEF3C7] text-[#B45309]' },
           };
-          const getTierColors = (tier) => TIER_COLORS[String(tier || '').toUpperCase()] || { bg: 'bg-stone-50', border: 'border-stone-200', text: 'text-[#6F4E37]', pill: 'bg-[#6F4E37]/10 text-[#6F4E37]' };
+          const getTierColors = (tier) => TIER_COLORS[String(tier || '').toUpperCase()] || { bg: 'bg-stone-50', border: 'border-stone-200', text: 'text-[#E50914]', pill: 'bg-[#E50914]/10 text-[#E50914]' };
 
           if (!hasAnything) return null;
 
@@ -174,7 +174,7 @@ export default function BookingDetailsCard({ booking }) {
                   <Coffee className="w-4.5 h-4.5" />
                 </div>
                 <div>
-                  <h3 className="text-base font-black text-[#2C1810]">Included Services & Packages</h3>
+                  <h3 className="text-base font-black text-[#252525]">Included Services & Packages</h3>
                   <p className="text-xs text-stone-500 font-medium">Selected party packages and event add-ons</p>
                 </div>
               </div>
@@ -182,16 +182,16 @@ export default function BookingDetailsCard({ booking }) {
               <div className="space-y-3">
                 {/* Package Base Row */}
                 {packageItem && (
-                  <div className="p-4 rounded-3xl bg-[#FFF8F0] border border-[#DDB892]/60 flex items-center gap-3.5">
-                    <div className="w-10 h-10 rounded-2xl bg-white border border-[#DDB892]/60 flex items-center justify-center text-[#6F4E37] shrink-0 shadow-2xs">
+                  <div className="p-4 rounded-3xl bg-[#FFF5F5] border border-[#EF5350]/60 flex items-center gap-3.5">
+                    <div className="w-10 h-10 rounded-2xl bg-white border border-[#EF5350]/60 flex items-center justify-center text-[#E50914] shrink-0 shadow-2xs">
                       <Sparkles className="w-5 h-5" />
                     </div>
                     <div className="min-w-0">
                       <div className="flex items-center gap-2">
-                        <h4 className="font-extrabold text-[#2C1810] text-sm">
+                        <h4 className="font-extrabold text-[#252525] text-sm">
                           {packageItem.package_name || packageItem.item_name || packageItem.name || 'Cafe Package'}
                         </h4>
-                        <span className="text-[10px] font-black bg-[#6F4E37]/10 text-[#6F4E37] px-2.5 py-0.5 rounded-full uppercase tracking-wider">
+                        <span className="text-[10px] font-black bg-[#E50914]/10 text-[#E50914] px-2.5 py-0.5 rounded-full uppercase tracking-wider">
                           PACKAGE
                         </span>
                       </div>
@@ -216,7 +216,7 @@ export default function BookingDetailsCard({ booking }) {
                         </div>
                         <div className="min-w-0 space-y-0.5">
                           <div className="flex items-center gap-2 flex-wrap">
-                            <h4 className="font-extrabold text-[#2C1810] text-xs sm:text-sm truncate">{inc.name}</h4>
+                            <h4 className="font-extrabold text-[#252525] text-xs sm:text-sm truncate">{inc.name}</h4>
                             {displayBadge && (
                               <span className={`text-[10px] font-black border px-2.5 py-0.5 rounded-full uppercase tracking-wider ${colors.pill}`}>
                                 {displayBadge}
@@ -243,8 +243,8 @@ export default function BookingDetailsCard({ booking }) {
         {/* Special Requests */}
         {booking.special_request && (
           <div className="pt-5 border-t border-stone-100">
-            <h3 className="font-black text-xs sm:text-sm text-[#2C1810] mb-2.5 flex items-center gap-2">
-              <MessageSquare className="w-4 h-4 text-[#6F4E37]" />
+            <h3 className="font-black text-xs sm:text-sm text-[#252525] mb-2.5 flex items-center gap-2">
+              <MessageSquare className="w-4 h-4 text-[#E50914]" />
               Special Requests
             </h3>
             <div className="bg-stone-50/90 p-4 rounded-2xl border border-stone-200/80 text-xs text-stone-700 font-semibold italic leading-relaxed">

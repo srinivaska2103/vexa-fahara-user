@@ -5,7 +5,7 @@ export default function LoadingBookings() {
   return (
     <FaharaInteractiveLoader 
       message="Fetching Your Reservations & Bookings..." 
-      badgeTag="FAHARA BOOKINGS" 
+      badgeTag="Grab2GO BOOKINGS" 
       fullScreen={true} 
     />
   );

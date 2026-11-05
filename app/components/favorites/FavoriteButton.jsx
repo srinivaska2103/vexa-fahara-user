@@ -70,7 +70,7 @@ export default function FavoriteButton({
       onClick={handleToggle}
       className={cn(
         "flex items-center justify-center rounded-full bg-white/80 backdrop-blur-sm border shadow-sm transition-colors z-10",
-        isFavorite ? "border-red-200 bg-red-50/90" : "border-[#E8DED5] hover:bg-white",
+        isFavorite ? "border-red-200 bg-red-50/90" : "border-[#FEE2E2] hover:bg-white",
         sizeClasses[size],
         className
       )}

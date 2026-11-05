@@ -19,7 +19,7 @@ export default function MobileBookingCard({ booking, onDeleteSuccess }) {
 
   const coverImage = cafe?.images?.[0] || cafe?.cover_image || null;
   const bookingNumber = booking.booking_number || `FAH-${booking.id}`;
-  const cafeName = cafe?.name || 'Fahara Venue';
+  const cafeName = cafe?.name || 'Grab2GO Venue';
   const location = cafe?.city || cafe?.address?.split(',')[0] || 'Bengaluru';
   
   // Format Date
@@ -56,15 +56,15 @@ export default function MobileBookingCard({ booking, onDeleteSuccess }) {
     const status = (booking.booking_status || 'PENDING').toUpperCase();
     if (status === 'CONFIRMED') {
       return {
-        bg: 'bg-emerald-50 text-emerald-700 border-emerald-200',
-        dot: 'bg-emerald-500',
+        bg: 'bg-[#FFF5F5] text-[#E50914] border-[#FEE2E2]',
+        dot: 'bg-[#E50914]',
         label: 'Confirmed',
         icon: CheckCircle2,
       };
     }
     if (status === 'COMPLETED') {
       return {
-        bg: 'bg-blue-50 text-blue-700 border-blue-200',
+        bg: 'bg-stone-100 text-stone-700 border-stone-200',
         dot: 'bg-blue-500',
         label: 'Completed',
         icon: CheckCircle2,
@@ -115,7 +115,7 @@ export default function MobileBookingCard({ booking, onDeleteSuccess }) {
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.95, y: -8 }}
         transition={{ type: 'spring', stiffness: 420, damping: 28 }}
-        className="bg-white rounded-[24px] p-3 border border-[#E8DED5]/80 shadow-[0_6px_22px_rgba(44,24,16,0.05)] relative flex items-center gap-3.5 select-none hover:border-[#DDB892] transition-colors"
+        className="bg-white rounded-[24px] p-3 border border-[#FEE2E2]/80 shadow-[0_6px_22px_rgba(44,24,16,0.05)] relative flex items-center gap-3.5 select-none hover:border-[#EF5350] transition-colors"
       >
         {/* ── LEFT: Prominent Rounded Image Area (Matches MobileFavoriteCard) ── */}
         <div className="relative w-32 h-36 xs:w-36 xs:h-40 rounded-[20px] overflow-hidden bg-stone-100 flex-shrink-0">
@@ -127,12 +127,12 @@ export default function MobileBookingCard({ booking, onDeleteSuccess }) {
               loading="lazy"
             />
           ) : (
-            <div className="w-full h-full bg-gradient-to-br from-[#FFF8F0] via-[#F7EBE1] to-[#EBD5C4] flex flex-col items-center justify-center p-2 text-[#6F4E37] text-center">
+            <div className="w-full h-full bg-gradient-to-br from-[#FFF5F5] via-white to-[#FEE2E2] flex flex-col items-center justify-center p-2 text-[#E50914] text-center">
               <div className="w-10 h-10 rounded-2xl bg-white/90 shadow-2xs border border-white/60 flex items-center justify-center mb-1">
-                <Calendar className="w-5 h-5 text-[#6F4E37]" />
+                <Calendar className="w-5 h-5 text-[#E50914]" />
               </div>
-              <span className="text-[10px] font-black text-[#2C1810] leading-tight">Fahara Venue</span>
-              <span className="text-[8px] font-bold text-[#6F4E37]/80 uppercase tracking-widest mt-0.5">Booking</span>
+              <span className="text-[10px] font-black text-[#252525] leading-tight">Grab2GO Venue</span>
+              <span className="text-[8px] font-bold text-[#E50914]/80 uppercase tracking-widest mt-0.5">Booking</span>
             </div>
           )}
 
@@ -161,7 +161,7 @@ export default function MobileBookingCard({ booking, onDeleteSuccess }) {
                 <p className="text-[9px] font-bold text-stone-400 tracking-wider uppercase truncate">
                   {bookingNumber}
                 </p>
-                <h3 className="text-sm xs:text-base font-black text-[#2C1810] tracking-tight leading-tight line-clamp-1 mt-0.5">
+                <h3 className="text-sm xs:text-base font-black text-[#252525] tracking-tight leading-tight line-clamp-1 mt-0.5">
                   {cafeName}
                 </h3>
               </div>
@@ -185,24 +185,24 @@ export default function MobileBookingCard({ booking, onDeleteSuccess }) {
 
             {/* Location & Package Tag */}
             <div className="flex items-center gap-1.5 text-[11px] font-semibold text-stone-500 mt-1 line-clamp-1">
-              <MapPin size={12} className="text-[#A67B5B] flex-shrink-0" />
+              <MapPin size={12} className="text-[#B71C1C] flex-shrink-0" />
               <span className="truncate">{location}</span>
             </div>
 
             {/* Quick Metadata Info Badges */}
             <div className="flex items-center gap-1.5 mt-2 flex-wrap">
               <span className="inline-flex items-center gap-1.5 text-[10px] font-bold text-stone-700 bg-stone-50 border border-stone-200/70 px-2.5 py-1 rounded-full shadow-2xs">
-                <Calendar size={11} className="text-[#6F4E37]" strokeWidth={2.2} />
+                <Calendar size={11} className="text-[#E50914]" strokeWidth={2.2} />
                 <span>{dateFormatted}</span>
               </span>
 
               <span className="inline-flex items-center gap-1.5 text-[10px] font-bold text-stone-700 bg-stone-50 border border-stone-200/70 px-2.5 py-1 rounded-full shadow-2xs">
-                <Clock size={11} className="text-[#6F4E37]" strokeWidth={2.2} />
+                <Clock size={11} className="text-[#E50914]" strokeWidth={2.2} />
                 <span>{timeFormatted}</span>
               </span>
 
               <span className="inline-flex items-center gap-1.5 text-[10px] font-bold text-stone-700 bg-stone-50 border border-stone-200/70 px-2.5 py-1 rounded-full shadow-2xs">
-                <Users size={11} className="text-[#6F4E37]" strokeWidth={2.2} />
+                <Users size={11} className="text-[#E50914]" strokeWidth={2.2} />
                 <span>{guestsCount} Guests</span>
               </span>
             </div>
@@ -210,8 +210,8 @@ export default function MobileBookingCard({ booking, onDeleteSuccess }) {
             {/* Event or Package Pill if available */}
             {(booking.packages?.package_name || eventService?.profiles?.name) && (
               <div className="mt-2 line-clamp-1">
-                <span className="inline-flex items-center gap-1 text-[9px] font-extrabold text-[#6F4E37] bg-[#FFF8F0] border border-[#DDB892]/60 px-2.5 py-0.5 rounded-full uppercase tracking-wider">
-                  <Sparkles size={10} className="text-[#6F4E37]" />
+                <span className="inline-flex items-center gap-1 text-[9px] font-extrabold text-[#E50914] bg-[#FFF5F5] border border-[#EF5350]/60 px-2.5 py-0.5 rounded-full uppercase tracking-wider">
+                  <Sparkles size={10} className="text-[#E50914]" />
                   <span>{booking.packages?.package_name || `Event: ${eventService?.profiles?.name}`}</span>
                 </span>
               </div>
@@ -223,7 +223,7 @@ export default function MobileBookingCard({ booking, onDeleteSuccess }) {
             <motion.button
               whileTap={{ scale: 0.96 }}
               type="button"
-              className="w-full py-2 px-3 rounded-full bg-[#6F4E37] hover:bg-[#5A3E2B] text-white text-[11px] xs:text-xs font-bold tracking-tight flex items-center justify-center gap-1.5 shadow-sm active:shadow-none transition-all cursor-pointer"
+              className="w-full py-2 px-3 rounded-full bg-[#E50914] hover:bg-[#5A3E2B] text-white text-[11px] xs:text-xs font-bold tracking-tight flex items-center justify-center gap-1.5 shadow-sm active:shadow-none transition-all cursor-pointer"
             >
               <span>View Booking</span>
               <ArrowRight size={13} />
@@ -256,7 +256,7 @@ export default function MobileBookingCard({ booking, onDeleteSuccess }) {
               </div>
 
               <div>
-                <h3 className="text-base font-black text-[#2C1810]">Delete Booking?</h3>
+                <h3 className="text-base font-black text-[#252525]">Delete Booking?</h3>
                 <p className="text-xs text-stone-500 font-medium leading-relaxed mt-1">
                   Are you sure you want to delete <span className="font-bold text-stone-800">{bookingNumber}</span>?
                 </p>

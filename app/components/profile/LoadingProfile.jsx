@@ -5,7 +5,7 @@ export default function LoadingProfile() {
   return (
     <FaharaInteractiveLoader 
       message="Loading Customer Profile & Account Details..." 
-      badgeTag="FAHARA PROFILE" 
+      badgeTag="Grab2GO PROFILE" 
       fullScreen={true} 
     />
   );

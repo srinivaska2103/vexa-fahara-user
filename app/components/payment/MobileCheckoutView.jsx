@@ -86,7 +86,7 @@ export default function MobileCheckoutView({
       icon: '💬',
       style: {
         borderRadius: '16px',
-        background: '#2C1810',
+        background: '#252525',
         color: '#fff',
         fontSize: '12px'
       }
@@ -94,29 +94,29 @@ export default function MobileCheckoutView({
   };
 
   return (
-    <div className="md:hidden min-h-screen bg-[#FFF8F0] font-sans antialiased text-[#2C1810] flex flex-col pb-32">
+    <div className="md:hidden min-h-screen bg-[#FFF5F5] font-sans antialiased text-[#252525] flex flex-col pb-32">
       {/* ------------------------------------------------------------------ */}
       {/* 1. MINIMAL CHECKOUT HEADER (Reference Image 1)                     */}
       {/* ------------------------------------------------------------------ */}
-      <header className="sticky top-0 z-30 bg-[#FFF8F0]/95 backdrop-blur-md border-b border-[#E8DED5]/80 px-4 py-3.5 flex items-center justify-between">
+      <header className="sticky top-0 z-30 bg-[#FFF5F5]/95 backdrop-blur-md border-b border-[#FEE2E2]/80 px-4 py-3.5 flex items-center justify-between">
         <motion.button
           whileTap={{ scale: 0.9 }}
           type="button"
           onClick={() => router.back()}
           aria-label="Back to booking"
-          className="w-9 h-9 rounded-full bg-white border border-[#E8DED5] flex items-center justify-center text-[#2C1810] shadow-xs active:bg-stone-100 cursor-pointer"
+          className="w-9 h-9 rounded-full bg-white border border-[#FEE2E2] flex items-center justify-center text-[#252525] shadow-xs active:bg-stone-100 cursor-pointer"
         >
           <ArrowLeft size={18} strokeWidth={2.2} />
         </motion.button>
 
-        <h1 className="text-base font-black text-[#2C1810] tracking-tight">Checkout</h1>
+        <h1 className="text-base font-black text-[#252525] tracking-tight">Checkout</h1>
 
         <motion.button
           whileTap={{ scale: 0.9 }}
           type="button"
           onClick={handleHelpClick}
           aria-label="Help and Support"
-          className="w-9 h-9 rounded-full bg-white border border-[#E8DED5] flex items-center justify-center text-stone-500 hover:text-[#6F4E37] shadow-xs cursor-pointer"
+          className="w-9 h-9 rounded-full bg-white border border-[#FEE2E2] flex items-center justify-center text-stone-500 hover:text-[#E50914] shadow-xs cursor-pointer"
         >
           <HelpCircle size={17} />
         </motion.button>
@@ -130,9 +130,9 @@ export default function MobileCheckoutView({
         {/* ---------------------------------------------------------------- */}
         {/* 2. COMPACT BOOKING SUMMARY ROW (Reference Image 1)               */}
         {/* ---------------------------------------------------------------- */}
-        <div className="bg-white rounded-3xl p-3.5 border border-[#E8DED5] shadow-[0_2px_12px_rgba(44,24,16,0.03)] flex gap-3.5 items-center">
+        <div className="bg-white rounded-3xl p-3.5 border border-[#FEE2E2] shadow-[0_2px_12px_rgba(44,24,16,0.03)] flex gap-3.5 items-center">
           {/* Venue Thumbnail Image */}
-          <div className="w-20 h-20 xs:w-22 xs:h-22 rounded-2xl overflow-hidden relative shrink-0 bg-[#FFF8F0] border border-[#E8DED5]">
+          <div className="w-20 h-20 xs:w-22 xs:h-22 rounded-2xl overflow-hidden relative shrink-0 bg-[#FFF5F5] border border-[#FEE2E2]">
             {cafeImage ? (
               <Image 
                 src={cafeImage} 
@@ -142,7 +142,7 @@ export default function MobileCheckoutView({
                 sizes="88px"
               />
             ) : (
-              <div className="w-full h-full flex items-center justify-center text-[#6F4E37]">
+              <div className="w-full h-full flex items-center justify-center text-[#E50914]">
                 <Coffee size={26} />
               </div>
             )}
@@ -150,24 +150,24 @@ export default function MobileCheckoutView({
 
           {/* Venue & Booking Meta */}
           <div className="min-w-0 flex-1 space-y-1">
-            <h2 className="text-sm font-black text-[#2C1810] leading-snug line-clamp-2">
+            <h2 className="text-sm font-black text-[#252525] leading-snug line-clamp-2">
               {mainItemTitle}
             </h2>
 
             {/* Price Pill */}
-            <div className="text-xs font-black text-[#6F4E37] tracking-tight pt-0.5">
+            <div className="text-xs font-black text-[#E50914] tracking-tight pt-0.5">
               ₹{grandTotal.toFixed(2)}
             </div>
 
             {/* Compact Key Stats */}
             <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[11px] text-stone-500 font-bold pt-0.5">
               <span className="flex items-center gap-1 text-stone-600">
-                <Calendar size={11} className="text-[#6F4E37] shrink-0" />
+                <Calendar size={11} className="text-[#E50914] shrink-0" />
                 <span className="truncate">{date}</span>
               </span>
               <span className="text-stone-300">•</span>
               <span className="flex items-center gap-1 text-stone-600">
-                <Clock size={11} className="text-[#6F4E37] shrink-0" />
+                <Clock size={11} className="text-[#E50914] shrink-0" />
                 <span className="truncate">{time}</span>
               </span>
             </div>
@@ -185,8 +185,8 @@ export default function MobileCheckoutView({
         {/* ---------------------------------------------------------------- */}
         {/* 4. COMPACT ORDER SUMMARY BREAKDOWN (Reference Image 1)           */}
         {/* ---------------------------------------------------------------- */}
-        <div className="bg-white rounded-3xl p-4 border border-[#E8DED5] shadow-[0_2px_12px_rgba(44,24,16,0.03)] space-y-3">
-          <h3 className="text-xs font-black text-[#2C1810] uppercase tracking-wider">
+        <div className="bg-white rounded-3xl p-4 border border-[#FEE2E2] shadow-[0_2px_12px_rgba(44,24,16,0.03)] space-y-3">
+          <h3 className="text-xs font-black text-[#252525] uppercase tracking-wider">
             Order Summary
           </h3>
 
@@ -197,7 +197,7 @@ export default function MobileCheckoutView({
                 {eventPackage ? 'Event Package' : 'Venue Reservation'}
                 {duration && <span className="text-[10px] text-stone-400 ml-1 font-normal">({duration})</span>}
               </span>
-              <span className="font-black text-[#2C1810] shrink-0">
+              <span className="font-black text-[#252525] shrink-0">
                 ₹{(cafeCharges > 0 ? cafeCharges : subtotal).toFixed(2)}
               </span>
             </div>
@@ -206,14 +206,14 @@ export default function MobileCheckoutView({
             {(eventCharges > 0 && eventCharges !== subtotal) && (
               <div className="flex justify-between items-center pt-2 font-bold text-stone-600">
                 <span className="truncate pr-2">Event Arrangement</span>
-                <span className="font-black text-[#2C1810] shrink-0">₹{eventCharges.toFixed(2)}</span>
+                <span className="font-black text-[#252525] shrink-0">₹{eventCharges.toFixed(2)}</span>
               </div>
             )}
 
             {additionalCharges > 0 && (
               <div className="flex justify-between items-center pt-2 font-bold text-stone-600">
                 <span className="truncate pr-2">Additional Services</span>
-                <span className="font-black text-[#2C1810] shrink-0">₹{additionalCharges.toFixed(2)}</span>
+                <span className="font-black text-[#252525] shrink-0">₹{additionalCharges.toFixed(2)}</span>
               </div>
             )}
 
@@ -221,7 +221,7 @@ export default function MobileCheckoutView({
             {platformFee > 0 && (
               <div className="flex justify-between items-center pt-2 font-bold text-stone-600">
                 <span className="truncate pr-2">Platform Fee</span>
-                <span className="font-black text-[#2C1810] shrink-0">₹{platformFee.toFixed(2)}</span>
+                <span className="font-black text-[#252525] shrink-0">₹{platformFee.toFixed(2)}</span>
               </div>
             )}
 
@@ -229,7 +229,7 @@ export default function MobileCheckoutView({
             {transactionFee > 0 && (
               <div className="flex justify-between items-center pt-2 font-bold text-stone-600">
                 <span className="truncate pr-2">Transaction Fee</span>
-                <span className="font-black text-[#2C1810] shrink-0">₹{transactionFee.toFixed(2)}</span>
+                <span className="font-black text-[#252525] shrink-0">₹{transactionFee.toFixed(2)}</span>
               </div>
             )}
 
@@ -237,7 +237,7 @@ export default function MobileCheckoutView({
             {gst > 0 && (
               <div className="flex justify-between items-center pt-2 font-bold text-stone-600">
                 <span className="truncate pr-2">GST</span>
-                <span className="font-black text-[#2C1810] shrink-0">₹{gst.toFixed(2)}</span>
+                <span className="font-black text-[#252525] shrink-0">₹{gst.toFixed(2)}</span>
               </div>
             )}
 
@@ -250,9 +250,9 @@ export default function MobileCheckoutView({
             )}
 
             {/* Subtotal Separator & Total Amount */}
-            <div className="flex justify-between items-center pt-2.5 font-black text-sm text-[#2C1810]">
+            <div className="flex justify-between items-center pt-2.5 font-black text-sm text-[#252525]">
               <span>Total Amount</span>
-              <span className="text-[#6F4E37] text-base font-black">₹{grandTotal.toFixed(2)}</span>
+              <span className="text-[#E50914] text-base font-black">₹{grandTotal.toFixed(2)}</span>
             </div>
           </div>
         </div>
@@ -260,18 +260,18 @@ export default function MobileCheckoutView({
         {/* ---------------------------------------------------------------- */}
         {/* 5. ADDRESS & BOOKING DETAILS EXPANDABLE ROW (Ref Image 1)         */}
         {/* ---------------------------------------------------------------- */}
-        <div className="bg-white rounded-2xl border border-[#E8DED5] shadow-[0_2px_8px_rgba(44,24,16,0.02)] overflow-hidden">
+        <div className="bg-white rounded-2xl border border-[#FEE2E2] shadow-[0_2px_8px_rgba(44,24,16,0.02)] overflow-hidden">
           <button
             type="button"
             onClick={() => setIsDetailsExpanded(!isDetailsExpanded)}
             className="w-full px-4 py-3 flex items-center justify-between text-left cursor-pointer hover:bg-stone-50/70 transition-colors"
           >
             <div className="flex items-center gap-2 min-w-0 mr-2">
-              <MapPin size={15} className="text-[#6F4E37] shrink-0" />
+              <MapPin size={15} className="text-[#E50914] shrink-0" />
               <span className="text-xs font-bold text-stone-500 uppercase tracking-wider shrink-0">
                 Address
               </span>
-              <span className="text-xs font-black text-[#2C1810] truncate">
+              <span className="text-xs font-black text-[#252525] truncate">
                 {address || cafeName || 'Venue Location'}
               </span>
             </div>
@@ -299,15 +299,15 @@ export default function MobileCheckoutView({
 
                 {/* Guests */}
                 <div className="flex items-center gap-2 text-stone-600 font-medium">
-                  <Users size={14} className="text-[#6F4E37]" />
+                  <Users size={14} className="text-[#E50914]" />
                   <span>{guests} {guests === 1 ? 'Guest' : 'Guests'} confirmed</span>
                 </div>
 
                 {/* Customer Contact */}
                 {(customerName || customerPhone) && (
-                  <div className="bg-[#FFF8F0] p-2.5 rounded-xl border border-[#E8DED5]/70 space-y-1">
-                    <span className="text-[10px] font-black uppercase text-[#6F4E37] block">Contact Details</span>
-                    {customerName && <p className="font-black text-[#2C1810]">{customerName}</p>}
+                  <div className="bg-[#FFF5F5] p-2.5 rounded-xl border border-[#FEE2E2]/70 space-y-1">
+                    <span className="text-[10px] font-black uppercase text-[#E50914] block">Contact Details</span>
+                    {customerName && <p className="font-black text-[#252525]">{customerName}</p>}
                     {customerPhone && <p className="text-stone-600 font-bold text-[11px]">{customerPhone}</p>}
                     {customerEmail && <p className="text-stone-500 text-[11px] truncate">{customerEmail}</p>}
                   </div>
@@ -352,14 +352,14 @@ export default function MobileCheckoutView({
       {/* ------------------------------------------------------------------ */}
       {/* 6. FIXED BOTTOM PAYMENT BAR (Reference Image 1)                    */}
       {/* ------------------------------------------------------------------ */}
-      <footer className="fixed bottom-0 inset-x-0 z-40 bg-white/95 backdrop-blur-xl border-t border-[#E8DED5] px-4 py-3 shadow-[0_-8px_24px_rgba(44,24,16,0.08)]">
+      <footer className="fixed bottom-0 inset-x-0 z-40 bg-white/95 backdrop-blur-xl border-t border-[#FEE2E2] px-4 py-3 shadow-[0_-8px_24px_rgba(44,24,16,0.08)]">
         <div className="flex items-center justify-between gap-4 max-w-md mx-auto">
           {/* Total Payable Display */}
           <div className="min-w-0">
             <span className="text-[10px] font-bold uppercase text-stone-400 tracking-wider block">
               Total Payable
             </span>
-            <div className="text-lg xs:text-xl font-black text-[#2C1810] tracking-tight">
+            <div className="text-lg xs:text-xl font-black text-[#252525] tracking-tight">
               ₹{grandTotal.toFixed(2)}
             </div>
           </div>
@@ -370,7 +370,7 @@ export default function MobileCheckoutView({
             onClick={onProceed}
             disabled={isProcessing}
             type="button"
-            className="flex-1 py-3.5 px-6 rounded-2xl bg-[#6F4E37] hover:bg-[#583D2B] active:bg-[#4A2C11] text-white font-black text-sm tracking-wide shadow-md shadow-[#6F4E37]/20 flex items-center justify-center gap-2 cursor-pointer transition-all disabled:opacity-50"
+            className="flex-1 py-3.5 px-6 rounded-2xl bg-[#E50914] hover:bg-[#583D2B] active:bg-[#B71C1C] text-white font-black text-sm tracking-wide shadow-md shadow-[#E50914]/20 flex items-center justify-center gap-2 cursor-pointer transition-all disabled:opacity-50"
           >
             {isProcessing ? (
               <span className="inline-flex items-center gap-2">

@@ -39,6 +39,16 @@ export const reviewService = {
     return response.data;
   },
 
+  getOrderReview: async (orderId) => {
+    const response = await api.get(`/reviews/order/${orderId}`);
+    return response.data;
+  },
+
+  submitOrderReview: async (reviewData) => {
+    const response = await api.post('/reviews', reviewData);
+    return response.data;
+  },
+
   getCafeReviews: async (cafeId) => {
     const response = await api.get(`/reviews/cafe/${cafeId}`);
     return response.data;
@@ -54,9 +64,8 @@ export const reviewService = {
     return response.data;
   },
 
-  // Mocked Endpoints (Backend doesn't have these yet)
+  // Mocked Endpoints
   getMyReviews: async () => {
-    // Simulate network delay
     await new Promise(resolve => setTimeout(resolve, 800));
     return {
       success: true,

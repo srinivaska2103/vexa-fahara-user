@@ -14,7 +14,7 @@ export default function WriteReviewCard({ booking }) {
     <motion.div 
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      className="bg-white rounded-2xl border border-[#E8DED5] p-6 flex flex-col md:flex-row items-center gap-6 shadow-sm"
+      className="bg-white rounded-2xl border border-[#FEE2E2] p-6 flex flex-col md:flex-row items-center gap-6 shadow-sm"
     >
       <div className="relative w-full md:w-32 h-32 rounded-xl overflow-hidden shrink-0">
         {cafe?.cover_image || cafe?.images?.[0] ? (
@@ -25,14 +25,14 @@ export default function WriteReviewCard({ booking }) {
             className="object-cover"
           />
         ) : (
-          <div className="w-full h-full bg-[#FFF8F0]" />
+          <div className="w-full h-full bg-[#FFF5F5]" />
         )}
       </div>
 
       <div className="flex-1 text-center md:text-left">
-        <h3 className="text-xl font-bold text-[#2C1810] mb-1">How was your experience?</h3>
+        <h3 className="text-xl font-bold text-[#252525] mb-1">How was your experience?</h3>
         <p className="text-gray-600 text-sm mb-2">
-          You recently visited <span className="font-semibold text-[#2C1810]">{cafe?.name}</span>
+          You recently visited <span className="font-semibold text-[#252525]">{cafe?.name}</span>
           {pkg && ` for the ${pkg.package_name} package`}.
         </p>
         <div className="flex items-center justify-center md:justify-start gap-1 mb-4">
@@ -45,7 +45,7 @@ export default function WriteReviewCard({ booking }) {
       <div className="shrink-0 w-full md:w-auto">
         <Link 
           href={`/customer/reviews/create?bookingId=${booking.id}`}
-          className="flex items-center justify-center gap-2 px-8 py-3 bg-[#6F4E37] text-white rounded-xl font-medium hover:bg-[#5A3E2B] transition-colors shadow-sm w-full"
+          className="flex items-center justify-center gap-2 px-8 py-3 bg-[#E50914] text-white rounded-xl font-medium hover:bg-[#5A3E2B] transition-colors shadow-sm w-full"
         >
           Rate & Review
           <ArrowRight className="w-4 h-4" />

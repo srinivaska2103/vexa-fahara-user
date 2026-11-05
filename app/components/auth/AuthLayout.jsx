@@ -3,10 +3,10 @@ import Image from 'next/image';
 
 export default function AuthLayout({ children, title, subtitle }) {
   return (
-    <div className="relative min-h-screen flex items-center justify-center p-4 overflow-hidden bg-gradient-to-br from-[#FFF8F0] via-[#F5E6D3] to-[#E8DED5]">
+    <div className="relative min-h-screen flex items-center justify-center p-4 overflow-hidden bg-white">
       {/* Decorative Background Elements */}
-      <div className="absolute top-[-10%] left-[-10%] w-96 h-96 bg-[#DDB892] rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-pulse"></div>
-      <div className="absolute bottom-[-10%] right-[-10%] w-96 h-96 bg-[#A67B5B] rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-pulse" style={{ animationDelay: '2s' }}></div>
+      <div className="absolute top-[-10%] left-[-10%] w-96 h-96 bg-[#EF5350] rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-pulse"></div>
+      <div className="absolute bottom-[-10%] right-[-10%] w-96 h-96 bg-[#B71C1C] rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-pulse" style={{ animationDelay: '2s' }}></div>
 
       <motion.div 
         initial={{ opacity: 0, y: 30, scale: 0.95 }}
@@ -21,11 +21,14 @@ export default function AuthLayout({ children, title, subtitle }) {
             transition={{ delay: 0.2, type: 'spring', stiffness: 200, damping: 20 }}
             className="flex justify-center mb-6"
           >
-            <div className="flex items-center gap-3 p-4 bg-white rounded-2xl shadow-sm border border-gray-100">
-              <Image src="/Fahara%20Logo.jpeg" alt="Fahara Logo" width={50} height={50} className="object-contain" priority />
+            <div className="flex items-center gap-3.5 p-3.5 bg-white rounded-2xl shadow-sm border border-red-100">
+              <Image src="/grab-it-logo.png" alt="Grab2GO Logo" width={56} height={56} className="object-contain rounded-xl w-12 h-12" priority />
               <div className="flex flex-col text-left">
-                <span className="text-2xl font-black text-[#4A2C11] leading-none tracking-wide">FAHARA</span>
-                <span className="text-xs font-bold text-gray-400 mt-1 tracking-wide">Cafe & Event Booking</span>
+                <span className="text-2xl sm:text-3xl font-black leading-none tracking-tight">
+                  <span className="text-[#1E1E1E]">Grab</span>
+                  <span className="text-[#ED0014]">2GO</span>
+                </span>
+                <span className="text-[10px] font-black uppercase tracking-widest text-[#ED0014] mt-1">Cafe &amp; Event Booking</span>
               </div>
             </div>
           </motion.div>
@@ -33,7 +36,7 @@ export default function AuthLayout({ children, title, subtitle }) {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className="text-2xl font-black tracking-tight text-[#2C1810]"
+            className="text-2xl font-black tracking-tight text-[#252525]"
           >
             {title}
           </motion.h2>
@@ -42,7 +45,7 @@ export default function AuthLayout({ children, title, subtitle }) {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4 }}
-              className="text-[#6F4E37] font-medium mt-2 text-sm"
+              className="text-[#E50914] font-medium mt-2 text-sm"
             >
               {subtitle}
             </motion.p>

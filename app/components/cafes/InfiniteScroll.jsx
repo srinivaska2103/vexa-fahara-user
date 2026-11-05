@@ -4,7 +4,7 @@ import { Loader2, Sparkles, CheckCircle2, Heart, ArrowRight } from 'lucide-react
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 
-function ILoveFaharaBadge() {
+function ILoveGrabItBadge() {
   const [likes, setLikes] = useState(1284);
   const [isLiked, setIsLiked] = useState(false);
   const [floatingHearts, setFloatingHearts] = useState([]);
@@ -53,7 +53,7 @@ function ILoveFaharaBadge() {
         className={`group flex items-center gap-2 px-4 py-2 rounded-full border transition-all duration-300 shadow-md cursor-pointer select-none ${
           isLiked
             ? 'bg-gradient-to-r from-rose-600 via-pink-600 to-rose-500 text-white border-rose-500 shadow-rose-500/25 ring-2 ring-rose-400/30'
-            : 'bg-white hover:bg-[#FFF8F0] border-stone-200 hover:border-rose-300 text-[#2C1810] hover:text-rose-600 shadow-stone-200/50'
+            : 'bg-white hover:bg-[#FFF5F5] border-stone-200 hover:border-rose-300 text-[#252525] hover:text-rose-600 shadow-stone-200/50'
         }`}
       >
         <motion.div
@@ -70,7 +70,7 @@ function ILoveFaharaBadge() {
           />
         </motion.div>
         <span className="text-xs font-black tracking-wide">
-          I Love Fahara
+          I Love Grab2GO
         </span>
       </motion.button>
     </div>
@@ -94,9 +94,9 @@ export default function InfiniteScroll({ hasNextPage, fetchNextPage, isFetchingN
         <motion.div 
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/90 border border-[#DDB892]/40 shadow-sm text-[#6F4E37] text-xs font-black"
+          className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/90 border border-[#EF5350]/40 shadow-sm text-[#E50914] text-xs font-black"
         >
-          <Loader2 className="animate-spin text-[#6F4E37]" size={16} />
+          <Loader2 className="animate-spin text-[#E50914]" size={16} />
           <span>Discovering more spaces...</span>
         </motion.div>
       ) : hasNextPage ? (
@@ -115,7 +115,7 @@ export default function InfiniteScroll({ hasNextPage, fetchNextPage, isFetchingN
           <div className="w-full shrink-0 max-w-[92vw] xs:max-w-[420px] sm:max-w-[520px]">
             <img 
               src="/coming_soon_banner.png" 
-              alt="More Cafes Coming Soon to Fahara" 
+              alt="More Cafes Coming Soon to Grab2GO" 
               className="w-full h-auto object-contain pointer-events-none drop-shadow-sm"
             />
           </div>
@@ -126,7 +126,7 @@ export default function InfiniteScroll({ hasNextPage, fetchNextPage, isFetchingN
               <motion.button 
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.96 }}
-                className="group inline-flex items-center gap-2 h-10 sm:h-11 px-6 sm:px-8 rounded-full bg-[#6F4E37] hover:bg-[#5A3215] text-white text-xs sm:text-sm font-bold shadow-md transition-all cursor-pointer"
+                className="group inline-flex items-center gap-2 h-10 sm:h-11 px-6 sm:px-8 rounded-full bg-[#E50914] hover:bg-[#5A3215] text-white text-xs sm:text-sm font-bold shadow-md transition-all cursor-pointer"
               >
                 <span>Explore Venues</span>
                 <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform stroke-[2.5]" />

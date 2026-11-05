@@ -62,17 +62,17 @@ export default function ModernSelect({
         disabled={disabled}
         onClick={() => setIsOpen(!isOpen)}
         onKeyDown={handleKeyDown}
-        className={`w-full px-4 py-2.5 rounded-xl border text-xs sm:text-sm font-bold text-[#2C1810] outline-none transition-all flex items-center justify-between cursor-pointer ${
+        className={`w-full px-4 py-2.5 rounded-xl border text-xs sm:text-sm font-bold text-[#252525] outline-none transition-all flex items-center justify-between cursor-pointer ${
           error
             ? 'border-rose-400 bg-rose-50/50 focus:ring-2 focus:ring-rose-400/30'
             : isOpen
-            ? 'border-[#6F4E37] bg-white ring-2 ring-[#6F4E37]/15 shadow-sm'
-            : 'border-stone-200 bg-stone-50 hover:bg-white hover:border-[#6F4E37]/50'
+            ? 'border-[#E50914] bg-white ring-2 ring-[#E50914]/15 shadow-sm'
+            : 'border-stone-200 bg-stone-50 hover:bg-white hover:border-[#E50914]/50'
         } ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
       >
         <div className="flex items-center gap-2.5 min-w-0">
-          {Icon && <Icon size={16} className={`shrink-0 ${isOpen ? 'text-[#6F4E37]' : 'text-stone-400'}`} />}
-          <span className={selectedOption ? 'text-[#2C1810] font-black truncate' : 'text-stone-400 font-bold truncate'}>
+          {Icon && <Icon size={16} className={`shrink-0 ${isOpen ? 'text-[#E50914]' : 'text-stone-400'}`} />}
+          <span className={selectedOption ? 'text-[#252525] font-black truncate' : 'text-stone-400 font-bold truncate'}>
             {selectedOption ? selectedOption.label : placeholder}
           </span>
         </div>
@@ -80,7 +80,7 @@ export default function ModernSelect({
         <ChevronDown
           size={16}
           className={`text-stone-400 transition-transform duration-200 shrink-0 ml-2 ${
-            isOpen ? 'rotate-180 text-[#6F4E37]' : ''
+            isOpen ? 'rotate-180 text-[#E50914]' : ''
           }`}
         />
       </button>
@@ -106,12 +106,12 @@ export default function ModernSelect({
                   onClick={() => handleSelect(option.value)}
                   className={`w-full px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all flex items-center justify-between cursor-pointer ${
                     isSelected
-                      ? 'bg-gradient-to-r from-[#4A2C11] to-[#6F4E37] text-white shadow-sm font-black'
-                      : 'text-stone-700 hover:bg-[#FFF8F0] hover:text-[#6F4E37]'
+                      ? 'bg-gradient-to-r from-[#B71C1C] to-[#E50914] text-white shadow-sm font-black'
+                      : 'text-stone-700 hover:bg-[#FFF5F5] hover:text-[#E50914]'
                   }`}
                 >
                   <div className="flex items-center gap-2 min-w-0 pr-2">
-                    {OptionIcon && <OptionIcon size={14} className={isSelected ? 'text-white' : 'text-[#6F4E37]'} />}
+                    {OptionIcon && <OptionIcon size={14} className={isSelected ? 'text-white' : 'text-[#E50914]'} />}
                     <span className="truncate">{option.label}</span>
                   </div>
                   {isSelected && <Check size={16} className="text-white shrink-0" />}

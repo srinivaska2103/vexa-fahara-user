@@ -1,21 +1,21 @@
 export default function manifest() {
   return {
-    name: 'Fahara • Cafe & Event Booking Platform',
-    short_name: 'Fahara',
+    name: 'Grab2GO • Cafe & Event Booking Platform',
+    short_name: 'Grab2GO',
     description: 'Book top-rated cafes, private venues, packages, and event spaces near you.',
     start_url: '/',
     display: 'standalone',
-    background_color: '#FFF8F0',
-    theme_color: '#6F4E37',
+    background_color: '#FFF5F5',
+    theme_color: '#E50914',
     orientation: 'portrait',
     icons: [
       {
-        src: '/Fahara%20Logo.jpeg',
+        src: '/grab-it-logo.png',
         sizes: '192x192',
         type: 'image/jpeg',
       },
       {
-        src: '/Fahara%20Logo.jpeg',
+        src: '/grab-it-logo.png',
         sizes: '512x512',
         type: 'image/jpeg',
       },

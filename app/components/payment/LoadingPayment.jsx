@@ -5,7 +5,7 @@ export default function LoadingPayment({ message = 'Securely processing your pay
   return (
     <FaharaInteractiveLoader 
       message={message} 
-      badgeTag="FAHARA PAYMENTS" 
+      badgeTag="Grab2GO PAYMENTS" 
       fullScreen={true} 
     />
   );
