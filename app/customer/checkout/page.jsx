@@ -1,5 +1,7 @@
 'use client';
 
+import CartGiftRewardTracker from '@/app/components/food/CartGiftRewardTracker';
+
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
@@ -83,6 +85,20 @@ export default function CheckoutPage() {
   const cafe = cart?.cafe;
   const items = cart?.items || [];
   const settings = cafe?.fulfilmentSettings;
+
+  // Compute dynamic preparation time and fulfilment estimates based on cart items
+  const maxPrepTime = Math.max(
+    ...items.map((it) => Number(it.preparationTime || it.preparation_time || it.menu_item?.preparation_time || 0)),
+    0
+  );
+  const estimatedTakeawayMins = maxPrepTime > 0 
+    ? maxPrepTime 
+    : (Number(settings?.estimated_pickup_time_minutes) || 20);
+  
+  // Delivery time = food prep time + transit buffer (10-15 mins) or settings fallback
+  const estimatedDeliveryMins = maxPrepTime > 0
+    ? Math.max(maxPrepTime + 15, Number(settings?.estimated_delivery_time_minutes) || 30)
+    : (Number(settings?.estimated_delivery_time_minutes) || 40);
 
   // Determine available fulfilment options enabled by the cafe
   const isTakeawayAvailable = settings?.is_takeaway_enabled ?? true;
@@ -176,8 +192,6 @@ export default function CheckoutPage() {
       const res = await api.post('/customer/orders/checkout', payload);
       if (res.data?.success) {
         const order = res.data.data;
-        // Invalidate cart state
-        fetchCart();
 
         // Initiate Razorpay Route Checkout
         try {
@@ -186,8 +200,8 @@ export default function CheckoutPage() {
 
           const isLoaded = await loadRazorpayScript();
           if (!isLoaded || !paymentInfo?.orderId) {
-            toast.success('Order placed! Redirecting to order details...');
-            router.push(`/customer/orders/${order.id}`);
+            toast.error('Payment gateway unavailable. Items kept in cart.');
+            router.push('/customer/cart');
             return;
           }
 
@@ -200,16 +214,22 @@ export default function CheckoutPage() {
             order_id: paymentInfo.orderId,
             handler: async function (response) {
               try {
+                toast.loading('Verifying secure payment with Razorpay...', { id: 'payment-verifying' });
                 await api.post(`/customer/orders/${order.id}/verify-payment`, {
                   razorpay_order_id: response.razorpay_order_id || paymentInfo.orderId,
                   razorpay_payment_id: response.razorpay_payment_id,
                   razorpay_signature: response.razorpay_signature
                 });
-                toast.success('Payment completed successfully!');
-              } catch (verifyErr) {
-                console.error('Payment verification warning:', verifyErr);
-              } finally {
+                // Cart is cleared on backend upon verified payment
+                await fetchCart();
+                toast.dismiss('payment-verifying');
+                toast.success('Payment completed successfully! Order placed.');
                 router.push(`/customer/orders/${order.id}`);
+              } catch (verifyErr) {
+                console.error('Payment verification error:', verifyErr);
+                toast.dismiss('payment-verifying');
+                toast.error('Payment verification failed. Your items remain in the cart.');
+                router.push('/customer/cart?status=failed');
               }
             },
             prefill: {
@@ -222,22 +242,23 @@ export default function CheckoutPage() {
             },
             modal: {
               ondismiss: function () {
-                toast('Payment pending. You can complete it anytime from My Orders.', { icon: 'ℹ️' });
-                router.push(`/customer/orders/${order.id}`);
+                toast('Payment cancelled. Your items are still in your cart.', { icon: '🛒', duration: 4000 });
+                router.push('/customer/cart?status=cancelled');
               }
             }
           };
 
           const rzp = new window.Razorpay(options);
           rzp.on('payment.failed', function (failRes) {
-            toast.error(failRes.error?.description || 'Payment failed.');
-            router.push(`/customer/orders/${order.id}`);
+            const failReason = failRes.error?.description || 'Payment failed.';
+            toast.error(`${failReason} Your items are still in your cart.`, { duration: 4500 });
+            router.push('/customer/cart?status=failed');
           });
           rzp.open();
         } catch (paymentErr) {
           console.warn('Payment setup fallback:', paymentErr);
-          toast.success('Order placed successfully!');
-          router.push(`/customer/orders/${order.id}`);
+          toast.error('Could not initiate payment. Your items remain in your cart.');
+          router.push('/customer/cart?status=cancelled');
         }
       }
     } catch (err) {
@@ -297,6 +318,79 @@ export default function CheckoutPage() {
           {/* Left Col: Fulfilment choice & form */}
           <div className="lg:col-span-2 space-y-5">
             
+            {/* ── DEDICATED APPLIED PROMOTIONAL OFFERS & REWARD ALLOCATION ── */}
+            {cart?.appliedOffers && cart.appliedOffers.length > 0 && (
+              <div className="bg-gradient-to-br from-[#FFF5F5] via-white to-orange-50 rounded-3xl border border-red-200 p-5 shadow-xs space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2.5">
+                    <span className="w-8 h-8 rounded-xl bg-[#E50914] text-white flex items-center justify-center font-black text-xs shadow-xs">
+                      🎁
+                    </span>
+                    <div>
+                      <span className="text-[10px] font-black uppercase tracking-wider text-[#FF6B00] block">
+                        Promotional Offer Applied
+                      </span>
+                      <h3 className="text-sm font-black text-[#252525]">
+                        {cart.appliedOffers[0].title}
+                      </h3>
+                    </div>
+                  </div>
+                  <span className="px-2.5 py-1 rounded-xl bg-red-100 text-[#E50914] text-[10px] font-black uppercase">
+                    Saved ₹{totalDiscounts.toFixed(2)}
+                  </span>
+                </div>
+
+                <div className="space-y-2 bg-white/90 rounded-2xl p-3.5 border border-red-100 text-xs">
+                  {cart.appliedOffers.map((off, idx) => (
+                    <div key={idx} className="space-y-1.5">
+                      {off.qualifyingItem && (
+                        <div className="flex items-center justify-between text-stone-700">
+                          <span className="font-semibold text-stone-600">Qualifying item:</span>
+                          <span className="font-bold text-[#252525]">{off.qualifyingItem.name} × {off.qualifyingItem.quantity} (PAID)</span>
+                        </div>
+                      )}
+                      {off.rewardItem && (
+                        <div className="flex items-center justify-between text-emerald-700 font-bold">
+                          <span>Reward item:</span>
+                          <span className="px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-800 text-[10px] font-black uppercase">
+                            {off.rewardItem.name} × {off.rewardItem.quantity} ({off.rewardItem.type})
+                          </span>
+                        </div>
+                      )}
+                      {off.category === 'COMBO' && (
+                        <div className="flex items-center justify-between text-emerald-800 font-bold">
+                          <span>Combo Deal:</span>
+                          <span className="px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-800 text-[10px] font-black uppercase">
+                            Special Combo Group @ ₹{Number(off.comboPrice || 0).toFixed(0)}
+                          </span>
+                        </div>
+                      )}
+                      {off.category === 'FREE_ITEM' && (
+                        <div className="flex items-center justify-between text-amber-800 font-bold">
+                          <span>Free Item Reward:</span>
+                          <span className="px-2 py-0.5 rounded-md bg-amber-100 text-amber-800 text-[10px] font-black uppercase">
+                            Unlocked Free Dish (₹0)
+                          </span>
+                        </div>
+                      )}
+                      {off.category === 'FLAT' && (
+                        <div className="flex items-center justify-between text-blue-800 font-bold">
+                          <span>Flat Discount:</span>
+                          <span className="px-2 py-0.5 rounded-md bg-blue-100 text-blue-800 text-[10px] font-black uppercase">
+                            ₹{Number(off.savings || totalDiscounts).toFixed(0)} Flat Rupee OFF
+                          </span>
+                        </div>
+                      )}
+                      <div className="flex items-center justify-between pt-1.5 border-t border-dashed border-red-100">
+                        <span className="font-bold text-stone-600">Offer Discount:</span>
+                        <span className="font-black text-[#E50914]">-₹{Number(off.savings || totalDiscounts).toFixed(2)}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
             {/* Restaurant Info Header Card */}
             <div className="bg-white rounded-3xl border border-[#FEE2E2] p-4.5 flex items-center justify-between shadow-xs">
               <div>
@@ -339,7 +433,7 @@ export default function CheckoutPage() {
                   <div>
                     <span className="text-xs font-black text-[#252525] block">Takeaway / Self Pickup</span>
                     <span className="text-[10px] text-[#757575] font-bold block mt-0.5">
-                      Ready in ~{settings?.estimated_pickup_time_minutes || 20} mins • No delivery fee
+                      Ready in ~{estimatedTakeawayMins} mins • No delivery fee
                     </span>
                     {!isTakeawayAvailable && (
                       <span className="text-[9px] font-black text-rose-600 block mt-1">Not offered by cafe</span>
@@ -368,7 +462,7 @@ export default function CheckoutPage() {
                   <div>
                     <span className="text-xs font-black text-[#252525] block">Restaurant Delivery</span>
                     <span className="text-[10px] text-[#757575] font-bold block mt-0.5">
-                      Direct to your door in ~{settings?.estimated_delivery_time_minutes || 40} mins • ₹{settings?.delivery_charge || 30}
+                      Direct to your door in ~{estimatedDeliveryMins} mins • ₹{settings?.delivery_charge || 30}
                     </span>
                     {!isDeliveryAvailable && (
                       <span className="text-[9px] font-black text-rose-600 block mt-1">Not offered by cafe</span>
@@ -491,7 +585,13 @@ export default function CheckoutPage() {
 
           </div>
 
-          {/* Right Col: Price Breakdown & Place Order Action */}
+          
+            {/* Grab2Go Automatic Gift Reward Checkout Banner */}
+            <CartGiftRewardTracker 
+              subtotal={discountedFood || originalSubtotal} 
+              rewardEligibility={cart?.rewardEligibility} 
+            />
+{/* Right Col: Price Breakdown & Place Order Action */}
           <div className="space-y-4">
             <div className="bg-white rounded-3xl border border-[#FEE2E2] p-5 space-y-4 shadow-sm">
               <h3 className="text-xs font-black uppercase tracking-wider text-[#252525] border-b border-[#FEE2E2] pb-2.5">
@@ -499,11 +599,29 @@ export default function CheckoutPage() {
               </h3>
 
               {/* Items List */}
-              <div className="space-y-1.5 max-h-40 overflow-y-auto pr-1">
+              <div className="space-y-2 max-h-48 overflow-y-auto pr-1">
                 {items.map((i) => (
-                  <div key={i.id} className="flex justify-between items-center text-xs">
-                    <span className="font-bold text-[#252525] truncate pr-2">{i.quantity}x {i.name}</span>
-                    <span className="text-[#252525] shrink-0 font-bold">₹{Number(i.lineTotal).toFixed(2)}</span>
+                  <div key={i.id} className="text-xs space-y-0.5 pb-1 border-b border-stone-100 last:border-none">
+                    <div className="flex justify-between items-center">
+                      <span className="font-bold text-[#252525] truncate pr-2">
+                        {i.quantity}x {i.name}
+                        {i.comboGroupName && (
+                          <span className="ml-1 text-[9px] font-black text-emerald-700 bg-emerald-50 px-1.5 py-0.2 rounded border border-emerald-200">
+                            {i.comboGroupName}
+                          </span>
+                        )}
+                      </span>
+                      <span className="text-[#252525] shrink-0 font-bold">₹{Number(i.lineTotal).toFixed(2)}</span>
+                    </div>
+                    {i.isFreeReward && (
+                      <div className="flex items-center gap-1.5 text-[10px] text-emerald-700 font-bold">
+                        <span>{i.quantity - i.rewardQuantity} Paid</span>
+                        <span>•</span>
+                        <span className="px-1.5 py-0.2 rounded bg-emerald-100 text-emerald-800 font-black uppercase">
+                          {i.rewardQuantity} FREE
+                        </span>
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
@@ -564,7 +682,7 @@ export default function CheckoutPage() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full py-3.5 rounded-2xl bg-[#E50914] hover:bg-[#B71C1C] text-white text-xs font-black flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-[#E50914]/25 transition-all active:scale-98 disabled:opacity-50"
+                className="hidden lg:flex w-full py-3.5 rounded-2xl bg-[#E50914] hover:bg-[#B71C1C] text-white text-xs font-black items-center justify-center gap-2 cursor-pointer shadow-lg shadow-[#E50914]/25 transition-all active:scale-98 disabled:opacity-50"
               >
                 <CreditCard className="w-4 h-4" />
                 {isSubmitting ? 'Processing Payment...' : `Pay ₹${finalPayable.toFixed(2)} via Razorpay`}
@@ -575,6 +693,30 @@ export default function CheckoutPage() {
             <div className="p-3.5 rounded-2xl bg-white border border-[#FEE2E2] flex items-center gap-2.5 text-xs text-[#757575]">
               <ShieldCheck className="w-5 h-5 text-emerald-600 shrink-0" />
               <span>Secured by Razorpay Route • Instant settlement to restaurant</span>
+            </div>
+          </div>
+
+          {/* ── MOBILE FIXED BOTTOM CHECKOUT CTA BAR ── */}
+          <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-xl border-t border-[#FEE2E2] p-3.5 px-4 shadow-[0_-10px_30px_rgba(0,0,0,0.12)]">
+            <div className="max-w-md mx-auto flex items-center justify-between gap-3">
+              <div className="space-y-0.5">
+                <span className="text-[10px] font-black uppercase tracking-wider text-[#757575] block">
+                  Total Payable
+                </span>
+                <div className="text-base font-black text-[#E50914]">
+                  ₹{finalPayable.toFixed(2)}
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="flex-1 max-w-[220px] py-3 px-4 rounded-2xl bg-[#E50914] hover:bg-[#B71C1C] text-white text-xs font-black flex items-center justify-center gap-2 cursor-pointer shadow-md shadow-[#E50914]/30 active:scale-95 transition-all disabled:opacity-50 whitespace-nowrap"
+              >
+                <CreditCard className="w-4 h-4 shrink-0" />
+                <span>{isSubmitting ? 'Processing...' : 'Place Order & Pay'}</span>
+                <ArrowRight className="w-3.5 h-3.5 shrink-0" />
+              </button>
             </div>
           </div>
 

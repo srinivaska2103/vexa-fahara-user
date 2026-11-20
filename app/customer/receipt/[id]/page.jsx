@@ -1,9 +1,10 @@
 'use client';
 
 import { useParams } from 'next/navigation';
+import Link from 'next/link';
 import { useQuery } from '@tanstack/react-query';
 import { bookingService } from '@/services/booking.service';
-import { Loader2 } from 'lucide-react';
+import { Loader2, ArrowLeft } from 'lucide-react';
 import ReceiptCard from '@/app/components/payment/ReceiptCard';
 import CustomerNavbar from '@/app/components/layout/CustomerNavbar';
 
@@ -165,6 +166,17 @@ export default function ReceiptPage() {
     <div className="min-h-screen bg-[#FFF5F5] font-sans antialiased selection:bg-[#E50914] selection:text-white pb-24 lg:pb-16">
       <CustomerNavbar showSearch={true} showViewToggles={false} />
       <main className="container mx-auto px-2 sm:px-6 lg:px-8 py-4 sm:py-6 max-w-full overflow-x-hidden print:p-0 print:m-0 print:max-w-full print:overflow-visible">
+        {/* Navigation Action Row (Hidden in Print) */}
+        <div className="mb-4 max-w-2xl mx-auto flex items-center justify-between gap-3 print:hidden">
+          <Link
+            href={booking?.id ? `/customer/bookings/${booking.id}` : '/customer/bookings'}
+            className="inline-flex items-center gap-2 text-xs font-black bg-white hover:bg-[#FFF5F5] hover:text-[#E50914] text-stone-700 px-4 py-2.5 rounded-full border border-stone-200/90 transition-all shadow-2xs cursor-pointer"
+          >
+            <ArrowLeft size={14} />
+            <span>Back to Booking Details</span>
+          </Link>
+        </div>
+
         <ReceiptCard receiptData={receiptData} />
       </main>
     </div>

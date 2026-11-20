@@ -7,6 +7,8 @@ import { useCafeDetails, useCafeAvailability } from '@/hooks/useCafeDetails';
 import { checkIfCafeClosedOnDate, checkIfTimeWithinBusinessHours } from '@/lib/utils';
 import { calculateAllowedGuestCount, validateGuestCount } from '@/lib/capacityUtils';
 import { bookingService } from '@/services/booking.service';
+import { useAuthStore } from '@/stores/auth.store';
+import AuthRequiredModal from '@/app/components/auth/AuthRequiredModal';
 import toast from 'react-hot-toast';
 
 
@@ -36,6 +38,8 @@ export default function StickyBookingSummary({ cafeName, selectedInclusionsPaylo
   const isRestaurant = categoryStr.includes('restaur') || categoryStr.includes('restur');
 
   const [isProcessing, setIsProcessing] = useState(false);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const user = useAuthStore((state) => state.user);
 
   const timeCheck = (selectedDate && selectedTimeSlot)
     ? checkIfTimeWithinBusinessHours(cafe, selectedDate, selectedTimeSlot.start, selectedTimeSlot.end, selectedEventCompany)
@@ -89,6 +93,11 @@ export default function StickyBookingSummary({ cafeName, selectedInclusionsPaylo
   const isGuestCapacityExceeded = maxAllowedGuests !== null && guestCount > maxAllowedGuests;
 
   const handlePayment = async () => {
+    if (!user) {
+      setIsAuthModalOpen(true);
+      return;
+    }
+
     if (!selectedDate || !selectedTimeSlot) {
       toast.error('Please select a date and time slot first.', {
         style: {
@@ -246,9 +255,22 @@ export default function StickyBookingSummary({ cafeName, selectedInclusionsPaylo
 
             <div className="flex flex-col items-center justify-center p-2.5 rounded-xl bg-[#FFF5F5] border border-red-100 text-center">
               <span className="text-[10px] font-black text-[#ED0014] uppercase tracking-wider mb-0.5">Time</span>
-              <span className="text-xs font-black text-[#1E1E1E] truncate max-w-full">
-                {selectedTimeSlot ? selectedTimeSlot.start : '—'}
+              <span className="text-xs font-black text-[#1E1E1E] leading-tight">
+                {selectedTimeSlot ? (
+                  selectedTimeSlot.end ? (
+                    <span>{selectedTimeSlot.start} – {selectedTimeSlot.end}</span>
+                  ) : (
+                    <span>{selectedTimeSlot.start}</span>
+                  )
+                ) : (
+                  '—'
+                )}
               </span>
+              {selectedTimeSlot?.hours && selectedTimeSlot.hours > 0 && (
+                <span className="text-[9px] font-black text-[#ED0014] bg-white px-1.5 py-0.5 rounded border border-red-200 mt-1">
+                  {selectedTimeSlot.hours} {selectedTimeSlot.hours === 1 ? 'Hour' : 'Hours'}
+                </span>
+              )}
             </div>
 
             <div className="flex flex-col items-center justify-center p-2.5 rounded-xl bg-[#FFF5F5] border border-red-100 text-center">
@@ -283,9 +305,16 @@ export default function StickyBookingSummary({ cafeName, selectedInclusionsPaylo
               {selectedPackage && !isRestaurant && !selectedEventCompany && (pricing?.cafePackageCharge || 0) > 0 && (
                 <div className="flex items-center justify-between text-xs">
                   <span className="font-semibold text-stone-500">Package</span>
-                  <span className="font-black text-[#252525] bg-white px-2.5 py-0.5 rounded-lg border border-[#FEE2E2] text-xs">
-                    {selectedPackage.name || 'Custom Add-Ons'}
-                  </span>
+                  <div className="flex items-center gap-1.5">
+                    <span className="font-black text-[#252525] bg-white px-2.5 py-0.5 rounded-lg border border-[#FEE2E2] text-xs">
+                      {selectedPackage.name || selectedPackage.package_name || 'Custom Add-Ons'}
+                    </span>
+                    {(selectedPackage.duration_hours || selectedPackage.duration_value) && (
+                      <span className="font-black text-[#ED0014] bg-white px-2 py-0.5 rounded-lg border border-[#FEE2E2] text-[10px]">
+                        {selectedPackage.duration_hours || selectedPackage.duration_value} {Number(selectedPackage.duration_hours || selectedPackage.duration_value) === 1 ? 'Hour' : 'Hours'}
+                      </span>
+                    )}
+                  </div>
                 </div>
               )}
 
@@ -474,6 +503,15 @@ export default function StickyBookingSummary({ cafeName, selectedInclusionsPaylo
           </div>
 
         </div>
+
+      {/* ── AUTHENTICATION REQUIRED MODAL ── */}
+      <AuthRequiredModal
+        isOpen={isAuthModalOpen}
+        onClose={() => setIsAuthModalOpen(false)}
+        title={isRestaurant ? 'Login to Reserve Table' : 'Login to Complete Booking'}
+        subtitle={`Sign in or create an account to book your spot at ${cafeName || 'this venue'}.`}
+        actionType="booking"
+      />
     </motion.div>
   );
 }

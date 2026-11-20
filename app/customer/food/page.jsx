@@ -23,8 +23,45 @@ import RestaurantCardItem from '@/app/components/food/RestaurantCardItem';
 import MobileFoodHeader from '@/app/components/food/MobileFoodHeader';
 import MobileFoodFilterDrawer from '@/app/components/food/MobileFoodFilterDrawer';
 import MobileFoodPromoCard from '@/app/components/food/MobileFoodPromoCard';
+import FaharaHeroBannerCarousel from '@/app/components/home/FaharaHeroBannerCarousel';
+import { useSearchStore } from '@/stores/search.store';
 
 import api from '@/lib/axios';
+
+const CITY_COORDINATES = {
+  'madurai': { lat: 9.9252, lng: 78.1198 },
+  'bengaluru': { lat: 12.9716, lng: 77.5946 },
+  'bangalore': { lat: 12.9716, lng: 77.5946 },
+  'chennai': { lat: 13.0827, lng: 80.2707 },
+  'coimbatore': { lat: 11.0168, lng: 76.9558 },
+  'mumbai': { lat: 19.0760, lng: 72.8777 },
+  'delhi': { lat: 28.6139, lng: 77.2090 },
+  'hyderabad': { lat: 17.3850, lng: 78.4867 },
+  'kochi': { lat: 9.9312, lng: 76.2673 }
+};
+
+const calculateDistanceInKm = (lat1, lon1, lat2, lon2) => {
+  if (lat1 === undefined || lat1 === null || lon1 === undefined || lon1 === null ||
+      lat2 === undefined || lat2 === null || lon2 === undefined || lon2 === null) {
+    return null;
+  }
+  const nLat1 = Number(lat1);
+  const nLon1 = Number(lon1);
+  const nLat2 = Number(lat2);
+  const nLon2 = Number(lon2);
+  if (isNaN(nLat1) || isNaN(nLon1) || isNaN(nLat2) || isNaN(nLon2)) return null;
+
+  const R = 6371; // Earth radius in km
+  const dLat = (nLat2 - nLat1) * Math.PI / 180;
+  const dLon = (nLon2 - nLon1) * Math.PI / 180;
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(nLat1 * Math.PI / 180) * Math.cos(nLat2 * Math.PI / 180) *
+    Math.sin(dLon / 2) * Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  const dist = R * c;
+  return Math.round(dist * 10) / 10;
+};
 
 export default function CustomerFoodDiscoveryPage() {
   const [activeTab, setActiveTab] = useState('home'); // home, restaurants, categories, offers
@@ -33,6 +70,15 @@ export default function CustomerFoodDiscoveryPage() {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [filterFulfilment, setFilterFulfilment] = useState('ALL'); // ALL, DELIVERY, TAKEAWAY, OFFERS
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
+
+  const { userLocation, userCity } = useSearchStore();
+
+  // If user location/city becomes known, auto-sync selectedCity if user hasn't explicitly selected another
+  React.useEffect(() => {
+    if (userCity && selectedCity === 'All Locations') {
+      setSelectedCity(userCity);
+    }
+  }, [userCity]);
 
   // 1. Fetch Cafes / Restaurants from backend
   const { data: cafesData, isLoading: isCafesLoading } = useQuery({
@@ -150,9 +196,36 @@ export default function CustomerFoodDiscoveryPage() {
     return Array.from(set);
   }, [cafes]);
 
-  // Filter restaurants
+  // Helper to compute cafe distance
+  const getCafeDistance = (c) => {
+    if (c?.distance !== undefined && c?.distance !== null && !isNaN(Number(c.distance))) {
+      return parseFloat(c.distance);
+    }
+    if (userLocation && userLocation.lat && userLocation.lng) {
+      let cLat = c?.latitude || c?.lat;
+      let cLng = c?.longitude || c?.lng;
+
+      if (!cLat || !cLng) {
+        const cityKey = String(c?.city || c?.address || '').toLowerCase().trim();
+        const foundCity = Object.keys(CITY_COORDINATES).find(k => cityKey.includes(k));
+        if (foundCity) {
+          cLat = CITY_COORDINATES[foundCity].lat;
+          cLng = CITY_COORDINATES[foundCity].lng;
+        }
+      }
+
+      const calcDist = calculateDistanceInKm(userLocation.lat, userLocation.lng, cLat, cLng);
+      if (calcDist !== null) {
+        c.distance = calcDist;
+        return calcDist;
+      }
+    }
+    return 999;
+  };
+
+  // Filter & Sort restaurants (Nearest first when userLocation is present)
   const filteredCafes = useMemo(() => {
-    return cafes.filter((cafe) => {
+    const list = cafes.filter((cafe) => {
       // 1. Search Query
       if (searchQuery.trim()) {
         const q = searchQuery.toLowerCase();
@@ -200,7 +273,14 @@ export default function CustomerFoodDiscoveryPage() {
 
       return true;
     });
-  }, [cafes, searchQuery, selectedCity, selectedCategory, filterFulfilment, activeOffers]);
+
+    // If userLocation exists, sort nearest first
+    if (userLocation && userLocation.lat && userLocation.lng) {
+      return [...list].sort((a, b) => getCafeDistance(a) - getCafeDistance(b));
+    }
+
+    return list;
+  }, [cafes, searchQuery, selectedCity, selectedCategory, filterFulfilment, activeOffers, userLocation]);
 
   const [mounted, setMounted] = React.useState(false);
 
@@ -248,24 +328,22 @@ export default function CustomerFoodDiscoveryPage() {
         totalRestaurants={filteredCafes.length}
       />
 
-      {/* ── MOBILE-ONLY INTERACTIVE FOOD PROMOTIONAL BANNER ── */}
-      <div className="md:hidden w-full select-none bg-[#E50914] px-3.5 pt-1 pb-4 mb-2 rounded-b-[28px] shadow-sm">
-        <MobileFoodPromoCard />
+      {/* ── MOBILE-ONLY INTERACTIVE THREE-PART HERO BANNER ── */}
+      <div className="md:hidden w-full select-none bg-[#E50914] px-3 xs:px-4 pt-1 pb-4 mb-3 rounded-b-2xl shadow-sm">
+        <FaharaHeroBannerCarousel position="FOOD_HERO" />
       </div>
 
       {/* ── DESKTOP TOP STICKY HEADER (Search, Location, Cart, Profile) ── */}
-      <div className="hidden md:block">
-        <FoodDashboardHeader
-          searchQuery={searchQuery}
-          onSearchChange={setSearchQuery}
-          selectedCity={selectedCity}
-          onCityChange={setSelectedCity}
-          availableCities={availableCities}
-        />
-      </div>
+      <FoodDashboardHeader
+        searchQuery={searchQuery}
+        onSearchChange={setSearchQuery}
+        selectedCity={selectedCity}
+        onCityChange={setSelectedCity}
+        availableCities={availableCities}
+      />
 
       {/* ── MAIN DASHBOARD CONTAINER (Left Sidebar + Right Content Area) ── */}
-      <div className="max-w-[1600px] mx-auto flex">
+      <div className="max-w-[1600px] mx-auto flex items-start">
         
         {/* LEFT FIXED/STICKY SIDEBAR (Matching Foodora Reference Layout) */}
         <FoodDashboardSidebar 
@@ -282,9 +360,9 @@ export default function CustomerFoodDiscoveryPage() {
         {/* RIGHT MAIN CONTENT AREA */}
         <main className="flex-1 min-w-0 p-4 sm:p-6 lg:p-8 space-y-6 sm:space-y-8 pb-32">
           
-          {/* 1. DESKTOP HERO PROMOTIONAL BANNER */}
+          {/* 1. DESKTOP THREE-PART HERO BANNER (BEST DEAL, Burger/Pizza, 50% OFF) */}
           <div className="hidden md:block">
-            <FoodHeroPromoBanner activeOffer={heroOffer} />
+            <FaharaHeroBannerCarousel position="FOOD_HERO" />
           </div>
 
           {/* 2. FOOD CATEGORIES SECTION (Real categories fetched from restaurant menus) */}

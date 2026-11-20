@@ -25,6 +25,7 @@ import {
   X
 } from 'lucide-react';
 import toast from 'react-hot-toast';
+import HelpSupportModal from '@/app/components/common/HelpSupportModal';
 
 export default function MobileCheckoutView({
   bookingData,
@@ -81,16 +82,10 @@ export default function MobileCheckoutView({
     ? `${cafeName || 'Venue'} + ${eventPackage}` 
     : (cafeName || 'Reserved Venue');
 
+  const [isHelpModalOpen, setIsHelpModalOpen] = useState(false);
+
   const handleHelpClick = () => {
-    toast('Need assistance? Our concierge is available at support@fahara.com', {
-      icon: '💬',
-      style: {
-        borderRadius: '16px',
-        background: '#252525',
-        color: '#fff',
-        fontSize: '12px'
-      }
-    });
+    setIsHelpModalOpen(true);
   };
 
   return (
@@ -383,6 +378,12 @@ export default function MobileCheckoutView({
           </motion.button>
         </div>
       </footer>
+
+      {/* Help & Support Modal */}
+      <HelpSupportModal
+        isOpen={isHelpModalOpen}
+        onClose={() => setIsHelpModalOpen(false)}
+      />
     </div>
   );
 }

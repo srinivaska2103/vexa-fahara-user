@@ -25,6 +25,7 @@ import {
 } from 'lucide-react';
 import CustomerNavbar from '@/app/components/layout/CustomerNavbar';
 import RestaurantMenuSection from '@/app/components/cafe-details/RestaurantMenuSection';
+import RestaurantReviewsSection from '@/app/components/food/RestaurantReviewsSection';
 import { useCartStore } from '@/stores/cart.store';
 import api from '@/lib/axios';
 
@@ -54,6 +55,16 @@ export default function RestaurantFoodOrderingPage() {
     },
     enabled: !!cafeId,
     refetchInterval: 30000 // Re-check every 30 seconds for live open/close boundaries
+  });
+
+  // 3. Fetch Real Customer Reviews for this Restaurant
+  const { data: reviewsResponse, isLoading: isLoadingReviews } = useQuery({
+    queryKey: ['restaurant-reviews', cafeId],
+    queryFn: async () => {
+      const res = await api.get(`/reviews/cafe/${cafeId}`).catch(() => ({ data: { data: null } }));
+      return res.data?.data || null;
+    },
+    enabled: !!cafeId
   });
 
   const cafe = cafeData;
@@ -99,7 +110,7 @@ export default function RestaurantFoodOrderingPage() {
   const isCurrentCafeInCart = cart?.cafe_id === cafeId || cart?.cafe?.id === cafeId;
 
   return (
-    <div className="min-h-screen bg-[#FFF5F5]/30 pb-32 sm:pb-24">
+    <div className="min-h-screen bg-[#FFF5F5]/30 pb-44 sm:pb-28">
       <CustomerNavbar />
 
       <main className="max-w-5xl mx-auto px-4 sm:px-6 pt-5 sm:pt-7 space-y-6">
@@ -164,7 +175,17 @@ export default function RestaurantFoodOrderingPage() {
               </p>
             </div>
 
-            {cafe.google_rating && (
+            {reviewsResponse?.totalReviews > 0 ? (
+              <div className="px-3.5 py-2 rounded-2xl bg-[#FFF5F5] border border-[#FEE2E2] text-center self-start sm:self-auto">
+                <div className="flex items-center gap-1 text-sm font-black text-[#252525]">
+                  <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
+                  <span>{Number(reviewsResponse.averageRating).toFixed(1)}</span>
+                </div>
+                <span className="text-[10px] text-[#757575] font-bold">
+                  {reviewsResponse.totalReviews} {reviewsResponse.totalReviews === 1 ? 'Customer Review' : 'Customer Reviews'}
+                </span>
+              </div>
+            ) : cafe.google_rating ? (
               <div className="px-3.5 py-2 rounded-2xl bg-[#FFF5F5] border border-[#FEE2E2] text-center self-start sm:self-auto">
                 <div className="flex items-center gap-1 text-sm font-black text-[#252525]">
                   <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
@@ -172,7 +193,7 @@ export default function RestaurantFoodOrderingPage() {
                 </div>
                 <span className="text-[10px] text-[#757575] font-bold">Google Rating</span>
               </div>
-            )}
+            ) : null}
           </div>
 
           {/* Business Hours & Operating Info Strip */}
@@ -241,23 +262,42 @@ export default function RestaurantFoodOrderingPage() {
           />
         </div>
 
-        {/* ── STICKY CART FOOTER BAR (When items exist & ordering is enabled) ── */}
+        {/* ── REAL CUSTOMER REVIEWS & RATINGS SECTION ── */}
+        <div className="bg-white rounded-3xl border border-[#FEE2E2] p-5 sm:p-7 shadow-xs">
+          <RestaurantReviewsSection 
+            reviewsData={reviewsResponse} 
+            isLoading={isLoadingReviews} 
+          />
+        </div>
+
+        {/* ── STICKY CART FOOTER BAR (Mobile floating pill bar & desktop sticky footer) ── */}
         {itemCount > 0 && isCurrentCafeInCart && (
-          <div className="fixed bottom-0 left-0 right-0 z-40 p-4 bg-white/95 backdrop-blur-xl border-t border-[#FEE2E2] shadow-2xl">
-            <div className="max-w-5xl mx-auto flex items-center justify-between gap-4">
-              <div className="space-y-0.5">
-                <span className="text-[10px] font-black uppercase tracking-wider text-[#757575]">
-                  {itemCount} {itemCount === 1 ? 'item' : 'items'} in your cart
-                </span>
-                <div className="text-base font-black text-[#252525]">
-                  Payable: <strong className="text-[#E50914]">₹{Number(finalPayableAmount).toFixed(2)}</strong>
+          <div className="fixed bottom-22 md:bottom-0 left-0 right-0 z-40 px-2 sm:px-3 md:px-0 pointer-events-none">
+            <div className="max-w-md md:max-w-5xl mx-auto pointer-events-auto bg-[#1A1A1A] text-white rounded-2xl md:rounded-none border border-stone-800 md:border-t md:border-b-0 md:border-x-0 md:border-[#FEE2E2] md:bg-white/95 md:text-[#252525] md:backdrop-blur-xl p-2.5 sm:p-4 shadow-[0_12px_36px_rgba(0,0,0,0.35)] md:shadow-[0_-10px_25px_rgba(0,0,0,0.08)] flex items-center justify-between gap-2 sm:gap-4 transition-all animate-in fade-in slide-in-from-bottom-4 duration-300">
+              
+              {/* Left Details: Item Count & Total Amount */}
+              <div className="flex items-center gap-2 sm:gap-2.5 min-w-0 shrink">
+                <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-[#E50914] text-white flex items-center justify-center font-black text-xs shrink-0 shadow-xs">
+                  {itemCount}
+                </div>
+                <div className="space-y-0.5 min-w-0">
+                  <span className="text-[9px] sm:text-[10px] font-black uppercase tracking-wider text-stone-400 md:text-[#757575] block truncate">
+                    {itemCount === 1 ? '1 Item' : `${itemCount} Items`}
+                  </span>
+                  <div className="text-xs sm:text-base font-black truncate text-white md:text-[#252525] flex items-center gap-0.5">
+                    <span>₹{Number(finalPayableAmount).toFixed(2)}</span>
+                    <span className="text-[9px] font-semibold text-stone-400 md:text-[#757575] ml-0.5 hidden sm:inline">
+                      plus taxes
+                    </span>
+                  </div>
                 </div>
               </div>
 
-              <div className="flex items-center gap-2.5">
+              {/* Right Action Buttons */}
+              <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
                 <Link
                   href="/customer/cart"
-                  className="px-4 py-2.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-[#252525] text-xs font-black transition-all cursor-pointer"
+                  className="px-2.5 py-1.5 sm:px-4 sm:py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white md:bg-stone-100 md:hover:bg-stone-200 md:text-[#252525] text-[11px] sm:text-xs font-black transition-all cursor-pointer whitespace-nowrap active:scale-95"
                 >
                   View Cart
                 </Link>
@@ -265,18 +305,19 @@ export default function RestaurantFoodOrderingPage() {
                 {canPlaceOrder ? (
                   <Link
                     href="/customer/checkout"
-                    className="px-5 py-2.5 rounded-xl bg-[#E50914] hover:bg-[#B71C1C] text-white text-xs font-black shadow-md transition-all active:scale-98 cursor-pointer flex items-center gap-1.5"
+                    className="px-3 py-1.5 sm:px-5 sm:py-2.5 rounded-xl bg-[#E50914] hover:bg-[#B71C1C] text-white text-[11px] sm:text-xs font-black shadow-md shadow-red-950/40 md:shadow-md transition-all active:scale-95 cursor-pointer flex items-center gap-1 whitespace-nowrap"
                   >
-                    <span>Proceed to Checkout</span>
+                    <span>Checkout</span>
+                    <span className="text-xs sm:text-sm font-black leading-none">→</span>
                   </Link>
                 ) : (
                   <button
                     type="button"
                     disabled
-                    className="px-5 py-2.5 rounded-xl bg-stone-300 text-stone-600 text-xs font-black cursor-not-allowed"
+                    className="px-2.5 py-1.5 sm:px-5 sm:py-2.5 rounded-xl bg-stone-700 md:bg-stone-300 text-stone-400 md:text-stone-600 text-[11px] sm:text-xs font-black cursor-not-allowed whitespace-nowrap"
                     title={availability?.message}
                   >
-                    Restaurant Closed
+                    Closed
                   </button>
                 )}
               </div>

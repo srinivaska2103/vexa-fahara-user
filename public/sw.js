@@ -1,15 +1,23 @@
-// Grab2GO Service Worker self-uninstaller
-self.addEventListener('install', () => {
+const CACHE_NAME = 'grab2go-cache-v1';
+
+self.addEventListener('install', (event) => {
   self.skipWaiting();
 });
 
 self.addEventListener('activate', (event) => {
   event.waitUntil(
-    self.registration.unregister().then(() => {
-      return self.clients.matchAll();
-    }).then((clients) => {
-      clients.forEach((client) => client.navigate(client.url));
-    })
+    caches.keys().then((keys) => {
+      return Promise.all(
+        keys.filter((key) => key !== CACHE_NAME).map((key) => caches.delete(key))
+      );
+    }).then(() => self.clients.claim())
   );
 });
 
+self.addEventListener('fetch', (event) => {
+  // Pass-through network requests cleanly without blocking dynamic API responses
+  if (event.request.method !== 'GET') return;
+  event.respondWith(
+    fetch(event.request).catch(() => caches.match(event.request))
+  );
+});

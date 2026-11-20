@@ -88,9 +88,9 @@ export default function CancelBookingModal({ isOpen, onClose, onConfirm, booking
             <div className="bg-red-50 border border-red-100 rounded-lg p-4 flex gap-3 mb-6">
               <AlertTriangle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
               <div>
-                <h4 className="font-semibold text-red-800 text-sm">Cancellation Policy</h4>
-                <p className="text-sm text-red-700 mt-1">
-                  Cancellations made less than 24 hours before the booking time may not be fully refunded. 
+                <h4 className="font-semibold text-red-800 text-sm">Cancellation & Refund Policy</h4>
+                <p className="text-sm text-red-700 mt-1 leading-relaxed">
+                  Cancellations are permitted up to <strong>3 hours</strong> before the scheduled booking start time. Eligible paid bookings will have an automated refund processed directly to the original payment source via Razorpay.
                   Your booking is scheduled for <strong className="font-extrabold">{getFormattedSchedule()}</strong>.
                 </p>
               </div>

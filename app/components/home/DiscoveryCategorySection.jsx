@@ -1,48 +1,171 @@
 'use client';
 
 import React, { useRef, useState, useEffect } from 'react';
-import { ChevronLeft, ChevronRight, Compass, Check, Coffee, AlertCircle, RefreshCw } from 'lucide-react';
+import { 
+  ChevronLeft, ChevronRight, Compass, Check, Coffee, AlertCircle, RefreshCw,
+  UtensilsCrossed, CakeSlice, Utensils, PartyPopper, Building2, Sun, Umbrella,
+  GlassWater, Cake, Heart, Briefcase, Sparkles, Camera, Footprints, Flame, Store
+} from 'lucide-react';
 import { motion } from 'framer-motion';
 
 /**
- * Grab2GO-compatible pastel backgrounds per category/occasion
+ * Professional curated icon and styling matching category theme
  */
-const getCategoryPastelStyle = (title = '', id = '') => {
+const getCategoryIconAndStyle = (title = '', id = '') => {
   const norm = (title || id || '').toLowerCase().trim();
+
   if (norm.includes('coffee') || norm.includes('cafe') || norm === 'cafes') {
-    return 'bg-[#FFF4D6] text-[#E50914] border-[#FEE2E2]'; // Soft Cream
+    return {
+      icon: Coffee,
+      bg: 'bg-gradient-to-br from-amber-50 to-orange-100/70',
+      text: 'text-amber-700',
+      border: 'border-amber-200/80',
+      shadow: 'shadow-amber-500/10'
+    };
   }
   if (norm.includes('restaurant')) {
-    return 'bg-[#FFF0E3] text-[#7A3E1D] border-[#FEE2E2]'; // Soft Peach
+    return {
+      icon: UtensilsCrossed,
+      bg: 'bg-gradient-to-br from-red-50 to-rose-100/70',
+      text: 'text-[#E50914]',
+      border: 'border-red-200/80',
+      shadow: 'shadow-red-500/10'
+    };
   }
-  if (norm.includes('bakery')) {
-    return 'bg-[#FFF5D9] text-[#705218] border-[#FEE2E2]'; // Soft Yellow
+  if (norm.includes('bakery') || norm.includes('pastry') || norm.includes('dessert')) {
+    return {
+      icon: CakeSlice,
+      bg: 'bg-gradient-to-br from-yellow-50 to-amber-100/70',
+      text: 'text-amber-600',
+      border: 'border-amber-200/80',
+      shadow: 'shadow-yellow-500/10'
+    };
+  }
+  if (norm.includes('bistro')) {
+    return {
+      icon: Utensils,
+      bg: 'bg-gradient-to-br from-orange-50 to-amber-100/70',
+      text: 'text-orange-700',
+      border: 'border-orange-200/80',
+      shadow: 'shadow-orange-500/10'
+    };
   }
   if (norm.includes('party') || norm.includes('hall')) {
-    return 'bg-[#F4E5FF] text-[#5C2B7A] border-[#FEE2E2]'; // Soft Lavender
+    return {
+      icon: PartyPopper,
+      bg: 'bg-gradient-to-br from-purple-50 to-pink-100/70',
+      text: 'text-purple-700',
+      border: 'border-purple-200/80',
+      shadow: 'shadow-purple-500/10'
+    };
   }
   if (norm.includes('event') || norm.includes('spaces')) {
-    return 'bg-[#E2F8EF] text-[#1B6645] border-[#FEE2E2]'; // Soft Mint
+    return {
+      icon: Building2,
+      bg: 'bg-gradient-to-br from-emerald-50 to-teal-100/70',
+      text: 'text-emerald-700',
+      border: 'border-emerald-200/80',
+      shadow: 'shadow-emerald-500/10'
+    };
+  }
+  if (norm.includes('rooftop')) {
+    return {
+      icon: Sun,
+      bg: 'bg-gradient-to-br from-sky-50 to-blue-100/70',
+      text: 'text-sky-700',
+      border: 'border-sky-200/80',
+      shadow: 'shadow-sky-500/10'
+    };
+  }
+  if (norm.includes('outdoor')) {
+    return {
+      icon: Umbrella,
+      bg: 'bg-gradient-to-br from-teal-50 to-emerald-100/70',
+      text: 'text-teal-700',
+      border: 'border-teal-200/80',
+      shadow: 'shadow-teal-500/10'
+    };
   }
   if (norm.includes('dining') || norm.includes('private')) {
-    return 'bg-[#F5EDE4] text-[#5C4033] border-[#FEE2E2]'; // Soft Beige
+    return {
+      icon: GlassWater,
+      bg: 'bg-gradient-to-br from-rose-50 to-pink-100/70',
+      text: 'text-rose-700',
+      border: 'border-rose-200/80',
+      shadow: 'shadow-rose-500/10'
+    };
   }
   if (norm.includes('birthday')) {
-    return 'bg-[#FFE4ED] text-[#8C234E] border-[#FEE2E2]'; // Soft Pink
+    return {
+      icon: Cake,
+      bg: 'bg-gradient-to-br from-pink-50 to-rose-100/70',
+      text: 'text-pink-700',
+      border: 'border-pink-200/80',
+      shadow: 'shadow-pink-500/10'
+    };
   }
-  if (norm.includes('engagement') || norm.includes('anniversary') || norm.includes('wedding')) {
-    return 'bg-[#FFE5EE] text-[#861B48] border-[#FEE2E2]'; // Soft Rose
+  if (norm.includes('engagement') || norm.includes('anniversary') || norm.includes('wedding') || norm.includes('couple')) {
+    return {
+      icon: Heart,
+      bg: 'bg-gradient-to-br from-red-50 to-pink-100/70',
+      text: 'text-red-600',
+      border: 'border-red-200/80',
+      shadow: 'shadow-red-500/10'
+    };
   }
   if (norm.includes('corporate') || norm.includes('meeting') || norm.includes('work')) {
-    return 'bg-[#E7EEFF] text-[#2B4C7E] border-[#FEE2E2]'; // Soft Blue
+    return {
+      icon: Briefcase,
+      bg: 'bg-gradient-to-br from-indigo-50 to-blue-100/70',
+      text: 'text-indigo-700',
+      border: 'border-indigo-200/80',
+      shadow: 'shadow-indigo-500/10'
+    };
   }
-  if (norm.includes('music') || norm.includes('live')) {
-    return 'bg-[#EEE5FF] text-[#4A2B7E] border-[#FEE2E2]'; // Soft Purple
+  if (norm.includes('photoshoot') || norm.includes('camera')) {
+    return {
+      icon: Camera,
+      bg: 'bg-gradient-to-br from-violet-50 to-purple-100/70',
+      text: 'text-violet-700',
+      border: 'border-violet-200/80',
+      shadow: 'shadow-violet-500/10'
+    };
+  }
+  if (norm.includes('walk')) {
+    return {
+      icon: Footprints,
+      bg: 'bg-gradient-to-br from-emerald-50 to-teal-100/70',
+      text: 'text-emerald-700',
+      border: 'border-emerald-200/80',
+      shadow: 'shadow-emerald-500/10'
+    };
+  }
+  if (norm.includes('discount') || norm.includes('offer')) {
+    return {
+      icon: Flame,
+      bg: 'bg-gradient-to-br from-red-50 to-amber-100/70',
+      text: 'text-[#E50914]',
+      border: 'border-red-200/80',
+      shadow: 'shadow-red-500/10'
+    };
   }
   if (norm.includes('all') || norm.includes('spaces')) {
-    return 'bg-[#F5EDE4] text-[#5A3215] border-[#FEE2E2]'; // Soft Brown
+    return {
+      icon: Store,
+      bg: 'bg-gradient-to-br from-stone-50 to-stone-100',
+      text: 'text-stone-700',
+      border: 'border-stone-200/80',
+      shadow: 'shadow-stone-500/10'
+    };
   }
-  return 'bg-[#FFF4D6] text-[#E50914] border-[#FEE2E2]';
+
+  return {
+    icon: Sparkles,
+    bg: 'bg-gradient-to-br from-amber-50 to-orange-100/70',
+    text: 'text-amber-700',
+    border: 'border-amber-200/80',
+    shadow: 'shadow-amber-500/10'
+  };
 };
 
 export default function DiscoveryCategorySection({
@@ -221,14 +344,12 @@ export default function DiscoveryCategorySection({
           }}
         >
           {items.map((item) => {
-            const Icon = item.icon || Coffee;
+            const iconMeta = getCategoryIconAndStyle(item.title, item.id);
+            const CuratedIcon = item.icon || iconMeta.icon;
             const isSelected = selectedId && (
               selectedId.toLowerCase().trim() === item.id.toLowerCase().trim() ||
               (item.slug && selectedId.toLowerCase().trim() === item.slug.toLowerCase().trim())
             );
-
-            const pastelStyle = getCategoryPastelStyle(item.title, item.id);
-            const hasValidImg = Boolean(item.image);
 
             return (
               <button
@@ -240,23 +361,21 @@ export default function DiscoveryCategorySection({
                 onClick={() => onSelect && onSelect(item.id)}
                 className="flex flex-col items-center shrink-0 group cursor-pointer w-[76px] sm:w-[98px] md:w-[118px] transition-all duration-200 snap-start outline-none"
               >
-                {/* Circular Image Container (96px desktop / 88px tablet / 64px mobile) */}
-                <div className={`relative w-[64px] h-[64px] sm:w-[84px] sm:h-[84px] md:w-[96px] md:h-[96px] rounded-full overflow-hidden flex items-center justify-center transition-all duration-200 ease-out group-hover:-translate-y-[3px] ${
+                {/* Circular Professional Icon Container (96px desktop / 84px tablet / 64px mobile) */}
+                <div className={`relative w-[64px] h-[64px] sm:w-[84px] sm:h-[84px] md:w-[96px] md:h-[96px] rounded-full flex items-center justify-center transition-all duration-300 ease-out group-hover:-translate-y-1 ${iconMeta.bg} ${iconMeta.border} border shadow-sm group-hover:shadow-md ${
                   isSelected
                     ? 'border-2 border-[#E50914] shadow-lg ring-4 ring-[#E50914]/20 scale-[1.04]'
-                    : 'border border-[#FEE2E2] shadow-[0_4px_12px_rgba(44,24,16,0.08)] group-hover:shadow-lg group-hover:border-[#E50914]/60'
+                    : 'group-hover:border-[#E50914]/50'
                 }`}>
-                  {hasValidImg ? (
-                    <img
-                      src={item.image}
-                      alt={item.title}
-                      className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+                  {/* Subtle inner ambient ring */}
+                  <div className="absolute inset-1.5 rounded-full border border-white/60 pointer-events-none" />
+
+                  {/* Curated Vector Icon */}
+                  <div className={`relative z-10 flex items-center justify-center transition-transform duration-300 group-hover:scale-110 ${iconMeta.text}`}>
+                    <CuratedIcon 
+                      className="w-7 h-7 sm:w-9 sm:h-9 md:w-10 md:h-10 stroke-[2.2] drop-shadow-2xs" 
                     />
-                  ) : (
-                    <div className={`w-full h-full flex items-center justify-center ${pastelStyle}`}>
-                      <Icon size={28} className="stroke-[2] text-[#5A3215]" />
-                    </div>
-                  )}
+                  </div>
 
                   {/* Top-Right Check Mark Badge when Selected */}
                   {isSelected && (
@@ -264,7 +383,7 @@ export default function DiscoveryCategorySection({
                       initial={{ scale: 0 }}
                       animate={{ scale: 1 }}
                       transition={{ type: 'spring', stiffness: 400, damping: 25 }}
-                      className="absolute top-0 right-0 w-5 h-5 rounded-full bg-[#5A3215] text-white flex items-center justify-center border-2 border-white shadow-xs z-10"
+                      className="absolute top-0 right-0 w-5 h-5 rounded-full bg-[#E50914] text-white flex items-center justify-center border-2 border-white shadow-xs z-10"
                     >
                       <Check size={11} strokeWidth={3} />
                     </motion.div>
@@ -273,7 +392,7 @@ export default function DiscoveryCategorySection({
 
                 {/* Category Name (14px–15px font weight 800) */}
                 <span className={`text-xs sm:text-sm md:text-[14px] font-extrabold mt-2.5 text-center leading-tight truncate max-w-full transition-colors ${
-                  isSelected ? 'text-[#5A3215]' : 'text-[#252525] group-hover:text-[#5A3215]'
+                  isSelected ? 'text-[#E50914]' : 'text-[#252525] group-hover:text-[#E50914]'
                 }`}>
                   {item.title}
                 </span>
@@ -281,7 +400,7 @@ export default function DiscoveryCategorySection({
                 {/* Venue Count */}
                 {item.count > 0 && (
                   <span className={`text-[11px] sm:text-xs font-bold mt-0.5 text-center truncate transition-colors ${
-                    isSelected ? 'text-[#5C4033]' : 'text-stone-400 group-hover:text-stone-600'
+                    isSelected ? 'text-[#E50914]/80' : 'text-stone-400 group-hover:text-stone-600'
                   }`}>
                     {item.count} {item.count === 1 ? 'Venue' : 'Venues'}
                   </span>

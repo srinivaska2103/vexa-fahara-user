@@ -1,13 +1,14 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { 
   House, 
   Store, 
   ClipboardList, 
-  Tags, 
+  Tags,
+  Gift, 
   HelpCircle,
   ArrowRight,
   Sparkles,
@@ -17,6 +18,7 @@ import {
   Check
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import HelpSupportModal from '@/app/components/common/HelpSupportModal';
 
 export default function FoodDashboardSidebar({ 
   activeTab = 'home', 
@@ -25,14 +27,12 @@ export default function FoodDashboardSidebar({
   onFilterFulfilmentChange = null
 }) {
   const pathname = usePathname();
+  const [isHelpModalOpen, setIsHelpModalOpen] = useState(false);
 
-  // Navigation Items (Removed 'favorites' and 'categories' as requested)
+  // Navigation Items (Orders is already in top desktop header)
   const navItems = [
     { id: 'home', label: 'Home', href: '/customer/food', icon: House },
-    { id: 'restaurants', label: 'Restaurants', href: '/customer/food?view=restaurants', icon: Store },
-    { id: 'orders', label: 'Orders', href: '/customer/orders', icon: ClipboardList },
-    { id: 'offers', label: 'Offers', href: '/customer/food?view=offers', icon: Tags },
-    { id: 'help', label: 'Help Center', href: '/contact', icon: HelpCircle },
+    { id: 'rewards', label: 'My Rewards', href: '/customer/rewards', icon: Gift },
   ];
 
   const fulfilmentFilters = [
@@ -43,7 +43,7 @@ export default function FoodDashboardSidebar({
   ];
 
   return (
-    <aside className="hidden lg:flex flex-col w-60 shrink-0 bg-white border-r border-[#EEEEEE] min-h-[calc(100vh-73px)] p-4 select-none sticky top-[73px]" suppressHydrationWarning>
+    <aside className="hidden md:flex flex-col w-60 shrink-0 bg-white border-r border-[#EEEEEE] h-[calc(100vh-72px)] p-4 select-none sticky top-[72px] overflow-y-auto scrollbar-none z-40 self-start" suppressHydrationWarning>
       
       {/* Navigation Links */}
       <div className="space-y-1">
@@ -55,17 +55,15 @@ export default function FoodDashboardSidebar({
           const Icon = item.icon;
           const isActive = 
             (item.id === 'home' && pathname === '/customer/food' && activeTab === 'home') ||
-            (item.id === 'restaurants' && (activeTab === 'restaurants' || pathname.startsWith('/customer/cafe/'))) ||
-            (item.id === 'offers' && activeTab === 'offers') ||
             (item.id === 'orders' && (pathname.startsWith('/customer/orders') || pathname === '/customer/checkout')) ||
-            (item.id === 'help' && pathname === '/contact');
+            (item.id === 'rewards' && (pathname.startsWith('/customer/rewards') || pathname.includes('tab=rewards')));
 
           return (
             <button
               key={item.id}
               onClick={() => {
-                if (onTabChange && ['home', 'restaurants', 'offers'].includes(item.id)) {
-                  onTabChange(item.id);
+                if (onTabChange && item.id === 'home') {
+                  onTabChange('home');
                 } else if (typeof window !== 'undefined') {
                   window.location.href = item.href;
                 }
@@ -162,6 +160,12 @@ export default function FoodDashboardSidebar({
           <ArrowRight size={12} />
         </Link>
       </div>
+
+      {/* Help & Support Modal */}
+      <HelpSupportModal 
+        isOpen={isHelpModalOpen} 
+        onClose={() => setIsHelpModalOpen(false)} 
+      />
 
     </aside>
   );

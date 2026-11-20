@@ -22,7 +22,21 @@ export default function LoginPage() {
 
   useEffect(() => {
     if (isHydrated && isAuthenticated) {
-      router.push('/customer/cafe');
+      let targetUrl = '/customer/cafe';
+      if (typeof window !== 'undefined') {
+        const urlParams = new URLSearchParams(window.location.search);
+        const redirectParam = urlParams.get('redirect') || urlParams.get('returnUrl');
+        if (redirectParam && redirectParam.startsWith('/')) {
+          targetUrl = redirectParam;
+        } else {
+          const stored = sessionStorage.getItem('post_login_redirect');
+          if (stored && stored.startsWith('/')) {
+            targetUrl = stored;
+            sessionStorage.removeItem('post_login_redirect');
+          }
+        }
+      }
+      router.push(targetUrl);
     }
   }, [isHydrated, isAuthenticated, router]);
 
@@ -168,13 +182,13 @@ export default function LoginPage() {
               </Link>
             </div>
 
-            {/* Prominent Primary Pill Button (Matching Reference Image 1) */}
+            {/* Prominent Primary Pill Button */}
             <div className="pt-4">
               <button
                 type="submit"
                 disabled={isPending}
                 suppressHydrationWarning
-                className="w-full py-3.5 px-6 rounded-2xl bg-gradient-to-r from-[#E50914] via-[#825C40] to-[#B71C1C] text-white text-sm font-extrabold tracking-wide shadow-[0_10px_25px_-5px_rgba(111,78,55,0.4)] active:scale-[0.98] transition-all flex items-center justify-center disabled:opacity-70 hover:brightness-105 cursor-pointer"
+                className="w-full py-3.5 px-6 rounded-2xl bg-gradient-to-r from-[#B71C1C] via-[#E50914] to-[#B71C1C] text-white text-sm font-extrabold tracking-wide shadow-[0_10px_25px_-5px_rgba(229,9,20,0.35)] active:scale-[0.98] transition-all flex items-center justify-center disabled:opacity-70 hover:brightness-105 cursor-pointer"
               >
                 {isPending ? (
                   <Loader2 className="animate-spin mr-2" size={16} />
@@ -212,7 +226,7 @@ export default function LoginPage() {
                 Email
               </label>
               <div className="relative group">
-                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[#E50914] group-focus-within:text-[#4A2614] transition-colors z-10">
+                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[#E50914] group-focus-within:text-[#B71C1C] transition-colors z-10">
                   <Mail size={20} strokeWidth={2.2} />
                 </div>
                 <input
@@ -240,7 +254,7 @@ export default function LoginPage() {
                 Password
               </label>
               <div className="relative group">
-                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[#E50914] group-focus-within:text-[#4A2614] transition-colors z-10">
+                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[#E50914] group-focus-within:text-[#B71C1C] transition-colors z-10">
                   <Lock size={20} strokeWidth={2.2} />
                 </div>
                 <input
@@ -258,7 +272,7 @@ export default function LoginPage() {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-[#E50914] hover:text-[#4A2614] transition-colors focus:outline-none z-10"
+                  className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-[#E50914] hover:text-[#B71C1C] transition-colors focus:outline-none z-10"
                   tabIndex={-1}
                   title={showPassword ? 'Hide password' : 'Show password'}
                 >
@@ -315,7 +329,7 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={isPending}
-              className="w-full mt-8 bg-gradient-to-r from-[#4A2614] to-[#B06D44] text-white py-4 rounded-full hover:shadow-[0_10px_25px_-5px_rgba(176,109,68,0.4)] hover:-translate-y-0.5 transition-all duration-300 flex items-center justify-center font-extrabold text-[17px] tracking-wide disabled:opacity-70 disabled:hover:translate-y-0 disabled:hover:shadow-none relative group overflow-hidden"
+              className="w-full mt-8 bg-gradient-to-r from-[#B71C1C] via-[#E50914] to-[#B71C1C] text-white py-4 rounded-full hover:shadow-[0_10px_25px_-5px_rgba(229,9,20,0.4)] hover:-translate-y-0.5 transition-all duration-300 flex items-center justify-center font-extrabold text-[17px] tracking-wide disabled:opacity-70 disabled:hover:translate-y-0 disabled:hover:shadow-none relative group overflow-hidden cursor-pointer"
             >
               <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out"></div>
               <span className="relative flex items-center justify-center">

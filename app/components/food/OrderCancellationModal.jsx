@@ -7,7 +7,7 @@ import {
   ShieldCheck, 
   RotateCcw, 
   Store, 
-  Receipt, 
+  IndianRupee, 
   CreditCard,
   ChevronRight,
   Info
@@ -92,7 +92,7 @@ export default function OrderCancellationModal({
 
               <div className="flex justify-between items-center text-[#1E1E1E] pb-2 border-b border-red-200/60 font-bold">
                 <span className="flex items-center gap-1.5 text-stone-600">
-                  <Receipt className="w-4 h-4 text-[#ED0014]" />
+                  <IndianRupee className="w-4 h-4 text-[#ED0014]" />
                   Order Amount:
                 </span>
                 <span className="font-black">₹{Number(order.total_amount).toFixed(2)}</span>
@@ -122,13 +122,13 @@ export default function OrderCancellationModal({
             <div className="flex items-start gap-2.5 p-3 rounded-2xl bg-amber-50 border border-amber-200 text-amber-900 text-xs">
               <Info className="w-4 h-4 text-amber-700 shrink-0 mt-0.5" />
               <div className="space-y-0.5 leading-relaxed">
-                <span className="font-black block">10-Minute Cancellation Policy</span>
+                <span className="font-black block">Refund &amp; Cancellation Policy</span>
                 <p className="text-[11px] text-amber-800">
-                  {policy?.isWithin10Minutes
-                    ? `You are within the 10-minute cancellation window (${policy.minutesLeft} min remaining). Your cancellation is guaranteed and full automated refund will be initiated.`
+                  {policy?.isWithin5Minutes
+                    ? `You are within the initial cancellation window (${policy.minutesLeft} min remaining). Your cancellation is guaranteed and an automatic gateway refund of ₹${expectedRefund} will be initiated.`
                     : isDirect
                       ? 'Your order will be cancelled instantly and an automated gateway refund will be initiated to your original payment method.'
-                      : 'The initial 10-minute cancellation window has elapsed and the restaurant is preparing your food. Submitting this request sends it for immediate restaurant approval.'}
+                      : 'Submitting this refund request notifies the restaurant owner. Once approved, the gateway refund will be automatically credited to your original payment method.'}
                 </p>
               </div>
             </div>
@@ -136,7 +136,7 @@ export default function OrderCancellationModal({
             {/* Reason Selector */}
             <div className="space-y-2">
               <label className="text-xs font-black text-[#1E1E1E] block uppercase tracking-wider">
-                Select Reason for Cancellation <span className="text-[#ED0014]">*</span>
+                Select Reason for Refund / Cancellation <span className="text-[#ED0014]">*</span>
               </label>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                 {CANCELLATION_REASONS.map((reason) => (

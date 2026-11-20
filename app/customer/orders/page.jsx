@@ -28,17 +28,22 @@ export default function CustomerOrdersListPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [selectedFilter, setSelectedFilter] = useState('ALL'); // ALL, ACTIVE, COMPLETED, CANCELLED
 
-  const fetchOrders = async () => {
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
+  const fetchOrders = async (isManual = false) => {
     try {
-      setIsLoading(true);
+      if (isManual) setIsRefreshing(true);
+      else setIsLoading(true);
       const res = await api.get('/customer/orders');
       if (res.data?.success) {
         setOrders(res.data.data);
+        if (isManual) toast.success('Orders refreshed');
       }
     } catch (err) {
       toast.error('Failed to load your orders');
     } finally {
       setIsLoading(false);
+      setIsRefreshing(false);
     }
   };
 
@@ -89,9 +94,11 @@ export default function CustomerOrdersListPage() {
 
   return (
     <div className="min-h-screen bg-white font-sans antialiased text-[#252525]">
-      <FoodDashboardHeader />
+      <div className="sticky top-0 z-50">
+        <FoodDashboardHeader />
+      </div>
 
-      <div className="max-w-[1600px] mx-auto flex">
+      <div className="max-w-[1600px] mx-auto flex items-start">
         <FoodDashboardSidebar activeTab="orders" />
 
         <main className="flex-1 min-w-0 p-4 sm:p-6 lg:p-8 space-y-6 pb-32">
@@ -106,10 +113,12 @@ export default function CustomerOrdersListPage() {
             </div>
 
             <button
-              onClick={fetchOrders}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-stone-200 bg-white hover:bg-stone-50 text-xs font-bold text-[#252525] cursor-pointer"
+              onClick={() => fetchOrders(true)}
+              disabled={isRefreshing}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-stone-200 bg-white hover:bg-stone-50 text-xs font-bold text-[#252525] cursor-pointer transition-all disabled:opacity-60"
             >
-              <RefreshCw className="w-3.5 h-3.5 text-[#E53935]" /> Refresh
+              <RefreshCw className={`w-3.5 h-3.5 text-[#E53935] ${isRefreshing ? 'animate-spin' : ''}`} /> 
+              <span>{isRefreshing ? 'Refreshing...' : 'Refresh'}</span>
             </button>
           </div>
 

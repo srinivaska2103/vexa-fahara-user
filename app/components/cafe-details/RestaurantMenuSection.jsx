@@ -23,6 +23,7 @@ import { useCartStore } from '@/stores/cart.store';
 import { useAuthStore } from '@/stores/auth.store';
 import { toast } from 'react-hot-toast';
 import Link from 'next/link';
+import AuthRequiredModal from '@/app/components/auth/AuthRequiredModal';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api/v1';
 
@@ -32,6 +33,7 @@ export default function RestaurantMenuSection({ cafeId, cafeName, isOrderingAvai
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedItemDetail, setSelectedItemDetail] = useState(null);
   const [conflictModal, setConflictModal] = useState(null);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 
   const user = useAuthStore((state) => state.user);
   const { cart, addItem, updateQuantity, removeItem } = useCartStore();
@@ -98,7 +100,7 @@ export default function RestaurantMenuSection({ cafeId, cafeName, isOrderingAvai
       return;
     }
     if (!user) {
-      toast.error('Please log in to add items to your cart');
+      setIsAuthModalOpen(true);
       return;
     }
 
@@ -166,11 +168,115 @@ export default function RestaurantMenuSection({ cafeId, cafeName, isOrderingAvai
               <span className="text-[11px] font-black text-[#E50914] block leading-none">
                 {activeOffers.length} Active {activeOffers.length === 1 ? 'Special Offer' : 'Special Offers'}
               </span>
-              <span className="text-[9px] text-[#757575] font-bold">Discounts applied directly at checkout</span>
+              <span className="text-[9px] text-[#757575] font-bold">Discounts &amp; rewards applied directly at checkout</span>
             </div>
           </div>
         )}
       </div>
+
+      {/* ── COMBO DEALS BANNER SECTION (IF ANY COMBO OFFERS EXIST) ── */}
+      {activeOffers.filter(o => o.offer_category === 'COMBO').length > 0 && (
+        <div className="p-4 sm:p-5 rounded-3xl bg-gradient-to-r from-emerald-500 via-teal-600 to-emerald-700 text-white shadow-lg space-y-3">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Sparkles className="w-5 h-5 text-amber-300" />
+              <h3 className="text-sm sm:text-base font-black tracking-tight uppercase">
+                Chef's Special Combo Deals
+              </h3>
+            </div>
+            <span className="text-[10px] font-black uppercase px-2.5 py-1 bg-white/20 rounded-full border border-white/20">
+              Special Bundles
+            </span>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+            {activeOffers.filter(o => o.offer_category === 'COMBO').map((combo) => {
+              let compDetails = [];
+              try {
+                if (combo.terms_and_conditions && typeof combo.terms_and_conditions === 'string' && combo.terms_and_conditions.startsWith('{')) {
+                  const parsed = JSON.parse(combo.terms_and_conditions);
+                  if (Array.isArray(parsed.components)) {
+                    compDetails = parsed.components;
+                  }
+                }
+              } catch (e) {}
+
+              // Gather names of included items from categories
+              const allMenuItems = categories.flatMap(c => c.items || []);
+              const compItems = compDetails.map(c => {
+                const it = allMenuItems.find(i => i.id === c.itemId);
+                return {
+                  name: it?.name || 'Combo Item',
+                  quantity: c.quantity || 1,
+                  item: it
+                };
+              });
+
+              return (
+                <div key={combo.id} className="bg-white/10 backdrop-blur-md rounded-2xl p-3.5 border border-white/20 flex flex-col justify-between space-y-2.5">
+                  <div>
+                    <div className="flex items-start justify-between gap-2">
+                      <h4 className="text-xs sm:text-sm font-black text-white">{combo.title}</h4>
+                      <div className="text-right shrink-0">
+                        <span className="text-sm sm:text-base font-black text-amber-300">
+                          ₹{Number(combo.combo_price || 0).toFixed(0)}
+                        </span>
+                        {combo.discount_value > 0 && (
+                          <span className="text-[9px] block text-emerald-200 font-bold">
+                            Save ₹{Number(combo.discount_value).toFixed(0)}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                    {compItems.length > 0 && (
+                      <div className="flex flex-wrap gap-1 mt-1.5">
+                        {compItems.map((ci, idx) => (
+                          <span key={idx} className="text-[10px] font-bold bg-white/20 px-2 py-0.5 rounded-md">
+                            {ci.quantity}x {ci.name}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      if (!isOrderingAvailable) {
+                        toast.error(availabilityReason || 'Restaurant is closed for ordering.');
+                        return;
+                      }
+                      if (!user) {
+                        setIsAuthModalOpen(true);
+                        return;
+                      }
+                      try {
+                        // Add combo component items to cart
+                        for (const comp of compItems) {
+                          if (comp.item) {
+                            await addItem({
+                              cafeId,
+                              menuItemId: comp.item.id,
+                              quantity: comp.quantity || 1
+                            });
+                          }
+                        }
+                        toast.success(`Added ${combo.title} to your cart!`);
+                      } catch (err) {
+                        toast.error('Could not add combo to cart');
+                      }
+                    }}
+                    className="w-full py-2 rounded-xl bg-white hover:bg-amber-100 text-emerald-900 font-black text-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-sm"
+                  >
+                    <Plus className="w-3.5 h-3.5" />
+                    <span>Add Combo Meal</span>
+                  </button>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
 
       {/* ── FILTERS & SEARCH BAR ── */}
       <div className="space-y-3">
@@ -472,6 +578,15 @@ export default function RestaurantMenuSection({ cafeId, cafeName, isOrderingAvai
           </div>
         </div>
       )}
+
+      {/* ── AUTHENTICATION REQUIRED MODAL ── */}
+      <AuthRequiredModal
+        isOpen={isAuthModalOpen}
+        onClose={() => setIsAuthModalOpen(false)}
+        title="Login to Order Food"
+        subtitle="Sign in or create an account to add dishes to your cart and proceed with checkout."
+        actionType="food"
+      />
 
     </div>
   );

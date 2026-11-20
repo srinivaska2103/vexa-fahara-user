@@ -60,7 +60,24 @@ export const useLogin = () => {
       // Set cookie for Next.js middleware with 7 day max-age
       document.cookie = `accessToken=${data.accessToken}; path=/; max-age=604800; SameSite=Lax`;
       toast.success('Login successful');
-      router.push('/customer/cafe');
+
+      // Check for redirect query param or stored return url
+      let targetUrl = '/customer/cafe';
+      if (typeof window !== 'undefined') {
+        const urlParams = new URLSearchParams(window.location.search);
+        const redirectParam = urlParams.get('redirect') || urlParams.get('returnUrl');
+        if (redirectParam && redirectParam.startsWith('/')) {
+          targetUrl = redirectParam;
+        } else {
+          const stored = sessionStorage.getItem('post_login_redirect');
+          if (stored && stored.startsWith('/')) {
+            targetUrl = stored;
+            sessionStorage.removeItem('post_login_redirect');
+          }
+        }
+      }
+
+      router.push(targetUrl);
     },
     onError: (error) => {
       toast.error(error.response?.data?.message || "You don't have permission to login in this portal");

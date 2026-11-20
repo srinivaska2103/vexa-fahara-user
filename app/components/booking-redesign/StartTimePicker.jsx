@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useRef, useId } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Clock, CheckCircle2, AlertCircle, RefreshCw, Calendar, X, ChevronUp, ChevronDown } from 'lucide-react';
+import { Clock, CheckCircle2, AlertCircle, X, ChevronUp, ChevronDown, Sparkles } from 'lucide-react';
 import { checkIfTimeWithinBusinessHours } from '@/lib/utils';
 import toast from 'react-hot-toast';
 
 // ----------------------------------------------------------------------
-// Rolling Drum Wheel Column Sub-Component
+// Rolling Drum Wheel Column Sub-Component (Theme-Based Red & White)
 // ----------------------------------------------------------------------
 const DrumWheelColumn = ({ items, selectedValue, onSelect, label, formatDisplay, isDisabled }) => {
   const containerRef = useRef(null);
@@ -58,21 +58,21 @@ const DrumWheelColumn = ({ items, selectedValue, onSelect, label, formatDisplay,
 
   return (
     <div className="flex-1 flex flex-col items-center min-w-0">
-      <span className="text-[10px] font-black uppercase text-[#7A706A] tracking-wider mb-2 select-none">
+      <span className="text-[10px] font-black uppercase text-stone-400 tracking-wider mb-1.5 select-none">
         {label}
       </span>
       <div 
         tabIndex={0}
         onKeyDown={handleKeyDown}
         aria-label={`Select ${label}`}
-        className="relative h-[176px] w-full bg-white rounded-2xl border border-[#E8DED3] shadow-2xs overflow-hidden select-none outline-none focus:ring-2 focus:ring-[#E50914]/30"
+        className="relative h-[176px] w-full bg-white rounded-2xl border border-stone-200 shadow-2xs overflow-hidden select-none outline-none focus:ring-2 focus:ring-[#E50914]/30"
       >
-        {/* Top & Bottom 3D Gradient Fades */}
+        {/* Top & Bottom Gradient Fades */}
         <div className="absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-white via-white/80 to-transparent z-10 pointer-events-none" />
         <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-white via-white/80 to-transparent z-10 pointer-events-none" />
 
-        {/* Center Active Selection Window Highlight */}
-        <div className="absolute inset-x-1.5 top-[66px] h-[44px] bg-[#E8DED3]/60 rounded-xl border border-[#EF5350]/70 pointer-events-none z-0 shadow-2xs" />
+        {/* Center Active Selection Window Highlight (Theme-Based Red Border) */}
+        <div className="absolute inset-x-1.5 top-[66px] h-[44px] bg-[#FFF5F5] rounded-xl border border-[#E50914] pointer-events-none z-0 shadow-2xs" />
 
         {/* Wheel Container */}
         <div
@@ -92,8 +92,8 @@ const DrumWheelColumn = ({ items, selectedValue, onSelect, label, formatDisplay,
                   disabled
                     ? 'text-stone-300 line-through opacity-30 cursor-not-allowed'
                     : isSelected
-                    ? 'text-[#2D2420] text-base sm:text-lg font-black scale-110'
-                    : 'text-[#7A706A] opacity-40 text-xs sm:text-sm hover:opacity-80 scale-95'
+                    ? 'text-[#E50914] text-base sm:text-lg font-black scale-110'
+                    : 'text-stone-500 opacity-40 text-xs sm:text-sm hover:opacity-80 scale-95'
                 }`}
               >
                 {formatDisplay ? formatDisplay(item) : item}
@@ -107,7 +107,7 @@ const DrumWheelColumn = ({ items, selectedValue, onSelect, label, formatDisplay,
 };
 
 // ----------------------------------------------------------------------
-// Main StartTimePicker Component
+// Main StartTimePicker Component (Modern Popup Modal + Theme Colors)
 // ----------------------------------------------------------------------
 export default function StartTimePicker({
   value = '12:00',
@@ -117,6 +117,9 @@ export default function StartTimePicker({
   label = 'Start Time',
   isLoading = false,
   onClose,
+  durationHours = 0,
+  selectedEventCompany = null,
+  blockedBlocks = [],
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const [validationError, setValidationError] = useState('');
@@ -147,8 +150,55 @@ export default function StartTimePicker({
     return `${h.toString().padStart(2, '0')}:${mStr}`;
   };
 
+  // Helper: Compute end time 24h string given start 24h and duration in hours
+  const computeEndTime24 = (start24, duration) => {
+    if (!start24) return '13:00';
+    const dur = Number(duration || 0);
+    if (dur <= 0) return start24;
+    const [h, m] = start24.split(':').map(Number);
+    const totalMinutes = (h || 0) * 60 + (m || 0) + Math.round(dur * 60);
+    const endH = Math.floor(totalMinutes / 60) % 24;
+    const endM = Math.floor(totalMinutes % 60);
+    return `${String(endH).padStart(2, '0')}:${String(endM).padStart(2, '0')}`;
+  };
+
+  // Helper: Format 24h string to 12h display string
+  const format24to12 = (time24) => {
+    if (!time24) return '';
+    const [hStr, mStr] = time24.split(':');
+    let h = parseInt(hStr || '12', 10);
+    const mode = h >= 12 ? 'PM' : 'AM';
+    h = h % 12;
+    if (h === 0) h = 12;
+    return `${h.toString().padStart(2, '0')}:${mStr || '00'} ${mode}`;
+  };
+
   // Display 12h text e.g. "12:00 PM"
   const formattedDisplay = `${hour}:${min} ${ampm}`;
+
+  // Calculated End Time display if duration is active
+  const calculatedEndTime12 = durationHours > 0
+    ? format24to12(computeEndTime24(formatTo24h(hour, min, ampm), durationHours))
+    : null;
+
+  // Check if a time interval [start24, end24] overlaps with any blocked block
+  const checkBlockConflict = (start24, end24) => {
+    if (!selectedDate || !start24 || !end24 || !blockedBlocks?.length) return null;
+    try {
+      const [bY, bM, bD] = selectedDate.split('-');
+      const [sH, sMin] = start24.split(':');
+      const [eH, eMin] = end24.split(':');
+      const startReq = new Date(Date.UTC(parseInt(bY, 10), parseInt(bM, 10) - 1, parseInt(bD, 10), parseInt(sH, 10), parseInt(sMin, 10), 0));
+      const endReq = new Date(Date.UTC(parseInt(bY, 10), parseInt(bM, 10) - 1, parseInt(bD, 10), parseInt(eH, 10), parseInt(eMin, 10), 0));
+      return blockedBlocks.find((b) => {
+        const bStart = new Date(b.start_at || b.startAt);
+        const bEnd = new Date(b.end_at || b.endAt);
+        return startReq < bEnd && endReq > bStart;
+      });
+    } catch {
+      return null;
+    }
+  };
 
   // Update time Handler
   const handleUpdate = (newHour, newMin, newAmpm) => {
@@ -159,7 +209,7 @@ export default function StartTimePicker({
     }
   };
 
-  // Keyboard Escape listener
+  // Close on Escape
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === 'Escape' && isOpen) {
@@ -171,7 +221,7 @@ export default function StartTimePicker({
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isOpen, onClose]);
 
-  // Generate Quick Slots based on business hours
+  // Generate Quick Slots based on business hours and package duration
   const generateQuickSlots = () => {
     const defaultSlots = [
       { label: '10:00 AM', h: '10', m: '00', mode: 'AM' },
@@ -184,7 +234,6 @@ export default function StartTimePicker({
 
     if (!cafe || !selectedDate) return defaultSlots;
 
-    // Check operating hours
     const dateObj = new Date(selectedDate);
     const days = ['SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY'];
     const dayName = days[dateObj.getDay()];
@@ -196,8 +245,11 @@ export default function StartTimePicker({
 
     return defaultSlots.filter((slot) => {
       const time24 = formatTo24h(slot.h, slot.m, slot.mode);
-      const validation = checkIfTimeWithinBusinessHours(cafe, selectedDate, time24, time24);
-      return validation.isValid;
+      const calculatedEnd = durationHours > 0 ? computeEndTime24(time24, durationHours) : time24;
+      const validation = checkIfTimeWithinBusinessHours(cafe, selectedDate, time24, calculatedEnd, selectedEventCompany);
+      if (!validation.isValid) return false;
+      const conflict = checkBlockConflict(time24, calculatedEnd);
+      return !conflict;
     });
   };
 
@@ -206,28 +258,56 @@ export default function StartTimePicker({
   const minutesList = ['00', '15', '30', '45'];
   const ampmList = ['AM', 'PM'];
 
+  // Current live validation status for the selected time
+  const currentValidation = (() => {
+    const time24 = formatTo24h(hour, min, ampm);
+    const calculatedEnd = durationHours > 0 ? computeEndTime24(time24, durationHours) : time24;
+    return checkIfTimeWithinBusinessHours(cafe, selectedDate, time24, calculatedEnd, selectedEventCompany);
+  })();
+
+  const currentConflict = (() => {
+    const time24 = formatTo24h(hour, min, ampm);
+    const calculatedEnd = durationHours > 0 ? computeEndTime24(time24, durationHours) : time24;
+    return checkBlockConflict(time24, calculatedEnd);
+  })();
+
   // Handle Confirm Click
   const handleConfirm = () => {
     const time24 = formatTo24h(hour, min, ampm);
-    const validation = checkIfTimeWithinBusinessHours(cafe, selectedDate, time24, time24);
+    const calculatedEnd = durationHours > 0 ? computeEndTime24(time24, durationHours) : time24;
+    const validation = checkIfTimeWithinBusinessHours(cafe, selectedDate, time24, calculatedEnd, selectedEventCompany);
 
     if (cafe && selectedDate && !validation.isValid) {
-      setValidationError(validation.message || 'The selected time is outside operating hours.');
-      toast.error('The selected time slot is not available.', {
-        style: { borderRadius: '12px', background: '#2D2420', color: '#fff' },
+      const errMsg = durationHours > 0
+        ? `This event package is ${durationHours} hour(s). Ending at ${format24to12(calculatedEnd)} is outside operating hours (${validation.openTimeFormatted} - ${validation.closeTimeFormatted}).`
+        : (validation.message || 'The selected time is outside operating hours.');
+      setValidationError(errMsg);
+      toast.error(errMsg, {
+        style: { borderRadius: '12px', background: '#252525', color: '#fff' },
+      });
+      return;
+    }
+
+    const blockConflict = checkBlockConflict(time24, calculatedEnd);
+    if (blockConflict) {
+      const errMsg = `This ${durationHours > 0 ? `${durationHours}-hour ` : ''}time slot conflicts with a scheduled venue block (${blockConflict.reason || 'Reserved'}). Please choose another time.`;
+      setValidationError(errMsg);
+      toast.error(errMsg, {
+        style: { borderRadius: '12px', background: '#252525', color: '#fff' },
       });
       return;
     }
 
     setValidationError('');
     setIsOpen(false);
-    toast.success(`Start time confirmed: ${formattedDisplay}`, {
+    const endDisplay = durationHours > 0 ? ` (Ends at ${format24to12(calculatedEnd)})` : '';
+    toast.success(`Time confirmed: ${formattedDisplay}${endDisplay}`, {
       style: { borderRadius: '12px', background: '#E50914', color: '#fff' },
     });
     if (onClose) onClose();
   };
 
-  // Up/Down adjustments for mobile compact picker
+  // Up/Down adjustments
   const stepHour = (delta) => {
     let currentH = parseInt(hour, 10);
     let nextH = currentH + delta;
@@ -244,278 +324,225 @@ export default function StartTimePicker({
     handleUpdate(hour, mins[nextIdx], ampm);
   };
 
-  const toggleAmpm = () => {
-    handleUpdate(hour, min, ampm === 'AM' ? 'PM' : 'AM');
-  };
-
   return (
     <div className="w-full font-sans relative" id={pickerId}>
       {/* ------------------------------------------------------------------ */}
-      {/* MOBILE COMPACT NATIVE 3-COLUMN TIME PICKER (Modern & Responsive)   */}
+      {/* MODERN THEME TRIGGER BUTTON (Compact, clean, responsive)           */}
       {/* ------------------------------------------------------------------ */}
-      <div className="md:hidden w-full bg-gradient-to-b from-white to-[#FDFBF9] border border-[#FEE2E2] rounded-[22px] p-3.5 shadow-[0_2px_10px_rgba(44,24,16,0.04)] transition-all">
-        {/* Label and Current Value Header */}
-        <div className="flex items-center justify-between text-[11px] font-bold text-stone-500 px-1 mb-2.5">
-          <span className="uppercase tracking-wider font-extrabold text-stone-400">{label}</span>
-          <span className="text-[#E50914] font-black tracking-tight bg-[#FFF5F5] border border-[#EF5350]/60 px-2.5 py-0.5 rounded-full shadow-2xs">
-            {formattedDisplay}
-          </span>
-        </div>
-
-        {/* 3 Adjacent Interactive Columns */}
-        <div className="flex items-center justify-between gap-1.5 xs:gap-2">
-          {/* Column 1: Hours (08 h) */}
-          <div className="flex-1 min-w-0 bg-[#FAF7F2] hover:bg-[#FFF5F5] border border-[#FEE2E2] focus-within:border-[#EF5350] rounded-2xl p-1.5 flex flex-col items-center justify-between h-[96px] shadow-2xs transition-colors">
-            <motion.button
-              whileTap={{ scale: 0.85 }}
-              type="button"
-              onClick={() => stepHour(1)}
-              aria-label="Increase hour"
-              className="w-full py-1 text-stone-400 hover:text-[#E50914] active:text-[#E50914] flex items-center justify-center cursor-pointer transition-colors"
-            >
-              <ChevronUp size={18} strokeWidth={2.4} />
-            </motion.button>
-            <span className="text-base sm:text-lg font-black text-[#252525] tracking-tight select-none">
-              {hour}<span className="text-xs font-semibold text-stone-400 ml-0.5">h</span>
+      <button
+        type="button"
+        onClick={() => setIsOpen(true)}
+        aria-expanded={isOpen}
+        className="w-full flex items-center justify-between bg-stone-50/90 hover:bg-white border border-stone-200/90 hover:border-[#EF5350] rounded-2xl px-3.5 sm:px-4 h-[46px] sm:h-[50px] transition-all shadow-2xs hover:shadow-xs cursor-pointer group text-left"
+      >
+        <div className="flex items-center gap-2.5 min-w-0">
+          <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-[#FFF5F5] border border-[#FEE2E2] flex items-center justify-center text-[#E50914] shrink-0 group-hover:scale-105 transition-transform">
+            <Clock size={15} />
+          </div>
+          <div className="flex flex-col min-w-0">
+            <span className="text-[10px] font-black uppercase text-stone-400 tracking-wider truncate">
+              {label}
             </span>
-            <motion.button
-              whileTap={{ scale: 0.85 }}
-              type="button"
-              onClick={() => stepHour(-1)}
-              aria-label="Decrease hour"
-              className="w-full py-1 text-stone-400 hover:text-[#E50914] active:text-[#E50914] flex items-center justify-center cursor-pointer transition-colors"
-            >
-              <ChevronDown size={18} strokeWidth={2.4} />
-            </motion.button>
-          </div>
-
-          {/* Separator Colon */}
-          <span className="text-base font-black text-stone-300 select-none pb-0.5 shrink-0">:</span>
-
-          {/* Column 2: Minutes (10 m) */}
-          <div className="flex-1 min-w-0 bg-[#FAF7F2] hover:bg-[#FFF5F5] border border-[#FEE2E2] focus-within:border-[#EF5350] rounded-2xl p-1.5 flex flex-col items-center justify-between h-[96px] shadow-2xs transition-colors">
-            <motion.button
-              whileTap={{ scale: 0.85 }}
-              type="button"
-              onClick={() => stepMin(1)}
-              aria-label="Increase minute"
-              className="w-full py-1 text-stone-400 hover:text-[#E50914] active:text-[#E50914] flex items-center justify-center cursor-pointer transition-colors"
-            >
-              <ChevronUp size={18} strokeWidth={2.4} />
-            </motion.button>
-            <span className="text-base sm:text-lg font-black text-[#252525] tracking-tight select-none">
-              {min}<span className="text-xs font-semibold text-stone-400 ml-0.5">m</span>
-            </span>
-            <motion.button
-              whileTap={{ scale: 0.85 }}
-              type="button"
-              onClick={() => stepMin(-1)}
-              aria-label="Decrease minute"
-              className="w-full py-1 text-stone-400 hover:text-[#E50914] active:text-[#E50914] flex items-center justify-center cursor-pointer transition-colors"
-            >
-              <ChevronDown size={18} strokeWidth={2.4} />
-            </motion.button>
-          </div>
-
-          {/* Column 3: AM / PM Period Selector */}
-          <div className="w-[68px] xs:w-[74px] shrink-0 bg-[#FAF7F2] border border-[#FEE2E2] rounded-2xl p-1 flex flex-col items-center justify-center h-[96px] gap-1 shadow-2xs">
-            <motion.button
-              whileTap={{ scale: 0.92 }}
-              type="button"
-              onClick={() => handleUpdate(hour, min, 'AM')}
-              className={`w-full py-2 rounded-xl text-xs font-black transition-all cursor-pointer ${
-                ampm === 'AM'
-                  ? 'bg-white text-[#E50914] shadow-sm border border-[#EF5350]/70 font-black'
-                  : 'text-stone-400 hover:text-stone-600'
-              }`}
-            >
-              AM
-            </motion.button>
-            <motion.button
-              whileTap={{ scale: 0.92 }}
-              type="button"
-              onClick={() => handleUpdate(hour, min, 'PM')}
-              className={`w-full py-2 rounded-xl text-xs font-black transition-all cursor-pointer ${
-                ampm === 'PM'
-                  ? 'bg-white text-[#E50914] shadow-sm border border-[#EF5350]/70 font-black'
-                  : 'text-stone-400 hover:text-stone-600'
-              }`}
-            >
-              PM
-            </motion.button>
-          </div>
-        </div>
-      </div>
-
-      {/* ------------------------------------------------------------------ */}
-      {/* DESKTOP SELECTED TIME DISPLAY BAR (Clean & Modern)                 */}
-      {/* ------------------------------------------------------------------ */}
-      <div className="hidden md:flex w-full bg-stone-50/90 border border-stone-200/90 rounded-2xl px-4 py-2.5 items-center justify-between shadow-2xs transition-all hover:bg-white hover:border-[#E50914]/30">
-        {/* Selected Time Badge */}
-        <div className="flex items-center gap-2.5">
-          <Clock size={16} className="text-[#E50914] shrink-0" />
-          <div className="flex flex-col">
-            <span className="text-[10px] font-bold text-stone-400 uppercase tracking-wider">{label}</span>
-            <span className="font-black text-sm sm:text-base text-[#252525] tracking-tight">{formattedDisplay}</span>
+            <div className="flex items-center gap-1.5">
+              <span className="text-xs sm:text-sm font-black text-[#252525] truncate">
+                {formattedDisplay}
+              </span>
+              {durationHours > 0 && (
+                <span className="text-[10px] font-black text-[#E50914] bg-[#FFF5F5] px-1.5 py-0.2 rounded border border-[#FEE2E2] shrink-0">
+                  {durationHours}h
+                </span>
+              )}
+            </div>
           </div>
         </div>
 
-        {/* Change Action Button */}
-        <button
-          type="button"
-          onClick={() => setIsOpen(!isOpen)}
-          aria-expanded={isOpen}
-          aria-controls={`${pickerId}-panel`}
-          className="px-3.5 py-1.5 rounded-xl bg-white border border-stone-200/90 hover:bg-[#E50914] text-stone-700 hover:text-white font-extrabold text-xs transition-all cursor-pointer shadow-2xs active:scale-95"
-        >
-          {isOpen ? 'Done' : 'Change'}
-        </button>
-      </div>
+        <span className="text-[11px] sm:text-xs font-black text-[#E50914] bg-[#FFF5F5] px-2.5 sm:px-3 py-1 rounded-xl border border-[#FEE2E2] group-hover:bg-[#E50914] group-hover:text-white transition-all shrink-0 shadow-2xs">
+          Change
+        </span>
+      </button>
 
       {/* ------------------------------------------------------------------ */}
-      {/* EXPANDABLE TIME SELECTOR PANEL (Desktop Only)                      */}
+      {/* MODERN POPUP MODAL (Theme-Based Red & White, Responsive Mobile/Desktop) */}
       {/* ------------------------------------------------------------------ */}
       <AnimatePresence>
         {isOpen && (
-          <motion.div
-            id={`${pickerId}-panel`}
-            initial={{ opacity: 0, y: -10, scale: 0.98 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -10, scale: 0.98 }}
-            transition={{ duration: 0.25, ease: 'easeOut' }}
-            className="hidden md:block mt-3 bg-[#FAF7F2] border border-[#E8DED3] rounded-3xl p-4 sm:p-6 shadow-[0_12px_36px_rgba(45,36,32,0.08)] space-y-5"
-          >
-            {/* Header */}
-            <div className="flex items-center justify-between pb-3 border-b border-[#E8DED3]">
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-xl bg-[#E50914]/10 flex items-center justify-center text-[#E50914]">
-                  <Clock size={18} />
-                </div>
-                <h3 className="text-sm sm:text-base font-black text-[#2D2420] tracking-tight">
-                  Select {label}
-                </h3>
+          <div className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center p-0 sm:p-4 select-none">
+            {/* Backdrop overlay */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              onClick={() => {
+                setIsOpen(false);
+                if (onClose) onClose();
+              }}
+              className="fixed inset-0 bg-black/60 backdrop-blur-xs cursor-pointer"
+            />
+
+            {/* Modal Dialog Content */}
+            <motion.div
+              initial={{ opacity: 0, y: 40, scale: 0.95 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 40, scale: 0.95 }}
+              transition={{ type: 'spring', damping: 28, stiffness: 350 }}
+              className="relative z-10 w-full sm:max-w-md bg-white rounded-t-[32px] sm:rounded-3xl border border-stone-200 shadow-2xl p-4 sm:p-6 space-y-4 max-h-[92vh] overflow-y-auto"
+            >
+              {/* Mobile Swipe Grab Bar */}
+              <div className="sm:hidden flex justify-center pb-1">
+                <div className="w-12 h-1.5 bg-stone-200 rounded-full" />
               </div>
 
-              <button
-                type="button"
-                onClick={() => {
-                  setIsOpen(false);
-                  if (onClose) onClose();
-                }}
-                className="px-3.5 py-1.5 rounded-full bg-white hover:bg-stone-100 border border-[#E8DED3] text-[#7A706A] hover:text-[#2D2420] font-black text-xs transition-colors cursor-pointer"
-              >
-                Close
-              </button>
-            </div>
-
-            {/* Loading State Skeleton */}
-            {isLoading ? (
-              <div className="space-y-4 py-4 animate-pulse">
-                <div className="h-4 bg-stone-200/80 rounded w-24" />
-                <div className="flex gap-2">
-                  <div className="h-9 bg-stone-200/80 rounded-xl w-20" />
-                  <div className="h-9 bg-stone-200/80 rounded-xl w-20" />
-                  <div className="h-9 bg-stone-200/80 rounded-xl w-20" />
-                </div>
-                <div className="h-44 bg-stone-200/80 rounded-2xl w-full" />
-              </div>
-            ) : (
-              <>
-                {/* -------------------------------------------------------- */}
-                {/* QUICK SLOTS SECTION */}
-                {/* -------------------------------------------------------- */}
-                <div>
-                  <span className="text-[10px] font-black uppercase text-[#7A706A] tracking-widest block mb-2">
-                    Quick Slots
-                  </span>
-
-                  {quickSlots.length === 0 ? (
-                    <div className="p-3.5 bg-rose-50 border border-rose-200/80 rounded-2xl flex items-center gap-2.5 text-rose-800 text-xs font-bold">
-                      <AlertCircle size={16} className="text-rose-500 shrink-0" />
-                      <span>Venue is closed on this date. Please pick another date.</span>
-                    </div>
-                  ) : (
-                    <div className="flex items-center gap-2 overflow-x-auto custom-scrollbar pb-1">
-                      {quickSlots.map((slot) => {
-                        const isSelected =
-                          hour === slot.h && min === slot.m && ampm === slot.mode;
-                        return (
-                          <button
-                            key={slot.label}
-                            type="button"
-                            onClick={() => handleUpdate(slot.h, slot.m, slot.mode)}
-                            className={`px-3.5 py-2 rounded-2xl text-xs font-black whitespace-nowrap transition-all cursor-pointer shrink-0 ${
-                              isSelected
-                                ? 'bg-[#E50914] text-white shadow-xs scale-102'
-                                : 'bg-white text-[#2D2420] hover:bg-[#FFF5F5] hover:text-[#E50914] border border-[#E8DED3]'
-                            }`}
-                          >
-                            {slot.label}
-                          </button>
-                        );
-                      })}
-                    </div>
-                  )}
-                </div>
-
-                {/* -------------------------------------------------------- */}
-                {/* 3-COLUMN ROLLING DRUM WHEEL TIME PICKER */}
-                {/* -------------------------------------------------------- */}
-                <div className="bg-[#FAF7F2] p-3.5 sm:p-4 rounded-3xl border border-[#E8DED3] shadow-inner">
-                  <div className="flex items-center gap-2 sm:gap-4">
-                    {/* Hours Wheel */}
-                    <DrumWheelColumn
-                      items={hoursList}
-                      selectedValue={hour}
-                      onSelect={(newH) => handleUpdate(newH, min, ampm)}
-                      label="HOURS"
-                    />
-
-                    {/* Colon Separator */}
-                    <div className="text-xl sm:text-2xl font-black text-[#E50914] self-center pb-2 select-none">
-                      :
-                    </div>
-
-                    {/* Minutes Wheel */}
-                    <DrumWheelColumn
-                      items={minutesList}
-                      selectedValue={min}
-                      onSelect={(newM) => handleUpdate(hour, newM, ampm)}
-                      label="MINUTES"
-                      formatDisplay={(m) => `:${m}`}
-                    />
-
-                    {/* Period Wheel */}
-                    <DrumWheelColumn
-                      items={ampmList}
-                      selectedValue={ampm}
-                      onSelect={(newMode) => handleUpdate(hour, min, newMode)}
-                      label="PERIOD"
-                    />
+              {/* Modal Header */}
+              <div className="flex items-center justify-between pb-3 border-b border-stone-100">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-9 h-9 rounded-2xl bg-[#FFF5F5] border border-[#FEE2E2] flex items-center justify-center text-[#E50914] shadow-2xs">
+                    <Clock size={18} />
+                  </div>
+                  <div>
+                    <h3 className="text-sm sm:text-base font-black text-[#1E1E1E] tracking-tight">
+                      Select {label}
+                    </h3>
+                    <p className="text-[11px] font-bold text-stone-400">
+                      {durationHours > 0 ? `${durationHours} Hours Event Package Window` : 'Choose your visit start time'}
+                    </p>
                   </div>
                 </div>
 
-                {/* Validation Error Banner */}
-                {validationError && (
-                  <div className="p-3.5 bg-rose-50 border border-rose-200 rounded-2xl flex items-center gap-2 text-rose-800 text-xs font-extrabold">
-                    <AlertCircle size={16} className="text-rose-500 shrink-0" />
-                    <span>{validationError}</span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsOpen(false);
+                    if (onClose) onClose();
+                  }}
+                  className="w-8 h-8 rounded-full bg-stone-100 hover:bg-stone-200 text-stone-500 hover:text-stone-800 flex items-center justify-center transition-colors cursor-pointer"
+                  aria-label="Close modal"
+                >
+                  <X size={16} />
+                </button>
+              </div>
+
+              {/* Quick Slots Section */}
+              <div>
+                <span className="text-[10px] font-black uppercase text-stone-400 tracking-wider block mb-2">
+                  Quick Preset Times
+                </span>
+
+                {quickSlots.length === 0 ? (
+                  <div className="p-3 bg-rose-50 border border-rose-200 rounded-2xl flex items-center gap-2 text-rose-800 text-xs font-bold">
+                    <AlertCircle size={15} className="text-rose-500 shrink-0" />
+                    <span>No quick slots available within operating hours.</span>
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-2 overflow-x-auto scrollbar-none py-0.5">
+                    {quickSlots.map((slot) => {
+                      const isSelected = hour === slot.h && min === slot.m && ampm === slot.mode;
+                      return (
+                        <button
+                          key={slot.label}
+                          type="button"
+                          onClick={() => handleUpdate(slot.h, slot.m, slot.mode)}
+                          className={`px-3 py-1.5 rounded-xl text-xs font-black whitespace-nowrap transition-all cursor-pointer shrink-0 ${
+                            isSelected
+                              ? 'bg-[#E50914] text-white shadow-xs scale-102 ring-2 ring-[#E50914]/30'
+                              : 'bg-stone-50 hover:bg-[#FFF5F5] text-stone-700 hover:text-[#E50914] border border-stone-200 hover:border-[#EF5350]'
+                          }`}
+                        >
+                          {slot.label}
+                        </button>
+                      );
+                    })}
                   </div>
                 )}
+              </div>
 
-                {/* -------------------------------------------------------- */}
-                {/* CONFIRM BUTTON */}
-                {/* -------------------------------------------------------- */}
+              {/* 3-Column Interactive Rolling Drum Wheel Picker */}
+              <div className="bg-stone-50/80 p-3 sm:p-4 rounded-3xl border border-stone-200">
+                <div className="flex items-center gap-2 sm:gap-3">
+                  {/* Hours Wheel */}
+                  <DrumWheelColumn
+                    items={hoursList}
+                    selectedValue={hour}
+                    onSelect={(newH) => handleUpdate(newH, min, ampm)}
+                    label="HOURS"
+                  />
+
+                  {/* Colon Separator */}
+                  <div className="text-xl sm:text-2xl font-black text-[#E50914] self-center pb-2 select-none">
+                    :
+                  </div>
+
+                  {/* Minutes Wheel */}
+                  <DrumWheelColumn
+                    items={minutesList}
+                    selectedValue={min}
+                    onSelect={(newM) => handleUpdate(hour, newM, ampm)}
+                    label="MINUTES"
+                    formatDisplay={(m) => `:${m}`}
+                  />
+
+                  {/* Period Wheel */}
+                  <DrumWheelColumn
+                    items={ampmList}
+                    selectedValue={ampm}
+                    onSelect={(newMode) => handleUpdate(hour, min, newMode)}
+                    label="PERIOD"
+                  />
+                </div>
+              </div>
+
+              {/* Duration & Operating Hours Status Preview */}
+              {durationHours > 0 && calculatedEndTime12 && (
+                <div className="p-3 rounded-2xl bg-[#FFF5F5] border border-[#FEE2E2] flex items-center justify-between text-xs font-black">
+                  <div className="flex items-center gap-2">
+                    <Sparkles size={14} className="text-[#E50914]" />
+                    <span className="text-stone-700">
+                      Calculated End: <strong className="text-[#1E1E1E]">{calculatedEndTime12}</strong> ({durationHours}h)
+                    </span>
+                  </div>
+                  {currentValidation.isValid && !currentConflict ? (
+                    <span className="text-[10px] font-black text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200 flex items-center gap-1">
+                      <CheckCircle2 size={11} /> Valid
+                    </span>
+                  ) : (
+                    <span className="text-[10px] font-black text-rose-700 bg-rose-50 px-2 py-0.5 rounded-md border border-rose-200 flex items-center gap-1">
+                      <AlertCircle size={11} /> Out of hours
+                    </span>
+                  )}
+                </div>
+              )}
+
+              {/* Validation Error Alert */}
+              {validationError && (
+                <div className="p-3 bg-rose-50 border border-rose-200 rounded-2xl flex items-center gap-2 text-rose-800 text-xs font-bold leading-snug">
+                  <AlertCircle size={15} className="text-rose-600 shrink-0" />
+                  <span>{validationError}</span>
+                </div>
+              )}
+
+              {/* Modal Action Buttons */}
+              <div className="flex items-center gap-2 pt-1">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsOpen(false);
+                    if (onClose) onClose();
+                  }}
+                  className="flex-1 py-3 px-4 rounded-2xl border border-stone-200 text-stone-700 hover:bg-stone-50 font-black text-xs transition-colors cursor-pointer text-center"
+                >
+                  Cancel
+                </button>
                 <button
                   type="button"
                   onClick={handleConfirm}
-                  className="w-full py-3.5 px-4 bg-[#E50914] hover:bg-[#4A2C1A] active:scale-[0.99] text-white text-xs sm:text-sm font-black rounded-2xl shadow-xs flex items-center justify-center gap-2 transition-all cursor-pointer"
+                  className="flex-[2] py-3.5 px-4 bg-gradient-to-r from-[#B80012] via-[#ED0014] to-[#B80012] hover:from-[#9E0010] hover:to-[#9E0010] active:scale-[0.99] text-white text-xs sm:text-sm font-black rounded-2xl shadow-md shadow-[#ED0014]/25 flex items-center justify-center gap-2 transition-all cursor-pointer"
                 >
-                  <CheckCircle2 size={18} /> Confirm {label} ({formattedDisplay})
+                  <CheckCircle2 size={16} /> Confirm Time ({formattedDisplay})
                 </button>
-              </>
-            )}
-          </motion.div>
+              </div>
+
+            </motion.div>
+          </div>
         )}
       </AnimatePresence>
     </div>

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { 
@@ -14,15 +14,26 @@ import {
   AlertCircle,
   Clock,
   ShieldCheck,
-  ChevronLeft
+  ChevronLeft,
+  RotateCcw
 } from 'lucide-react';
 import { useCartStore } from '@/stores/cart.store';
 import { useAuthStore } from '@/stores/auth.store';
 import CustomerNavbar from '@/app/components/layout/CustomerNavbar';
+import CartGiftRewardTracker from '@/app/components/food/CartGiftRewardTracker';
 import toast from 'react-hot-toast';
 
 export default function CustomerCartPage() {
   const router = useRouter();
+  const [statusParam, setStatusParam] = useState(null);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      setStatusParam(params.get('status'));
+    }
+  }, []);
+
   const user = useAuthStore((state) => state.user);
   const { 
     cart, 
@@ -75,6 +86,47 @@ export default function CustomerCartPage() {
 
       <main className="max-w-4xl mx-auto px-4 sm:px-6 pt-6 sm:pt-8 space-y-6">
         
+        {/* Payment Outcome / Retry Status Banner */}
+        {statusParam === 'cancelled' && items.length > 0 && (
+          <div className="bg-amber-500/10 border-2 border-amber-500/30 rounded-3xl p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-xs">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-2xl bg-amber-500/20 text-amber-700 flex items-center justify-center shrink-0">
+                <Clock className="w-5 h-5" />
+              </div>
+              <div>
+                <h3 className="text-sm font-black text-[#252525]">Payment Cancelled. Your items are still in your cart.</h3>
+                <p className="text-xs text-stone-600 mt-0.5">Your items, quantities and discounts are preserved. You can retry checkout whenever you're ready.</p>
+              </div>
+            </div>
+            <Link
+              href="/customer/checkout"
+              className="shrink-0 w-full sm:w-auto px-5 py-2.5 rounded-2xl bg-[#E50914] hover:bg-[#B71C1C] text-white text-xs font-black flex items-center justify-center gap-1.5 shadow-sm transition-all cursor-pointer"
+            >
+              <RotateCcw className="w-3.5 h-3.5" /> Retry Payment
+            </Link>
+          </div>
+        )}
+
+        {statusParam === 'failed' && items.length > 0 && (
+          <div className="bg-rose-500/10 border-2 border-rose-500/30 rounded-3xl p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-xs">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-2xl bg-rose-500/20 text-rose-700 flex items-center justify-center shrink-0">
+                <AlertCircle className="w-5 h-5" />
+              </div>
+              <div>
+                <h3 className="text-sm font-black text-[#252525]">Payment Failed. Your items remain safe in your cart.</h3>
+                <p className="text-xs text-stone-600 mt-0.5">We couldn't complete the transaction with Razorpay. Try another payment method or retry.</p>
+              </div>
+            </div>
+            <Link
+              href="/customer/checkout"
+              className="shrink-0 w-full sm:w-auto px-5 py-2.5 rounded-2xl bg-[#E50914] hover:bg-[#B71C1C] text-white text-xs font-black flex items-center justify-center gap-1.5 shadow-sm transition-all cursor-pointer"
+            >
+              <RotateCcw className="w-3.5 h-3.5" /> Retry Payment
+            </Link>
+          </div>
+        )}
+
         {/* Back Link & Header */}
         <div className="flex items-center justify-between border-b border-[#FEE2E2] pb-4">
           <div className="flex items-center gap-3">

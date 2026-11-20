@@ -505,21 +505,37 @@ export default function BookingInformationForm() {
     }
   };
 
-  const [startTime, setStartTime] = useState('12:00');
-  const [endTime, setEndTime] = useState('13:00');
+  // Helper to convert 12h "hh:mm AM/PM" to 24h "HH:mm"
+  const parse12hTo24h = (str) => {
+    if (!str) return '12:00';
+    if (!str.includes(' ')) return str.slice(0, 5);
+    const [t, mode] = str.split(' ');
+    let [h, m] = t.split(':').map(Number);
+    if (mode === 'PM' && h !== 12) h += 12;
+    if (mode === 'AM' && h === 12) h = 0;
+    return `${String(h).padStart(2, '0')}:${String(m || 0).padStart(2, '0')}`;
+  };
+
+  const [startTime, setStartTime] = useState(() => parse12hTo24h(selectedTimeSlot?.start) || '12:00');
+  const [endTime, setEndTime] = useState(() => parse12hTo24h(selectedTimeSlot?.end) || '13:00');
 
   // Determine active package duration (hours) from Event Manager or Cafe Package
   const activePackageDuration = useMemo(() => {
     const emDuration = Number(
       selectedEventCompany?.originalEvent?.duration_hours ||
+      selectedEventCompany?.originalEvent?.duration_value ||
       selectedEventCompany?.package?.duration_hours ||
+      selectedEventCompany?.package?.duration_value ||
       selectedEventCompany?.duration_hours ||
+      selectedEventCompany?.duration_value ||
+      selectedEventCompany?.durationHours ||
       0
     );
     if (emDuration > 0) return emDuration;
 
     const cafePkgDuration = Number(
       selectedPackage?.duration_hours ||
+      selectedPackage?.duration_value ||
       selectedPackage?.durationHours ||
       0
     );
@@ -822,34 +838,43 @@ export default function BookingInformationForm() {
             </span>
           )}
         </label>
-        <div className={`grid grid-cols-1 ${activePackageDuration > 0 ? 'sm:grid-cols-2' : 'sm:grid-cols-2'} gap-3.5 sm:gap-4`}>
+        <div className={`grid grid-cols-1 ${activePackageDuration > 0 ? 'sm:grid-cols-2' : 'sm:grid-cols-2'} gap-3 sm:gap-4`}>
           <StartTimePicker 
             label="Start Time" 
             value={startTime} 
             onChange={handleStartTimeChange} 
             cafe={cafe}
             selectedDate={selectedDate}
+            durationHours={activePackageDuration}
+            selectedEventCompany={selectedEventCompany}
+            blockedBlocks={combinedBlocks}
           />
 
           {activePackageDuration > 0 ? (
-            <div className="bg-[#FFF5F5]/90 border border-[#FEE2E2] rounded-2xl p-3 sm:p-3.5 flex flex-col justify-between shadow-2xs">
-              <div className="flex items-center justify-between">
-                <span className="text-[10px] font-black uppercase tracking-wider text-[#E50914] flex items-center gap-1.5">
-                  <Sparkles size={12} className="text-[#E50914]" /> Package Duration Locked
-                </span>
-                <span className="text-[10px] font-extrabold text-[#E50914] bg-white px-2 py-0.5 rounded-full border border-[#FEE2E2]">
-                  {activePackageDuration} {activePackageDuration === 1 ? 'Hour' : 'Hours'}
-                </span>
+            <div className="bg-[#FFF5F5] border border-[#FEE2E2] rounded-2xl px-3.5 sm:px-4 h-[46px] sm:h-[50px] flex items-center justify-between shadow-2xs">
+              <div className="flex items-center gap-2.5 min-w-0">
+                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-white border border-[#FEE2E2] flex items-center justify-center text-[#E50914] shrink-0 shadow-2xs">
+                  <Sparkles size={14} />
+                </div>
+                <div className="flex flex-col min-w-0">
+                  <span className="text-[10px] font-black uppercase text-stone-400 tracking-wider truncate">
+                    Calculated End Time ({activePackageDuration}h)
+                  </span>
+                  <span className="text-xs sm:text-sm font-black text-[#1E1E1E] truncate">
+                    {selectedTimeSlot?.end || 'Select start time'}
+                  </span>
+                </div>
               </div>
-              <div className="mt-2">
-                <p className="text-xs font-bold text-stone-500">Event Time (Calculated)</p>
-                <p className="text-sm sm:text-base font-black text-[#252525] mt-0.5">
-                  {selectedTimeSlot ? `${selectedTimeSlot.start} – ${selectedTimeSlot.end}` : 'Select start time'}
-                </p>
-              </div>
-              <p className="text-[10px] font-semibold text-stone-400 mt-1">
-                Auto-calculated based on {activePackageName}
-              </p>
+
+              {timeValidation.isValid && !blockedConflict ? (
+                <span className="text-[10px] font-black text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-xl border border-emerald-200 shrink-0 flex items-center gap-1 shadow-2xs">
+                  <CheckCircle2 size={11} /> Valid Time
+                </span>
+              ) : (
+                <span className="text-[10px] font-black text-rose-700 bg-rose-50 px-2.5 py-1 rounded-xl border border-rose-200 shrink-0 flex items-center gap-1 shadow-2xs">
+                  <AlertCircle size={11} /> Outside Hours
+                </span>
+              )}
             </div>
           ) : (
             <StartTimePicker 

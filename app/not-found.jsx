@@ -43,6 +43,7 @@ export default function NotFound() {
               src="/grab2go-404-illustration.jpg"
               alt="Grab2GO 404 - Page Not Found"
               fill
+              sizes="(max-width: 640px) 100vw, 480px"
               priority
               className="object-contain"
             />

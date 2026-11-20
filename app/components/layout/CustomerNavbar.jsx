@@ -20,6 +20,7 @@ import api from '@/lib/axios';
 
 import { profileService } from '@/services/profile.service';
 import { loyaltyService } from '@/services/loyalty.service';
+import InstallAppButton from '@/app/components/common/InstallAppButton';
 
 export default function CustomerNavbar({ 
   showSearch = false, 
@@ -153,7 +154,7 @@ export default function CustomerNavbar({
   const userInitials = userName ? userName.substring(0, 2).toUpperCase() : 'FC';
 
   return (
-    <header className="hidden md:block bg-white/95 backdrop-blur-xl border-b border-stone-200/80 sticky top-0 z-50 shadow-[0_4px_20px_rgba(0,0,0,0.04)] py-2 sm:py-3 print:hidden" suppressHydrationWarning>
+    <header className="hidden md:block w-full bg-white/95 backdrop-blur-xl border-b border-stone-200/80 sticky top-0 z-50 shadow-[0_4px_20px_rgba(0,0,0,0.04)] py-2 sm:py-3 print:hidden" suppressHydrationWarning>
       <div className="container mx-auto px-2.5 sm:px-4 flex flex-col gap-2" suppressHydrationWarning>
         
         {/* Top Row: Logo & Brand | Search Bar | Notifications & Profile */}
@@ -161,7 +162,7 @@ export default function CustomerNavbar({
           
           {/* Left: Logo & Brand Name */}
           <div className="flex items-center flex-shrink-0">
-            <Link href="/" className="flex items-center gap-2.5 sm:gap-3 hover:scale-105 active:scale-95 transition-transform duration-300">
+            <Link href="/customer/cafe" className="flex items-center gap-2.5 sm:gap-3 hover:scale-105 active:scale-95 transition-transform duration-300">
               <Image 
                 src="/grab-it-logo.png" 
                 alt="Grab2GO Logo" 
@@ -181,17 +182,37 @@ export default function CustomerNavbar({
               </div>
             </Link>
 
+            {/* Desktop & Tablet Install App Button beside Logo */}
+            <InstallAppButton variant="desktop" className="hidden sm:inline-flex ml-2" />
+
             {/* Main Navigation Links */}
             <nav className="hidden lg:flex items-center gap-1 ml-6 bg-stone-50 p-1 rounded-2xl border border-stone-200/80">
               <Link 
                 href="/customer/food" 
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black transition-all ${pathname.startsWith('/customer/food') ? 'bg-[#E50914] text-white shadow-2xs' : 'text-[#E50914] hover:bg-white'}`}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black transition-all ${
+                  (pathname?.startsWith('/customer/food') || pathname?.startsWith('/customer/orders') || pathname?.startsWith('/customer/checkout'))
+                    ? 'bg-[#E50914] text-white shadow-2xs' 
+                    : 'text-stone-600 hover:text-[#E50914] hover:bg-white'
+                }`}
               >
                 <Utensils size={13} /> Food
               </Link>
               <Link 
                 href="/customer/cafe" 
-                className={`px-3 py-1.5 rounded-xl text-xs font-black transition-all ${(pathname.startsWith('/customer/cafe') || pathname.startsWith('/customer/discover')) ? 'bg-[#E50914] text-white shadow-2xs' : 'text-stone-600 hover:text-[#E50914] hover:bg-white'}`}
+                className={`px-3 py-1.5 rounded-xl text-xs font-black transition-all ${
+                  (
+                    pathname?.startsWith('/customer/cafe') || 
+                    pathname?.startsWith('/customer/discover') || 
+                    pathname?.startsWith('/booking') || 
+                    pathname?.startsWith('/cafes') ||
+                    pathname?.startsWith('/customer/bookings') ||
+                    pathname?.startsWith('/customer/receipt') ||
+                    pathname?.startsWith('/customer/invoice') ||
+                    pathname?.startsWith('/customer/favorites')
+                  )
+                    ? 'bg-[#E50914] text-white shadow-2xs' 
+                    : 'text-stone-600 hover:text-[#E50914] hover:bg-white'
+                }`}
               >
                 Discover Cafe
               </Link>
@@ -219,8 +240,17 @@ export default function CustomerNavbar({
               </Link>
             )}
 
-            {/* Cart Button (hidden in cafe discovery tab) */}
-            {!(pathname.startsWith('/customer/cafe') || pathname.startsWith('/customer/discover')) && (
+            {/* Cart Button (hidden in cafe discovery, booking, receipt, and invoice pages) */}
+            {!(
+              pathname.startsWith('/customer/cafe') || 
+              pathname.startsWith('/customer/discover') ||
+              pathname.startsWith('/booking') ||
+              pathname.startsWith('/cafes') ||
+              pathname.startsWith('/customer/bookings') ||
+              pathname.startsWith('/customer/receipt') ||
+              pathname.startsWith('/customer/invoice') ||
+              pathname.startsWith('/customer/favorites')
+            ) && (
               <Link 
                 href="/customer/cart" 
                 className="p-2 sm:p-2.5 bg-stone-50 border border-stone-200/80 rounded-xl text-stone-600 hover:bg-white hover:text-[#E50914] hover:shadow-md hover:scale-105 active:scale-95 transition-all duration-300 relative cursor-pointer"
@@ -315,110 +345,127 @@ export default function CustomerNavbar({
               </AnimatePresence>
             </div>
 
-            {/* Profile Avatar Dropdown Menu */}
-            <div className="relative" ref={profileRef} suppressHydrationWarning>
-              <button 
-                onClick={() => { setIsProfileMenuOpen(!isProfileMenuOpen); setIsNotifMenuOpen(false); }}
-                className="flex items-center gap-1.5 p-1 sm:p-1.5 bg-stone-50 hover:bg-[#FFF5F5] border border-stone-200/80 rounded-xl transition-all cursor-pointer active:scale-95"
-                suppressHydrationWarning
-              >
-                <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-tr from-[#B71C1C] to-[#E50914] text-white flex items-center justify-center font-black text-xs shadow-2xs border border-white overflow-hidden relative shrink-0">
-                  {profileImage && !imageError ? (
-                    <img 
-                      src={profileImage} 
-                      alt={userName} 
-                      className="w-full h-full object-cover" 
-                      onError={() => setImageError(true)}
-                    />
-                  ) : (
-                    <span>{userInitials}</span>
-                  )}
-                </div>
-                <ChevronDown size={14} className="text-stone-500 hidden sm:block" />
-              </button>
+            {/* Profile Avatar Dropdown Menu / Guest Login Button */}
+            {user ? (
+              <div className="relative" ref={profileRef} suppressHydrationWarning>
+                <button 
+                  onClick={() => { setIsProfileMenuOpen(!isProfileMenuOpen); setIsNotifMenuOpen(false); }}
+                  className="flex items-center gap-1.5 p-1 sm:p-1.5 bg-stone-50 hover:bg-[#FFF5F5] border border-stone-200/80 rounded-xl transition-all cursor-pointer active:scale-95"
+                  suppressHydrationWarning
+                >
+                  <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-tr from-[#B71C1C] to-[#E50914] text-white flex items-center justify-center font-black text-xs shadow-2xs border border-white overflow-hidden relative shrink-0">
+                    {profileImage && !imageError ? (
+                      <img 
+                        src={profileImage} 
+                        alt={userName} 
+                        className="w-full h-full object-cover" 
+                        onError={() => setImageError(true)}
+                      />
+                    ) : (
+                      <span>{userInitials}</span>
+                    )}
+                  </div>
+                  <ChevronDown size={14} className="text-stone-500 hidden sm:block" />
+                </button>
 
-              {/* Profile Dropdown Popup */}
-              <AnimatePresence>
-                {isProfileMenuOpen && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 8, scale: 0.95 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, y: 6, scale: 0.95 }}
-                    transition={{ duration: 0.15 }}
-                    className="absolute right-0 mt-2 w-64 bg-white rounded-2xl border border-stone-200 shadow-xl p-2.5 z-50 space-y-1.5"
-                  >
-                    {/* User Summary Header */}
-                    <div className="p-2.5 rounded-xl bg-gradient-to-br from-[#FFF5F5] to-[#F5EBE0] border border-[#EF5350]/40 mb-1 flex items-center gap-2.5">
-                      <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-[#B71C1C] to-[#E50914] text-white flex items-center justify-center font-black text-xs shrink-0 overflow-hidden border border-white shadow-2xs">
-                        {profileImage && !imageError ? (
-                          <img 
-                            src={profileImage} 
-                            alt={userName} 
-                            className="w-full h-full object-cover" 
-                          />
-                        ) : (
-                          <span>{userInitials}</span>
-                        )}
+                {/* Profile Dropdown Popup */}
+                <AnimatePresence>
+                  {isProfileMenuOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 8, scale: 0.95 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: 6, scale: 0.95 }}
+                      transition={{ duration: 0.15 }}
+                      className="absolute right-0 mt-2 w-64 bg-white rounded-2xl border border-stone-200 shadow-xl p-2.5 z-50 space-y-1.5"
+                    >
+                      {/* User Summary Header */}
+                      <div className="p-2.5 rounded-xl bg-gradient-to-br from-[#FFF5F5] to-[#F5EBE0] border border-[#EF5350]/40 mb-1 flex items-center gap-2.5">
+                        <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-[#B71C1C] to-[#E50914] text-white flex items-center justify-center font-black text-xs shrink-0 overflow-hidden border border-white shadow-2xs">
+                          {profileImage && !imageError ? (
+                            <img 
+                              src={profileImage} 
+                              alt={userName} 
+                              className="w-full h-full object-cover" 
+                            />
+                          ) : (
+                            <span>{userInitials}</span>
+                          )}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="font-black text-xs text-[#252525] truncate">{userName}</p>
+                          <p className="text-[10px] font-bold text-[#E50914] truncate">{user?.email || 'Customer Account'}</p>
+                        </div>
                       </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="font-black text-xs text-[#252525] truncate">{userName}</p>
-                        <p className="text-[10px] font-bold text-[#E50914] truncate">{user?.email || 'Customer Account'}</p>
-                      </div>
-                    </div>
 
-                    {/* Navigation Options */}
-                    <Link 
-                      href="/customer/profile?tab=loyalty" 
-                      onClick={() => setIsProfileMenuOpen(false)}
-                      className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-amber-900 bg-amber-50/70 border border-amber-200/60 hover:bg-amber-100/80 transition-colors"
-                    >
-                      <span className="text-amber-500 text-sm">⭐</span> Grab2GO Credits ({loyaltyCredits})
-                    </Link>
-
-                    <Link 
-                      href="/customer/profile" 
-                      onClick={() => setIsProfileMenuOpen(false)}
-                      className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-stone-700 hover:bg-[#FFF5F5] hover:text-[#E50914] transition-colors"
-                    >
-                      <User size={14} /> Profile Dashboard
-                    </Link>
-
-                    <Link 
-                      href="/customer/orders" 
-                      onClick={() => setIsProfileMenuOpen(false)}
-                      className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-stone-700 hover:bg-[#FFF5F5] hover:text-[#E50914] transition-colors"
-                    >
-                      <ShoppingBag size={14} /> My Food Orders
-                    </Link>
-
-                    <Link 
-                      href="/customer/bookings" 
-                      onClick={() => setIsProfileMenuOpen(false)}
-                      className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-stone-700 hover:bg-[#FFF5F5] hover:text-[#E50914] transition-colors"
-                    >
-                      <CalendarCheck size={14} /> My Bookings
-                    </Link>
-
-                    <Link 
-                      href="/customer/favorites" 
-                      onClick={() => setIsProfileMenuOpen(false)}
-                      className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-stone-700 hover:bg-[#FFF5F5] hover:text-[#E50914] transition-colors"
-                    >
-                      <Heart size={14} /> Saved Favorites
-                    </Link>
-
-                    <div className="pt-1 border-t border-stone-100">
-                      <button 
-                        onClick={handleLogout}
-                        className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer"
+                      {/* Navigation Options */}
+                      <Link 
+                        href="/customer/profile?tab=loyalty" 
+                        onClick={() => setIsProfileMenuOpen(false)}
+                        className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-amber-900 bg-amber-50/70 border border-amber-200/60 hover:bg-amber-100/80 transition-colors"
                       >
-                        <LogOut size={14} /> Logout
-                      </button>
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
+                        <span className="text-amber-500 text-sm">⭐</span> Grab2GO Credits ({loyaltyCredits})
+                      </Link>
+
+                      <Link 
+                        href="/customer/profile" 
+                        onClick={() => setIsProfileMenuOpen(false)}
+                        className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-stone-700 hover:bg-[#FFF5F5] hover:text-[#E50914] transition-colors"
+                      >
+                        <User size={14} /> Profile Dashboard
+                      </Link>
+
+                      <Link 
+                        href="/customer/orders" 
+                        onClick={() => setIsProfileMenuOpen(false)}
+                        className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-stone-700 hover:bg-[#FFF5F5] hover:text-[#E50914] transition-colors"
+                      >
+                        <ShoppingBag size={14} /> My Food Orders
+                      </Link>
+
+                      <Link 
+                        href="/customer/bookings" 
+                        onClick={() => setIsProfileMenuOpen(false)}
+                        className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-stone-700 hover:bg-[#FFF5F5] hover:text-[#E50914] transition-colors"
+                      >
+                        <CalendarCheck size={14} /> My Bookings
+                      </Link>
+
+                      <Link 
+                        href="/customer/favorites" 
+                        onClick={() => setIsProfileMenuOpen(false)}
+                        className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-stone-700 hover:bg-[#FFF5F5] hover:text-[#E50914] transition-colors"
+                      >
+                        <Heart size={14} /> Saved Favorites
+                      </Link>
+
+                      <div className="pt-1 border-t border-stone-100">
+                        <button 
+                          onClick={handleLogout}
+                          className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer"
+                        >
+                          <LogOut size={14} /> Logout
+                        </button>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            ) : (
+              <div className="flex items-center gap-2">
+                <Link
+                  href="/login"
+                  className="px-3.5 py-1.5 rounded-xl text-xs font-bold text-stone-700 hover:text-[#E50914] transition-colors"
+                >
+                  Sign In
+                </Link>
+                <Link
+                  href="/register"
+                  className="px-3.5 py-1.5 rounded-xl bg-[#E50914] hover:bg-[#B71C1C] text-white text-xs font-black shadow-xs transition-all active:scale-95"
+                >
+                  Register
+                </Link>
+              </div>
+            )}
 
           </div>
         </div>

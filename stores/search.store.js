@@ -13,6 +13,7 @@ export const useSearchStore = create((set) => ({
   sortBy: 'popularity', // popularity, highest_rated, lowest_price, highest_price, nearest, newest
   viewMode: 'grid', // grid, list, map
   userLocation: null, // { lat, lng }
+  userCity: '',
   isRequestingLocation: false,
   isMobileFilterOpen: false,
 
@@ -26,6 +27,7 @@ export const useSearchStore = create((set) => ({
   setDistance: (distance) => set({ distance }),
   setCapacity: (capacity) => set({ capacity }),
   setUserLocation: (userLocation) => set({ userLocation }),
+  setUserCity: (userCity) => set({ userCity }),
   
   toggleAmenity: (amenity) => set((state) => ({
     amenities: state.amenities.includes(amenity)

@@ -134,8 +134,10 @@ export default function MobileCafeHomeView({
         </div>
       ) : (
         <>
-          {/* 1. Collapsing Promotional Hero Banner */}
-          <MobilePromotionalBanner />
+          {/* 1. Mobile Interactive Three-Part Hero Banner Carousel */}
+          <div className="w-full bg-[#E50914] px-3.5 pt-1 pb-4 mb-2 rounded-b-2xl shadow-sm">
+            <FaharaHeroBannerCarousel />
+          </div>
 
           {/* 2. Compact Horizontal Category Chips */}
           <MobileCategoryChips
@@ -189,14 +191,7 @@ export default function MobileCafeHomeView({
             </div>
           )}
 
-          {/* 5. Grab2GO Promotional Banner Carousel */}
-          {!selectedCategory && (
-            <div className="px-4 mb-6">
-              <FaharaHeroBannerCarousel />
-            </div>
-          )}
-
-          {/* 6. CATEGORY-WISE SECTIONS (When All / no specific category is selected) */}
+          {/* 5. CATEGORY-WISE SECTIONS (When All / no specific category is selected) */}
           {!selectedCategory && categorySections.length > 0 && (
             <div className="flex flex-col gap-6 mb-6">
               {categorySections.map((cat) => (

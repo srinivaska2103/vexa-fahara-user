@@ -24,16 +24,16 @@ export const bookingService = {
 
   getMyBookings: async () => {
     try {
-      const response = await api.get('/bookings/my-bookings');
+      const response = await api.get('/bookings/my-bookings', { timeout: 15000 });
       return response.data;
     } catch (error) {
-      console.error('Error fetching my bookings:', error);
+      console.warn('Could not load user booking history:', error?.message);
       return { success: false, data: [] };
     }
   },
 
-  cancelBooking: async (id) => {
-    const response = await api.patch(`/bookings/${id}/cancel`);
+  cancelBooking: async (id, reason = '') => {
+    const response = await api.patch(`/bookings/${id}/cancel`, { reason });
     return response.data;
   },
 

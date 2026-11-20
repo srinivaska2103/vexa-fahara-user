@@ -160,14 +160,16 @@ export default function HomeHero() {
             </p>
 
             {/* Search Bar with Search Icon and Filter Button */}
-            <form onSubmit={handleSearchSubmit} className="relative max-w-xl pt-1">
-              <div className="relative flex items-center bg-white border-2 border-red-100 hover:border-[#ED0014]/40 focus-within:border-[#ED0014] rounded-full p-2 shadow-[0_14px_45px_-12px_rgba(237,0,20,0.18)] transition-all">
+            <form onSubmit={handleSearchSubmit} className="relative max-w-xl pt-1" suppressHydrationWarning>
+              <div className="relative flex items-center bg-white border-2 border-red-100 hover:border-[#ED0014]/40 focus-within:border-[#ED0014] rounded-full p-2 shadow-[0_14px_45px_-12px_rgba(237,0,20,0.18)] transition-all" suppressHydrationWarning>
                 <Search className="w-5 h-5 text-[#ED0014] ml-3.5 shrink-0" />
                 <input
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Search food, cafes, events or locations..."
+                  suppressHydrationWarning
+                  autoComplete="off"
                   className="w-full bg-transparent border-none focus:outline-none px-3.5 text-sm sm:text-base font-semibold text-[#1E1E1E] placeholder:text-stone-400"
                 />
                 
@@ -175,6 +177,7 @@ export default function HomeHero() {
                 <button
                   type="button"
                   onClick={() => router.push('/customer/cafe')}
+                  suppressHydrationWarning
                   className="w-10 h-10 rounded-full bg-stone-100 hover:bg-stone-200 text-stone-700 flex items-center justify-center shrink-0 mr-1.5 transition-colors cursor-pointer"
                   title="Open Filters"
                 >
@@ -184,6 +187,7 @@ export default function HomeHero() {
                 {/* Submit Search Button */}
                 <button
                   type="submit"
+                  suppressHydrationWarning
                   className="w-11 h-11 rounded-full bg-gradient-to-r from-[#ED0014] to-[#B80012] hover:from-red-600 hover:to-red-800 text-white flex items-center justify-center shrink-0 shadow-md shadow-[#ED0014]/30 transition-transform active:scale-95 cursor-pointer"
                   title="Search"
                 >

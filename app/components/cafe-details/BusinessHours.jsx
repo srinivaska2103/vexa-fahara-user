@@ -10,14 +10,14 @@ export default function BusinessHours({ cafe, isMobileView = false }) {
   
   return (
     <div className={isMobileView ? "mb-2 font-sans" : "mb-8 font-sans"}>
-      <div className={isMobileView ? "bg-transparent p-0 border-0 shadow-none font-sans" : "bg-white/90 backdrop-blur-xl rounded-3xl p-6 sm:p-8 border border-stone-200/90 shadow-[0_8px_30px_rgba(0,0,0,0.04)] font-sans"}>
+      <div className={isMobileView ? "bg-transparent p-0 border-0 shadow-none font-sans" : "bg-white rounded-3xl p-6 sm:p-8 border border-[#FEE2E2] shadow-xs font-sans"}>
         
         {/* Header with Live Status Badge */}
-        <div className={`flex items-center justify-between ${isMobileView ? 'mb-3 pb-3 border-b border-stone-100' : 'mb-6 pb-5 border-b border-stone-100'}`}>
+        <div className={`flex items-center justify-between ${isMobileView ? 'mb-3 pb-3 border-b border-[#FEE2E2]' : 'mb-6 pb-5 border-b border-[#FEE2E2]'}`}>
           <div>
             <h2 className={isMobileView ? "text-base font-black text-[#252525] tracking-tight" : "text-xl sm:text-2xl font-black text-[#252525] tracking-tight"}>Business Hours</h2>
             {!isMobileView && (
-              <p className="text-xs text-stone-500 font-medium mt-0.5">Weekly operating schedule and venue availability.</p>
+              <p className="text-xs text-[#757575] font-medium mt-0.5">Weekly operating schedule and venue availability.</p>
             )}
           </div>
           
@@ -98,16 +98,16 @@ export default function BusinessHours({ cafe, isMobileView = false }) {
                 key={day} 
                 className={`flex justify-between items-center py-3 px-4 rounded-2xl transition-all ${
                   isToday 
-                    ? 'bg-gradient-to-r from-[#FFF5F5] to-[#FFF3E4] border border-[#EF5350]/60 shadow-2xs font-extrabold text-[#B71C1C]' 
+                    ? 'bg-[#FFF5F5] border border-[#FEE2E2] shadow-2xs font-extrabold text-[#E50914]' 
                     : 'hover:bg-stone-50/80 text-stone-700'
                 }`}
               >
                 <div className="flex items-center gap-2.5">
-                  <span className={`text-xs sm:text-sm font-black ${isToday ? 'text-[#B71C1C]' : 'text-stone-800'}`}>
+                  <span className={`text-xs sm:text-sm font-black ${isToday ? 'text-[#E50914]' : 'text-stone-800'}`}>
                     {day}
                   </span>
                   {isToday && (
-                    <span className="text-[9px] bg-[#5C3D28] text-white px-2 py-0.5 rounded-md font-black uppercase tracking-wider shadow-2xs">
+                    <span className="text-[9px] bg-[#E50914] text-white px-2 py-0.5 rounded-md font-black uppercase tracking-wider shadow-2xs">
                       TODAY
                     </span>
                   )}

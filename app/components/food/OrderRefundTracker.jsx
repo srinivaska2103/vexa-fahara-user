@@ -30,9 +30,9 @@ export default function OrderRefundTracker({ refundData, orderNumber, onRefresh 
     timeline = []
   } = refundData;
 
-  const isProcessed = refundStatus === 'PROCESSED' || refundStatus === 'SUCCESS';
+  const isCredited = refundStatus === 'CREDITED' || refundStatus === 'PROCESSED' || refundStatus === 'SUCCESS';
   const isFailed = refundStatus === 'FAILED';
-  const isPending = !isProcessed && !isFailed && refundStatus !== 'NOT_APPLICABLE';
+  const isPending = !isCredited && !isFailed && refundStatus !== 'NOT_APPLICABLE';
 
   return (
     <div className="bg-white rounded-3xl border border-red-100 p-5 sm:p-7 shadow-xs space-y-6 font-sans">
@@ -44,7 +44,7 @@ export default function OrderRefundTracker({ refundData, orderNumber, onRefresh 
               Refund & Cancellation Status
             </span>
           </div>
-          <h2 className="text-lg sm:text-xl font-black text-[#1E1E1E]">Automated Refund Tracking</h2>
+          <h2 className="text-lg sm:text-xl font-black text-[#1E1E1E]">Refund Tracking</h2>
           <p className="text-xs text-stone-500 font-semibold mt-0.5">
             Real-time status synced with payment gateway.
           </p>
@@ -52,14 +52,14 @@ export default function OrderRefundTracker({ refundData, orderNumber, onRefresh 
 
         <div className="flex items-center gap-2">
           <span className={`px-3 py-1.5 rounded-full text-xs font-black uppercase tracking-wider border flex items-center gap-1.5 ${
-            isProcessed
+            isCredited
               ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
               : isFailed
               ? 'bg-rose-50 text-rose-800 border-rose-200'
               : 'bg-amber-50 text-amber-800 border-amber-200'
           }`}>
-            {isProcessed ? <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" /> : <Clock className="w-3.5 h-3.5 text-amber-600 animate-spin" />}
-            <span>{isProcessed ? 'Refund Processed' : isFailed ? 'Refund Under Review' : 'Refund In Progress'}</span>
+            {isCredited ? <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" /> : <Clock className="w-3.5 h-3.5 text-amber-600 animate-spin" />}
+            <span>{isCredited ? 'Refund Credited' : isFailed ? 'Refund Under Review' : 'Refund In Progress'}</span>
           </span>
         </div>
       </div>

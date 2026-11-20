@@ -11,6 +11,7 @@ import { Sparkles, ArrowRight, Compass } from 'lucide-react';
 import Link from 'next/link';
 
 import MobileBottomNav from '@/app/components/navigation/MobileBottomNav';
+import LocationPermissionModal from '@/app/components/common/LocationPermissionModal';
 
 function AuthGuard({ children }) {
   const pathname = usePathname();
@@ -171,6 +172,9 @@ export default function AppProviders({ children }) {
           {children}
           <Suspense fallback={null}>
             <MobileBottomNav />
+          </Suspense>
+          <Suspense fallback={null}>
+            <LocationPermissionModal />
           </Suspense>
         </AuthGuard>
         <Toaster 

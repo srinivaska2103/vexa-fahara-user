@@ -3,10 +3,11 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { Compass, Utensils, ShoppingBag, CalendarCheck, Heart, MapPin } from 'lucide-react';
+import { Compass, Utensils, ShoppingBag, CalendarCheck, Heart, MapPin, Gift, ShoppingCart } from 'lucide-react';
 import { useFavoritesStore } from '@/stores/favorites.store';
 import { useAuthStore } from '@/stores/auth.store';
 import { useSearchStore } from '@/stores/search.store';
+import { useCartStore } from '@/stores/cart.store';
 import { useLanguage } from '@/context/LanguageContext';
 import { motion } from 'framer-motion';
 import { profileService } from '@/services/profile.service';
@@ -20,9 +21,19 @@ export default function MobileBottomNav() {
   const user = useAuthStore((state) => state.user);
   const viewMode = useSearchStore((state) => state.viewMode);
   const setViewMode = useSearchStore((state) => state.setViewMode);
+  const cartItemCount = useCartStore((state) => state.itemCount);
+  const fetchCart = useCartStore((state) => state.fetchCart);
 
+  const [isMounted, setIsMounted] = useState(false);
   const [profileImage, setProfileImage] = useState(user?.avatar || user?.profile_image || null);
   const [imageError, setImageError] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+    if (fetchCart) {
+      fetchCart().catch(() => null);
+    }
+  }, [fetchCart]);
 
   useEffect(() => {
     if (!user) return;
@@ -82,6 +93,8 @@ export default function MobileBottomNav() {
     return null;
   }
 
+  if (!isMounted) return null;
+
   const userInitial = user?.name 
     ? user.name.charAt(0).toUpperCase() 
     : user?.full_name 
@@ -97,6 +110,9 @@ export default function MobileBottomNav() {
     pathname.startsWith('/cafes') || 
     pathname.startsWith('/customer/discover') || 
     pathname.startsWith('/customer/bookings') || 
+    pathname.startsWith('/customer/receipt') || 
+    pathname.startsWith('/customer/invoice') || 
+    pathname.startsWith('/booking') || 
     pathname.startsWith('/customer/favorites');
 
   const isMapActive = 
@@ -124,7 +140,7 @@ export default function MobileBottomNav() {
           label: 'Bookings', 
           href: '/customer/bookings', 
           icon: CalendarCheck,
-          isActive: pathname.startsWith('/customer/bookings')
+          isActive: pathname.startsWith('/customer/bookings') || pathname.startsWith('/customer/receipt') || pathname.startsWith('/customer/invoice')
         },
         { 
           id: 'favorites',
@@ -140,7 +156,22 @@ export default function MobileBottomNav() {
           label: 'Food', 
           href: '/customer/food', 
           icon: Utensils,
-          isActive: pathname.startsWith('/customer/food') || pathname.startsWith('/customer/cart') || pathname.startsWith('/customer/checkout')
+          isActive: pathname === '/customer/food' || pathname === '/customer'
+        },
+        { 
+          id: 'cart',
+          label: 'My Cart', 
+          href: '/customer/cart', 
+          icon: ShoppingCart,
+          badge: cartItemCount > 0 ? cartItemCount : null,
+          isActive: pathname.startsWith('/customer/cart') || pathname.startsWith('/customer/checkout')
+        },
+        { 
+          id: 'rewards',
+          label: 'My Rewards', 
+          href: '/customer/rewards', 
+          icon: Gift,
+          isActive: pathname.startsWith('/customer/rewards') || pathname.includes('tab=rewards')
         },
         { 
           id: 'orders',
@@ -152,12 +183,12 @@ export default function MobileBottomNav() {
       ];
 
   return (
-    <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 select-none print:hidden flex justify-center pointer-events-none">
+    <div className="md:hidden fixed bottom-3 left-0 right-0 z-50 select-none print:hidden flex justify-center pointer-events-none px-3.5">
       
-      {/* ── CLEAN BOTTOM MENU BAR WITH ROUNDED TOP CORNERS ── */}
+      {/* ── FLOATING PILL BOTTOM MENU BAR ── */}
       <div 
-        style={{ paddingBottom: 'calc(0.5rem + env(safe-area-inset-bottom, 0px))' }}
-        className="relative w-full bg-white/95 backdrop-blur-2xl rounded-t-[28px] border-t border-x border-[#FEE2E2] pt-2 pb-2 px-3 xs:px-4 shadow-[0_-8px_30px_rgba(111,78,55,0.08)] flex items-center justify-around overflow-visible pointer-events-auto"
+        style={{ paddingBottom: 'calc(0.4rem + env(safe-area-inset-bottom, 0px))' }}
+        className="relative w-full max-w-md bg-white/95 backdrop-blur-2xl rounded-full border border-stone-200/90 pt-2 pb-1.5 px-3 xs:px-5 shadow-[0_10px_35px_rgba(0,0,0,0.12),0_2px_8px_rgba(229,9,20,0.06)] flex items-center justify-around overflow-visible pointer-events-auto"
       >
         {navItems.map((item) => {
           const Icon = item.icon;

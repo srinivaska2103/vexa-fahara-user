@@ -55,7 +55,8 @@ function BookingContent() {
     setSelectedInclusionsPayload, 
     setSelectedInclusionItems, 
     selectedDate, 
-    selectedTimeSlot 
+    selectedTimeSlot,
+    setTimeSlot
   } = useBookingStore();
   const [activeStepTab, setActiveStepTab] = useState('packages');
   const [mobileSummaryOpen, setMobileSummaryOpen] = useState(false);
@@ -529,22 +530,75 @@ function BookingContent() {
       const newPrice = realPackagePrice;
       const newId = currentPackage.id;
       const newName = currentPackage.package_name || currentPackage.service_name || 'Cafe Event Package';
+      const newDuration = Number(
+        currentPackage.duration_hours ||
+        currentPackage.duration_value ||
+        currentPackage.durationHours ||
+        0
+      );
+      const newDurationUnit = currentPackage.duration_unit || 'Hours';
 
-      if (
+      const isStoreIdentical =
         currentInStore?.id === newId &&
         currentInStore?.name === newName &&
         currentInStore?.price === newPrice &&
-        JSON.stringify(currentInStore?.inclusions) === payloadStr
-      ) {
-        return;
+        Number(currentInStore?.duration_hours || currentInStore?.duration_value || 0) === newDuration &&
+        JSON.stringify(currentInStore?.inclusions) === payloadStr;
+
+      if (!isStoreIdentical) {
+        setPackage({
+          ...currentPackage,
+          id: newId,
+          name: newName,
+          price: newPrice,
+          duration_hours: newDuration,
+          duration_value: newDuration,
+          durationHours: newDuration,
+          duration_unit: newDurationUnit,
+          maximum_persons: currentPackage.maximum_persons || currentPackage.max_guests,
+          inclusions: JSON.parse(payloadStr)
+        });
       }
 
-      setPackage({
-        id: newId,
-        name: newName,
-        price: newPrice,
-        inclusions: JSON.parse(payloadStr)
-      });
+      // Automatically sync booking time slot if package has locked duration hours
+      if (newDuration > 0) {
+        const storeSlot = useBookingStore.getState().selectedTimeSlot;
+        const currentStart = storeSlot?.start || '12:00 PM';
+        
+        const parseToMins = (str) => {
+          if (!str) return 720;
+          if (str.includes(' ')) {
+            const [t, mode] = str.split(' ');
+            let [h, m] = t.split(':').map(Number);
+            if (mode === 'PM' && h !== 12) h += 12;
+            if (mode === 'AM' && h === 12) h = 0;
+            return (h || 0) * 60 + (m || 0);
+          }
+          const [h, m] = str.split(':').map(Number);
+          return (h || 0) * 60 + (m || 0);
+        };
+
+        const formatTo12 = (totalMins) => {
+          let h = Math.floor(totalMins / 60) % 24;
+          const m = Math.floor(totalMins % 60);
+          const mode = h >= 12 ? 'PM' : 'AM';
+          h = h % 12;
+          if (h === 0) h = 12;
+          return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')} ${mode}`;
+        };
+
+        const startMinutes = parseToMins(currentStart);
+        const endMinutes = (startMinutes + Math.round(newDuration * 60)) % 1440;
+        const calculatedEnd = formatTo12(endMinutes);
+
+        if (!storeSlot || storeSlot.hours !== newDuration || storeSlot.end !== calculatedEnd) {
+          setTimeSlot({
+            start: formatTo12(startMinutes),
+            end: calculatedEnd,
+            hours: newDuration
+          });
+        }
+      }
     } else {
       // ── No current package: cafe has no packages and no event company selected.
       // Clear any stale selectedPackage persisted from a previous session / cafe.
@@ -553,7 +607,7 @@ function BookingContent() {
         setPackage(null);
       }
     }
-  }, [currentPackage, realPackagePrice, payloadStr, setPackage, selectedEventCompany]);
+  }, [currentPackage, realPackagePrice, payloadStr, setPackage, setTimeSlot, selectedEventCompany]);
 
   // Sync inclusion items to the store so StickyBookingSummary shows the right tiers.
   // GUARD: When a 3rd party event company has already committed its tier selections,
@@ -759,7 +813,7 @@ function BookingContent() {
       </header>
 
       {/* Top Navbar for Desktop & Tablet */}
-      <div className="hidden md:block">
+      <div className="hidden md:block sticky top-0 z-50 w-full">
         <CustomerNavbar showSearch={true} showViewToggles={false} />
       </div>
 
@@ -977,7 +1031,18 @@ function BookingContent() {
                         setSelectedPkgId(pkgId);
                         const selectedPkg = cafePackages.find(p => String(p.id) === String(pkgId));
                         if (selectedPkg) {
-                          setPackage(selectedPkg);
+                          const pDuration = Number(selectedPkg.duration_hours || selectedPkg.duration_value || selectedPkg.durationHours || 0);
+                          setPackage({
+                            ...selectedPkg,
+                            id: selectedPkg.id,
+                            name: selectedPkg.package_name || selectedPkg.service_name || 'Cafe Event Package',
+                            price: Number(selectedPkg.price || selectedPkg.base_price || 0),
+                            duration_hours: pDuration,
+                            duration_value: pDuration,
+                            durationHours: pDuration,
+                            duration_unit: selectedPkg.duration_unit || 'Hours',
+                            maximum_persons: selectedPkg.maximum_persons || selectedPkg.max_guests
+                          });
                         }
                       }
                     }}

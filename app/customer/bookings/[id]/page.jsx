@@ -42,13 +42,10 @@ export default function BookingDetailsPage() {
     try {
       setLoading(true);
 
-      const [bookingResult, allBookingsResult] = await Promise.allSettled([
-        bookingService.getBookingById(id),
-        bookingService.getMyBookings()
-      ]);
-
-      if (bookingResult.status === 'fulfilled' && bookingResult.value?.success && bookingResult.value?.data) {
-        let b = bookingResult.value.data;
+      // Fetch primary booking details first so page renders immediately
+      const primaryRes = await bookingService.getBookingById(id);
+      if (primaryRes?.success && primaryRes?.data) {
+        let b = primaryRes.data;
         if (b.booking_status === 'CONFIRMED') {
           try {
             const bDate = new Date(b.booking_date);
@@ -62,12 +59,8 @@ export default function BookingDetailsPage() {
           } catch (e) {}
         }
         setBooking(b);
-      } else if (bookingResult.status === 'rejected' || !bookingResult.value?.data) {
+      } else {
         toast.error('Could not load booking details.');
-      }
-
-      if (allBookingsResult.status === 'fulfilled' && allBookingsResult.value?.success && allBookingsResult.value?.data) {
-        setAllBookings(allBookingsResult.value.data);
       }
     } catch (error) {
       console.error('Failed to fetch booking details:', error);
@@ -75,12 +68,22 @@ export default function BookingDetailsPage() {
     } finally {
       setLoading(false);
     }
+
+    // Load booking stats/history asynchronously in the background so it never blocks or delays the page
+    try {
+      const historyRes = await bookingService.getMyBookings();
+      if (historyRes?.success && Array.isArray(historyRes?.data)) {
+        setAllBookings(historyRes.data);
+      }
+    } catch (err) {
+      console.warn('Could not refresh sidebar booking stats:', err?.message);
+    }
   };
 
   const handleCancel = async (reason) => {
     try {
       setIsProcessing(true);
-      await bookingService.cancelBooking(id);
+      await bookingService.cancelBooking(id, reason);
       toast.success('Booking cancelled successfully.');
       setIsCancelModalOpen(false);
       fetchBookingDetails();
@@ -318,7 +321,7 @@ export default function BookingDetailsPage() {
               </div>
               
               {/* Refund Summary Card (Rendered for Cancelled or Refunded Bookings) */}
-              {(booking.booking_status === 'CANCELLED' || booking.booking_status === 'REJECTED' || booking.payment_status === 'REFUNDED' || booking.payment_status === 'PARTIALLY_REFUNDED') && (
+              {(booking.booking_status === 'CANCELLED' || booking.booking_status === 'REJECTED' || booking.payment_status === 'REFUNDED' || booking.payment_status === 'PARTIALLY_REFUNDED' || booking.payment_status === 'REFUND_PROCESSING' || booking.payment_status === 'REFUND_FAILED') && (
                 <div className="bg-[#FFF5F5] border border-[#EF5350]/60 rounded-3xl p-5 sm:p-6 shadow-xs space-y-4">
                   <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#EF5350]/40 pb-3">
                     <div className="flex items-center gap-2 text-[#E50914] font-black text-sm uppercase tracking-wider">
@@ -328,11 +331,21 @@ export default function BookingDetailsPage() {
                     <span className={`px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider ${
                       booking.payment_status === 'REFUNDED' || booking.payment_status === 'PARTIALLY_REFUNDED'
                         ? 'bg-emerald-100 text-emerald-800 border border-emerald-300'
+                        : booking.payment_status === 'REFUND_PROCESSING'
+                        ? 'bg-blue-100 text-blue-800 border border-blue-300'
+                        : booking.payment_status === 'REFUND_FAILED'
+                        ? 'bg-rose-100 text-rose-800 border border-rose-300'
                         : booking.payment_status === 'PAID'
                         ? 'bg-amber-100 text-amber-800 border border-amber-300'
                         : 'bg-stone-200 text-stone-700'
                     }`}>
-                      {booking.payment_status === 'REFUNDED' ? 'Refund Processed' : (booking.payment_status === 'PAID' ? 'Non-Refundable (< 9h)' : 'Cancelled (Unpaid)')}
+                      {booking.payment_status === 'REFUNDED' 
+                        ? 'Refund Completed' 
+                        : (booking.payment_status === 'REFUND_PROCESSING' 
+                        ? 'Refund Processing' 
+                        : (booking.payment_status === 'REFUND_FAILED' 
+                        ? 'Refund Attention' 
+                        : (booking.payment_status === 'PAID' ? 'Non-Refundable (< 3h)' : 'Cancelled (Unpaid)')))}
                     </span>
                   </div>
 
@@ -362,9 +375,13 @@ export default function BookingDetailsPage() {
 
                   <p className="text-xs text-stone-600 font-medium leading-relaxed pt-1">
                     {booking.payment_status === 'REFUNDED'
-                      ? 'Your automated refund has been processed through Razorpay Payments back to your original payment method. Please allow 3 to 5 business days for banking settlement.'
+                      ? 'Your automated refund has been successfully processed through Razorpay Payments back to your original payment method. Please allow 3 to 5 business days for banking settlement.'
+                      : booking.payment_status === 'REFUND_PROCESSING'
+                      ? 'Your automated refund has been initiated with Razorpay and is currently clearing with your issuing bank.'
+                      : booking.payment_status === 'REFUND_FAILED'
+                      ? 'A temporary gateway delay occurred with your refund. Our support team is in touch with the bank to ensure prompt credit.'
                       : booking.payment_status === 'PAID'
-                      ? 'This booking was cancelled within the 9-hour slot window. As per our Cancellation Policy, bookings cancelled less than 9 hours before slot start time are non-refundable.'
+                      ? 'This booking was cancelled within the 3-hour slot window. As per our Cancellation Policy, bookings cancelled less than 3 hours before start time are non-refundable.'
                       : 'This booking was cancelled prior to payment completion. No charges were billed.'}
                   </p>
                 </div>
@@ -431,9 +448,9 @@ export default function BookingDetailsPage() {
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.96 }}
                         onClick={() => setReviewModalData({ type: 'Cafe', targetName: booking.cafes?.name || 'Cafe' })}
-                        className="px-4.5 py-2.5 bg-gradient-to-r from-[#B71C1C] to-[#E50914] text-white rounded-2xl font-black text-xs transition-all cursor-pointer shadow-md hover:shadow-lg flex items-center gap-2"
+                        className="px-4.5 py-2.5 bg-[#E50914] hover:bg-[#d00812] text-white rounded-2xl font-black text-xs transition-all cursor-pointer shadow-md hover:shadow-lg flex items-center gap-2"
                       >
-                        <Sparkles className="w-3.5 h-3.5 text-amber-300" />
+                        <Sparkles className="w-3.5 h-3.5 text-white" />
                         <span>Review Cafe</span>
                       </motion.button>
 
@@ -444,9 +461,9 @@ export default function BookingDetailsPage() {
                           type: 'Event Manager', 
                           targetName: booking.event_services?.users?.event_management_profiles?.company_name || booking.event_services?.users?.name || 'Event Manager' 
                         })}
-                        className="px-4.5 py-2.5 bg-gradient-to-r from-amber-800 via-orange-800 to-[#E50914] text-white rounded-2xl font-black text-xs transition-all cursor-pointer shadow-md hover:shadow-lg flex items-center gap-2"
+                        className="px-4.5 py-2.5 bg-[#252525] hover:bg-stone-800 text-white rounded-2xl font-black text-xs transition-all cursor-pointer shadow-md hover:shadow-lg flex items-center gap-2"
                       >
-                        <Sparkles className="w-3.5 h-3.5 text-amber-300" />
+                        <Sparkles className="w-3.5 h-3.5 text-white" />
                         <span>Review Event Manager</span>
                       </motion.button>
                     </>
@@ -455,9 +472,9 @@ export default function BookingDetailsPage() {
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.96 }}
                       onClick={() => setReviewModalData({ type: 'Cafe', targetName: booking.cafes?.name || 'Cafe' })}
-                      className="px-5 py-2.5 bg-gradient-to-r from-[#B71C1C] via-[#5C3818] to-[#E50914] text-white rounded-2xl font-black text-xs transition-all cursor-pointer shadow-md hover:shadow-lg flex items-center gap-2"
+                      className="px-5 py-2.5 bg-[#E50914] hover:bg-[#d00812] text-white rounded-2xl font-black text-xs transition-all cursor-pointer shadow-md hover:shadow-lg flex items-center gap-2"
                     >
-                      <Sparkles className="w-3.5 h-3.5 text-amber-300" />
+                      <Sparkles className="w-3.5 h-3.5 text-white" />
                       <span>Write a Review</span>
                     </motion.button>
                   )}

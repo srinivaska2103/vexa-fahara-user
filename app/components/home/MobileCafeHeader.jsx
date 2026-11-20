@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import Link from 'next/link';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -16,6 +17,7 @@ import { authService } from '@/services/auth.service';
 import api from '@/lib/axios';
 import toast from 'react-hot-toast';
 import { cn } from '@/lib/utils';
+import InstallAppButton from '@/app/components/common/InstallAppButton';
 
 export default function MobileCafeHeader({ onFilterClick }) {
   const pathname = usePathname();
@@ -154,6 +156,10 @@ export default function MobileCafeHeader({ onFilterClick }) {
   const rawUserName = user?.name || user?.full_name || (user?.email ? user.email.split('@')[0] : '');
   const userName = rawUserName.trim();
   const userInitials = userName ? userName.substring(0, 2).toUpperCase() : 'FC';
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   return (
     <>
@@ -169,57 +175,54 @@ export default function MobileCafeHeader({ onFilterClick }) {
       )}
 
       {/* ── TOP HEADER ROW (Logo, Notifications, Avatar) ── */}
-      <div className="md:hidden relative z-50 w-full bg-[#E50914] text-white px-4 pt-3.5 pb-1 transition-all duration-200 overflow-visible border-0" suppressHydrationWarning>
+      <div className="md:hidden relative z-50 w-full bg-[#E50914] text-white px-2.5 xs:px-4 pt-3 pb-1 transition-all duration-200 overflow-visible border-0" suppressHydrationWarning>
         <div className="relative z-10 flex flex-col space-y-2.5" suppressHydrationWarning>
           
-          {/* Navigation Row (Logo + Notifications + Avatar) */}
-          <div className="flex items-center justify-between">
-            {/* Left: Grab2GO Logo + Branded Wordmark */}
-            <Link 
-              href="/customer/cafe" 
-              className="flex items-center gap-2.5 active:scale-95 transition-transform"
-            >
-              <div className="relative w-11 h-11 rounded-2xl overflow-hidden shadow-md ring-1 ring-white/40 bg-white shrink-0 p-0.5">
-                <Image
-                  src="/grab-it-logo.png"
-                  alt="Grab2GO Logo"
-                  width={44}
-                  height={44}
-                  className="w-full h-full object-contain"
-                  priority
-                />
-              </div>
-              <div className="flex flex-col">
-                <span className="text-lg font-black tracking-tight text-white leading-none">
-                  Grab<span className="text-amber-300">2GO</span>
-                </span>
-                <span className="text-[9px] font-black tracking-widest text-white/90 uppercase mt-0.5 leading-none">
-                  Cafe &amp; Events
-                </span>
-              </div>
-            </Link>
+          {/* Navigation Row (Logo + Switch + Notifications + Avatar) */}
+          <div className="flex items-center justify-between gap-1 w-full overflow-hidden">
+            {/* Left: Grab2GO Logo (Larger on Mobile, text hidden) */}
+            <div className="flex items-center gap-1.5 xs:gap-2 shrink-0">
+              <Link 
+                href="/customer/cafe" 
+                className="flex items-center active:scale-95 transition-transform shrink-0"
+                aria-label="Grab2GO Cafe & Events"
+              >
+                <div className="relative w-10 h-10 xs:w-11 xs:h-11 rounded-2xl overflow-hidden shadow-md ring-2 ring-white/60 bg-white shrink-0 p-1">
+                  <Image
+                    src="/grab-it-logo.png"
+                    alt="Grab2GO Logo"
+                    width={48}
+                    height={48}
+                    className="w-full h-full object-contain"
+                    priority
+                  />
+                </div>
+              </Link>
+            </div>
 
-            {/* Right: Switch Button + Notification Bell + User Avatar Control */}
-            <div className="flex items-center gap-1.5 xs:gap-2">
-              
+            {/* Right: Install App + Switch Pill + Notification Bell + User Avatar */}
+            <div className="flex items-center gap-1 xs:gap-1.5 shrink-0">
+              {/* Install App Button */}
+              <InstallAppButton variant="mobile" />
+
               {/* Switch Pill (Food & Discover Cafe) */}
-              <div className="flex items-center bg-white/20 p-0.5 rounded-full border border-white/30 backdrop-blur-md">
+              <div className="flex items-center bg-white/20 p-0.5 rounded-full border border-white/30 backdrop-blur-md shrink-0">
                 <Link
                   href="/customer/food"
                   className={cn(
-                    "px-2 py-1 rounded-full text-[10px] font-black transition-all flex items-center gap-1",
+                    "px-1.5 xs:px-2.5 py-0.5 xs:py-1 rounded-full text-[8.5px] xs:text-[10px] font-black transition-all flex items-center gap-0.5 xs:gap-1",
                     pathname?.startsWith('/customer/food')
                       ? "bg-white text-[#E50914] shadow-xs"
                       : "text-white hover:text-white/80"
                   )}
                 >
-                  <Utensils size={10} />
+                  <Utensils size={8.5} className="hidden xs:inline" />
                   <span>Food</span>
                 </Link>
                 <Link
                   href="/customer/cafe"
                   className={cn(
-                    "px-2 py-1 rounded-full text-[10px] font-black transition-all",
+                    "px-1.5 xs:px-2.5 py-0.5 xs:py-1 rounded-full text-[8.5px] xs:text-[10px] font-black transition-all",
                     pathname?.startsWith('/customer/cafe') || pathname?.startsWith('/customer/discover')
                       ? "bg-white text-[#E50914] shadow-xs"
                       : "text-white hover:text-white/80"
@@ -230,7 +233,7 @@ export default function MobileCafeHeader({ onFilterClick }) {
               </div>
 
               {/* Notification Button */}
-              <div className="relative">
+              <div className="relative shrink-0">
                 <button
                   onClick={() => {
                     setIsNotifOpen(!isNotifOpen);
@@ -239,17 +242,17 @@ export default function MobileCafeHeader({ onFilterClick }) {
                   suppressHydrationWarning
                   type="button"
                   className={cn(
-                    "w-10 h-10 rounded-2xl backdrop-blur-md flex items-center justify-center transition-all relative active:scale-90 cursor-pointer shadow-sm",
+                    "w-7 h-7 xs:w-9 xs:h-9 rounded-xl xs:rounded-2xl backdrop-blur-md flex items-center justify-center transition-all relative active:scale-90 cursor-pointer shadow-sm",
                     isNotifOpen
                       ? "bg-white text-[#E50914] ring-2 ring-white/50"
                       : "bg-white/20 text-white border border-white/25 hover:bg-white/30"
                   )}
                   aria-label="Notifications"
                 >
-                  <Bell size={18} className={isNotifOpen ? "text-[#E50914]" : "text-white"} />
+                  <Bell size={14} className={isNotifOpen ? "text-[#E50914]" : "text-white"} />
                   {unreadCount > 0 && (
                     <span className={cn(
-                      "absolute -top-1 -right-1 min-w-4 h-4 px-1 rounded-full text-[9px] font-black flex items-center justify-center ring-2",
+                      "absolute -top-1 -right-1 min-w-3.5 h-3.5 xs:min-w-4 xs:h-4 px-1 rounded-full text-[8px] xs:text-[9px] font-black flex items-center justify-center ring-1 xs:ring-2",
                       isNotifOpen
                         ? "bg-[#E50914] text-white ring-white"
                         : "bg-white text-[#E50914] ring-[#B71C1C]"
@@ -259,96 +262,117 @@ export default function MobileCafeHeader({ onFilterClick }) {
                   )}
                 </button>
 
-                {/* Notifications Popup */}
-                <AnimatePresence>
-                  {isNotifOpen && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 6, scale: 0.95 }}
-                      animate={{ opacity: 1, y: 0, scale: 1 }}
-                      exit={{ opacity: 0, y: 6, scale: 0.95 }}
-                      transition={{ duration: 0.15 }}
-                      className="absolute right-0 top-full mt-2 w-72 max-w-[calc(100vw-24px)] bg-white text-[#252525] rounded-2xl border border-stone-200 shadow-2xl p-3 z-[100] space-y-2 text-left"
-                    >
-                      <div className="flex items-center justify-between pb-1.5 border-b border-stone-100">
-                        <span className="text-xs font-black text-[#252525]">Notifications</span>
-                        <div className="flex items-center gap-2">
-                          {unreadCount > 0 && (
-                            <span className="text-[10px] font-extrabold text-[#E50914] bg-[#FFF5F5] px-2 py-0.5 rounded-full border border-[#EF5350]">
-                              {unreadCount} New
-                            </span>
-                          )}
-                          {unreadCount > 0 && (
+                {/* Notifications Popup Modal - Portaled to document.body */}
+                {mounted && typeof document !== 'undefined' && createPortal(
+                  <AnimatePresence>
+                    {isNotifOpen && (
+                      <div className="fixed inset-0 z-[999999] flex items-center justify-center p-4">
+                        {/* Full-screen backdrop to close when clicking outside */}
+                        <motion.div
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          exit={{ opacity: 0 }}
+                          onClick={() => setIsNotifOpen(false)}
+                          className="fixed inset-0 bg-black/60 backdrop-blur-sm"
+                        />
+
+                        {/* Centered Modern Modal */}
+                        <motion.div
+                          initial={{ opacity: 0, scale: 0.9, y: 15 }}
+                          animate={{ opacity: 1, scale: 1, y: 0 }}
+                          exit={{ opacity: 0, scale: 0.9, y: 15 }}
+                          transition={{ duration: 0.2, ease: 'easeOut' }}
+                          className="w-full max-w-sm bg-white rounded-3xl shadow-2xl border border-stone-200 p-5 text-stone-800 space-y-3 relative z-10 overflow-hidden"
+                        >
+                          <div className="flex items-center justify-between pb-3 border-b border-stone-100">
+                            <div className="flex items-center gap-2">
+                              <span className="p-2 rounded-xl bg-[#FFF5F5] text-[#E50914]">
+                                <Bell size={16} />
+                              </span>
+                              <h3 className="text-sm font-black text-[#252525]">Notifications</h3>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              {unreadCount > 0 && (
+                                <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-red-100 text-[#E50914]">
+                                  {unreadCount} new
+                                </span>
+                              )}
+                              <button
+                                type="button"
+                                onClick={() => setIsNotifOpen(false)}
+                                className="w-7 h-7 rounded-full bg-stone-100 hover:bg-stone-200 text-stone-600 flex items-center justify-center cursor-pointer transition-colors"
+                              >
+                                ✕
+                              </button>
+                            </div>
+                          </div>
+
+                          <div className="max-h-72 overflow-y-auto space-y-2 pr-1 no-scrollbar">
+                            {notifications.length > 0 ? (
+                              notifications.slice(0, 6).map((n) => (
+                                <div
+                                  key={n.id || n._id}
+                                  onClick={async () => {
+                                    if (!n.is_read) {
+                                      const id = n.id || n._id;
+                                      await api.patch(`/notifications/${id}/read`).catch(() => null);
+                                      setNotifications((prev) =>
+                                        prev.map((item) => ((item.id || item._id) === id ? { ...item, is_read: true } : item))
+                                      );
+                                    }
+                                  }}
+                                  className={cn(
+                                    "p-3 rounded-2xl border text-xs transition-colors cursor-pointer",
+                                    n.is_read 
+                                      ? "bg-stone-50/80 border-stone-100 hover:bg-[#FFF5F5]" 
+                                      : "bg-[#FFF5F5] border-red-200 hover:bg-[#FDF4E7]"
+                                  )}
+                                >
+                                  <div className="flex items-center justify-between gap-1">
+                                    <p className="font-bold text-[#252525] line-clamp-1">{n.title || 'Notification'}</p>
+                                    {!n.is_read && (
+                                      <span className="w-1.5 h-1.5 rounded-full bg-[#E50914] shrink-0" />
+                                    )}
+                                  </div>
+                                  <p className="text-[11px] text-stone-600 line-clamp-2 mt-0.5 leading-relaxed">{n.message || n.content}</p>
+                                </div>
+                              ))
+                            ) : (
+                              <div className="py-8 text-center space-y-2">
+                                <Bell size={24} className="text-stone-300 mx-auto" />
+                                <p className="text-xs font-bold text-stone-400">
+                                  No new notifications
+                                </p>
+                              </div>
+                            )}
+                          </div>
+
+                          <div className="pt-2 border-t border-stone-100 flex items-center justify-between">
                             <button
                               type="button"
-                              onClick={async (e) => {
-                                e.stopPropagation();
-                                try {
-                                  await api.patch('/notifications/read-all').catch(() => null);
-                                  setNotifications((prev) => prev.map((n) => ({ ...n, is_read: true })));
-                                  toast.success('Marked all as read');
-                                } catch (err) {
-                                  // silent
-                                }
-                              }}
-                              className="text-[10px] font-bold text-[#E50914] hover:underline active:scale-95 transition-transform cursor-pointer"
+                              onClick={() => setIsNotifOpen(false)}
+                              className="text-xs font-bold text-stone-500 hover:text-stone-800 cursor-pointer"
                             >
-                              Mark all as read
+                              Dismiss
                             </button>
-                          )}
-                        </div>
-                      </div>
-                      <div className="max-h-56 overflow-y-auto space-y-1.5 no-scrollbar">
-                        {notifications.length > 0 ? (
-                          notifications.slice(0, 5).map((n) => (
-                            <div
-                              key={n.id || n._id}
-                              onClick={async () => {
-                                if (!n.is_read) {
-                                  const id = n.id || n._id;
-                                  await api.patch(`/notifications/${id}/read`).catch(() => null);
-                                  setNotifications((prev) =>
-                                    prev.map((item) => ((item.id || item._id) === id ? { ...item, is_read: true } : item))
-                                  );
-                                }
-                              }}
-                              className={cn(
-                                "p-2 rounded-xl border text-xs transition-colors cursor-pointer",
-                                n.is_read 
-                                  ? "bg-stone-50/80 border-stone-100 hover:bg-[#FFF5F5]" 
-                                  : "bg-[#FFF5F5] border-[#EF5350]/50 hover:bg-[#FDF4E7]"
-                              )}
+                            <Link
+                              href="/customer/profile?tab=notifications"
+                              onClick={() => setIsNotifOpen(false)}
+                              className="text-xs font-black text-[#E50914] hover:underline"
                             >
-                              <div className="flex items-center justify-between gap-1">
-                                <p className="font-bold text-[#252525] line-clamp-1">{n.title || 'Notification'}</p>
-                                {!n.is_read && (
-                                  <span className="w-1.5 h-1.5 rounded-full bg-[#E63946] shrink-0" />
-                                )}
-                              </div>
-                              <p className="text-[10px] text-stone-500 line-clamp-2 mt-0.5">{n.message || n.content}</p>
-                            </div>
-                          ))
-                        ) : (
-                          <p className="text-center py-4 text-[11px] font-bold text-stone-400">
-                            No notifications
-                          </p>
-                        )}
+                              View all notifications →
+                            </Link>
+                          </div>
+                        </motion.div>
                       </div>
-                      <div className="pt-2 border-t border-stone-100 text-center">
-                        <Link
-                          href="/customer/profile?tab=notifications"
-                          onClick={() => setIsNotifOpen(false)}
-                          className="text-[11px] font-extrabold text-[#E50914] hover:underline"
-                        >
-                          View all notifications →
-                        </Link>
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+                    )}
+                  </AnimatePresence>,
+                  document.body
+                )}
               </div>
 
               {/* Profile / Avatar Control */}
-              <div className="relative">
+              <div className="relative shrink-0">
                 <button
                   onClick={() => {
                     setIsProfileOpen(!isProfileOpen);
@@ -357,17 +381,17 @@ export default function MobileCafeHeader({ onFilterClick }) {
                   type="button"
                   suppressHydrationWarning
                   aria-label="User profile menu"
-                  className="w-10 h-10 rounded-2xl overflow-hidden ring-2 ring-white/20 active:scale-90 transition-transform bg-[#1F100B] flex items-center justify-center cursor-pointer shadow-sm"
+                  className="w-7 h-7 xs:w-9 xs:h-9 rounded-xl xs:rounded-2xl overflow-hidden ring-2 ring-white/40 shadow-sm active:scale-90 transition-transform cursor-pointer bg-white/20 flex items-center justify-center"
                 >
                   {profileImage && !imageError ? (
                     <img
                       src={profileImage}
-                      alt={userName}
+                      alt={userName || 'User'}
                       className="w-full h-full object-cover"
                       onError={() => setImageError(true)}
                     />
                   ) : (
-                    <span className="text-xs font-black text-[#EF5350] tracking-wider">
+                    <span className="text-[11px] font-black text-white tracking-wider">
                       {userInitials}
                     </span>
                   )}

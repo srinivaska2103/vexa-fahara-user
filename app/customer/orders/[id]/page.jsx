@@ -25,6 +25,7 @@ import FoodDashboardSidebar from '@/app/components/food/FoodDashboardSidebar';
 import OrderReviewSection from '@/app/components/food/OrderReviewSection';
 import OrderCancellationModal from '@/app/components/food/OrderCancellationModal';
 import OrderRefundTracker from '@/app/components/food/OrderRefundTracker';
+import DeliveryLiveTrackingSection from '@/app/components/food/DeliveryLiveTrackingSection';
 import api from '@/lib/axios';
 import toast from 'react-hot-toast';
 
@@ -35,26 +36,60 @@ export default function OrderTrackingDetailPage() {
 
   const [order, setOrder] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
   const [cancellationPolicy, setCancellationPolicy] = useState(null);
   const [isCancelling, setIsCancelling] = useState(false);
   const [refundData, setRefundData] = useState(null);
   const [showRefundTracker, setShowRefundTracker] = useState(false);
+  const [secondsRemaining, setSecondsRemaining] = useState(null);
+  const [liveLocation, setLiveLocation] = useState(null);
 
-  const fetchTracking = async () => {
+  // Accurate real-time 5-minute countdown based on authoritative server order creation timestamp
+  useEffect(() => {
+    if (!order?.created_at && !order?.createdAt) return;
+
+    const createdAtMs = new Date(order.created_at || order.createdAt).getTime();
+    const deadlineMs = createdAtMs + 5 * 60 * 1000;
+
+    const updateTimer = () => {
+      const nowMs = Date.now();
+      const remaining = Math.max(0, Math.floor((deadlineMs - nowMs) / 1000));
+      setSecondsRemaining(remaining);
+    };
+
+    updateTimer();
+    const interval = setInterval(updateTimer, 1000);
+    return () => clearInterval(interval);
+  }, [order?.created_at, order?.createdAt]);
+
+  const isTerminalStatus = ['COMPLETED', 'DELIVERED', 'CANCELLED', 'REJECTED'].includes(order?.order_status);
+  const isCancellationWindowActive = !isTerminalStatus && secondsRemaining !== null && secondsRemaining > 0;
+
+  const fetchTracking = async (showToast = false) => {
     if (!orderId) return;
+    if (showToast) setIsRefreshing(true);
     try {
       const res = await api.get(`/customer/orders/${orderId}`);
       if (res.data?.success) {
         setOrder(res.data.data);
+        if (res.data.data.delivery_location || res.data.data.deliveryLocation) {
+          setLiveLocation(res.data.data.delivery_location || res.data.data.deliveryLocation);
+        }
         if (res.data.data.order_status === 'CANCELLED' || res.data.data.payment_refunds?.length > 0) {
           fetchRefundData();
         }
+        if (showToast) {
+          toast.success('Order status updated');
+        }
       }
     } catch (err) {
-      toast.error('Failed to load order details');
+      if (showToast) {
+        toast.error('Failed to update status');
+      }
     } finally {
       setIsLoading(false);
+      setIsRefreshing(false);
     }
   };
 
@@ -184,27 +219,124 @@ export default function OrderTrackingDetailPage() {
               </button>
             )}
 
-            {/* Cancel Order Button if eligible */}
-            {!['COMPLETED', 'DELIVERED', 'CANCELLED', 'REJECTED'].includes(order.order_status) && (
+            {/* Request Refund / Cancel Order Button - only available while 5-minute cancellation window is active */}
+            {!['COMPLETED', 'DELIVERED', 'CANCELLED', 'REJECTED'].includes(order.order_status) && isCancellationWindowActive && (
               <button
                 type="button"
                 onClick={openCancelModal}
                 className="px-3.5 py-2 rounded-xl bg-white border border-[#ED0014] text-[#ED0014] hover:bg-[#FFF5F5] text-xs font-black transition-all flex items-center gap-1.5 cursor-pointer shadow-2xs active:scale-95"
               >
-                <XCircle className="w-3.5 h-3.5" />
-                <span>Cancel Order</span>
+                <RotateCcw className="w-3.5 h-3.5" />
+                <span>Request Refund / Cancel</span>
               </button>
             )}
 
             <button
-              onClick={fetchTracking}
-              className="p-2 rounded-xl bg-white border border-[#FEE2E2] hover:bg-[#FFF5F5] text-[#252525] cursor-pointer"
-              title="Refresh Status"
+              onClick={() => fetchTracking(true)}
+              disabled={isRefreshing}
+              className="p-2.5 rounded-2xl bg-white border border-[#FEE2E2] hover:bg-[#FFF5F5] hover:border-[#EF5350]/50 text-[#252525] cursor-pointer shadow-2xs transition-all disabled:opacity-50 active:scale-95"
+              title="Refresh Order Status"
             >
-              <RefreshCw className="w-4 h-4 text-[#ED0014]" />
+              <RefreshCw className={`w-4 h-4 text-[#ED0014] ${isRefreshing ? 'animate-spin' : ''}`} />
             </button>
           </div>
         </div>
+
+        {/* ── 5-MINUTE CANCELLATION RESTRICTION INLINE BANNER ── */}
+        {!isTerminalStatus && secondsRemaining !== null && (
+          isCancellationWindowActive ? (
+            <div className="bg-emerald-50/90 border border-emerald-200 rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-2xs">
+              <div className="flex items-start sm:items-center gap-3">
+                <div className="w-9 h-9 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0">
+                  <Clock className="w-4 h-4 animate-pulse" />
+                </div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs font-black text-emerald-950">5-Minute Cancellation Window Active</span>
+                    <span className="px-2 py-0.5 rounded-full bg-emerald-200/80 text-emerald-900 font-black text-[10px] tracking-wide">
+                      {Math.floor(secondsRemaining / 60)}:{String(secondsRemaining % 60).padStart(2, '0')} left
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-emerald-800 font-medium mt-0.5 leading-relaxed">
+                    Your order can be cancelled within 5 minutes of placing it. After this period, cancellation will no longer be available through the app.
+                  </p>
+                </div>
+              </div>
+              <span className="text-[11px] font-black text-emerald-700 shrink-0 bg-white px-3 py-1.5 rounded-xl border border-emerald-200 shadow-2xs">
+                Cancellation available for {Math.floor(secondsRemaining / 60)}:{String(secondsRemaining % 60).padStart(2, '0')} more
+              </span>
+            </div>
+          ) : (
+            <div className="bg-stone-50 border border-stone-200 rounded-2xl p-4 flex items-start gap-3 shadow-2xs">
+              <div className="w-9 h-9 rounded-xl bg-stone-200 text-stone-600 flex items-center justify-center shrink-0 mt-0.5">
+                <AlertCircle className="w-4 h-4" />
+              </div>
+              <div>
+                <span className="text-xs font-black text-stone-800 block">5-Minute Cancellation Period Ended</span>
+                <p className="text-[11px] text-stone-600 font-medium mt-0.5 leading-relaxed">
+                  Your 5-minute cancellation window has ended. This order can no longer be cancelled through the customer app.
+                </p>
+              </div>
+            </div>
+          )
+        )}
+
+        {/* ── DEDICATED OFFERS & REWARDS APPLIED SECTION ── */}
+        {order.applied_offers && order.applied_offers.length > 0 && (
+          <div className="bg-gradient-to-r from-red-500 via-[#E50914] to-orange-500 rounded-3xl p-5 text-white shadow-md space-y-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2.5">
+                <span className="w-9 h-9 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center text-lg">
+                  🎉
+                </span>
+                <div>
+                  <span className="text-[10px] font-black uppercase tracking-wider text-orange-200 block">
+                    Your Offer Is Applied!
+                  </span>
+                  <h3 className="text-sm sm:text-base font-black text-white">
+                    {order.applied_offers[0]?.title || 'Promotional Deal'}
+                  </h3>
+                </div>
+              </div>
+              <span className="px-3 py-1 rounded-xl bg-white text-[#E50914] font-black text-xs shadow-xs">
+                Saved ₹{Number(order.discount_amount || 0).toFixed(2)}
+              </span>
+            </div>
+
+            <div className="bg-black/15 backdrop-blur-xs rounded-2xl p-3.5 space-y-1.5 text-xs text-white/95">
+              {order.applied_offers.map((off, idx) => (
+                <div key={idx} className="space-y-1">
+                  {off.qualifyingItem && (
+                    <div className="flex justify-between items-center text-white/90">
+                      <span>Qualifying Paid:</span>
+                      <strong className="font-black">{off.qualifyingItem.name} × {off.qualifyingItem.quantity}</strong>
+                    </div>
+                  )}
+                  {off.rewardItem && (
+                    <div className="flex justify-between items-center text-amber-200 font-black">
+                      <span>Free Reward:</span>
+                      <strong className="bg-white/25 px-2 py-0.5 rounded-lg text-white font-black uppercase text-[10px]">
+                        {off.rewardItem.name} × {off.rewardItem.quantity} ({off.rewardItem.type})
+                      </strong>
+                    </div>
+                  )}
+                  <p className="text-[11px] text-white/80 pt-1">
+                    Kitchen is preparing all items including promotional rewards!
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* ── LIVE DELIVERY TRACKING MAP (Only for Restaurant Delivery, placed below Order Header and above detailed info) ── */}
+        {!isTakeaway && order.order_status !== 'CANCELLED' && (
+          <DeliveryLiveTrackingSection
+            order={order}
+            liveDeliveryLocation={liveLocation}
+            onRefresh={() => fetchTracking(true)}
+          />
+        )}
 
         {/* ── LIVE STATUS BANNER ── */}
         <div className="bg-white rounded-3xl border border-[#FEE2E2] p-5 sm:p-6 space-y-5 shadow-xs">

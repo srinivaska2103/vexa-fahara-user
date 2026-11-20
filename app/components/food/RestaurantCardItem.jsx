@@ -37,9 +37,8 @@ export default function RestaurantCardItem({ cafe, activeOffers = [] }) {
             }`}
           />
 
-          {/* Fulfilment Badges (Top Left) */}
-          <div className="absolute top-3 left-3 flex flex-wrap gap-1.5 z-10">
-            {/* Availability Badge */}
+          {/* Availability Badge (Top Left) */}
+          <div className="absolute top-3 left-3 z-10">
             <span className={`px-2.5 py-1 rounded-xl text-[10px] font-black uppercase tracking-wider shadow-2xs flex items-center gap-1 border backdrop-blur-md ${
               canPlaceOrder && isOpen
                 ? 'bg-emerald-500/90 text-white border-emerald-600/30'
@@ -50,26 +49,7 @@ export default function RestaurantCardItem({ cafe, activeOffers = [] }) {
               <span className={`w-1.5 h-1.5 rounded-full ${canPlaceOrder && isOpen ? 'bg-white animate-pulse' : 'bg-stone-400'}`} />
               {badgeLabel}
             </span>
-
-            {deliveryOn && (
-              <span className="px-2.5 py-1 rounded-xl bg-white/95 backdrop-blur-md text-[#252525] text-[10px] font-black uppercase tracking-wider shadow-2xs flex items-center gap-1 border border-stone-200/60">
-                <Bike size={12} className="text-[#E53935]" /> Delivery
-              </span>
-            )}
-            {takeawayOn && (
-              <span className="px-2.5 py-1 rounded-xl bg-white/95 backdrop-blur-md text-[#252525] text-[10px] font-black uppercase tracking-wider shadow-2xs flex items-center gap-1 border border-stone-200/60">
-                <ShoppingBag size={12} className="text-orange-600" /> Takeaway
-              </span>
-            )}
           </div>
-
-          {/* Active Offer Badge (Top Right) */}
-          {cafeOffer && (
-            <div className="absolute top-3 right-3 px-2.5 py-1 rounded-xl bg-[#FF6B00] text-white text-[10px] font-black uppercase tracking-wider shadow-md flex items-center gap-1">
-              <Tag size={11} />
-              <span>{cafeOffer.discount_type === 'PERCENTAGE' ? `${cafeOffer.discount_value}% OFF` : `₹${cafeOffer.discount_value} OFF`}</span>
-            </div>
-          )}
 
           {/* Google Rating Pill (Bottom Right) */}
           {cafe.google_rating && (
@@ -81,7 +61,7 @@ export default function RestaurantCardItem({ cafe, activeOffers = [] }) {
         </div>
 
         {/* Content Meta */}
-        <div className="p-4 sm:p-5 space-y-2">
+        <div className="p-4 sm:p-5 space-y-2.5">
           <div>
             <h3 className="text-base font-black text-[#252525] group-hover:text-[#E53935] transition-colors line-clamp-1">
               {cafe.name}
@@ -90,7 +70,40 @@ export default function RestaurantCardItem({ cafe, activeOffers = [] }) {
               <span>{cafe.category || 'Cafe & Fast Food'}</span>
               <span>•</span>
               <span className="truncate">{cafe.city || cafe.address || 'Local'}</span>
+              {cafe.distance !== undefined && cafe.distance !== null && cafe.distance < 990 && (
+                <>
+                  <span>•</span>
+                  <span className="text-[#E53935] font-bold shrink-0">{cafe.distance} km</span>
+                </>
+              )}
             </p>
+          </div>
+
+          {/* Active Offers Highlight Card */}
+          {cafeOffer && (
+            <div className="px-2.5 py-1.5 rounded-xl bg-gradient-to-r from-orange-50 to-red-50 border border-orange-200/80 flex items-center justify-between text-xs text-[#FF6B00] font-black">
+              <span className="flex items-center gap-1.5 truncate">
+                <Tag size={12} className="shrink-0" />
+                <span className="truncate">{cafeOffer.title || `${cafeOffer.discount_value}% OFF`}</span>
+              </span>
+              <span className="px-1.5 py-0.5 rounded-md bg-[#FF6B00] text-white text-[9px] font-black uppercase shrink-0">
+                {cafeOffer.offer_category === 'BUY_X_GET_Y' || cafeOffer.offer_type === 'BUY_X_GET_Y' ? 'BOGO' : 'OFFER'}
+              </span>
+            </div>
+          )}
+
+          {/* Fulfilment Modes Pill Strip (Takeaway & Delivery at Bottom) */}
+          <div className="flex items-center gap-1.5 flex-wrap pt-0.5">
+            {deliveryOn && (
+              <span className="px-2.5 py-1 rounded-lg bg-cyan-50 text-cyan-800 text-[10px] font-bold border border-cyan-200/60 flex items-center gap-1">
+                <Bike size={12} className="text-cyan-600" /> Delivery
+              </span>
+            )}
+            {takeawayOn && (
+              <span className="px-2.5 py-1 rounded-lg bg-orange-50 text-orange-800 text-[10px] font-bold border border-orange-200/60 flex items-center gap-1">
+                <ShoppingBag size={12} className="text-orange-600" /> Takeaway
+              </span>
+            )}
           </div>
 
           {/* Next Opening / Hours Subtitle if Closed */}
@@ -101,14 +114,14 @@ export default function RestaurantCardItem({ cafe, activeOffers = [] }) {
           )}
 
           {/* Time & Delivery Pricing Strip */}
-          <div className="flex items-center justify-between pt-2.5 border-t border-stone-100 text-xs font-bold text-[#666666]">
+          <div className="flex items-center justify-between pt-2 border-t border-stone-100 text-xs font-bold text-[#666666]">
             <span className="flex items-center gap-1">
               <Clock size={13} className="text-[#888888]" />
               <span>{prepTime}-{prepTime + 10} min</span>
             </span>
 
             <span>
-              {deliveryOn ? `₹${deliveryFee} Delivery` : 'Pickup Only'}
+              {deliveryOn ? (deliveryFee === 0 ? 'Free Delivery' : `₹${deliveryFee} Delivery`) : 'Pickup Only'}
             </span>
           </div>
         </div>

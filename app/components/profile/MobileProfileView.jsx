@@ -9,6 +9,7 @@ import {
   ChevronRight, Loader2, Sparkles, Phone, Mail
 } from 'lucide-react';
 import { motion } from 'framer-motion';
+import HelpSupportModal from '@/app/components/common/HelpSupportModal';
 
 export default function MobileProfileView({
   profile,
@@ -24,6 +25,7 @@ export default function MobileProfileView({
 }) {
   const router = useRouter();
   const [showLogoutConfirm, setShowLogoutConfirm] = React.useState(false);
+  const [showHelpModal, setShowHelpModal] = React.useState(false);
 
   if (!profile) return null;
 
@@ -112,7 +114,7 @@ export default function MobileProfileView({
           title: 'Help & Support',
           subtitle: 'FAQs, live chat and customer care',
           icon: HelpCircle,
-          action: () => router.push('/contact'),
+          action: () => setShowHelpModal(true),
         },
       ],
     },
@@ -354,6 +356,12 @@ export default function MobileProfileView({
           </div>
         </div>
       )}
+
+      {/* Help & Support Modal */}
+      <HelpSupportModal
+        isOpen={showHelpModal}
+        onClose={() => setShowHelpModal(false)}
+      />
     </div>
   );
 }

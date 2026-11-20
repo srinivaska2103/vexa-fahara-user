@@ -27,7 +27,7 @@ export default function MobileAuthWrapper({
   return (
     <div className="relative min-h-[100dvh] w-full flex flex-col bg-white overflow-x-hidden md:hidden">
       {/* ── 1. UPPER THEMED TOPOGRAPHIC HEADER & CURVE ── */}
-      <div className="relative w-full h-[220px] xs:h-[240px] sm:h-[260px] shrink-0 bg-gradient-to-b from-[#7A543A] via-[#8D6345] to-[#B71C1C] overflow-hidden select-none">
+      <div className="relative w-full h-[220px] xs:h-[240px] sm:h-[260px] shrink-0 bg-gradient-to-b from-[#B71C1C] via-[#D32F2F] to-[#E50914] overflow-hidden select-none">
         
         {/* Topographic organic contour line artwork */}
         <svg

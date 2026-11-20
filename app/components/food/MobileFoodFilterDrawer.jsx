@@ -11,8 +11,12 @@ import {
   Tags, 
   MapPin, 
   Check, 
-  RotateCcw 
+  RotateCcw,
+  Navigation,
+  Loader2
 } from 'lucide-react';
+import { useSearchStore } from '@/stores/search.store';
+import toast from 'react-hot-toast';
 
 export default function MobileFoodFilterDrawer({
   isOpen,
@@ -33,6 +37,50 @@ export default function MobileFoodFilterDrawer({
     { id: 'TAKEAWAY', label: 'Takeaway Available', icon: ShoppingBag, desc: 'Pick up fresh at counter' },
     { id: 'OFFERS', label: 'Special Offers', icon: Tags, desc: 'Discounts & hot deals' },
   ];
+
+  const { setUserLocation, setUserCity } = useSearchStore();
+  const [isLocating, setIsLocating] = React.useState(false);
+
+  const handleDetectLocation = () => {
+    if (typeof window === 'undefined' || !navigator.geolocation) {
+      toast.error('Geolocation is not supported by your browser.');
+      return;
+    }
+    setIsLocating(true);
+    navigator.geolocation.getCurrentPosition(
+      async (pos) => {
+        const lat = pos.coords.latitude;
+        const lng = pos.coords.longitude;
+        const loc = { lat, lng };
+        setUserLocation(loc);
+        localStorage.setItem('g2g_user_lat', lat.toString());
+        localStorage.setItem('g2g_user_lng', lng.toString());
+        localStorage.setItem('g2g_location_prompted', 'true');
+
+        try {
+          const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=12`, {
+            headers: { 'Accept-Language': 'en' }
+          });
+          const data = await res.json();
+          const city = data?.address?.city || data?.address?.town || data?.address?.county || data?.address?.state_district || 'Madurai';
+          setUserCity(city);
+          localStorage.setItem('g2g_user_city', city);
+          onCityChange(city);
+          toast.success(`Location set to ${city}!`);
+        } catch {
+          onCityChange('Madurai');
+          toast.success('Location detected! Sorted by nearest.');
+        } finally {
+          setIsLocating(false);
+        }
+      },
+      (err) => {
+        setIsLocating(false);
+        toast.error('Could not access location. Please check browser permissions.');
+      },
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
+    );
+  };
 
   const handleReset = () => {
     onFilterFulfilmentChange('ALL');
@@ -152,39 +200,50 @@ export default function MobileFoodFilterDrawer({
               </div>
 
               {/* 2. Location / City */}
-              {availableCities.length > 0 && (
-                <div className="space-y-2.5">
-                  <span className="text-[11px] font-black uppercase tracking-wider text-stone-400 block">
-                    Location / City
-                  </span>
-                  <div className="flex flex-wrap gap-2">
+              <div className="space-y-2.5">
+                <span className="text-[11px] font-black uppercase tracking-wider text-stone-400 block">
+                  Location / City
+                </span>
+                <div className="flex flex-wrap gap-2">
+                  <button
+                    onClick={handleDetectLocation}
+                    disabled={isLocating}
+                    className="w-full px-3 py-2 rounded-xl text-xs font-black transition-all flex items-center justify-center gap-1.5 bg-red-50 text-[#E50914] border border-red-200 active:scale-95"
+                  >
+                    {isLocating ? (
+                      <Loader2 size={13} className="animate-spin text-[#E50914]" />
+                    ) : (
+                      <Navigation size={13} className="text-[#E50914]" />
+                    )}
+                    <span>{isLocating ? 'Detecting Location...' : 'Use My Current Location (GPS)'}</span>
+                  </button>
+
+                  <button
+                    onClick={() => onCityChange('All Locations')}
+                    className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
+                      selectedCity === 'All Locations'
+                        ? 'bg-[#E50914] text-white shadow-xs'
+                        : 'bg-stone-100 text-stone-700 hover:bg-stone-200'
+                    }`}
+                  >
+                    All Locations
+                  </button>
+                  {availableCities.map((city) => (
                     <button
-                      onClick={() => onCityChange('All Locations')}
-                      className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
-                        selectedCity === 'All Locations'
+                      key={city}
+                      onClick={() => onCityChange(city)}
+                      className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 ${
+                        selectedCity === city
                           ? 'bg-[#E50914] text-white shadow-xs'
                           : 'bg-stone-100 text-stone-700 hover:bg-stone-200'
                       }`}
                     >
-                      All Locations
+                      <MapPin size={12} />
+                      <span>{city}</span>
                     </button>
-                    {availableCities.map((city) => (
-                      <button
-                        key={city}
-                        onClick={() => onCityChange(city)}
-                        className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 ${
-                          selectedCity === city
-                            ? 'bg-[#E50914] text-white shadow-xs'
-                            : 'bg-stone-100 text-stone-700 hover:bg-stone-200'
-                        }`}
-                      >
-                        <MapPin size={12} />
-                        <span>{city}</span>
-                      </button>
-                    ))}
-                  </div>
+                  ))}
                 </div>
-              )}
+              </div>
 
               {/* 3. Category / Cuisine */}
               {categories.length > 0 && (

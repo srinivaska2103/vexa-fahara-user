@@ -15,10 +15,14 @@ import {
   Heart, 
   CalendarCheck, 
   ClipboardList,
-  Utensils
+  Utensils,
+  Navigation,
+  Loader2
 } from 'lucide-react';
 import { useAuthStore } from '@/stores/auth.store';
 import { useCartStore } from '@/stores/cart.store';
+import { useSearchStore } from '@/stores/search.store';
+import toast from 'react-hot-toast';
 
 export default function FoodDashboardHeader({ 
   searchQuery = '', 
@@ -38,6 +42,51 @@ export default function FoodDashboardHeader({
   const profileRef = useRef(null);
   const cityRef = useRef(null);
 
+  const { userLocation, setUserLocation, userCity, setUserCity } = useSearchStore();
+  const [isLocating, setIsLocating] = useState(false);
+
+  const handleDetectLocation = () => {
+    if (typeof window === 'undefined' || !navigator.geolocation) {
+      toast.error('Geolocation is not supported by your browser.');
+      return;
+    }
+    setIsLocating(true);
+    navigator.geolocation.getCurrentPosition(
+      async (pos) => {
+        const lat = pos.coords.latitude;
+        const lng = pos.coords.longitude;
+        const loc = { lat, lng };
+        setUserLocation(loc);
+        localStorage.setItem('g2g_user_lat', lat.toString());
+        localStorage.setItem('g2g_user_lng', lng.toString());
+        localStorage.setItem('g2g_location_prompted', 'true');
+
+        try {
+          const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=12`, {
+            headers: { 'Accept-Language': 'en' }
+          });
+          const data = await res.json();
+          const city = data?.address?.city || data?.address?.town || data?.address?.county || data?.address?.state_district || 'Madurai';
+          setUserCity(city);
+          localStorage.setItem('g2g_user_city', city);
+          onCityChange(city);
+          toast.success(`Location set to ${city}!`);
+        } catch {
+          onCityChange('Madurai');
+          toast.success('Location detected! Sorted by nearest.');
+        } finally {
+          setIsLocating(false);
+          setIsCityDropdownOpen(false);
+        }
+      },
+      (err) => {
+        setIsLocating(false);
+        toast.error('Could not access location. Please check browser permissions.');
+      },
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
+    );
+  };
+
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (profileRef.current && !profileRef.current.contains(e.target)) {
@@ -55,7 +104,7 @@ export default function FoodDashboardHeader({
   const userInitial = userName.charAt(0).toUpperCase();
 
   return (
-    <header className="sticky top-0 z-50 bg-white border-b border-[#EEEEEE] shadow-[0_2px_10px_rgba(0,0,0,0.03)] select-none">
+    <header className="hidden md:block sticky top-0 z-50 bg-white border-b border-[#EEEEEE] shadow-[0_2px_10px_rgba(0,0,0,0.03)] select-none w-full">
       <div className="max-w-[1600px] mx-auto px-4 sm:px-6 h-[72px] flex items-center justify-between gap-4">
         
         {/* LEFT: Logo & Branding + Navigation Pill */}
@@ -121,7 +170,20 @@ export default function FoodDashboardHeader({
             </button>
 
             {isCityDropdownOpen && (
-              <div className="absolute left-0 top-full mt-2 w-48 bg-white rounded-2xl border border-stone-200 shadow-xl py-1.5 z-50">
+              <div className="absolute left-0 top-full mt-2 w-52 bg-white rounded-2xl border border-stone-200 shadow-xl py-1.5 z-50">
+                <button
+                  type="button"
+                  onClick={handleDetectLocation}
+                  disabled={isLocating}
+                  className="w-full text-left px-3.5 py-2.5 text-xs font-black text-[#E53935] hover:bg-red-50 flex items-center gap-2 border-b border-stone-100 transition-colors cursor-pointer"
+                >
+                  {isLocating ? (
+                    <Loader2 size={13} className="animate-spin text-[#E53935]" />
+                  ) : (
+                    <Navigation size={13} className="text-[#E53935]" />
+                  )}
+                  <span>{isLocating ? 'Detecting GPS...' : 'Use Current Location'}</span>
+                </button>
                 <button
                   type="button"
                   onClick={() => { onCityChange('All Locations'); setIsCityDropdownOpen(false); }}

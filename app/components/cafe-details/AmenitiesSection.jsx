@@ -101,11 +101,11 @@ export default function AmenitiesSection({ cafe, isMobileView = false }) {
       icon: Home,
       category: 'space',
       badge: 'Cozy Ambience',
-      gradient: 'from-[#5C3D28] to-[#8C6246]',
-      bgLight: 'bg-[#FFF5F5] hover:bg-[#FDF4E7] border-[#EF5350]/60',
+      gradient: 'from-[#E50914] to-[#B71C1C]',
+      bgLight: 'bg-[#FFF5F5] hover:bg-white border-[#FEE2E2]',
       textAccent: 'text-[#252525]',
-      badgeBg: 'bg-white text-[#E50914] border-[#EF5350]/80',
-      glow: 'shadow-[#5C3D28]/15',
+      badgeBg: 'bg-white text-[#E50914] border-[#FEE2E2]',
+      glow: 'shadow-[#E50914]/15',
       description: 'Warmly lit interior aesthetic with comfortable seating arrangements, power outlets, and acoustic wall panels.'
     },
     'sound': { 
@@ -173,11 +173,11 @@ export default function AmenitiesSection({ cafe, isMobileView = false }) {
       icon: Shield,
       category: 'services',
       badge: '24/7 Verified',
-      gradient: 'from-[#252525] to-[#5C3D28]',
-      bgLight: 'bg-[#FFF5F5] hover:bg-[#FDF4E7] border-[#EF5350]/60',
+      gradient: 'from-[#B71C1C] to-[#E50914]',
+      bgLight: 'bg-[#FFF5F5] hover:bg-white border-[#FEE2E2]',
       textAccent: 'text-[#252525]',
-      badgeBg: 'bg-white text-[#E50914] border-[#EF5350]/80',
-      glow: 'shadow-[#252525]/15',
+      badgeBg: 'bg-white text-[#E50914] border-[#FEE2E2]',
+      glow: 'shadow-[#E50914]/15',
       description: 'Round-the-clock CCTV monitoring and professional staff ensuring safety and security for all event attendees.'
     },
   };
@@ -368,7 +368,7 @@ export default function AmenitiesSection({ cafe, isMobileView = false }) {
                   </span>
                   <button
                     onClick={() => setSelectedAmenity(null)}
-                    className="px-4 py-2 rounded-xl bg-[#E50914] text-white text-xs font-bold hover:bg-[#5C3D28] transition-colors shadow-md shadow-[#E50914]/20"
+                    className="px-4 py-2 rounded-xl bg-[#E50914] text-white text-xs font-bold hover:bg-[#B71C1C] transition-colors shadow-md shadow-[#E50914]/20"
                   >
                     Close
                   </button>

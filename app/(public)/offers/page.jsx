@@ -20,7 +20,7 @@ import {
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api/v1';
 
 export default function OffersDiscoveryPage() {
-  const [selectedScope, setSelectedScope] = useState('ALL');
+  const [selectedCategoryFilter, setSelectedCategoryFilter] = useState('ALL');
   const [searchQuery, setSearchQuery] = useState('');
 
   const { data: offersData, isLoading } = useQuery({
@@ -34,13 +34,17 @@ export default function OffersDiscoveryPage() {
   const offers = offersData || [];
 
   const filteredOffers = offers.filter((o) => {
-    if (selectedScope !== 'ALL' && o.offer_type !== selectedScope) return false;
+    if (selectedCategoryFilter !== 'ALL') {
+      const matchCat = o.offer_category === selectedCategoryFilter || o.offer_type === selectedCategoryFilter;
+      if (!matchCat) return false;
+    }
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase();
-      const matchTitle = o.title.toLowerCase().includes(q);
+      const matchTitle = (o.title || '').toLowerCase().includes(q);
       const matchCafe = (o.cafes?.name || '').toLowerCase().includes(q);
       const matchCity = (o.cafes?.city || '').toLowerCase().includes(q);
-      return matchTitle || matchCafe || matchCity;
+      const matchBuyItem = (o.buy_item?.name || '').toLowerCase().includes(q);
+      return matchTitle || matchCafe || matchCity || matchBuyItem;
     }
     return true;
   });
@@ -81,19 +85,21 @@ export default function OffersDiscoveryPage() {
       {/* Main Content Area */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 space-y-6">
         
-        {/* Scope Filter Tabs */}
+        {/* Offer Category Filter Pills */}
         <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
           {[
-            { id: 'ALL', label: 'All Deals' },
-            { id: 'RESTAURANT', label: 'Restaurant-wide Deals' },
-            { id: 'CATEGORY', label: 'Category Deals' },
-            { id: 'ITEM', label: 'Dish Discounts' }
+            { id: 'ALL', label: 'All Offers' },
+            { id: 'BUY_X_GET_Y', label: 'Buy 1 Get 1 (BOGO)' },
+            { id: 'PERCENTAGE', label: 'Percentage Off' },
+            { id: 'FLAT', label: 'Flat Discounts' },
+            { id: 'COMBO', label: 'Combo Deals' },
+            { id: 'RESTAURANT', label: 'Restaurant Specials' }
           ].map((tab) => (
             <button
               key={tab.id}
-              onClick={() => setSelectedScope(tab.id)}
+              onClick={() => setSelectedCategoryFilter(tab.id)}
               className={`px-4 py-2.5 rounded-2xl text-xs font-black whitespace-nowrap transition-all cursor-pointer border ${
-                selectedScope === tab.id
+                selectedCategoryFilter === tab.id
                   ? 'bg-[#E50914] text-white border-[#E50914] shadow-md shadow-[#E50914]/20'
                   : 'bg-white text-[#252525] border-[#FEE2E2] hover:bg-[#FFF5F5]'
               }`}
@@ -123,22 +129,47 @@ export default function OffersDiscoveryPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredOffers.map((offer) => {
               const isPercentage = offer.discount_type === 'PERCENTAGE';
+              const isBogo = offer.offer_category === 'BUY_X_GET_Y' || offer.offer_type === 'BUY_X_GET_Y';
               const cafe = offer.cafes || {};
 
               return (
                 <div
                   key={offer.id}
-                  className="group bg-white border border-[#FEE2E2] hover:border-[#E50914]/40 rounded-3xl p-5 shadow-xs hover:shadow-xl hover:shadow-[#E50914]/10 transition-all duration-300 flex flex-col justify-between hover:-translate-y-1.5"
+                  className={`group bg-white border ${
+                    isBogo ? 'border-red-300 ring-2 ring-red-100 shadow-md' : 'border-[#FEE2E2]'
+                  } hover:border-[#E50914]/40 rounded-3xl p-5 shadow-xs hover:shadow-xl hover:shadow-[#E50914]/10 transition-all duration-300 flex flex-col justify-between hover:-translate-y-1.5`}
                 >
                   <div className="space-y-3.5">
                     
                     {/* Top Row: Discount Value Pill & Scope */}
                     <div className="flex items-center justify-between">
-                      <span className="px-3 py-1 rounded-xl bg-gradient-to-r from-[#FF6B00] to-[#E50914] text-white text-xs font-black tracking-wider shadow-xs uppercase">
-                        {isPercentage ? `${Number(offer.discount_value)}% OFF` : `₹${Number(offer.discount_value)} OFF`}
-                      </span>
-                      <span className="text-[10px] font-bold text-[#757575] bg-[#FFF5F5] px-2.5 py-1 rounded-lg border border-[#FEE2E2] uppercase">
-                        {offer.offer_type === 'RESTAURANT' ? 'Entire Menu' : offer.offer_type === 'CATEGORY' ? 'Selected Category' : 'Specific Dishes'}
+                      {isBogo ? (
+                        <span className="px-3 py-1 rounded-xl bg-gradient-to-r from-red-600 via-[#E50914] to-rose-600 text-white text-xs font-black tracking-wider shadow-xs uppercase flex items-center gap-1.5">
+                          <Sparkles className="w-3.5 h-3.5" />
+                          <span>BUY {offer.buy_quantity || 1} GET {offer.reward_quantity || 1} FREE</span>
+                        </span>
+                      ) : offer.offer_category === 'COMBO' ? (
+                        <span className="px-3 py-1 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 text-white text-xs font-black tracking-wider shadow-xs uppercase flex items-center gap-1.5">
+                          <Sparkles className="w-3.5 h-3.5" />
+                          <span>COMBO @ ₹{Number(offer.combo_price || 0).toFixed(0)}</span>
+                        </span>
+                      ) : offer.offer_category === 'FREE_ITEM' ? (
+                        <span className="px-3 py-1 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs font-black tracking-wider shadow-xs uppercase flex items-center gap-1.5">
+                          <Sparkles className="w-3.5 h-3.5" />
+                          <span>FREE ITEM ON ₹{Number(offer.min_order_value || 0)}</span>
+                        </span>
+                      ) : offer.offer_category === 'FLAT' ? (
+                        <span className="px-3 py-1 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-xs font-black tracking-wider shadow-xs uppercase">
+                          ₹{Number(offer.discount_value)} FLAT OFF
+                        </span>
+                      ) : (
+                        <span className="px-3 py-1 rounded-xl bg-gradient-to-r from-[#FF6B00] to-[#E50914] text-white text-xs font-black tracking-wider shadow-xs uppercase">
+                          {isPercentage ? `${Number(offer.discount_value)}% OFF` : `₹${Number(offer.discount_value)} OFF`}
+                        </span>
+                      )}
+                      
+                      <span className="text-[10px] font-black text-[#E50914] bg-[#FFF5F5] px-2.5 py-1 rounded-lg border border-[#FEE2E2] uppercase">
+                        {isBogo ? 'BOGO DEAL' : offer.offer_category === 'COMBO' ? 'COMBO MEAL' : offer.offer_category === 'FREE_ITEM' ? 'FREE REWARD' : offer.offer_type === 'RESTAURANT' ? 'Entire Menu' : offer.offer_type === 'CATEGORY' ? 'Category' : 'Dishes'}
                       </span>
                     </div>
 
