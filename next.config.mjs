@@ -36,22 +36,22 @@ const nextConfig = {
     return [
       {
         source: '/owner/login',
-        destination: process.env.NEXT_PUBLIC_CAFE_MANAGER_URL ? `${process.env.NEXT_PUBLIC_CAFE_MANAGER_URL}/owner/login` : 'http://localhost:3002/owner/login',
+        destination: process.env.NEXT_PUBLIC_CAFE_MANAGER_URL ? `${process.env.NEXT_PUBLIC_CAFE_MANAGER_URL}/owner/login` : 'http://localhost:52/owner/login',
         permanent: false,
       },
       {
         source: '/owner',
-        destination: process.env.NEXT_PUBLIC_CAFE_MANAGER_URL ? `${process.env.NEXT_PUBLIC_CAFE_MANAGER_URL}/owner/dashboard` : 'http://localhost:3002/owner/dashboard',
+        destination: process.env.NEXT_PUBLIC_CAFE_MANAGER_URL ? `${process.env.NEXT_PUBLIC_CAFE_MANAGER_URL}/owner/dashboard` : 'http://localhost:52/owner/dashboard',
         permanent: false,
       },
       {
         source: '/owner/:path*',
-        destination: process.env.NEXT_PUBLIC_CAFE_MANAGER_URL ? `${process.env.NEXT_PUBLIC_CAFE_MANAGER_URL}/owner/:path*` : 'http://localhost:3002/owner/:path*',
+        destination: process.env.NEXT_PUBLIC_CAFE_MANAGER_URL ? `${process.env.NEXT_PUBLIC_CAFE_MANAGER_URL}/owner/:path*` : 'http://localhost:52/owner/:path*',
         permanent: false,
       },
       {
         source: '/partner/cafe',
-        destination: process.env.NEXT_PUBLIC_CAFE_MANAGER_URL ? `${process.env.NEXT_PUBLIC_CAFE_MANAGER_URL}/owner/login` : 'http://localhost:3002/owner/login',
+        destination: process.env.NEXT_PUBLIC_CAFE_MANAGER_URL ? `${process.env.NEXT_PUBLIC_CAFE_MANAGER_URL}/owner/login` : 'http://localhost:52/owner/login',
         permanent: false,
       },
       {

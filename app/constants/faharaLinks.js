@@ -3,7 +3,7 @@ const IS_PROD = typeof window !== 'undefined'
   : process.env.NODE_ENV === 'production';
 
 const USER_URL = process.env.NEXT_PUBLIC_USER_URL || (IS_PROD ? 'https://fahara.in' : 'http://localhost:3001');
-const CAFE_URL = process.env.NEXT_PUBLIC_CAFE_URL || (IS_PROD ? 'https://cafe.fahara.in' : 'http://localhost:3002');
+const CAFE_URL = process.env.NEXT_PUBLIC_CAFE_URL || (IS_PROD ? 'https://cafe.fahara.in' : 'http://localhost:52');
 const EM_URL = process.env.NEXT_PUBLIC_EM_URL || (IS_PROD ? 'https://em.fahara.in' : 'http://localhost:3002');
 
 export const FAHARA_WHATSAPP_NUMBER = 
