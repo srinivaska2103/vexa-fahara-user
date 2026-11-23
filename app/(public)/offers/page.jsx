@@ -26,7 +26,8 @@ export default function OffersDiscoveryPage() {
   const { data: offersData, isLoading } = useQuery({
     queryKey: ['public-offers'],
     queryFn: async () => {
-      const res = await axios.get('http://localhost:3000/api/public/offers?limit=50');
+      const rootUrl = API_BASE_URL.replace(/\/api\/v1\/?$/, '');
+      const res = await axios.get(`${rootUrl}/api/public/offers?limit=50`);
       return res.data?.data || [];
     }
   });
