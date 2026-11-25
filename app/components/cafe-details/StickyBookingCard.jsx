@@ -1,13 +1,18 @@
 'use client';
 
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { ArrowRight, Info, ShieldCheck, Sparkles, MapPin, PhoneCall, Coffee } from 'lucide-react';
 import { checkIfCafeOpen } from '@/lib/utils';
 import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
+import { useAuthStore } from '@/stores/auth.store';
+import AuthRequiredModal from '@/app/components/auth/AuthRequiredModal';
 
 export default function StickyBookingCard({ cafe }) {
   const router = useRouter();
+  const user = useAuthStore((state) => state.user);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 
   const { id } = cafe || {};
   const isOpen = checkIfCafeOpen(cafe);
@@ -34,6 +39,10 @@ export default function StickyBookingCard({ cafe }) {
 
   const handleStartBooking = () => {
     if (!isOpen) return;
+    if (!user) {
+      setIsAuthModalOpen(true);
+      return;
+    }
     router.push(`/booking/${id || 1}`);
   };
 
@@ -148,6 +157,16 @@ export default function StickyBookingCard({ cafe }) {
         <ShieldCheck size={14} className="text-emerald-600" />
         <span>Instant Confirmation & Free Cancellation</span>
       </div>
+
+      {/* ── AUTHENTICATION REQUIRED MODAL ── */}
+      <AuthRequiredModal
+        isOpen={isAuthModalOpen}
+        onClose={() => setIsAuthModalOpen(false)}
+        title="Login to Book Cafe"
+        subtitle={`Sign in or create an account to book your spot at ${cafe?.name || 'this venue'}.`}
+        actionType="booking"
+        returnUrl={`/booking/${id || 1}`}
+      />
 
     </div>
   );

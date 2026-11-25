@@ -126,7 +126,7 @@ export default function InfiniteScroll({ hasNextPage, fetchNextPage, isFetchingN
               <motion.button 
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.96 }}
-                className="group inline-flex items-center gap-2 h-10 sm:h-11 px-6 sm:px-8 rounded-full bg-[#E50914] hover:bg-[#5A3215] text-white text-xs sm:text-sm font-bold shadow-md transition-all cursor-pointer"
+                className="group inline-flex items-center gap-2 h-10 sm:h-11 px-6 sm:px-8 rounded-full bg-[#E50914] hover:bg-[#B71C1C] text-white text-xs sm:text-sm font-bold shadow-md shadow-[#E50914]/20 transition-all cursor-pointer"
               >
                 <span>Explore Venues</span>
                 <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform stroke-[2.5]" />

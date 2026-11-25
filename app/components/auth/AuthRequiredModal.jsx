@@ -1,6 +1,7 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { LogIn, UserPlus, X, ShieldCheck, Utensils, Coffee } from 'lucide-react';
@@ -14,6 +15,11 @@ export default function AuthRequiredModal({
   returnUrl = null
 }) {
   const router = useRouter();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   if (!isOpen) return null;
 
@@ -35,7 +41,7 @@ export default function AuthRequiredModal({
     router.push(`/register?redirect=${encodeURIComponent(currentPath)}`);
   };
 
-  return (
+  const modalContent = (
     <AnimatePresence>
       <div className="fixed inset-0 z-[999999] flex items-center justify-center p-4">
         {/* Backdrop */}
@@ -53,7 +59,7 @@ export default function AuthRequiredModal({
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 15 }}
           transition={{ duration: 0.2, ease: 'easeOut' }}
-          className="w-full max-w-sm bg-white rounded-3xl shadow-2xl border border-stone-200 p-6 text-stone-800 space-y-4 relative z-10 overflow-hidden text-center"
+          className="w-full max-w-sm bg-white rounded-3xl shadow-2xl border border-stone-200 p-6 text-stone-800 space-y-4 relative z-10 overflow-hidden text-center mx-auto my-auto"
         >
           {/* Close button */}
           <button
@@ -120,5 +126,9 @@ export default function AuthRequiredModal({
       </div>
     </AnimatePresence>
   );
+
+  if (!mounted || typeof document === 'undefined') return null;
+
+  return createPortal(modalContent, document.body);
 }
 

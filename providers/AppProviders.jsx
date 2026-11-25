@@ -65,29 +65,22 @@ function AuthGuard({ children }) {
     const loginUrl = `/login?redirect=${encodeURIComponent(pathname)}`;
 
     return (
-      <div className="min-h-screen w-full bg-[#FFF8F0] flex flex-col items-center justify-center p-4 sm:p-6 select-none relative overflow-hidden font-sans">
+      <div className="min-h-screen w-full bg-[#FFF5F5] flex flex-col items-center justify-center p-4 sm:p-6 select-none relative overflow-hidden font-sans">
         
-        {/* Ambient Pulsing Glow Background */}
-        <motion.div 
-          animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.6, 0.3] }}
-          transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute w-80 h-80 sm:w-96 sm:h-96 rounded-full bg-gradient-to-tr from-[#DDB892]/40 via-[#A67B5B]/20 to-amber-200/30 blur-3xl pointer-events-none"
-        />
-
-        {/* Main Glassmorphic Interactive Container Card */}
+        {/* Main Interactive Container Card */}
         <motion.div
-          initial={{ opacity: 0, scale: 0.92, y: 15 }}
+          initial={{ opacity: 0, scale: 0.95, y: 15 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
-          transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-          className="relative z-10 w-full max-w-md bg-white/95 backdrop-blur-2xl border border-stone-200/90 rounded-3xl p-6 sm:p-8 shadow-[0_20px_50px_rgba(44,24,16,0.08)] text-center space-y-6"
+          transition={{ duration: 0.3, ease: 'easeOut' }}
+          className="relative z-10 w-full max-w-md bg-white border border-[#FEE2E2] rounded-3xl p-6 sm:p-8 shadow-xl text-center space-y-6"
         >
           <div className="space-y-2">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#DDB892]/20 border border-[#DDB892]/60 text-[10px] font-black text-[#6F4E37] uppercase tracking-wider shadow-2xs">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#FFF5F5] border border-[#FEE2E2] text-[10px] font-black text-[#E50914] uppercase tracking-wider shadow-2xs">
               <Sparkles size={12} />
               <span>Authentication Required</span>
             </div>
 
-            <h2 className="text-xl sm:text-2xl font-black text-[#2C1810] tracking-tight">
+            <h2 className="text-xl sm:text-2xl font-black text-[#252525] tracking-tight">
               Access Restricted
             </h2>
 
@@ -98,12 +91,12 @@ function AuthGuard({ children }) {
 
           {/* Animated Progress Bar */}
           <div className="space-y-2 pt-1">
-            <div className="w-full h-1.5 bg-stone-100 rounded-full overflow-hidden">
+            <div className="w-full h-1.5 bg-[#FFF5F5] rounded-full overflow-hidden">
               <motion.div 
                 initial={{ width: "0%" }}
                 animate={{ width: "100%" }}
                 transition={{ duration: 1.5, ease: "easeInOut" }}
-                className="h-full bg-gradient-to-r from-[#4A2C11] via-[#6F4E37] to-amber-600 rounded-full"
+                className="h-full bg-[#E50914] rounded-full"
               />
             </div>
             <p className="text-[11px] font-bold text-stone-400">
@@ -115,7 +108,7 @@ function AuthGuard({ children }) {
           <div className="pt-2 flex flex-col gap-2.5">
             <Link
               href={loginUrl}
-              className="w-full py-3.5 px-5 bg-gradient-to-r from-[#4A2C11] to-[#6F4E37] hover:opacity-95 text-white font-black text-xs sm:text-sm rounded-2xl shadow-lg hover:shadow-xl active:scale-95 transition-all flex items-center justify-center gap-2 group cursor-pointer"
+              className="w-full py-3.5 px-5 bg-[#E50914] hover:bg-[#B71C1C] text-white font-black text-xs sm:text-sm rounded-2xl shadow-md shadow-[#E50914]/25 active:scale-95 transition-all flex items-center justify-center gap-2 group cursor-pointer"
             >
               <span>Log In Now</span>
               <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
@@ -123,7 +116,7 @@ function AuthGuard({ children }) {
 
             <Link
               href="/"
-              className="w-full py-3 px-5 bg-stone-50 hover:bg-stone-100 text-stone-600 font-bold text-xs rounded-2xl transition-colors flex items-center justify-center gap-2 cursor-pointer"
+              className="w-full py-3 px-5 bg-[#FFF5F5] hover:bg-stone-100 text-stone-700 font-bold text-xs rounded-2xl transition-colors flex items-center justify-center gap-2 cursor-pointer"
             >
               <Compass size={14} />
               <span>Explore Public Venues</span>

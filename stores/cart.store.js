@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import api from '@/lib/axios';
+import { useAuthStore } from '@/stores/auth.store';
 
 export const useCartStore = create((set, get) => ({
   cart: null,
@@ -11,6 +12,21 @@ export const useCartStore = create((set, get) => ({
   error: null,
 
   fetchCart: async () => {
+    // Only query backend cart if user is authenticated with a token
+    const authState = useAuthStore.getState();
+    if (!authState?.isAuthenticated && !authState?.accessToken && !authState?.user) {
+      set({
+        cart: null,
+        itemCount: 0,
+        subtotal: 0,
+        totalSavings: 0,
+        finalPayableAmount: 0,
+        isLoading: false,
+        error: null,
+      });
+      return;
+    }
+
     try {
       set({ isLoading: true, error: null });
       const res = await api.get('/customer/cart');

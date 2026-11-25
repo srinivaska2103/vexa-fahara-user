@@ -10,6 +10,8 @@ import {
 import Link from 'next/link';
 import Image from 'next/image';
 import { useCafeDetailsStore } from '@/stores/cafeDetails.store';
+import { useAuthStore } from '@/stores/auth.store';
+import AuthRequiredModal from '@/app/components/auth/AuthRequiredModal';
 import { useLanguage } from '@/context/LanguageContext';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -37,6 +39,8 @@ export default function CafeDetailsPage() {
   const rawId = params?.id;
   const id = Array.isArray(rawId) ? rawId.join('') : rawId;
   const router = useRouter();
+  const user = useAuthStore((state) => state.user);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const { t } = useLanguage();
 
   const [activeStepTab, setActiveStepTab] = useState('photos');
@@ -396,7 +400,7 @@ export default function CafeDetailsPage() {
       </main>
 
       {/* Mobile Fixed Floating Action Bar (< lg screens) */}
-      <div className="lg:hidden fixed bottom-[5.5rem] sm:bottom-[5.8rem] left-3 right-3 z-40 select-none">
+      <div className="lg:hidden fixed bottom-3 left-3 right-3 z-40 select-none">
         <div className="max-w-md mx-auto bg-white/95 backdrop-blur-xl border border-stone-200/90 rounded-2xl p-3 px-4 shadow-[0_12px_40px_rgba(0,0,0,0.12)] flex items-center justify-between gap-3">
           {isWalkingCafe ? (
             <>
@@ -470,8 +474,14 @@ export default function CafeDetailsPage() {
               <motion.button 
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.95 }}
-                onClick={() => router.push(`/booking/${cafe?.id || 1}`)}
-                className="bg-gradient-to-r from-[#B71C1C] to-[#E50914] text-white px-5 py-2.5 rounded-xl font-black text-xs shadow-md hover:shadow-lg flex items-center gap-1.5 cursor-pointer shrink-0"
+                onClick={() => {
+                  if (!user) {
+                    setIsAuthModalOpen(true);
+                  } else {
+                    router.push(`/booking/${cafe?.id || 1}`);
+                  }
+                }}
+                className="bg-[#E50914] hover:bg-[#B71C1C] text-white px-5 py-2.5 rounded-xl font-black text-xs shadow-md hover:shadow-lg flex items-center gap-1.5 cursor-pointer shrink-0"
               >
                 <span>Book Now</span>
                 <ArrowRight size={15} />
@@ -481,6 +491,16 @@ export default function CafeDetailsPage() {
         </div>
       </div>
       </div>
+
+      {/* ── AUTHENTICATION REQUIRED MODAL ── */}
+      <AuthRequiredModal
+        isOpen={isAuthModalOpen}
+        onClose={() => setIsAuthModalOpen(false)}
+        title="Login to Book Cafe"
+        subtitle={`Sign in or create an account to book your spot at ${cafe?.name || 'this venue'}.`}
+        actionType="booking"
+        returnUrl={`/booking/${cafe?.id || 1}`}
+      />
 
     </div>
   );

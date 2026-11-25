@@ -100,6 +100,18 @@ export default function RestaurantMenuSection({ cafeId, cafeName, isOrderingAvai
       return;
     }
     if (!user) {
+      try {
+        if (typeof window !== 'undefined' && window.sessionStorage) {
+          sessionStorage.setItem('pending_cart_item', JSON.stringify({
+            cafeId,
+            menuItemId: item.id,
+            quantity: 1,
+            name: item.name
+          }));
+        }
+      } catch (e) {
+        console.warn('Could not store pending cart item:', e);
+      }
       setIsAuthModalOpen(true);
       return;
     }

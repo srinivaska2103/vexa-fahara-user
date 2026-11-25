@@ -30,10 +30,10 @@ export default function MobileBottomNav() {
 
   useEffect(() => {
     setIsMounted(true);
-    if (fetchCart) {
+    if (user && fetchCart) {
       fetchCart().catch(() => null);
     }
-  }, [fetchCart]);
+  }, [user, fetchCart]);
 
   useEffect(() => {
     if (!user) return;
@@ -63,11 +63,18 @@ export default function MobileBottomNav() {
     }
   }, [user]);
 
-  // Hide on public landing page, checkout, payment, authentication, and informational legal screens
+  // Check if current route is a cafe detail page (e.g. /customer/cafe/[id] or /cafes/[id])
+  const isCafeDetailPage = 
+    /^\/customer\/cafe\/[^\/]+$/.test(pathname) ||
+    /^\/customer\/cafes\/[^\/]+$/.test(pathname) ||
+    /^\/cafes\/[^\/]+$/.test(pathname);
+
+  // Hide on public landing page, cafe details page, checkout, payment, authentication, and informational legal screens
   if (
     pathname &&
     (
       pathname === '/' ||
+      isCafeDetailPage ||
       pathname.startsWith('/payment') ||
       pathname.startsWith('/customer/payment') ||
       pathname.startsWith('/checkout') ||

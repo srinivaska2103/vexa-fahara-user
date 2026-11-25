@@ -16,7 +16,7 @@
       "purpose": "any maskable"
     }
   ],
-  "start_url": "/customer/cafe",
+  "start_url": "/",
   "background_color": "#FFFFFF",
   "theme_color": "#E50914",
   "display": "standalone",

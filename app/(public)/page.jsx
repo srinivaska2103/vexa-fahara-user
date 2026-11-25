@@ -103,25 +103,28 @@ export default function RootIntroPage() {
 
   return (
     <main
-      onClick={completeIntroAndNavigate}
-      className="fixed inset-0 z-50 w-screen h-[100dvh] bg-white overflow-hidden flex items-center justify-center select-none cursor-pointer"
+      className="fixed inset-0 z-50 w-screen h-[100dvh] bg-white overflow-hidden flex items-center justify-center select-none"
     >
-      {/* ── True Full Height Video ── */}
+      {/* ── True Full Height Video: Plays once and redirects automatically on ended ── */}
       {!videoError && (
         <video
           ref={videoRef}
-          src="/videos/grab2go-intro.mp4"
           className="w-full h-full object-cover sm:object-contain bg-white"
-          playsInline
           autoPlay
           muted
+          playsInline
           preload="auto"
+          poster="/grab-it-logo.png"
           onEnded={completeIntroAndNavigate}
-          onError={() => {
+          onError={(e) => {
+            console.warn('[Intro Video] Video element error:', e);
             // Gracefully transition to cafes on error
             completeIntroAndNavigate();
           }}
-        />
+        >
+          <source src="/videos/grab2go-intro.mp4" type="video/mp4" />
+          <source src="/videos/intro.mp4" type="video/mp4" />
+        </video>
       )}
     </main>
   );

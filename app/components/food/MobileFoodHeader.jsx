@@ -7,7 +7,7 @@ import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  Bell, Search, X, SlidersHorizontal, User, LogOut, Utensils
+  Bell, Search, X, SlidersHorizontal, User, LogOut, Utensils, ShoppingBag, CalendarCheck
 } from 'lucide-react';
 import { useAuthStore } from '@/stores/auth.store';
 import { profileService } from '@/services/profile.service';
@@ -92,7 +92,7 @@ export default function MobileFoodHeader({
         <div className="relative z-10 flex flex-col space-y-2.5" suppressHydrationWarning>
           
           {/* Navigation Row */}
-          <div className="flex items-center justify-between gap-1 w-full overflow-hidden">
+          <div className="flex items-center justify-between gap-1 w-full">
             {/* Left: Grab2GO Logo (Larger on Mobile, text hidden) */}
             <div className="flex items-center gap-1.5 xs:gap-2 shrink-0">
               <Link 
@@ -288,48 +288,80 @@ export default function MobileFoodHeader({
                   )}
                 </button>
 
-                {/* Profile Popup */}
-                <AnimatePresence>
-                  {isProfileOpen && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                      animate={{ opacity: 1, y: 0, scale: 1 }}
-                      exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                      className="absolute right-0 top-12 w-56 bg-white rounded-2xl shadow-2xl border border-stone-200 p-2.5 z-50 text-stone-800 space-y-2"
-                    >
-                      <div className="px-2 py-1.5 border-b border-stone-100">
-                        <p className="font-black text-xs text-[#252525] truncate">{userName || 'Customer'}</p>
-                        <p className="text-[10px] text-stone-400 truncate">{user?.email || ''}</p>
-                      </div>
-
-                      <div className="space-y-1">
-                        <Link
-                          href="/customer/orders"
-                          onClick={() => setIsProfileOpen(false)}
-                          className="flex items-center gap-2 px-2.5 py-1.5 rounded-xl text-xs font-bold text-stone-700 hover:bg-[#FFF5F5] hover:text-[#E50914] transition-colors"
+                {/* Profile Popup - Portaled to document.body */}
+                {mounted && typeof document !== 'undefined' && createPortal(
+                  <AnimatePresence>
+                    {isProfileOpen && (
+                      <div className="fixed inset-0 z-[999999] flex items-start justify-end p-3 pt-14">
+                        {/* Full-screen backdrop to close when clicking outside */}
+                        <div 
+                          className="fixed inset-0 bg-black/20 backdrop-blur-[2px]" 
+                          onClick={() => setIsProfileOpen(false)} 
+                        />
+                        <motion.div
+                          initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                          animate={{ opacity: 1, y: 0, scale: 1 }}
+                          exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                          transition={{ duration: 0.15, ease: 'easeOut' }}
+                          className="w-64 bg-white rounded-3xl shadow-2xl border border-stone-200/90 p-3 z-10 text-stone-800 space-y-2 relative"
                         >
-                          My Orders
-                        </Link>
-                        <Link
-                          href="/customer/profile"
-                          onClick={() => setIsProfileOpen(false)}
-                          className="flex items-center gap-2 px-2.5 py-1.5 rounded-xl text-xs font-bold text-stone-700 hover:bg-[#FFF5F5] hover:text-[#E50914] transition-colors"
-                        >
-                          Profile & Settings
-                        </Link>
-                      </div>
+                          <div className="px-3 py-2 border-b border-stone-100 flex items-center justify-between">
+                            <div className="min-w-0">
+                              <p className="font-black text-xs text-[#252525] truncate">{userName || 'Customer'}</p>
+                              <p className="text-[10px] text-stone-400 truncate">{user?.email || ''}</p>
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => setIsProfileOpen(false)}
+                              className="p-1 rounded-full text-stone-400 hover:text-stone-700 hover:bg-stone-100"
+                            >
+                              <X size={14} />
+                            </button>
+                          </div>
 
-                      <button
-                        onClick={handleLogout}
-                        type="button"
-                        className="w-full flex items-center gap-2 p-2 rounded-xl text-xs font-bold text-red-600 hover:bg-red-50 transition-colors cursor-pointer"
-                      >
-                        <LogOut size={14} />
-                        <span>Log Out</span>
-                      </button>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+                          <div className="space-y-1">
+                            <Link
+                              href="/customer/profile"
+                              onClick={() => setIsProfileOpen(false)}
+                              className="flex items-center gap-2.5 px-3 py-2 rounded-2xl text-xs font-bold text-stone-700 hover:bg-[#FFF5F5] hover:text-[#E50914] transition-colors"
+                            >
+                              <User size={15} />
+                              <span>My Profile</span>
+                            </Link>
+                            <Link
+                              href="/customer/orders"
+                              onClick={() => setIsProfileOpen(false)}
+                              className="flex items-center gap-2.5 px-3 py-2 rounded-2xl text-xs font-bold text-stone-700 hover:bg-[#FFF5F5] hover:text-[#E50914] transition-colors"
+                            >
+                              <ShoppingBag size={15} />
+                              <span>My Food Orders</span>
+                            </Link>
+                            <Link
+                              href="/customer/bookings"
+                              onClick={() => setIsProfileOpen(false)}
+                              className="flex items-center gap-2.5 px-3 py-2 rounded-2xl text-xs font-bold text-stone-700 hover:bg-[#FFF5F5] hover:text-[#E50914] transition-colors"
+                            >
+                              <CalendarCheck size={15} />
+                              <span>Cafe Reservations</span>
+                            </Link>
+                          </div>
+
+                          <div className="pt-1 border-t border-stone-100">
+                            <button
+                              onClick={handleLogout}
+                              type="button"
+                              className="w-full flex items-center gap-2.5 p-2.5 rounded-2xl text-xs font-bold text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer"
+                            >
+                              <LogOut size={15} />
+                              <span>Log Out</span>
+                            </button>
+                          </div>
+                        </motion.div>
+                      </div>
+                    )}
+                  </AnimatePresence>,
+                  document.body
+                )}
               </div>
 
             </div>

@@ -1,8 +1,32 @@
 import { useMutation } from '@tanstack/react-query';
 import { authService } from '@/services/auth.service';
 import { useAuthStore } from '@/stores/auth.store';
+import { useCartStore } from '@/stores/cart.store';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
+
+// Helper to auto-resume pending cart actions after authentication
+const resumePendingCartAction = async () => {
+  if (typeof window === 'undefined' || !window.sessionStorage) return;
+  try {
+    const pendingRaw = sessionStorage.getItem('pending_cart_item');
+    if (pendingRaw) {
+      const pendingItem = JSON.parse(pendingRaw);
+      sessionStorage.removeItem('pending_cart_item');
+      if (pendingItem?.cafeId && pendingItem?.menuItemId) {
+        const { addItem } = useCartStore.getState();
+        await addItem({
+          cafeId: pendingItem.cafeId,
+          menuItemId: pendingItem.menuItemId,
+          quantity: pendingItem.quantity || 1
+        });
+        toast.success(`Added ${pendingItem.name || 'item'} to your cart!`, { duration: 4000 });
+      }
+    }
+  } catch (err) {
+    console.warn('[Cart Resume] Failed to add pending item:', err);
+  }
+};
 
 export const useRegister = () => {
   const router = useRouter();
@@ -26,12 +50,23 @@ export const useVerifyOTP = () => {
 
   return useMutation({
     mutationFn: authService.verifyOTP,
-    onSuccess: (data) => {
+    onSuccess: async (data) => {
       if (data?.accessToken || data?.data?.accessToken) {
         const payload = data.data || data;
         setAuth(payload.user, payload.accessToken, payload.refreshToken);
+        document.cookie = `accessToken=${payload.accessToken}; path=/; max-age=604800; SameSite=Lax`;
         toast.success('Email verified successfully!');
-        router.push('/customer/cafe');
+        await resumePendingCartAction();
+        
+        let targetUrl = '/customer/cafe';
+        if (typeof window !== 'undefined') {
+          const stored = sessionStorage.getItem('post_login_redirect');
+          if (stored && stored.startsWith('/')) {
+            targetUrl = stored;
+            sessionStorage.removeItem('post_login_redirect');
+          }
+        }
+        router.push(targetUrl);
       } else {
         toast.success('Email verified successfully. Please login.');
         router.push('/login');
@@ -76,6 +111,9 @@ export const useLogin = () => {
           }
         }
       }
+
+      // Resume pending cart item if guest clicked "Add to Cart" prior to authenticating
+      resumePendingCartAction();
 
       router.push(targetUrl);
     },

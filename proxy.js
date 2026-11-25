@@ -22,6 +22,7 @@ export function proxy(request) {
     pathname === '/customer/cafe' || 
     pathname.startsWith('/customer/cafe') || 
     pathname.startsWith('/customer/cafes') || 
+    pathname.startsWith('/customer/food') || 
     pathname.startsWith('/customer/discover') || 
     pathname.startsWith('/customer/compare') ||
     pathname.startsWith('/customer/search');

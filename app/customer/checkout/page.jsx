@@ -48,6 +48,15 @@ export default function CheckoutPage() {
   const user = useAuthStore((state) => state.user);
   const { cart, fetchCart } = useCartStore();
 
+  useEffect(() => {
+    if (!user) {
+      if (typeof window !== 'undefined') {
+        sessionStorage.setItem('post_login_redirect', '/customer/checkout');
+      }
+      router.push('/login?redirect=/customer/checkout');
+    }
+  }, [user, router]);
+
   const [restaurantAvailability, setRestaurantAvailability] = useState(null);
 
   useEffect(() => {

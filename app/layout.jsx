@@ -38,6 +38,9 @@ export const metadata = {
     shortcut: '/grab-it-logo.png',
     apple: '/grab-it-logo.png',
   },
+  verification: {
+    google: 'google8783d121b496a9a9',
+  },
 };
 
 export default function RootLayout({ children }) {
@@ -54,6 +57,7 @@ export default function RootLayout({ children }) {
         <link rel="manifest" href="/manifest.json" />
         <link rel="icon" href="/grab-it-logo.png" type="image/png" />
         <link rel="apple-touch-icon" href="/grab-it-logo.png" />
+        <meta name="google-site-verification" content="google8783d121b496a9a9" />
       </head>
       <body className="min-h-full flex flex-col font-sans" suppressHydrationWarning={true}>
         <AppProviders>

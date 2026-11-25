@@ -7,7 +7,12 @@ import {
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
+import { useAuthStore } from '@/stores/auth.store';
+import AuthRequiredModal from '@/app/components/auth/AuthRequiredModal';
+
 export default function CafeInfo({ cafe }) {
+  const user = useAuthStore((state) => state.user);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const [copied, setCopied] = useState(false);
   const { description, maximum_persons, name, users } = cafe || {};
@@ -177,17 +182,34 @@ export default function CafeInfo({ cafe }) {
               <span className="text-sm font-black text-[#252525]">Ready to celebrate or reserve your table?</span>
             </div>
             
-            <a
-              href={`/booking/${cafe?.id || 1}`}
+            <button
+              type="button"
+              onClick={() => {
+                if (!user) {
+                  setIsAuthModalOpen(true);
+                } else {
+                  window.location.href = `/booking/${cafe?.id || 1}`;
+                }
+              }}
               className="w-auto px-7 py-3 rounded-full bg-[#E50914] hover:bg-[#B71C1C] text-white text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 shadow-md hover:shadow-lg active:scale-95 transition-all cursor-pointer shrink-0"
             >
               <span>Book Now</span>
               <ArrowRight size={14} />
-            </a>
+            </button>
           </div>
         </div>
 
       </div>
+
+      {/* ── AUTHENTICATION REQUIRED MODAL ── */}
+      <AuthRequiredModal
+        isOpen={isAuthModalOpen}
+        onClose={() => setIsAuthModalOpen(false)}
+        title="Login to Book Cafe"
+        subtitle={`Sign in or create an account to book your spot at ${cafe?.name || 'this venue'}.`}
+        actionType="booking"
+        returnUrl={`/booking/${cafe?.id || 1}`}
+      />
     </div>
   );
 }

@@ -7,6 +7,7 @@ import LoadingPayment from '@/app/components/payment/LoadingPayment';
 import { bookingService } from '@/services/booking.service';
 import { paymentService } from '@/services/payment.service';
 import FaharaInteractiveLoader from '@/app/components/common/FaharaInteractiveLoader';
+import { useAuthStore } from '@/stores/auth.store';
 import toast from 'react-hot-toast';
 
 const loadRazorpayScript = () => {
@@ -27,6 +28,17 @@ function PaymentPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const bookingId = searchParams.get('bookingId');
+  const user = useAuthStore((state) => state.user);
+
+  useEffect(() => {
+    if (!user) {
+      const redirectUrl = `/customer/payment${bookingId ? `?bookingId=${bookingId}` : ''}`;
+      if (typeof window !== 'undefined') {
+        sessionStorage.setItem('post_login_redirect', redirectUrl);
+      }
+      router.push(`/login?redirect=${encodeURIComponent(redirectUrl)}`);
+    }
+  }, [user, bookingId, router]);
   
   const [booking, setBooking] = useState(null);
   const [isProcessing, setIsProcessing] = useState(false);

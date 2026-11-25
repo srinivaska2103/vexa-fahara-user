@@ -2,6 +2,8 @@
 
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
+import { useAuthStore } from '@/stores/auth.store';
+import AuthRequiredModal from '@/app/components/auth/AuthRequiredModal';
 import { 
   ArrowLeft, Heart, Share2, Star, ShieldCheck, MapPin, 
   Clock, Users, Sparkles, CheckCircle2, ChevronRight,
@@ -196,6 +198,8 @@ export default function MobileCafeDetailsView({
   };
 
   const isWalkingCafe = cafe?.is_walking_cafe === true || String(cafe?.is_walking_cafe) === 'true';
+  const categoryVal = (cafe?.category || cafe?.service_type || cafe?.category_name || '').toString().toLowerCase().trim();
+  const isRestaurant = categoryVal.includes('restaur') || categoryVal.includes('restur');
 
   // ── 3.5 ACTIVE DEALS & OFFERS ──
   const activeDiscounts = useMemo(() => {
@@ -251,6 +255,9 @@ export default function MobileCafeDetailsView({
     return cafe_packages.find(p => String(p.id) === String(selectedPackageId)) || cafe_packages[0];
   }, [cafe_packages, selectedPackageId, hasPackages]);
 
+  const user = useAuthStore((state) => state.user);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+
   const handleBookNow = () => {
     if (!isOpen && !isWalkingCafe) {
       toast.error('This venue is currently closed.');
@@ -259,6 +266,11 @@ export default function MobileCafeDetailsView({
 
     if (isWalkingCafe) {
       handleDirectionClick();
+      return;
+    }
+
+    if (!user) {
+      setIsAuthModalOpen(true);
       return;
     }
 
@@ -901,6 +913,16 @@ export default function MobileCafeDetailsView({
           </button>
         </div>
       </div>
+
+      {/* ── AUTHENTICATION REQUIRED MODAL ── */}
+      <AuthRequiredModal
+        isOpen={isAuthModalOpen}
+        onClose={() => setIsAuthModalOpen(false)}
+        title={isRestaurant ? 'Login to Reserve Table' : 'Login to Book Cafe'}
+        subtitle={`Sign in or create an account to reserve your spot at ${name || 'this venue'}.`}
+        actionType="booking"
+        returnUrl={hasPackages && selectedPackage ? `/booking/${cafeId || 1}?packageId=${selectedPackage.id}` : `/booking/${cafeId || 1}`}
+      />
 
     </div>
   );
