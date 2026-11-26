@@ -111,22 +111,38 @@ export default function InfiniteScroll({ hasNextPage, fetchNextPage, isFetchingN
           transition={{ duration: 0.4, ease: 'easeOut' }}
           className="w-full max-w-2xl mx-auto flex flex-col items-center text-center pt-2 pb-6 sm:py-6 px-3 sm:px-6 mt-2 mb-2 bg-transparent relative"
         >
-          {/* BOY FINDING CAFES BANNER ILLUSTRATION - BORDERLESS & MOBILE RESPONSIVE */}
+          {/* THEME-BASED DISCOVERY ARTWORK */}
           <div className="w-full shrink-0 max-w-[92vw] xs:max-w-[420px] sm:max-w-[520px]">
             <img 
-              src="/coming_soon_banner.png" 
-              alt="More Cafes Coming Soon to Grab2GO" 
+              src="/coming_soon_art.png" 
+              alt="Discover More Cafes & Venues on Grab2GO" 
               className="w-full h-auto object-contain pointer-events-none drop-shadow-sm"
             />
           </div>
 
-          {/* CTA BUTTON with clean spacing */}
-          <div className="mt-3 sm:mt-2 relative z-10">
+          {/* THEME-BASED PILL & HEADINGS */}
+          <div className="flex flex-col items-center mt-3 space-y-1.5">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#FFF5F5] border border-red-200 text-[#E50914] text-[10px] font-black tracking-wider uppercase shadow-xs">
+              <span>🏪</span>
+              <span>Coming Soon</span>
+            </span>
+
+            <h3 className="text-xl sm:text-2xl font-black text-[#252525] tracking-tight">
+              More Cafes Coming Soon
+            </h3>
+
+            <p className="text-xs sm:text-sm text-stone-500 font-medium max-w-md">
+              We&apos;re exploring and adding more amazing cafes &amp; restaurants to <span className="font-bold text-[#E50914]">Grab2GO</span> very soon.
+            </p>
+          </div>
+
+          {/* CTA BUTTON with clean Grab2GO Red styling */}
+          <div className="mt-4 relative z-10">
             <Link href="/customer/cafe">
               <motion.button 
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.96 }}
-                className="group inline-flex items-center gap-2 h-10 sm:h-11 px-6 sm:px-8 rounded-full bg-[#E50914] hover:bg-[#B71C1C] text-white text-xs sm:text-sm font-bold shadow-md shadow-[#E50914]/20 transition-all cursor-pointer"
+                className="group inline-flex items-center gap-2 h-10 sm:h-11 px-6 sm:px-8 rounded-full bg-[#E50914] hover:bg-[#B71C1C] text-white text-xs sm:text-sm font-bold shadow-md shadow-[#E50914]/25 transition-all cursor-pointer"
               >
                 <span>Explore Venues</span>
                 <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform stroke-[2.5]" />

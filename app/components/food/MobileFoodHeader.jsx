@@ -32,14 +32,18 @@ export default function MobileFoodHeader({
   const [notifications, setNotifications] = useState([]);
   const [mounted, setMounted] = useState(false);
 
+  // Time-based greeting prefix computed dynamically
+  const [greetingPrefix, setGreetingPrefix] = useState(() => {
+    if (typeof window === 'undefined') return 'Good evening';
+    const hour = new Date().getHours();
+    if (hour < 12) return 'Good morning';
+    if (hour < 17) return 'Good afternoon';
+    return 'Good evening';
+  });
+
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true);
-  }, []);
-
-  // Time-based greeting prefix
-  const [greetingPrefix, setGreetingPrefix] = useState('Good evening');
-
-  useEffect(() => {
     const hour = new Date().getHours();
     if (hour < 12) setGreetingPrefix('Good morning');
     else if (hour < 17) setGreetingPrefix('Good afternoon');
@@ -383,16 +387,16 @@ export default function MobileFoodHeader({
         </div>
       </div>
 
-      {/* ── STICKY SEARCH & FILTER ROW (Floating on scroll) ── */}
+      {/* ── STICKY SEARCH & FILTER ROW (Seamless red header transition) ── */}
       <div 
         id="mobile-food-sticky-search-bar"
-        className="md:hidden sticky top-0 z-40 w-full bg-[#E50914] px-4 py-2.5 shadow-[0_8px_20px_rgba(183,28,28,0.25)]"
+        className="md:hidden sticky top-0 z-40 w-full bg-[#E50914] px-3 xs:px-4 pt-1 pb-3 shadow-[0_4px_16px_rgba(183,28,28,0.2)]"
         suppressHydrationWarning
       >
-        <div className="flex items-center gap-2.5">
+        <div className="flex items-center gap-2">
           {/* Search Pill Input */}
-          <div className="relative flex-1 flex items-center bg-white rounded-full px-4 py-2.5 shadow-xs border border-white/40">
-            <Search size={16} className="text-[#E50914] shrink-0 mr-2.5 pointer-events-none" />
+          <div className="relative flex-1 flex items-center bg-white rounded-full px-3.5 py-2 shadow-xs border border-white/60">
+            <Search size={15} className="text-[#E50914] shrink-0 mr-2 pointer-events-none" />
             <input
               type="text"
               value={searchQuery}
@@ -421,10 +425,10 @@ export default function MobileFoodHeader({
             type="button"
             suppressHydrationWarning
             onClick={onFilterClick}
-            className="w-11 h-11 rounded-full bg-white flex items-center justify-center text-[#E50914] active:scale-90 transition-transform cursor-pointer shrink-0 shadow-md hover:bg-stone-50"
+            className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-[#E50914] active:scale-90 transition-transform cursor-pointer shrink-0 shadow-md hover:bg-stone-50"
             aria-label="Open Filters"
           >
-            <SlidersHorizontal size={17} strokeWidth={2.3} />
+            <SlidersHorizontal size={16} strokeWidth={2.3} />
           </button>
         </div>
       </div>
