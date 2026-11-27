@@ -16,6 +16,8 @@ export default function RegisterPage() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [confirmPassword, setConfirmPassword] = useState('');
   const [confirmPasswordError, setConfirmPasswordError] = useState('');
+  const [agreedToTerms, setAgreedToTerms] = useState(false);
+  const [termsError, setTermsError] = useState('');
   const { mutate: registerUser, isPending } = useRegister();
 
   // Separate mobile and desktop forms so React Hook Form ref registration is clean
@@ -34,6 +36,12 @@ export default function RegisterPage() {
   });
 
   const onMobileSubmit = (data) => {
+    if (!agreedToTerms) {
+      setTermsError('You must accept the Terms and Conditions & Privacy Policy to register.');
+      return;
+    }
+    setTermsError('');
+
     if (confirmPassword && confirmPassword !== data.password) {
       setConfirmPasswordError("Passwords don't match");
       return;
@@ -43,6 +51,11 @@ export default function RegisterPage() {
   };
 
   const onDesktopSubmit = (data) => {
+    if (!agreedToTerms) {
+      setTermsError('You must accept the Terms and Conditions & Privacy Policy to register.');
+      return;
+    }
+    setTermsError('');
     registerUser(data);
   };
 
@@ -255,6 +268,44 @@ export default function RegisterPage() {
               )}
             </div>
 
+            {/* Terms of Service & Privacy Policy Agreement Checkbox */}
+            <div className="pt-1">
+              <label className="flex items-start gap-2.5 cursor-pointer select-none group">
+                <input
+                  type="checkbox"
+                  checked={agreedToTerms}
+                  onChange={(e) => {
+                    setAgreedToTerms(e.target.checked);
+                    if (termsError) setTermsError('');
+                  }}
+                  className="mt-0.5 h-4 w-4 rounded-md border-stone-300 text-[#E50914] focus:ring-[#E50914] accent-[#E50914] transition-all cursor-pointer"
+                />
+                <span className="text-xs text-stone-600 font-medium leading-tight">
+                  I agree to the{' '}
+                  <Link
+                    href="/terms"
+                    target="_blank"
+                    className="font-bold text-[#E50914] hover:underline underline-offset-2"
+                  >
+                    Terms of Service
+                  </Link>
+                  {' '}and{' '}
+                  <Link
+                    href="/privacy"
+                    target="_blank"
+                    className="font-bold text-[#E50914] hover:underline underline-offset-2"
+                  >
+                    Privacy Policy
+                  </Link>
+                </span>
+              </label>
+              {termsError && (
+                <p className="text-red-500 text-[11px] mt-1.5 font-semibold">
+                  {termsError}
+                </p>
+              )}
+            </div>
+
             {/* Single Prominent Primary Action Button */}
             <div className="pt-4">
               <button
@@ -413,6 +464,44 @@ export default function RegisterPage() {
               {desktopForm.formState.errors.password && (
                 <p className="text-red-500 text-xs mt-1.5 font-medium">
                   {desktopForm.formState.errors.password.message}
+                </p>
+              )}
+            </div>
+
+            {/* Desktop Terms of Service & Privacy Policy Checkbox */}
+            <div className="pt-2">
+              <label className="flex items-start gap-2.5 cursor-pointer select-none">
+                <input
+                  type="checkbox"
+                  checked={agreedToTerms}
+                  onChange={(e) => {
+                    setAgreedToTerms(e.target.checked);
+                    if (termsError) setTermsError('');
+                  }}
+                  className="mt-0.5 h-4 w-4 rounded-md border-gray-300 text-[#E50914] focus:ring-[#E50914] accent-[#E50914] transition-all cursor-pointer"
+                />
+                <span className="text-sm text-gray-600 font-medium leading-tight">
+                  I agree to the{' '}
+                  <Link
+                    href="/terms"
+                    target="_blank"
+                    className="font-bold text-[#E50914] hover:underline underline-offset-2"
+                  >
+                    Terms of Service
+                  </Link>
+                  {' '}and{' '}
+                  <Link
+                    href="/privacy"
+                    target="_blank"
+                    className="font-bold text-[#E50914] hover:underline underline-offset-2"
+                  >
+                    Privacy Policy
+                  </Link>
+                </span>
+              </label>
+              {termsError && (
+                <p className="text-red-500 text-xs mt-1.5 font-medium">
+                  {termsError}
                 </p>
               )}
             </div>

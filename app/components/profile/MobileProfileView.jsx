@@ -6,10 +6,12 @@ import { useRouter } from 'next/navigation';
 import { 
   ArrowLeft, Camera, Edit2, User, MapPin, Heart, CalendarCheck, 
   History, Award, Bell, HelpCircle, Shield, Settings, LogOut, 
-  ChevronRight, Loader2, Sparkles, Phone, Mail
+  ChevronRight, Loader2, Sparkles, Phone, Mail, FileText, Lock, 
+  FileCheck, ShieldAlert, LifeBuoy, ShieldCheck
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import HelpSupportModal from '@/app/components/common/HelpSupportModal';
+import RaiseTicketModal from '@/app/components/common/RaiseTicketModal';
 
 export default function MobileProfileView({
   profile,
@@ -26,6 +28,7 @@ export default function MobileProfileView({
   const router = useRouter();
   const [showLogoutConfirm, setShowLogoutConfirm] = React.useState(false);
   const [showHelpModal, setShowHelpModal] = React.useState(false);
+  const [showTicketModal, setShowTicketModal] = React.useState(false);
 
   if (!profile) return null;
 
@@ -110,11 +113,45 @@ export default function MobileProfileView({
           badge: activeTab === 'notifications' ? 'Active' : null,
         },
         {
+          id: 'raise-ticket',
+          title: 'Raise a Ticket',
+          subtitle: 'Submit an issue, booking enquiry or complaint',
+          icon: LifeBuoy,
+          action: () => setShowTicketModal(true),
+          badge: 'Support',
+        },
+        {
           id: 'help-support',
           title: 'Help & Support',
           subtitle: 'FAQs, live chat and customer care',
           icon: HelpCircle,
           action: () => setShowHelpModal(true),
+        },
+      ],
+    },
+    {
+      group: 'Policies & Legal',
+      items: [
+        {
+          id: 'terms-of-service',
+          title: 'Terms of Service',
+          subtitle: 'User agreement, platform rules & liability',
+          icon: FileText,
+          action: () => router.push('/terms'),
+        },
+        {
+          id: 'privacy-policy',
+          title: 'Privacy Policy',
+          subtitle: 'Data protection & information security',
+          icon: ShieldCheck,
+          action: () => router.push('/privacy'),
+        },
+        {
+          id: 'cancellation-policy',
+          title: 'Cancellation Policy',
+          subtitle: 'Refund rules, cancellation & rescheduling terms',
+          icon: ShieldAlert,
+          action: () => router.push('/cancellation'),
         },
       ],
     },
@@ -361,6 +398,13 @@ export default function MobileProfileView({
       <HelpSupportModal
         isOpen={showHelpModal}
         onClose={() => setShowHelpModal(false)}
+      />
+
+      {/* Raise a Support Ticket Modal */}
+      <RaiseTicketModal
+        isOpen={showTicketModal}
+        onClose={() => setShowTicketModal(false)}
+        user={user}
       />
     </div>
   );

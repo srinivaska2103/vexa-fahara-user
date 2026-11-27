@@ -179,7 +179,7 @@ export default function MobileCafeHeader({ onFilterClick }) {
         <div className="relative z-10 flex flex-col space-y-2.5" suppressHydrationWarning>
           
           {/* Navigation Row (Logo + Switch + Notifications + Avatar) */}
-          <div className="flex items-center justify-between gap-1 w-full overflow-hidden">
+          <div className="flex items-center justify-between gap-1 w-full overflow-visible">
             {/* Left: Grab2GO Logo (Larger on Mobile, text hidden) */}
             <div className="flex items-center gap-1.5 xs:gap-2 shrink-0">
               <Link 
@@ -397,64 +397,78 @@ export default function MobileCafeHeader({ onFilterClick }) {
                   )}
                 </button>
 
-                {/* Profile Popup Menu */}
-                <AnimatePresence>
-                  {isProfileOpen && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 6, scale: 0.95 }}
-                      animate={{ opacity: 1, y: 0, scale: 1 }}
-                      exit={{ opacity: 0, y: 6, scale: 0.95 }}
-                      transition={{ duration: 0.15 }}
-                      className="absolute right-0 top-full mt-2 w-60 max-w-[calc(100vw-24px)] bg-white text-[#252525] rounded-2xl border border-stone-200 shadow-2xl p-2.5 z-[100] space-y-1 text-left"
-                    >
-                      <div className="p-2 border-b border-stone-100">
-                        <p className="font-black text-xs text-[#252525] truncate">{userName}</p>
-                        <p className="text-[10px] text-stone-500 truncate">{user?.email || 'Logged in'}</p>
-                        {loyaltyCredits > 0 && (
-                          <div className="mt-1 inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#FFF5F5] border border-[#EF5350]/60 text-[10px] font-extrabold text-[#E50914]">
-                            <span>⭐ {loyaltyCredits} Credits</span>
+                {/* Profile Popup Menu - Portaled to document.body */}
+                {mounted && typeof document !== 'undefined' && createPortal(
+                  <AnimatePresence>
+                    {isProfileOpen && (
+                      <div className="fixed inset-0 z-[999999] flex items-start justify-end p-4 pt-16">
+                        {/* Backdrop to close when clicking outside */}
+                        <motion.div
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          exit={{ opacity: 0 }}
+                          onClick={() => setIsProfileOpen(false)}
+                          className="fixed inset-0 bg-black/40 backdrop-blur-xs"
+                        />
+
+                        <motion.div
+                          initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                          animate={{ opacity: 1, y: 0, scale: 1 }}
+                          exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                          transition={{ duration: 0.15 }}
+                          className="relative w-64 max-w-[calc(100vw-24px)] bg-white text-[#252525] rounded-3xl border border-stone-200 shadow-2xl p-3.5 z-10 space-y-1.5 text-left"
+                        >
+                          <div className="p-2 border-b border-stone-100">
+                            <p className="font-black text-sm text-[#252525] truncate">{userName}</p>
+                            <p className="text-[11px] text-stone-500 truncate">{user?.email || 'Logged in'}</p>
+                            {loyaltyCredits > 0 && (
+                              <div className="mt-1.5 inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#FFF5F5] border border-[#EF5350]/60 text-[10px] font-extrabold text-[#E50914]">
+                                <span>⭐ {loyaltyCredits} Credits</span>
+                              </div>
+                            )}
                           </div>
-                        )}
+
+                          <Link
+                            href="/customer/profile"
+                            onClick={() => setIsProfileOpen(false)}
+                            className="flex items-center gap-2.5 p-2.5 rounded-2xl text-xs font-bold text-stone-700 hover:bg-[#FFF5F5] hover:text-[#E50914] transition-colors"
+                          >
+                            <User size={16} />
+                            <span>My Profile</span>
+                          </Link>
+
+                          <Link
+                            href="/customer/bookings"
+                            onClick={() => setIsProfileOpen(false)}
+                            className="flex items-center gap-2.5 p-2.5 rounded-2xl text-xs font-bold text-stone-700 hover:bg-[#FFF5F5] hover:text-[#E50914] transition-colors"
+                          >
+                            <CalendarCheck size={16} />
+                            <span>My Bookings</span>
+                          </Link>
+
+                          <Link
+                            href="/customer/favorites"
+                            onClick={() => setIsProfileOpen(false)}
+                            className="flex items-center gap-2.5 p-2.5 rounded-2xl text-xs font-bold text-stone-700 hover:bg-[#FFF5F5] hover:text-[#E50914] transition-colors"
+                          >
+                            <Heart size={16} />
+                            <span>Favorites</span>
+                          </Link>
+
+                          <button
+                            onClick={handleLogout}
+                            type="button"
+                            className="w-full flex items-center gap-2.5 p-2.5 rounded-2xl text-xs font-bold text-red-600 hover:bg-red-50 transition-colors cursor-pointer"
+                          >
+                            <LogOut size={16} />
+                            <span>Log Out</span>
+                          </button>
+                        </motion.div>
                       </div>
-
-                      <Link
-                        href="/customer/profile"
-                        onClick={() => setIsProfileOpen(false)}
-                        className="flex items-center gap-2 p-2 rounded-xl text-xs font-bold text-stone-700 hover:bg-[#FFF5F5] hover:text-[#E50914] transition-colors"
-                      >
-                        <User size={14} />
-                        <span>My Profile</span>
-                      </Link>
-
-                      <Link
-                        href="/customer/bookings"
-                        onClick={() => setIsProfileOpen(false)}
-                        className="flex items-center gap-2 p-2 rounded-xl text-xs font-bold text-stone-700 hover:bg-[#FFF5F5] hover:text-[#E50914] transition-colors"
-                      >
-                        <CalendarCheck size={14} />
-                        <span>My Bookings</span>
-                      </Link>
-
-                      <Link
-                        href="/customer/favorites"
-                        onClick={() => setIsProfileOpen(false)}
-                        className="flex items-center gap-2 p-2 rounded-xl text-xs font-bold text-stone-700 hover:bg-[#FFF5F5] hover:text-[#E50914] transition-colors"
-                      >
-                        <Heart size={14} />
-                        <span>Favorites</span>
-                      </Link>
-
-                      <button
-                        onClick={handleLogout}
-                        type="button"
-                        className="w-full flex items-center gap-2 p-2 rounded-xl text-xs font-bold text-red-600 hover:bg-red-50 transition-colors"
-                      >
-                        <LogOut size={14} />
-                        <span>Log Out</span>
-                      </button>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+                    )}
+                  </AnimatePresence>,
+                  document.body
+                )}
               </div>
 
             </div>
